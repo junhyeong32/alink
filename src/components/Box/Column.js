@@ -27,7 +27,7 @@ export default function Column({
   wrap,
   children,
   sx,
-  id,
+  ...props
 }) {
   return (
     <Box
@@ -40,7 +40,7 @@ export default function Column({
         wrap: _wrap[_wrap],
         ...sx,
       }}
-      id={id}
+      props
     >
       {children}
     </Box>

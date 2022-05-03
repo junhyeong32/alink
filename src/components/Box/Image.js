@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { Container, Typography, Button } from "@mui/material";
+import { Container, Typography, Button, Box } from "@mui/material";
 import Column from "./Column";
+import reduceImageSize from "../../utility/image";
 
 export default function ImageTextBox({
   img_src,
@@ -10,18 +11,37 @@ export default function ImageTextBox({
   button_action,
   sx,
   img_id,
+  slideIndex,
 }) {
+  const img = reduceImageSize(img_src, {
+    w: 100,
+    q: 50,
+  });
+
   return (
     <Column
       alignItems="center"
       sx={{
         ...sx,
+        position: "relative",
       }}
     >
+      {slideIndex === img_id && (
+        <Box
+          id="test"
+          sx={{
+            width: "100px",
+            height: "141px",
+            position: "absolute",
+            background: "rgba(0, 0, 0, 0.6)",
+            zIndex: 1,
+          }}
+        />
+      )}
       <Typography component="div" style={{ cursor: "pointer" }}>
-        {img_src && (
+        {img && (
           <Image
-            src={img_src}
+            src={img}
             width={100}
             height={141}
             alt=""

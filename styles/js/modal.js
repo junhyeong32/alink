@@ -1,0 +1,76 @@
+const style = {
+  modal: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    bgcolor: "background.paper",
+    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+    borderRadius: "10px",
+    padding: "20px",
+    overflowY: "scroll",
+    msOverflowStyle: "none !important",
+    scrollbarWidth: "none !important",
+    "&::-webkit-scrollbar": { display: "none" },
+  },
+
+  ios: {
+    backgroundImage: `url(/Android.png)`,
+    backgroundPosition: "center center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    width: "375px",
+    height: "792px",
+    objectFit: "contain",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+
+  android: {
+    backgroundImage: `url(/iphone.png)`,
+    backgroundPosition: "center center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    width: "375px",
+    height: "792px",
+    objectFit: "contain",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+
+  ios_message_box: {
+    width: "340px",
+    minHeight: "132px",
+    height: "auto",
+    padding: "14.5px 16px 14.5px 16px",
+    background: "rgba(255, 255, 255, 0.88)",
+    backdropFilter: "blur(10px)",
+    borderRadius: "20px",
+    wordBreak: "break-all",
+    mt: 34,
+  },
+
+  android_message_box: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    // justifyContent: "flex-start",
+    width: "359px",
+    minHeight: "88px",
+    height: "auto",
+    padding: "9px 14px 9px 9px",
+    background: "rgba(255, 255, 255, 0.5)",
+    backdropFilter: "blur(40px)",
+    borderRadius: "16px",
+    wordBreak: "break-all",
+    mt: 27,
+  },
+
+  table_profile_img: {},
+};
+
+export default style;

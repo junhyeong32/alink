@@ -13,58 +13,47 @@ export const typography = {
   // 'caption':{
   //   fontSize:10
   // },
-  h99: {
-    fontSize: 80,
-    fontWeight: 700,
-  },
   h1: {
-    fontSize: 24,
-    fontWeight: 700,
-  },
-  h2: {
     fontSize: 22,
     fontWeight: 700,
   },
-  h3: {
+  h2: {
     fontSize: 20,
     fontWeight: 700,
   },
-  h4: {
+  h3: {
     fontSize: 18,
     fontWeight: 700,
   },
-  h5: {
+  h4: {
     fontSize: 16,
     fontWeight: 700,
   },
-  h6: {
+  h5: {
     fontSize: 14,
     fontWeight: 700,
   },
-  h7: {
+  h6: {
     fontSize: 12,
     fontWeight: 700,
   },
-  fs48_bold: {
-    fontSize: 48,
-    lineHeight: "48px",
+  h7: {
+    fontSize: 10,
     fontWeight: 700,
   },
-  fs48: {
-    fontSize: 48,
-    lineHeight: "48px",
-    fontWeight: 700,
+  fs20: {
+    fontSize: 20,
+    lineHeight: "22px",
   },
-  fs36: {
-    fontSize: 36,
-    lineHeight: "36px",
-    fontWeight: 400,
+  fs16: {
+    fontSize: 16,
+    lineHeight: "23px",
   },
-  overview_text: {
-    fontSize: 25,
-    lineHeight: "40px",
-    fontWeight: 700,
+  fs50: {
+    fontSize: 50,
+    lineHeight: "55px",
   },
+
   normal: {
     fontSize: 14,
     lineHeight: "20px",
@@ -73,8 +62,16 @@ export const typography = {
     fontSize: 12,
     lineHeight: "14px",
   },
-  min: {
-    fontSize: 10,
-    lineHeight: "12px",
-  },
+  // 'inherit':{
+  //   fontSize:10
+  // },
+  // 'overline':{
+  //   fontSize:10
+  // },
+  // 'subtitle1':{
+  //   fontSize:10
+  // },
+  // 'subtitle2':{
+  //   fontSize:10
+  // },
 };
