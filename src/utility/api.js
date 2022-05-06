@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://api.marketool.biz/api/v1";
+const baseURL = "https://api.afg.kr/admin/v1";
 
 const api = {
   Get: async (url, parms) => {
@@ -24,15 +24,6 @@ const api = {
   Put: async (url, parms) => {
     try {
       const res = await axios.put(`${baseURL}/${url}`, parms);
-      return res;
-    } catch (err) {
-      return console.log(err);
-    }
-  },
-
-  Delete: async (url, parms) => {
-    try {
-      const res = await axios.delete(`${baseURL}/${url}`, parms);
       return res;
     } catch (err) {
       return console.log(err);

@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { Box, Button, Typography } from "@mui/material";
 import Row from "./Row";
+import { useRouter } from "next/router";
 
-export default function MenuBox({ img_src, text, onClick }) {
+export default function MenuBox({ img_src, text, link }) {
+  const router = useRouter();
   return (
     <Button
-      onClick={onClick}
+      onClick={() => router.push(link)}
       sx={{
         width: "100%",
         columnGap: "10.6px",
@@ -26,8 +28,8 @@ export default function MenuBox({ img_src, text, onClick }) {
         },
       }}
     >
-      <Image src={img_src} width={22} height={22} alt="setting" />
-      <Typography variant="h6" color="primary.white">
+      {/* <Image src={img_src} width={22} height={22} alt="setting" /> */}
+      <Typography variant="h4" color="primary.white">
         {text}
       </Typography>
     </Button>

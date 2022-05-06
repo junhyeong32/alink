@@ -1,287 +1,118 @@
 import Head from "next/head";
 import Image from "next/image";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
+import { useEffect, useState, useContext } from "react";
+import {
+  Input,
+  Box,
+  Button,
+  Typography,
+  Container,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import Row from "../Box/Row";
 import Column from "../Box/Column";
-// import Circl
-import { Typography, Box } from "@mui/material";
-import { Children, useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { routeList } from "./routerList";
-import "animate.css";
-import useRelativePx from "../../hooks/useRelativePx";
+import MenuBox from "../Box/MenuBox";
+import Tab from "../Box/Tab";
+import { menuText, img_src, menu_link } from "../../data/home";
+import checkLogin from "../../hooks/account/useCheckLogin";
 
-const circleArray = (screenWidth) => {
-  let arr = [];
-  for (let count = 0; count < screenWidth; count += 7) {
-    arr.push(count);
-  }
-
-  return arr;
-};
-
-export default function Layout({ children }) {
+export default function Layout({ getCookies, children }) {
   const router = useRouter();
-  const [screenWidth, setScreenWidth] = useState();
-  const [screenHeight, setScreenHeight] = useState();
-  const [works, setWorks] = useState(false);
-  const rw = useRelativePx().getRelativeWidthPx;
-  const rh = useRelativePx().getRelativeHeightPx;
+  const [menu_list, setMenuList] = useState([]);
+  const [current_menu, setCurrentMenu] = useState();
+  const [cookies, setCookie, removeCookie] = useCookies();
+  //   const { modal_list, addModalList, deleteModalList } =
+  //     useContext(ModalContext);
 
-  useEffect(() => {
-    setScreenWidth(document.body.clientWidth);
-    setScreenHeight(document.body.clientHeight);
-  }, []);
+  // useEffect(() => !getCookies && router.replace("/login"), []);
+  const is_loggedin = checkLogin();
 
-  useEffect(() => {
-    if (
-      router.asPath === "/reference" ||
-      router.asPath === "/business-area" ||
-      router.asPath === "/gallery"
-    )
-      setWorks(true);
-  }, [router]);
+  const logout = () => {
+    removeCookie("access_token", { path: "/" });
+    removeCookie("user_info", { path: "/" });
+    router.replace("login");
+  };
+
+  if (!is_loggedin)
+    return (
+      <Row
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+          width: "100%",
+          mt: 5,
+          minHeight: "999px",
+        }}
+      >
+        <CircularProgress size="60px" thickness={5} color="primary" />
+      </Row>
+    );
 
   return (
-    <Row
-      alignItems={"start"}
+    <main
       style={{
         width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-        minWidth: screenWidth < 1280 ? 1280 : screenWidth,
       }}
     >
-      <Column
-        alignItems={"center"}
-        justifyContent={"between"}
-        sx={{
-          width: "45%",
-          p: `${rh(100)} ${rw(30)} ${rh(50)} ${rw(30)}`,
-          height: "100%",
-        }}
-      >
+      <aside>
+        <Image src="/web_header.png" width={176} height={32} alt="" />
+        <Typography variant="h2" color="primary.white" mt={5.2}>
+          {cookies.user_info?.name} {cookies.user_info?.rank}님
+          <br />
+        </Typography>
+        <Typography variant="normal" color="primary.white">
+          환영합니다.
+        </Typography>
+        <Divider />
+        <Row justifyContent="end">
+          <Button variant="text" sx={{ p: 0 }} onClick={logout}>
+            <Typography variant="h7" color="primary.white">
+              로그아웃
+            </Typography>
+          </Button>
+        </Row>
         <Column
-          sx={{ width: "60%" }}
-          alignItems={"start"}
-          justifyContent={"start"}
+          sx={{
+            mt: 3,
+            rowGap: 1.2,
+          }}
         >
-          <Typography
-            sx={{
-              fontSize: "60px",
-              lineHeight: "0.7",
-              cursor: "pointer",
-              fontFamily: "hanyg",
-            }}
-            onMouseOver={() => {
-              router.push("/main");
-            }}
-          >
-            LnC
-          </Typography>
-          <Typography variant="small" color="primary.gray">
-            LEAD AND CREATIVE
-          </Typography>
-          <Typography variant="h2" mt={1}>
-            <Typography component={"span"} variant="h2" color="primary.skyblue">
-              DESIGN&nbsp;
-            </Typography>
-            GROUP
-          </Typography>
-          <Typography variant="small" style={{ fontWeight: "400" }}>
-            BRING OUT THE BEST
-          </Typography>
-        </Column>
-
-        <Column justifyContent={"center"} sx={{ width: "60%" }}>
-          {routeList.map((list, key) => {
-            return (
-              <Typography
-                key={key}
-                className={
-                  `/${Object.keys(list)}` === router.asPath &&
-                  "animate__animated animate__bounce"
-                }
-                component={"div"}
-                color={
-                  list.works === "WORKS" ? "primary.purple" : "primary.skyblue"
-                }
-                onMouseOver={(e) => {
-                  e.preventDefault();
-                  Object.keys(list)[0] === "works"
-                    ? setWorks(true)
-                    : `/${router.push(Object.keys(list)[0])}`;
-                }}
-                sx={{
-                  fontSize:
-                    screenHeight < 800
-                      ? "25px"
-                      : screenWidth < 1400
-                      ? "30px"
-                      : "40px",
-                  cursor: "pointer",
-                  lineHeight: "1.5",
-                  display: "flex",
-                  alignItems: "center",
-                  fontFamily: "Merriweather",
-                }}
-              >
-                {router.asPath === `/${Object.keys(list)[0]}` && (
-                  <Typography
-                    className="animate__animated animate__bounce"
-                    component={"div"}
-                    sx={{
-                      width: "8px",
-                      height: "80%",
-                      background: "#60B0BE",
-                      mr: 1,
-                    }}
-                  />
-                )}
-                {list[Object.keys(list)[0]]}
-              </Typography>
-            );
+          {menuText.map((menu, key) => {
+            if (menu === "AP 관리" && cookies.user_info?.rank === "AP") {
+              return;
+            } else {
+              return <MenuBox key={key} text={menu} link={menu_link[key]} />;
+            }
           })}
-          {works ? (
-            <Box sx={{ ml: rw(64) }}>
-              <Typography
-                onClick={(e) => {
-                  e.preventDefault();
-                  router.push("business-area");
-                }}
-                color="primary.purple"
-                sx={{
-                  fontSize:
-                    screenHeight < 800
-                      ? "14px"
-                      : screenWidth < 1400
-                      ? "15px"
-                      : "20px",
-                  fontFamily: "Merriweather",
-                  cursor: "pointer",
-                }}
-              >
-                &gt; BUSINESS AREA
-              </Typography>
-              <Typography
-                onClick={(e) => {
-                  e.preventDefault();
-                  router.push("reference");
-                }}
-                color="primary.purple"
-                sx={{
-                  fontSize:
-                    screenHeight < 800
-                      ? "14px"
-                      : screenWidth < 1400
-                      ? "15px"
-                      : "20px",
-                  fontFamily: "Merriweather",
-                  cursor: "pointer",
-                }}
-              >
-                &gt; REFERENCE
-              </Typography>
-              <Typography
-                onClick={(e) => {
-                  e.preventDefault();
-                  router.push("gallery");
-                }}
-                color="primary.purple"
-                sx={{
-                  fontSize:
-                    screenHeight < 800
-                      ? "14px"
-                      : screenWidth < 1400
-                      ? "15px"
-                      : "20px",
-                  fontFamily: "Merriweather",
-                  cursor: "pointer",
-                }}
-              >
-                &gt; GALLERY
-              </Typography>
-            </Box>
-          ) : null}
         </Column>
-        <Column sx={{ width: "60%" }}>
-          <Typography>
-            LnC{" "}
-            <Typography component={"span"} color="primary.skyblue">
-              DESIGN
-            </Typography>{" "}
-            GROUP
-          </Typography>
-          <Typography>TEL . 02-3448-1118</Typography>
-          <Typography>FAX . 02-3448-0399</Typography>
-
-          <Column sx={{ width: "100%" }}>
-            <Typography
-              variant={screenHeight < 800 ? "h6" : "h2"}
-              style={{
-                color: "white",
-                backgroundColor: "#5C5143",
-                height: rh(37),
-                display: "flex",
-                alignItems: "center",
-                paddingLeft: "8px",
-              }}
-            >
-              LnC COMMUNITY
-            </Typography>
-            <Box
-              sx={{
-                backgroundImage: `url(/layout.jpg)`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                objectFit: "contain",
-                width: "100%",
-                height: rh(150),
-              }}
-            />
-          </Column>
-
-          <div style={{ border: "2px solid white", width: "201px" }} />
-          <Column>
-            <Typography variant="small">
-              COPYRIGHTⓒ 2012 LnC . ALL RIGHTS RESERVED
-            </Typography>
-          </Column>
-        </Column>
-      </Column>
-
-      <Box sx={{ border: "1px solid rgb(200,200,200)", height: "100%" }} />
-      <Row sx={{ width: "100%", height: "100%" }}>{children}</Row>
-      <Row
-        wrap={"wrap"}
+      </aside>
+      <Container
+        component="article"
         sx={{
-          border: "1px solid rgb(200,200,200)",
+          width: "100%",
           height: "100vh",
-          width: "180px !important",
-          right: 0,
-          gap: 2,
-          p: 1,
-          position: "sticky",
+          maxWidth: "none",
+          padding: "0px 0px 0px 2px !important",
+          margin: 0,
+          maxWidth: "none !important",
+          minWidth: "1190px",
+          // minHeight: "1000px",
+          position: "relative",
         }}
       >
-        {circleArray(screenWidth).map((c, key) => (
-          <Box
-            key={c}
-            className="fade"
-            sx={{
-              width: "20px",
-              height: "20px",
-              background: "#d7d7d7",
-              borderRadius: "100%",
-              animation: `fadein ${key - 0.7}s`,
-              MozAnimation: `fadein ${key - 0.7}s`,
-              WebkitAnimation: `fadein ${key - 0.7}s`,
-              OAnimation: `fadein ${key - 0.7}s`,
-            }}
-          />
-        ))}
-      </Row>
-    </Row>
+        {children}
+      </Container>
+    </main>
   );
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      getCookies: context.req.cookies.user_info || null,
+    },
+  };
 }

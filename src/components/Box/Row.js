@@ -22,7 +22,6 @@ const _wrap = {
 };
 
 export default function Row({
-  componentType,
   justifyContent,
   alignItems,
   wrap,

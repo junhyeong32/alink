@@ -1,11 +1,19 @@
 import Image from "next/image";
 import { Container, Typography, Button } from "@mui/material";
-import Column from "./Column";
+import Row from "./Row";
 
-export default function TextBox({ title, width, heigth, variant, sx }) {
+export default function TextBox({
+  title,
+  subtitle,
+  width,
+  heigth,
+  variant,
+  sx,
+}) {
   return (
-    <Column
+    <Row
       alignItems="start"
+      justifyContent="between"
       sx={{
         width: width || "calc(100% - 32px)",
         height: 29,
@@ -14,6 +22,7 @@ export default function TextBox({ title, width, heigth, variant, sx }) {
       }}
     >
       <Typography variant="h5">{title}</Typography>
-    </Column>
+      <Typography variant="h5">{subtitle}</Typography>
+    </Row>
   );
 }
