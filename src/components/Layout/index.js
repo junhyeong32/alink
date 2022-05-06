@@ -27,7 +27,7 @@ export default function Layout({ getCookies, children }) {
   //   const { modal_list, addModalList, deleteModalList } =
   //     useContext(ModalContext);
 
-  // useEffect(() => !getCookies && router.replace("/login"), []);
+  useEffect(() => !getCookies && router.replace("/login"), []);
   const is_loggedin = checkLogin();
 
   const logout = () => {
