@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Image from "next/image";
-import style from "../styles/js/login";
 import { Input, Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -65,7 +64,21 @@ export default function Login() {
   };
 
   return (
-    <main style={style.main}>
+    <main
+      style={{
+        backgroundImage: `url(/main_background.png)`,
+        backgroundPosition: "center center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        width: "100vw",
+        height: "100vh",
+        objectFit: "contain",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Image src="/alink.png" width={360} height={117} alt="" />
       <Column
         alignItems="start"
@@ -81,7 +94,16 @@ export default function Login() {
         <Input
           value={id}
           onChange={(e) => setId(e.target.value)}
-          sx={style.id_input}
+          sx={{
+            width: 364,
+            height: 42,
+            background: " rgba(255, 255, 255, 0.6)",
+            pl: 0,
+            fontWeight: 400,
+            fontSize: 18,
+            lineHeight: "26px",
+            paddingLeft: "12px",
+          }}
           name="username"
           onKeyPress={(ev) => {
             if (ev.key === "Enter") {
@@ -110,13 +132,29 @@ export default function Login() {
               handleLogin();
             }
           }}
-          sx={style.password_input}
+          sx={{
+            width: 364,
+            height: 42,
+            background: " rgba(255, 255, 255, 0.6)",
+            pl: 0,
+            fontWeight: 400,
+            fontSize: 18,
+            paddingLeft: "12px",
+          }}
           name="password"
         />
       </Column>
       <LoadingButton
         onClick={handleLogin}
-        sx={style.login_btn}
+        sx={{
+          width: 364,
+          height: 50,
+          background:
+            "linear-gradient(180deg, #0D1D41 0%, rgba(13, 29, 65, 0.8) 100%)",
+          color: "white",
+          mt: 5,
+          p: 0,
+        }}
         variant="contained"
         color="primary"
         loading={loading}
