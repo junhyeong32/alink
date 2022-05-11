@@ -1,7 +1,7 @@
 import Layout from "../src/components/Layout";
 import Column from "../src/components/Box/Column";
 import Row from "../src/components/Box/Row";
-import { Container, Typography, Button, Select, MenuItem } from "@mui/material";
+import { Container, Typography, Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import ReceptionStatusTable from "../src/components/Table/data-status/ReceptionStatusTable";
 import {
@@ -10,6 +10,8 @@ import {
   headquarters_input,
   branch_input,
 } from "../src/components/Table/data-status/ReceptionStatusList";
+import { OutLineSelectInput } from "../src/components/Input/Select";
+import Button from "../src/components/Button";
 
 export default function DbStatus() {
   const [area, setArea] = useState("");
@@ -20,15 +22,24 @@ export default function DbStatus() {
   return (
     <Layout>
       <Column>
-        <Button>초기화</Button>
-        <Row>
-          <Typography sx={{ fontSize: "30px" }}>분배 가능 DB</Typography>
+        <Row justifyContent={"end"}>
+          <Button
+            h={20}
+            variant="contained"
+            bgColor={"gray"}
+            fs="h6"
+            color="primary.white"
+            text="초기화"
+          />
         </Row>
-        <Row>
-          {select_title.map((title, key) => (
-            <Column key={key}>
-              <Typography>{title}</Typography>
-              <Select
+        <Row justifyContent={"between"} alignItems={"center"}>
+          <Typography sx={{ fontSize: "30px" }}>분배 가능 DB</Typography>
+
+          <Row sx={{ gap: "21px" }}>
+            {select_title.map((title, key) => (
+              <OutLineSelectInput
+                key={key}
+                title={title}
                 value={
                   title === "지역"
                     ? area
@@ -36,25 +47,21 @@ export default function DbStatus() {
                     ? headquarters
                     : branch
                 }
-              >
-                {(title === "지역"
-                  ? area_input
-                  : title === "본부"
-                  ? headquarters_input
-                  : branch_input
-                ).map((menu, key) => (
-                  <MenuItem value={Object.keys(menu)[0]} key={key}>
-                    {Object.values(menu)[0]}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Column>
-          ))}
+                menuItems={
+                  title === "지역"
+                    ? area_input[0]
+                    : title === "본부"
+                    ? headquarters_input[0]
+                    : branch_input[0]
+                }
+              />
+            ))}
+          </Row>
         </Row>
 
-        <Column>
-          <Row justifyContent={"between"}>
-            <Typography>접수 현황</Typography>
+        <Column sx={{ mt: 10 }}>
+          <Row justifyContent={"between"} sx={{ mb: "10px" }}>
+            <Typography sx={{ fontSize: "30px" }}>접수 현황</Typography>
             <Select></Select>
           </Row>
 

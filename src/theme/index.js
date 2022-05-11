@@ -26,6 +26,9 @@ const theme = createTheme({
     gray: {
       main: "#909090",
     },
+    light_gray: {
+      main: "#E6E6E6",
+    },
     dark_gray: {
       main: "#909090",
     },
@@ -35,6 +38,9 @@ const theme = createTheme({
     red: { main: "#C14327" },
     excel: {
       main: "#20744A",
+    },
+    skyblue: {
+      main: "#52809A",
     },
     black: {
       main: "#000000",

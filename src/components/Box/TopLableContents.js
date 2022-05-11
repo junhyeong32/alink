@@ -8,11 +8,6 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
-import Image from "next/image";
-import DateRangePicker from "@mui/lab/DateRangePicker";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Column from "./Column";
 import Row from "./Row";
 import { forwardRef } from "react";
@@ -23,6 +18,7 @@ export default function TopLabelContents({
   children,
   value,
   setValue,
+  sx,
   ...props
 }) {
   return (
@@ -32,6 +28,7 @@ export default function TopLabelContents({
       sx={{
         width: "100%%",
         borderBottom: "1px solid #0D1D41",
+        ...sx,
       }}
     >
       <Typography variant="h6">{title}</Typography>

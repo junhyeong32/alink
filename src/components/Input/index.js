@@ -9,14 +9,52 @@ import {
 } from "@mui/material";
 import React from "react";
 import Image from "next/image";
-import DateRangePicker from "@mui/lab/DateRangePicker";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Column from "../Box/Column";
 import { forwardRef } from "react";
 
 export default function UnderLineInput({
+  title,
+  placeholder,
+  value,
+  setValue,
+  w,
+  ...props
+}) {
+  return (
+    <Column
+      justifyContent="start"
+      alignItems="start"
+      sx={{
+        width: w || "25%",
+        borderBottom: "1px solid #0D1D41",
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+      <Input
+        sx={{
+          "& input::placeholder": {
+            fontSize: "10px",
+            color: "#909090 !important",
+            fontWeight: "bold",
+          },
+          pl: "12px",
+        }}
+        fullWidth
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          e.preventDefault();
+        }}
+      />
+    </Column>
+  );
+}
+
+export function OutLineInput({
   title,
   placeholder,
   value,
@@ -42,6 +80,7 @@ export default function UnderLineInput({
           },
           pl: "12px",
         }}
+        variant="outline"
         fullWidth
         placeholder={placeholder}
         value={value}

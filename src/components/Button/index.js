@@ -19,6 +19,7 @@ export default function CustomButton({
   text,
   fs,
 }) {
+  console.log(action);
   return (
     <Button
       variant={variant}

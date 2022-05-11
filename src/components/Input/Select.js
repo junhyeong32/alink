@@ -10,12 +10,13 @@ import {
 import React from "react";
 import Column from "../Box/Column";
 
-export default function InformationSelectInput({
+export default function UnderLineSelectInput({
   title,
   placeholder,
   value,
   setValue,
   menuItems,
+  w,
   ...props
 }) {
   return (
@@ -23,7 +24,7 @@ export default function InformationSelectInput({
       justifyContent="start"
       alignItems="start"
       sx={{
-        width: "33%",
+        width: w,
         borderBottom: "1px solid #0D1D41",
       }}
     >
@@ -37,6 +38,43 @@ export default function InformationSelectInput({
           setValue(e.target.value);
         }}
         sx={{ pl: "12px" }}
+      >
+        {Object.entries(menuItems).map(([value, data], key) => (
+          <MenuItem value={value} key={key}>
+            {data}
+          </MenuItem>
+        ))}
+      </Select>
+    </Column>
+  );
+}
+
+export function OutLineSelectInput({
+  title,
+  placeholder,
+  value,
+  setValue,
+  menuItems,
+  ...props
+}) {
+  return (
+    <Column
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        width: "100%",
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+      <Select
+        variant="outlined"
+        fullWidth
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+        sx={{ pl: "12px", height: "28px" }}
       >
         {Object.entries(menuItems).map(([value, data], key) => (
           <MenuItem value={value} key={key}>
