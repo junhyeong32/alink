@@ -27,7 +27,7 @@ export default function Layout({ getCookies, children }) {
   //   const { modal_list, addModalList, deleteModalList } =
   //     useContext(ModalContext);
 
-  useEffect(() => !getCookies && router.replace("/login"), []);
+  //   useEffect(() => !getCookies && router.replace("/login"), []);
   const is_loggedin = checkLogin();
 
   const logout = () => {
@@ -36,20 +36,20 @@ export default function Layout({ getCookies, children }) {
     router.replace("login");
   };
 
-  if (!is_loggedin)
-    return (
-      <Row
-        justifyContent="center"
-        alignItems="center"
-        sx={{
-          width: "100%",
-          mt: 5,
-          minHeight: "999px",
-        }}
-      >
-        <CircularProgress size="60px" thickness={5} color="primary" />
-      </Row>
-    );
+  //   if (!is_loggedin)
+  //     return (
+  //       <Row
+  //         justifyContent="center"
+  //         alignItems="center"
+  //         sx={{
+  //           width: "100%",
+  //           mt: 5,
+  //           minHeight: "999px",
+  //         }}
+  //       >
+  //         <CircularProgress size="60px" thickness={5} color="primary" />
+  //       </Row>
+  //     );
 
   return (
     <main
@@ -58,9 +58,9 @@ export default function Layout({ getCookies, children }) {
       }}
     >
       <aside>
-        <Image src="/web_header.png" width={176} height={32} alt="" />
+        <Image src="/alink.png" width={240} height={63} alt="" />
         <Typography variant="h2" color="primary.white" mt={5.2}>
-          {cookies.user_info?.name} {cookies.user_info?.rank}님
+          {/* {cookies.user_info?.name} {cookies.user_info?.rank}님 */}
           <br />
         </Typography>
         <Typography variant="normal" color="primary.white">
@@ -93,13 +93,12 @@ export default function Layout({ getCookies, children }) {
         component="article"
         sx={{
           width: "100%",
-          height: "100vh",
+          height: "100%",
           maxWidth: "none",
-          padding: "0px 0px 0px 2px !important",
+          padding: "50px 15px 15px 15px !important",
           margin: 0,
           maxWidth: "none !important",
-          minWidth: "1190px",
-          // minHeight: "1000px",
+          //   minWidth: "1190px",
           position: "relative",
         }}
       >
@@ -109,10 +108,10 @@ export default function Layout({ getCookies, children }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  return {
-    props: {
-      getCookies: context.req.cookies.user_info || null,
-    },
-  };
-}
+// export async function getServerSideProps(context) {
+//   return {
+//     props: {
+//       getCookies: context.req.cookies.user_info || null,
+//     },
+//   };
+// }
