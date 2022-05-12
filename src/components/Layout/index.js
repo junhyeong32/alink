@@ -6,7 +6,6 @@ import { useEffect, useState, useContext } from "react";
 import {
   Input,
   Box,
-  Button,
   Typography,
   Container,
   Divider,
@@ -18,6 +17,7 @@ import MenuBox from "../Box/MenuBox";
 import Tab from "../Box/Tab";
 import { menuText, img_src, menu_link } from "../../data/home";
 import checkLogin from "../../hooks/account/useCheckLogin";
+import Button from "../Button";
 
 export default function Layout({ getCookies, children }) {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function Layout({ getCookies, children }) {
   //   const { modal_list, addModalList, deleteModalList } =
   //     useContext(ModalContext);
 
-  // useEffect(() => !getCookies && router.replace("/login"), []);
+  //   useEffect(() => !getCookies && router.replace("/login"), []);
   const is_loggedin = checkLogin();
 
   const logout = () => {
@@ -36,20 +36,20 @@ export default function Layout({ getCookies, children }) {
     router.replace("login");
   };
 
-  if (!is_loggedin)
-    return (
-      <Row
-        justifyContent="center"
-        alignItems="center"
-        sx={{
-          width: "100%",
-          mt: 5,
-          minHeight: "999px",
-        }}
-      >
-        <CircularProgress size="60px" thickness={5} color="primary" />
-      </Row>
-    );
+  //   if (!is_loggedin)
+  //     return (
+  //       <Row
+  //         justifyContent="center"
+  //         alignItems="center"
+  //         sx={{
+  //           width: "100%",
+  //           mt: 5,
+  //           minHeight: "999px",
+  //         }}
+  //       >
+  //         <CircularProgress size="60px" thickness={5} color="primary" />
+  //       </Row>
+  //     );
 
   return (
     <main
@@ -58,21 +58,36 @@ export default function Layout({ getCookies, children }) {
       }}
     >
       <aside>
-        <Image src="/web_header.png" width={176} height={32} alt="" />
-        <Typography variant="h2" color="primary.white" mt={5.2}>
-          {cookies.user_info?.name} {cookies.user_info?.rank}님
-          <br />
-        </Typography>
-        <Typography variant="normal" color="primary.white">
-          환영합니다.
-        </Typography>
-        <Divider />
-        <Row justifyContent="end">
-          <Button variant="text" sx={{ p: 0 }} onClick={logout}>
-            <Typography variant="h7" color="primary.white">
-              로그아웃
-            </Typography>
-          </Button>
+        <Image src="/alink.png" width={240} height={63} alt="" />
+        <Row alignItems={"start"} justifyContent={"between"} sx={{ mt: 5.2 }}>
+          <Typography variant="h2" color="primary.white">
+            환영합니다.
+            {/* {cookies.user_info?.name} {cookies.user_info?.rank}님 */}{" "}
+          </Typography>
+
+          <Column justifyContent="between" alignItems={"start"}>
+            <Button
+              text="이용권한"
+              color="primary.white"
+              fs="h7"
+              sx={{ p: 0 }}
+              action={() => router.push("/authority")}
+            />
+            <Button
+              text="개인 정보 수정"
+              color="primary.white"
+              fs="h7"
+              sx={{ p: 0 }}
+              action={() => router.push("/privacy")}
+            />
+            <Button
+              text="로그아웃"
+              color="primary.white"
+              fs="h7"
+              sx={{ p: 0 }}
+              action={logout}
+            />
+          </Column>
         </Row>
         <Column
           sx={{
@@ -93,13 +108,12 @@ export default function Layout({ getCookies, children }) {
         component="article"
         sx={{
           width: "100%",
-          height: "100vh",
+          height: "100%",
           maxWidth: "none",
-          padding: "0px 0px 0px 2px !important",
+          padding: "50px 15px 15px 15px !important",
           margin: 0,
           maxWidth: "none !important",
-          minWidth: "1190px",
-          // minHeight: "1000px",
+          //   minWidth: "1190px",
           position: "relative",
         }}
       >
@@ -109,10 +123,10 @@ export default function Layout({ getCookies, children }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  return {
-    props: {
-      getCookies: context.req.cookies.user_info || null,
-    },
-  };
-}
+// export async function getServerSideProps(context) {
+//   return {
+//     props: {
+//       getCookies: context.req.cookies.user_info || null,
+//     },
+//   };
+// }

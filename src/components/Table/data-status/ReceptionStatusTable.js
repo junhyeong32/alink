@@ -55,7 +55,11 @@ export default function ReceptionStatus({
           <TableHead>
             <TableRow key="head">
               {headers?.map((data, key) => (
-                <TableCell key={key} align="center">
+                <TableCell
+                  key={key}
+                  align="center"
+                  rowSpan={data === "" ? 2 : undefined}
+                >
                   <Box
                     sx={{
                       background: headers_bgcolor[key],
@@ -75,7 +79,41 @@ export default function ReceptionStatus({
               ))}
             </TableRow>
           </TableHead>
-          <TableBody></TableBody>
+          <TableBody>
+            <TableRow>
+              <TableCell rowSpan={4}>보장</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center">1</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell rowSpan={4}>재무</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+              <TableCell>1</TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell rowSpan={4}>유전자</TableCell>
+            </TableRow>
+          </TableBody>
         </Table>
       </TableContainer>
     </Root>

@@ -29,7 +29,7 @@ export default function MyApp({
     >
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>AFG</title>
+          <title>AFG ALINK</title>
           <meta
             name="viewport"
             content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width"

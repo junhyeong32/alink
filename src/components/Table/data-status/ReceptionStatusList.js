@@ -1,4 +1,25 @@
+export const select_title = ["지역", "본부", "지점"];
+
+export const area_input = [
+  {
+    전체: "전체",
+  },
+];
+
+export const headquarters_input = [
+  {
+    전체: "전체",
+  },
+];
+
+export const branch_input = [
+  {
+    전체: "전체",
+  },
+];
+
 export const headers = [
+  "",
   "전체",
   "부재",
   "TA 거절",
@@ -11,6 +32,7 @@ export const headers = [
 ];
 
 export const headers_bgcolor = [
+  "",
   "#909090",
   "#ACC000",
   "#6FBC00",
