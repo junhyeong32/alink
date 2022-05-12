@@ -10,6 +10,9 @@ import {
   MenuItem,
   Checkbox,
   Box,
+  FormLabel,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 
 import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
@@ -33,8 +36,16 @@ import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
+import RowLabel from "../../src/components/Box/RowLabel";
+import {
+  list_filter,
+  list_detail,
+  additionsal_func,
+} from "../../src/data/setting/menu";
+import Image from "next/image";
+import SmsTable from "../../src/components/Table/sms";
 
-export default function Dna() {
+export default function Sms() {
   const router = useRouter();
   const [menu, setMenu] = useState("popup");
   const [area, setArea] = useState("");
@@ -47,41 +58,20 @@ export default function Dna() {
 
   return (
     <Layout>
-      <Column>
-        <Row alignItems={"end"} sx={{ gap: "35px" }}>
+      <Column sx={{ gap: "25px" }}>
+        <Row justifyContent={"between"} alignItems={"end"}>
+          <SelectInput title="발송일" menuItems={{}} w="25%" />
+          <Input title="담당자" placeholder={"담당자로 검색하실 수 있습니다"} />
+          <Input title="연락처" placeholder={"연락처로 검색하실 수 있습니다"} />
           <Button
-            variant="contained"
-            bgColor={menu === "popup" ? "primary" : "light_gray"}
-            text="팝업 관리"
-            fs="h6"
-            h="38px"
-            action={() => setMenu("popup")}
-          />
-          <Button
-            variant="contained"
-            bgColor={menu === "menu" ? "primary" : "light_gray"}
-            text="메뉴 관리"
-            fs="h6"
-            h="38px"
-            action={() => setMenu("menu")}
-          />
-        </Row>
-        <Column sx={{ mt: "70px" }}>
-          <Button
-            variant="contained"
-            bgColor="skyblue"
-            text={menu === "popup" ? "팝업등록" : "DB 메뉴 등록"}
+            text="초기화"
+            bgColor={"gray"}
+            variant={"contained"}
             color="primary.white"
-            fs="h6"
-            w={100}
-            h={20}
-            action={() =>
-              menu === "popup"
-                ? router.push("sms/popup")
-                : router.push("sms/menu")
-            }
           />
-        </Column>
+          <Typography variant="h6">보유 포인트 : </Typography>
+        </Row>
+        <SmsTable />
       </Column>
     </Layout>
   );

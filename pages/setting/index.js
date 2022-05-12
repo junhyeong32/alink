@@ -33,8 +33,10 @@ import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
+import MenuTable from "../../src/components/Table/setting/menu";
+import PopupTable from "../../src/components/Table/setting/popup";
 
-export default function Menu() {
+export default function Dna() {
   const router = useRouter();
   const [menu, setMenu] = useState("popup");
   const [area, setArea] = useState("");
@@ -66,7 +68,7 @@ export default function Menu() {
             action={() => setMenu("menu")}
           />
         </Row>
-        <Column sx={{ mt: "70px" }}>
+        <Column sx={{ mt: "70px", rowGap: 1 }}>
           <Button
             variant="contained"
             bgColor="skyblue"
@@ -76,9 +78,12 @@ export default function Menu() {
             w={100}
             h={20}
             action={() =>
-              menu === "popup" ? router.push("popup") : router.push("menu")
+              menu === "popup"
+                ? router.push("setting/popup")
+                : router.push("setting/menu")
             }
           />
+          {menu === "popup" ? <PopupTable /> : <MenuTable />}
         </Column>
       </Column>
     </Layout>

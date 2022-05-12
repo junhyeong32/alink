@@ -9,12 +9,11 @@ export default function RowLabel({ title, label, width, sx, children }) {
       justifyContent="start"
       sx={{
         width: "100%",
-        gap: "47px",
+        columnGap: "47px",
         borderBottom: "1px solid #000000",
         pb: 1,
         ...sx,
       }}
-      mt={2.2}
     >
       <Typography variant="h4" align="left" sx={{ minWidth: "45px" }}>
         {label}

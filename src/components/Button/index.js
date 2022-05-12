@@ -18,6 +18,7 @@ export default function CustomButton({
   action,
   text,
   fs,
+  sx,
 }) {
   console.log(action);
   return (
@@ -28,6 +29,7 @@ export default function CustomButton({
         borderRadius: borderRadius || "5px",
         width: w,
         height: h,
+        ...sx,
       }}
       onClick={action}
     >

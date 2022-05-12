@@ -33,6 +33,7 @@ import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
+import RowLabel from "../../src/components/Box/RowLabel";
 
 export default function Popup() {
   const router = useRouter();
@@ -48,38 +49,33 @@ export default function Popup() {
   return (
     <Layout>
       <Column>
-        <Row alignItems={"end"} sx={{ gap: "35px" }}>
+        <RowLabel label="조직"></RowLabel>
+        <RowLabel label="유형"></RowLabel>
+        <RowLabel label="제목"></RowLabel>
+        <RowLabel label="위치"></RowLabel>
+        <RowLabel label="크기"></RowLabel>
+        <RowLabel label="활성화"></RowLabel>
+        <Row sx={{ mt: "70px" }}>
           <Button
             variant="contained"
-            bgColor={menu === "popup" ? "primary" : "light_gray"}
-            text="팝업 관리"
-            fs="h6"
-            h="38px"
-            action={() => setMenu("popup")}
-          />
-          <Button
-            variant="contained"
-            bgColor={menu === "menu" ? "primary" : "light_gray"}
-            text="메뉴 관리"
-            fs="h6"
-            h="38px"
-            action={() => setMenu("menu")}
-          />
-        </Row>
-        <Column sx={{ mt: "70px" }}>
-          <Button
-            variant="contained"
-            bgColor="skyblue"
-            text={menu === "popup" ? "팝업등록" : "DB 메뉴 등록"}
+            bgColor="primary"
+            text="등록"
             color="primary.white"
             fs="h6"
             w={100}
             h={20}
-            action={() =>
-              menu === "popup" ? router.push("popup") : router.push("menu")
-            }
           />
-        </Column>
+          <Button
+            variant="contained"
+            bgColor="gray"
+            text="취소"
+            color="primary.white"
+            fs="h6"
+            w={100}
+            h={20}
+            action={() => router.push("/setting")}
+          />
+        </Row>
       </Column>
     </Layout>
   );

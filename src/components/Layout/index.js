@@ -6,7 +6,6 @@ import { useEffect, useState, useContext } from "react";
 import {
   Input,
   Box,
-  Button,
   Typography,
   Container,
   Divider,
@@ -18,6 +17,7 @@ import MenuBox from "../Box/MenuBox";
 import Tab from "../Box/Tab";
 import { menuText, img_src, menu_link } from "../../data/home";
 import checkLogin from "../../hooks/account/useCheckLogin";
+import Button from "../Button";
 
 export default function Layout({ getCookies, children }) {
   const router = useRouter();
@@ -59,20 +59,35 @@ export default function Layout({ getCookies, children }) {
     >
       <aside>
         <Image src="/alink.png" width={240} height={63} alt="" />
-        <Typography variant="h2" color="primary.white" mt={5.2}>
-          {/* {cookies.user_info?.name} {cookies.user_info?.rank}님 */}
-          <br />
-        </Typography>
-        <Typography variant="normal" color="primary.white">
-          환영합니다.
-        </Typography>
-        <Divider />
-        <Row justifyContent="end">
-          <Button variant="text" sx={{ p: 0 }} onClick={logout}>
-            <Typography variant="h7" color="primary.white">
-              로그아웃
-            </Typography>
-          </Button>
+        <Row alignItems={"start"} justifyContent={"between"} sx={{ mt: 5.2 }}>
+          <Typography variant="h2" color="primary.white">
+            환영합니다.
+            {/* {cookies.user_info?.name} {cookies.user_info?.rank}님 */}{" "}
+          </Typography>
+
+          <Column justifyContent="between" alignItems={"start"}>
+            <Button
+              text="이용권한"
+              color="primary.white"
+              fs="h7"
+              sx={{ p: 0 }}
+              action={() => router.push("/authority")}
+            />
+            <Button
+              text="개인 정보 수정"
+              color="primary.white"
+              fs="h7"
+              sx={{ p: 0 }}
+              action={() => router.push("/privacy")}
+            />
+            <Button
+              text="로그아웃"
+              color="primary.white"
+              fs="h7"
+              sx={{ p: 0 }}
+              action={logout}
+            />
+          </Column>
         </Row>
         <Column
           sx={{

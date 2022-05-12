@@ -36,6 +36,7 @@ const theme = createTheme({
       main: "#ffffff",
     },
     red: { main: "#C14327" },
+    orange: { main: "#FF5432" },
     excel: {
       main: "#20744A",
     },
