@@ -19,6 +19,7 @@ export default function MyApp({
   emotionCache = clientSideEmotionCache,
   pageProps,
 }) {
+  
   return (
     <SnackbarProvider
       anchorOrigin={{

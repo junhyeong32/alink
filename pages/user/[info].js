@@ -138,7 +138,6 @@ export default function Info() {
             <CustomSwitch
               value={bojang}
               onClick={(e) => {
-                console.log(e);
                 setBojang(e.target.checked);
               }}
             ></CustomSwitch>

@@ -42,7 +42,7 @@ export default function User() {
   const [date, setDate] = useState("");
   const [excel, setExcel] = useState("");
 
-  const [date_range, setDateRange] = useState([null, null]);
+  const [date_range, setDateRange] = useState(new Date());
 
   return (
     <Layout>

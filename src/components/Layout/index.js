@@ -19,6 +19,7 @@ import { menuText, img_src, menu_link } from "../../data/home";
 import checkLogin from "../../hooks/account/useCheckLogin";
 import Button from "../Button";
 
+
 export default function Layout({ getCookies, children }) {
   const router = useRouter();
   const [menu_list, setMenuList] = useState([]);
@@ -29,6 +30,8 @@ export default function Layout({ getCookies, children }) {
 
   //   useEffect(() => !getCookies && router.replace("/login"), []);
   const is_loggedin = checkLogin();
+
+  
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });

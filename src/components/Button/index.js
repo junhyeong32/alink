@@ -20,7 +20,6 @@ export default function CustomButton({
   fs,
   sx,
 }) {
-  console.log(action);
   return (
     <Button
       variant={variant}
