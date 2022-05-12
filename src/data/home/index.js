@@ -17,7 +17,7 @@ export const menu_link = [
   "/db-status",
   "/db-apply",
   "/db-apply-status",
-  "manager",
+  "/manager",
   "/user",
   "/bojang",
   "/db",

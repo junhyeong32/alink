@@ -62,7 +62,7 @@ export default function DbStatus() {
         <Column sx={{ mt: 10 }}>
           <Row justifyContent={"between"} sx={{ mb: "10px" }}>
             <Typography sx={{ fontSize: "30px" }}>접수 현황</Typography>
-            <Select></Select>
+            <OutLineSelectInput menuItems={{}}></OutLineSelectInput>
           </Row>
 
           <ReceptionStatusTable />
