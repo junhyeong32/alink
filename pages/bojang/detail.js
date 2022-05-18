@@ -34,7 +34,7 @@ import SelectInput, {
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
 
-export default function User() {
+export default function Detail() {
   const router = useRouter();
   const [area, setArea] = useState("");
   const [headquarters, setHeadquarters] = useState("");

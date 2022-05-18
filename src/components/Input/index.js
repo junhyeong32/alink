@@ -26,15 +26,12 @@ export default function UnderLineInput({
   ...props
 }) {
   return (
-    <Column
-      justifyContent="start"
-      alignItems="start"
+    <Box
       sx={{
-        width: w || "25%",
+        width: w,
         borderBottom: "1px solid #0D1D41",
       }}
     >
-      <Typography variant="h6">{title}</Typography>
       <Input
         sx={{
           "& input::placeholder": {
@@ -52,7 +49,7 @@ export default function UnderLineInput({
           e.preventDefault();
         }}
       />
-    </Column>
+    </Box>
   );
 }
 
@@ -83,6 +80,7 @@ export function OutLineInput({ title, placeholder, value, setValue, sx, w }) {
           setValue(e.target.value);
           e.preventDefault();
         }}
+        props
       />
     </Box>
   );
@@ -135,6 +133,49 @@ export function DateInput({ title, placeholder, value, setValue, ...props }) {
       </LocalizationProvider> */}
 
       {/* <DatePicker onChange={(e) => setValue(e)} value={value} /> */}
+    </Column>
+  );
+}
+
+export function LabelUnderLineInput({
+  title,
+  placeholder,
+  value,
+  setValue,
+  w,
+  sx,
+  ...props
+}) {
+  console.log(props);
+  return (
+    <Column
+      justifyContent="start"
+      alignItems="start"
+      sx={{
+        width: w,
+        borderBottom: "1px solid #0D1D41",
+        ...sx,
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+      <Input
+        sx={{
+          "& input::placeholder": {
+            fontSize: "10px",
+            color: "#909090 !important",
+            fontWeight: "bold",
+          },
+          pl: "12px",
+        }}
+        fullWidth
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          e.preventDefault();
+        }}
+        props
+      />
     </Column>
   );
 }

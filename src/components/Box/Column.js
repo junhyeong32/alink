@@ -27,6 +27,7 @@ export default function Column({
   wrap,
   children,
   sx,
+  flexDirection,
   ...props
 }) {
   return (
@@ -34,7 +35,7 @@ export default function Column({
       component={componentType}
       sx={{
         display: "flex",
-        flexDirection: "column",
+        flexDirection: flexDirection || "column",
         justifyContent: _justifyContent[justifyContent],
         alignItems: _alignItems[alignItems],
         wrap: _wrap[_wrap],

@@ -28,6 +28,7 @@ export default function Row({
   sx,
   children,
   onClick,
+  flexDirection,
   ...props
 }) {
   return (
@@ -36,7 +37,7 @@ export default function Row({
       onClick={onClick}
       sx={{
         display: "flex",
-        flexDirection: "row",
+        flexDirection: flexDirection || "row",
         justifyContent: _justifyContent[justifyContent],
         alignItems: _alignItems[alignItems],
         flexWrap: _wrap[wrap],

@@ -24,7 +24,7 @@ import UnderLineInput, { OutLineInput } from "../../src/components/Input";
 import Button from "../../src/components/Button";
 import { OutLineSelectInput } from "../../src/components/Input/Select";
 
-const rowlabelWidth = {
+const rowLabelWidth = {
   width: {
     lg: "40%",
     md: "60%",
@@ -50,20 +50,20 @@ export default function User() {
           fs="h4"
           sx={{ width: { lg: "80%", xs: "100%" } }}
         ></TopLabelContents>
-        <RowLabel label="조직명" sx={rowlabelWidth}>
+        <RowLabel label="조직명" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="본부명" sx={rowlabelWidth}>
+        <RowLabel label="본부명" sx={rowLabelWidth}>
           <OutLineSelectInput w="50%" menuItems={{}} />
         </RowLabel>
-        <RowLabel label="지점명" sx={rowlabelWidth}>
+        <RowLabel label="지점명" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="이용자명" sx={rowlabelWidth}>
+        <RowLabel label="이용자명" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
         </RowLabel>
 
-        <RowLabel label="아이디" sx={rowlabelWidth}>
+        <RowLabel label="아이디" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
           <Button
             text="중복체크"
@@ -74,19 +74,19 @@ export default function User() {
             fs="h6"
           />
         </RowLabel>
-        <RowLabel label="신규 비밀번호" sx={rowlabelWidth}>
+        <RowLabel label="신규 비밀번호" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="비밀번호 확인" sx={rowlabelWidth}>
+        <RowLabel label="비밀번호 확인" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="이메일" sx={rowlabelWidth}>
+        <RowLabel label="이메일" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="연락처" sx={rowlabelWidth}>
+        <RowLabel label="연락처" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="생년월일" sx={rowlabelWidth}>
+        <RowLabel label="생년월일" sx={rowLabelWidth}>
           <OutLineInput w="50%" />
         </RowLabel>
         <Row justifyContent={"center"} sx={{ width: "40%", gap: "15px" }}>
@@ -136,6 +136,26 @@ export default function User() {
             </Typography>
           </Row>
         </RowLabel>
+        <Row justifyContent={"center"} sx={{ gap: "15px" }}>
+          <Button
+            text="생성"
+            variant="contained"
+            bgColor="primary"
+            color="primary.white"
+            w={158}
+            h={25}
+            fs="h6"
+          />
+          <Button
+            text="취소"
+            variant="contained"
+            bgColor="gray"
+            color="primary.white"
+            w={158}
+            h={25}
+            fs="h6"
+          />
+        </Row>
       </Column>
     </Layout>
   );

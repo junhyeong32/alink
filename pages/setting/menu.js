@@ -30,12 +30,11 @@ import {
   rank_list,
   rank_bgcolor,
 } from "../../src/data/user";
-import ExcelButton from "../../src/components/Button/Excel";
-import Input, { DateInput } from "../../src/components/Input";
+import Button from "../../src/components/Button";
+import Input, { DateInput, OutLineInput } from "../../src/components/Input";
 import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
-import Button from "../../src/components/Button";
 import RowLabel from "../../src/components/Box/RowLabel";
 import {
   list_filter,
@@ -57,16 +56,25 @@ export default function Menu() {
 
   return (
     <Layout>
-      <Column>
-        <Column>
-          <Typography>DB 추가</Typography>
-          <RowLabel></RowLabel>
-          <RowLabel></RowLabel>
-          <RowLabel></RowLabel>
+      <Column sx={{ gap: 4.7, width: { xs: "100%", sm: 550 } }}>
+        <Column sx={{ gap: 1 }}>
+          <Typography variant="h1">DB 추가</Typography>
+          <RowLabel label="제목">
+            <OutLineInput />
+          </RowLabel>
+          <RowLabel label="협력사"></RowLabel>
+          <RowLabel label="샘플 업로드">
+            <OutLineInput />
+            <Button text="파일선택" bgColor="excel" color="primary.white" />
+          </RowLabel>
+          <RowLabel label="활성화">
+            <FormControlLabel label="활성화" control={<Radio />} />
+            <FormControlLabel label="비활성화" control={<Radio />} />
+          </RowLabel>
         </Column>
 
         <Column>
-          <Typography>리스트 필터</Typography>
+          <Typography variant="h1">리스트 필터</Typography>
           {list_filter.map((list, key) => {
             if (list === "담당지역") {
               return <RowLabel key={key} label={list}></RowLabel>;
@@ -81,7 +89,7 @@ export default function Menu() {
         </Column>
 
         <Column>
-          <Typography>리스트 상세</Typography>
+          <Typography variant="h1">리스트 상세</Typography>
           {list_detail.map((list, key) => (
             <RowLabel key={key} label={list}>
               <FormControlLabel label="노출" control={<Radio />} />
@@ -100,7 +108,7 @@ export default function Menu() {
         </Column>
 
         <Column>
-          <Typography>추가기능</Typography>
+          <Typography variant="h1">추가기능</Typography>
           {additionsal_func.map((list, key) => (
             <RowLabel key={key} label={list}>
               <FormControlLabel label="노출" control={<Radio />} />

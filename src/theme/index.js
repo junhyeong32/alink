@@ -13,6 +13,7 @@ const theme = createTheme({
       lightBlack: "#595959",
       gray: "#909090",
       blue: "#665BEB",
+      red: "#F50909",
     },
     secondary: {
       main: "#ffffff",
@@ -69,7 +70,7 @@ const theme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
-      sm: 560,
+      sm: 650,
       md: 900,
       lg: 1280,
       xl: 30000,
