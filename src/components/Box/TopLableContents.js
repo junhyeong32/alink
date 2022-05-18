@@ -19,6 +19,7 @@ export default function TopLabelContents({
   value,
   setValue,
   sx,
+  fs,
   ...props
 }) {
   return (
@@ -31,7 +32,7 @@ export default function TopLabelContents({
         ...sx,
       }}
     >
-      <Typography variant="h6">{title}</Typography>
+      <Typography variant={fs}>{title}</Typography>
       <Row>{children}</Row>
     </Column>
   );

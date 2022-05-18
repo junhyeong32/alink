@@ -55,17 +55,11 @@ export function OutLineSelectInput({
   value,
   setValue,
   menuItems,
+  w,
   ...props
 }) {
   return (
-    <Column
-      justifyContent="center"
-      alignItems="center"
-      sx={{
-        width: "100%",
-      }}
-    >
-      <Typography variant="h6">{title}</Typography>
+    <Box sx={{ width: w }}>
       <Select
         variant="outlined"
         fullWidth
@@ -82,6 +76,6 @@ export function OutLineSelectInput({
           </MenuItem>
         ))}
       </Select>
-    </Column>
+    </Box>
   );
 }

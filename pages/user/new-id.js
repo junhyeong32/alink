@@ -4,13 +4,11 @@ import Row from "../../src/components/Box/Row";
 import {
   Container,
   Typography,
-  Button,
   Select,
   MenuItem,
   Checkbox,
   Box,
   Input,
-  TextField,
 } from "@mui/material";
 import { useState } from "react";
 import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
@@ -22,6 +20,18 @@ import {
 } from "../../src/components/Table/data-status/ReceptionStatusList";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
 import RowLabel from "../../src/components/Box/RowLabel";
+import UnderLineInput, { OutLineInput } from "../../src/components/Input";
+import Button from "../../src/components/Button";
+import { OutLineSelectInput } from "../../src/components/Input/Select";
+
+const rowlabelWidth = {
+  width: {
+    lg: "40%",
+    md: "60%",
+    sm: "60%",
+    xs: "100%",
+  },
+};
 
 export default function User() {
   const [area, setArea] = useState("");
@@ -32,51 +42,100 @@ export default function User() {
 
   return (
     <Layout>
-      <Column sx={{ p: "40px" }}>
-        <Typography>신규 생성</Typography>
-        <TopLabelContents title="상태"></TopLabelContents>
-        <TopLabelContents title="등급"></TopLabelContents>
-        <RowLabel label="성명">
-          <TextField
-            inputProps={{
-              style: {
-                padding: "6px 0 0 12px",
-                fontSize: "12px",
-                width: "231px",
-                height: "24px",
-              },
-            }}
+      <Column sx={{ p: "40px", gap: "20px" }}>
+        <Typography variant="h1">신규 생성</Typography>
+        <TopLabelContents title="상태" fs="h4"></TopLabelContents>
+        <TopLabelContents
+          title="등급"
+          fs="h4"
+          sx={{ width: { lg: "80%", xs: "100%" } }}
+        ></TopLabelContents>
+        <RowLabel label="조직명" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
+        </RowLabel>
+        <RowLabel label="본부명" sx={rowlabelWidth}>
+          <OutLineSelectInput w="50%" menuItems={{}} />
+        </RowLabel>
+        <RowLabel label="지점명" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
+        </RowLabel>
+        <RowLabel label="이용자명" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
+        </RowLabel>
+
+        <RowLabel label="아이디" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
+          <Button
+            text="중복체크"
+            variant="contained"
+            bgColor="gray"
+            color="primary.white"
+            h={20}
+            fs="h6"
           />
         </RowLabel>
-        <RowLabel label="아이디">
-          <TextField />
-          <Button variant="contained" color="gray">
-            중복체크
-          </Button>
+        <RowLabel label="신규 비밀번호" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="신규 비밀번호">
-          <TextField />
+        <RowLabel label="비밀번호 확인" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="비밀번호 확인">
-          <TextField />
+        <RowLabel label="이메일" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="이메일 ">
-          <TextField />
+        <RowLabel label="연락처" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="연락처">
-          <TextField />
+        <RowLabel label="생년월일" sx={rowlabelWidth}>
+          <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="생년월일">
-          <TextField />
-        </RowLabel>
-        <Row>
-          <Button variant="contained" color="primary">
-            생성
-          </Button>
-          <Button variant="contained" color="gray">
-            취소
-          </Button>
+        <Row justifyContent={"center"} sx={{ width: "40%", gap: "15px" }}>
+          <Button
+            text="생성"
+            variant="contained"
+            bgColor="primary"
+            color="primary.white"
+            w={158}
+            h={25}
+            fs="h6"
+          />
+          <Button
+            text="취소"
+            variant="contained"
+            bgColor="gray"
+            color="primary.white"
+            w={158}
+            h={25}
+            fs="h6"
+          />
         </Row>
+      </Column>
+      <Column sx={{ p: "40px", gap: "20px" }}>
+        <Typography variant="h1">DB 관리</Typography>
+        <RowLabel label="보장할당" fs="h4">
+          <Row alignItems={"center"}>
+            <OutLineInput w={90} />
+            <Typography variant="h6" pl={1}>
+              개
+            </Typography>
+          </Row>
+        </RowLabel>
+        <RowLabel label="재무할당" fs="h4">
+          <Row alignItems={"center"}>
+            <OutLineInput w={90} />
+            <Typography variant="h6" pl={1}>
+              개
+            </Typography>
+          </Row>
+        </RowLabel>
+        <RowLabel label="유전자할당" fs="h4">
+          <Row alignItems={"center"}>
+            <OutLineInput w={90} />
+            <Typography variant="h6" pl={1}>
+              개
+            </Typography>
+          </Row>
+        </RowLabel>
       </Column>
     </Layout>
   );

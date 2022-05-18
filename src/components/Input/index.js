@@ -56,33 +56,26 @@ export default function UnderLineInput({
   );
 }
 
-export function OutLineInput({
-  title,
-  placeholder,
-  value,
-  setValue,
-  ...props
-}) {
+export function OutLineInput({ title, placeholder, value, setValue, sx, w }) {
   return (
-    <Column
-      justifyContent="start"
-      alignItems="start"
-      sx={{
-        width: "25%",
-        borderBottom: "1px solid #0D1D41",
-      }}
-    >
-      <Typography variant="h6">{title}</Typography>
-      <Input
+    <Box sx={{ ...sx, width: w }}>
+      <TextField
         sx={{
           "& input::placeholder": {
             fontSize: "10px",
             color: "#909090 !important",
             fontWeight: "bold",
+            height: 30,
           },
           pl: "12px",
         }}
-        variant="outline"
+        inputProps={{
+          style: {
+            height: 30,
+            padding: "0 0 0 12px",
+          },
+        }}
+        variant="outlined"
         fullWidth
         placeholder={placeholder}
         value={value}
@@ -91,7 +84,7 @@ export function OutLineInput({
           e.preventDefault();
         }}
       />
-    </Column>
+    </Box>
   );
 }
 
