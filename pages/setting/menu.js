@@ -42,6 +42,7 @@ import {
   additionsal_func,
 } from "../../src/data/setting/menu";
 import Image from "next/image";
+import RadioInput from "../../src/components/Radio";
 
 export default function Menu() {
   const router = useRouter();
@@ -68,8 +69,8 @@ export default function Menu() {
             <Button text="파일선택" bgColor="excel" color="primary.white" />
           </RowLabel>
           <RowLabel label="활성화">
-            <FormControlLabel label="활성화" control={<Radio />} />
-            <FormControlLabel label="비활성화" control={<Radio />} />
+            <FormControlLabel label="활성화" control={<RadioInput />} />
+            <FormControlLabel label="비활성화" control={<RadioInput />} />
           </RowLabel>
         </Column>
 
@@ -78,13 +79,21 @@ export default function Menu() {
           {list_filter.map((list, key) => {
             if (list === "담당지역") {
               return <RowLabel key={key} label={list}></RowLabel>;
-            }
-            return (
-              <RowLabel key={key} label={list}>
-                <FormControlLabel label="노출" control={<Radio />} />
-                <FormControlLabel label="미노출" control={<Radio />} />
-              </RowLabel>
-            );
+            } else if (list === "지역") {
+              return (
+                <RowLabel key={key} label={list}>
+                  <FormControlLabel label="노출" control={<RadioInput />} />
+                  <FormControlLabel label="미노출" control={<RadioInput />} />
+                  <Button text="지역 설정" bgColor={"primary"} />
+                </RowLabel>
+              );
+            } else
+              return (
+                <RowLabel key={key} label={list}>
+                  <FormControlLabel label="노출" control={<RadioInput />} />
+                  <FormControlLabel label="미노출" control={<RadioInput />} />
+                </RowLabel>
+              );
           })}
         </Column>
 
@@ -92,9 +101,9 @@ export default function Menu() {
           <Typography variant="h1">리스트 상세</Typography>
           {list_detail.map((list, key) => (
             <RowLabel key={key} label={list}>
-              <FormControlLabel label="노출" control={<Radio />} />
-              <FormControlLabel label="미노출" control={<Radio />} />
-              <FormControlLabel label="리스트 노출" control={<Radio />} />
+              <FormControlLabel label="노출" control={<RadioInput />} />
+              <FormControlLabel label="미노출" control={<RadioInput />} />
+              <FormControlLabel label="리스트 노출" control={<RadioInput />} />
               <Row sx={{ gap: 1 }}>
                 <Box sx={{ cursor: "pointer" }}>
                   <Image src="/up.png" width={14} height={9} alt="" />
@@ -111,11 +120,32 @@ export default function Menu() {
           <Typography variant="h1">추가기능</Typography>
           {additionsal_func.map((list, key) => (
             <RowLabel key={key} label={list}>
-              <FormControlLabel label="노출" control={<Radio />} />
-              <FormControlLabel label="미노출" control={<Radio />} />
+              <FormControlLabel label="노출" control={<RadioInput />} />
+              <FormControlLabel label="미노출" control={<RadioInput />} />
             </RowLabel>
           ))}
         </Column>
+
+        <Row justifyContent={"center"} sx={{ gap: 1.5 }}>
+          <Button
+            variant="contained"
+            bgColor="primary"
+            text="등록"
+            color="primary.white"
+            fs="h6"
+            w={120}
+            h={28}
+          />
+          <Button
+            variant="contained"
+            bgColor="gray"
+            text="취소"
+            color="primary.white"
+            fs="h6"
+            w={120}
+            h={28}
+          />
+        </Row>
       </Column>
     </Layout>
   );

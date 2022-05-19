@@ -22,7 +22,7 @@ export default function CustomButton({
 }) {
   return (
     <Button
-      variant={variant}
+      variant={variant || "contained"}
       color={bgColor}
       sx={{
         borderRadius: borderRadius || "5px",

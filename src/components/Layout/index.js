@@ -14,11 +14,9 @@ import {
 import Row from "../Box/Row";
 import Column from "../Box/Column";
 import MenuBox from "../Box/MenuBox";
-import Tab from "../Box/Tab";
 import { menuText, img_src, menu_link } from "../../data/home";
 import checkLogin from "../../hooks/account/useCheckLogin";
 import Button from "../Button";
-
 
 export default function Layout({ getCookies, children }) {
   const router = useRouter();
@@ -30,8 +28,6 @@ export default function Layout({ getCookies, children }) {
 
   //   useEffect(() => !getCookies && router.replace("/login"), []);
   const is_loggedin = checkLogin();
-
-  
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });

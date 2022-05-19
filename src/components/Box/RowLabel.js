@@ -2,11 +2,12 @@ import Image from "next/image";
 import { Container, Typography, Button } from "@mui/material";
 import Row from "./Row";
 
-export default function RowLabel({ title, label, width, sx, children }) {
+export default function RowLabel({ title, label, fs, width, sx, children }) {
   return (
     <Row
       alignItems="center"
       justifyContent="start"
+      wrap="norwap"
       sx={{
         width: "100%",
         columnGap: "47px",
@@ -15,7 +16,11 @@ export default function RowLabel({ title, label, width, sx, children }) {
         ...sx,
       }}
     >
-      <Typography variant="h4" align="left" sx={{ minWidth: "45px" }}>
+      <Typography
+        variant={fs || "normal"}
+        align="left"
+        sx={{ minWidth: "45px" }}
+      >
         {label}
       </Typography>
 

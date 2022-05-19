@@ -48,6 +48,7 @@ export default function UnderLineInput({
           setValue(e.target.value);
           e.preventDefault();
         }}
+        props="true"
       />
     </Box>
   );
@@ -80,7 +81,7 @@ export function OutLineInput({ title, placeholder, value, setValue, sx, w }) {
           setValue(e.target.value);
           e.preventDefault();
         }}
-        props
+        props="true"
       />
     </Box>
   );
@@ -174,7 +175,7 @@ export function LabelUnderLineInput({
           setValue(e.target.value);
           e.preventDefault();
         }}
-        props
+        props="true"
       />
     </Column>
   );

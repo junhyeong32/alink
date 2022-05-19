@@ -29,7 +29,7 @@ import {
   rank_bgcolor,
 } from "../../src/data/user";
 import ExcelButton from "../../src/components/Button/Excel";
-import Input from "../../src/components/Input";
+import { LabelUnderLineInput } from "../../src/components/Input";
 import SelectInput from "../../src/components/Input/Select";
 import ManagerTable from "../../src/components/Table/manager";
 
@@ -57,21 +57,25 @@ export default function User() {
           </Row>
 
           <Row sx={{ gap: "35px" }}>
-            <Input
+            <LabelUnderLineInput
               title="이메일"
               placeholder={"이메일로 검색하실 수 있습니다."}
+              w="25%"
             />
-            <Input
+            <LabelUnderLineInput
               title="아이디"
               placeholder={"아이디로 검색하실 수 있습니다."}
+              w="25%"
             />
-            <Input
+            <LabelUnderLineInput
               title="이용자명"
               placeholder={"성명으로 검색하실 수 있습니다."}
+              w="25%"
             />
-            <Input
+            <LabelUnderLineInput
               title="연락처"
               placeholder={"연락처로 검색하실 수 있습니다."}
+              w="25%"
             />
           </Row>
           <Row alignItems={"center"} justifyContent={"end"} sx={{ mb: "15px" }}>
