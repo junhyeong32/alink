@@ -3,60 +3,20 @@ import { useRouter } from "next/router";
 import Layout from "../src/components/Layout";
 import Column from "../src/components/Box/Column";
 import Row from "../src/components/Box/Row";
-import {
-  Container,
-  Typography,
-  Select,
-  MenuItem,
-  Checkbox,
-  Box,
-  FormLabel,
-  FormControlLabel,
-  Radio,
-} from "@mui/material";
-
-import ReceptionStatusTable from "../src/components/Table/data-status/ReceptionStatusTable";
-import {
-  select_title,
-  area_input,
-  headquarters_input,
-  branch_input,
-} from "../src/components/Table/data-status/ReceptionStatusList";
-import TopLabelContents from "../src/components/Box/TopLableContents";
-import RoundColorBox from "../src/components/Box/RoundColorBox";
-import {
-  status_list,
-  status_bgcolor,
-  rank_list,
-  rank_bgcolor,
-} from "../src/data/user";
-import ExcelButton from "../src/components/Button/Excel";
-import Input, { DateInput } from "../src/components/Input";
-import SelectInput, {
-  OutLineSelectInput,
-} from "../src/components/Input/Select";
 import Button from "../src/components/Button";
-import RowLabel from "../src/components/Box/RowLabel";
-
-import Image from "next/image";
 import AuthorityTable from "../src/components/Table/authority";
+import OrganizationList from "../src/components/OrganizationList/List";
+import useGetGroupList from "../src/hooks/share/useGetGroupList";
 
 export default function Authority() {
   const router = useRouter();
-  const [menu, setMenu] = useState("popup");
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [excel, setExcel] = useState("");
-
-  const [date_range, setDateRange] = useState([null, null]);
+  //   const group_list = useGetGroupList();
 
   return (
     <Layout>
       <Row sx={{ width: "100%" }}>
-        hi
-        <Column>
+        {/* <OrganizationList group_list={group_list} /> */}
+        <Column sx={{ width: "80%" }}>
           <Row justifyContent={"end"} sx={{ width: "100%" }}>
             <Button
               text="입금 완료"

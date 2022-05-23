@@ -4,7 +4,7 @@ import { Button, Typography } from "@mui/material";
 import Column from "../Box/Column";
 import Row from "../Box/Row";
 import styles from "./styles";
-import useGetGroupList from "../../hooks/apManagement/useGetGroupList";
+import useGetGroupList from "../../hooks/share/useGetGroupList";
 import { ModalContext } from "../../contexts/ModalContext";
 import { useContext } from "react";
 import { OrganizationContext } from "../../contexts/OrganizationListContext";

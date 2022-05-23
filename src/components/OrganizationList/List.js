@@ -1,8 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import TreeView from "@mui/lab/TreeView";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TreeItem, { useTreeItem } from "@mui/lab/TreeItem";
 import clsx from "clsx";
 import Typography from "@mui/material/Typography";
