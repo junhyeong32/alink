@@ -59,8 +59,24 @@ export default function DbStatus() {
           </Row>
         </Row>
 
+        <Row>
+          <Column>
+            <Typography>보장</Typography>
+          </Column>
+          <Column>
+            <Typography>재무</Typography>
+          </Column>
+          <Column>
+            <Typography>유전자</Typography>
+          </Column>
+        </Row>
+
         <Column sx={{ mt: 10 }}>
-          <Row justifyContent={"between"} sx={{ mb: "10px" }}>
+          <Row
+            alignItems={"center"}
+            justifyContent={"between"}
+            sx={{ mb: "10px" }}
+          >
             <Typography sx={{ fontSize: "30px" }}>접수 현황</Typography>
             <OutLineSelectInput menuItems={{}}></OutLineSelectInput>
           </Row>

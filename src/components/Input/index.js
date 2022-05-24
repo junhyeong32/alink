@@ -23,6 +23,7 @@ export default function UnderLineInput({
   value,
   setValue,
   w,
+  xs_w,
   ...props
 }) {
   return (
@@ -65,12 +66,13 @@ export function OutLineInput({ title, placeholder, value, setValue, sx, w }) {
             fontWeight: "bold",
             height: 30,
           },
+
           pl: "12px",
         }}
         inputProps={{
           style: {
             height: 30,
-            padding: "0 0 0 12px",
+            paddingLeft: "12px",
           },
         }}
         variant="outlined"
@@ -145,6 +147,7 @@ export function LabelUnderLineInput({
   setValue,
   w,
   sx,
+  xs_w,
   ...props
 }) {
   console.log(props);

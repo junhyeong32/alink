@@ -101,45 +101,17 @@ export default function User() {
                 justifyContent: "space-between",
               }}
             >
-              <SelectInput
-                title="담당자"
-                w={{
-                  lg: "100%",
-                  sm: "100%",
-                  md: "45%",
-                  xs: "100%",
-                }}
-                menuItems={{}}
-              />
+              <SelectInput title="담당자" w={styles.input} menuItems={{}} />
               <LabelUnderLineInput
                 title="고객명"
                 placeholder={"고객명으로 검색하실 수 있습니다."}
-                w={{
-                  lg: "100%",
-                  sm: "100%",
-                  md: "45%",
-                  xs: "100%",
-                }}
+                w={styles.input}
               />
-              <SelectInput
-                title="지역"
-                menuItems={{}}
-                w={{
-                  lg: "100%",
-                  sm: "100%",
-                  md: "45%",
-                  xs: "100%",
-                }}
-              />
+              <SelectInput title="지역" menuItems={{}} w={styles.input} />
               <LabelUnderLineInput
                 title="연락처"
                 placeholder={"연락처로 검색하실 수 있습니다."}
-                w={{
-                  lg: "100%",
-                  sm: "100%",
-                  md: "45%",
-                  xs: "100%",
-                }}
+                w={styles.input}
                 sx={{
                   display: {
                     lg: "none",

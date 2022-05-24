@@ -28,6 +28,13 @@ export const styles = {
     width: { lg: "25%", md: "45%", xs: "100%" },
     gap: { lg: 2.6, xs: 1 },
   },
+
+  input: {
+    lg: "100%",
+    sm: "100%",
+    md: "45%",
+    xs: "100%",
+  },
 };
 
 // export const

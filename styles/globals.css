@@ -15,6 +15,16 @@ a {
   box-sizing: border-box;
 }
 
+header {
+  display: none;
+}
+
+@media only screen and (max-width: 900px) {
+  header {
+    display: flex;
+  }
+}
+
 input {
   font-family: Noto Sans KR;
   font-style: normal;

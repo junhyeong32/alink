@@ -15,9 +15,10 @@ export default function Authority() {
   return (
     <Layout>
       <Row sx={{ width: "100%" }}>
-        {/* <OrganizationList group_list={group_list} /> */}
+        <OrganizationList />
+        {/* group_list={group_list} */}
         <Column sx={{ width: "80%" }}>
-          <Row justifyContent={"end"} sx={{ width: "100%" }}>
+          <Row justifyContent={"end"} sx={{ width: "100%", gap: 1, mb: 1 }}>
             <Button
               text="입금 완료"
               variant={"contained"}

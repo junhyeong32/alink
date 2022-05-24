@@ -31,7 +31,7 @@ import {
   rank_bgcolor,
 } from "../src/data/user";
 import ExcelButton from "../src/components/Button/Excel";
-import Input, { DateInput } from "../src/components/Input";
+import Input, { DateInput, LabelUnderLineInput } from "../src/components/Input";
 import SelectInput, {
   OutLineSelectInput,
 } from "../src/components/Input/Select";
@@ -54,8 +54,8 @@ export default function Privacy() {
 
   return (
     <Layout>
-      <Column alignItems="center" sx={{ gap: "25px" }}>
-        <Row>
+      <Column alignItems="center" sx={{ gap: "50px" }}>
+        {/* <Row>
           <TopLabelContents title="상태">
             <Button text="상태" />
           </TopLabelContents>
@@ -63,9 +63,42 @@ export default function Privacy() {
         <Row>
           <TopLabelContents title="아이디">id</TopLabelContents>
           <TopLabelContents title="이용자명">id</TopLabelContents>
-        </Row>
+        </Row> */}
 
-        <Button text="수정" />
+        <Row
+          alignItems={"end"}
+          justifyContent={"center"}
+          wrap="wrap"
+          sx={{ gap: "50px", mt: 14, width: "100%" }}
+        >
+          <Column
+            wrap={"wrap"}
+            sx={{
+              gap: "50px",
+              width: {
+                lg: "auto",
+                md: "auto",
+                sm: "auto",
+                xs: "100%",
+              },
+            }}
+          >
+            <LabelUnderLineInput title="아이디" w={294} xs_w="100%" />
+            <LabelUnderLineInput
+              title="신규 비밀번호"
+              placeholder={"변경시에만 입력하세요"}
+              w={294}
+              xs_w="100%"
+            />
+          </Column>
+          <LabelUnderLineInput
+            title="비밀번호 확인"
+            placeholder={"변경시에만 입력하세요"}
+            w={294}
+            xs_w="100%"
+          />
+        </Row>
+        <Button text="수정" fs={"h6"} w={90} h={22} />
       </Column>
     </Layout>
   );
