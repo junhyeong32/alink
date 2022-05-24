@@ -23,7 +23,7 @@ import {
   branch_input,
 } from "../../src/components/Table/data-status/ReceptionStatusList";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
-import RoundColorBox from "../../src/components/Box/RoundColorBox";
+import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import {
   status_list,
   status_bgcolor,

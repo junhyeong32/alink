@@ -23,7 +23,7 @@ import {
   branch_input,
 } from "../../src/components/Table/data-status/ReceptionStatusList";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
-import RoundColorBox from "../../src/components/Box/RoundColorBox";
+import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import {
   status_list,
   status_bgcolor,
@@ -47,6 +47,7 @@ import {
 } from "../../src/data/setting/menu";
 import Image from "next/image";
 import SmsTable from "../../src/components/Table/sms";
+import { styles } from "../../src/styles/sms";
 
 export default function Sms() {
   const router = useRouter();
@@ -62,17 +63,22 @@ export default function Sms() {
   return (
     <Layout>
       <Column sx={{ gap: "25px" }}>
-        <Row justifyContent={"between"} alignItems={"end"}>
-          <SelectInput title="발송일" menuItems={{}} w="25%" />
+        <Row
+          justifyContent={"between"}
+          alignItems={"end"}
+          wrap={"wrap"}
+          sx={styles.filter_row}
+        >
+          <SelectInput title="발송일" menuItems={{}} w={styles.input} />
           <LabelUnderLineInput
             title="담당자"
             placeholder={"담당자로 검색하실 수 있습니다"}
-            w="25%"
+            w={styles.input}
           />
           <LabelUnderLineInput
             title="연락처"
             placeholder={"연락처로 검색하실 수 있습니다"}
-            w="25%"
+            w={styles.input}
           />
           <Button
             text="초기화"

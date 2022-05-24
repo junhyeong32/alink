@@ -20,7 +20,7 @@ import {
   branch_input,
 } from "../../src/components/Table/data-status/ReceptionStatusList";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
-import RoundColorBox from "../../src/components/Box/RoundColorBox";
+import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import {
   status_list,
   status_bgcolor,
@@ -50,13 +50,13 @@ export default function Dna() {
   return (
     <Layout>
       <Column>
-        <Row alignItems={"end"} sx={{ gap: "35px" }}>
+        <Row alignItems={"end"} sx={{ gap: "11px" }}>
           <Button
             variant="contained"
             bgColor={menu === "popup" ? "primary" : "light_gray"}
             text="팝업 관리"
             fs="h6"
-            h="38px"
+            h={38}
             action={() => setMenu("popup")}
           />
           <Button
@@ -64,7 +64,7 @@ export default function Dna() {
             bgColor={menu === "menu" ? "primary" : "light_gray"}
             text="메뉴 관리"
             fs="h6"
-            h="38px"
+            h={38}
             action={() => setMenu("menu")}
           />
         </Row>

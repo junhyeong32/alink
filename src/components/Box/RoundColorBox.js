@@ -19,6 +19,7 @@ export default function RoundColorBox({
         background: background,
         color: "#FFFFFF",
         p: "7px",
+        whiteSpace: "nowrap",
         ...sx,
       }}
       props

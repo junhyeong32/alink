@@ -44,6 +44,9 @@ const theme = createTheme({
     skyblue: {
       main: "#52809A",
     },
+    print: {
+      main: "#00A0EB",
+    },
     black: {
       main: "#000000",
     },

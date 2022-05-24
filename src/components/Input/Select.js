@@ -79,3 +79,45 @@ export function OutLineSelectInput({
     </Box>
   );
 }
+
+export function LabelOutLineSelectInput({
+  alignItems,
+  title,
+  placeholder,
+  value,
+  setValue,
+  menuItems,
+  w,
+  sx,
+  ...props
+}) {
+  return (
+    <Column
+      justifyContent="start"
+      alignItems={alignItems || "center"}
+      sx={{
+        width: w,
+        gap: 1,
+        ...sx,
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+      <Select
+        variant="outlined"
+        fullWidth
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+        sx={{ pl: "12px", height: "28px" }}
+      >
+        {Object.entries(menuItems).map(([value, data], key) => (
+          <MenuItem value={value} key={key}>
+            {data}
+          </MenuItem>
+        ))}
+      </Select>
+    </Column>
+  );
+}

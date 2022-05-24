@@ -10,8 +10,12 @@ import {
   headquarters_input,
   branch_input,
 } from "../src/components/Table/data-status/ReceptionStatusList";
-import { OutLineSelectInput } from "../src/components/Input/Select";
+import {
+  LabelOutLineSelectInput,
+  OutLineSelectInput,
+} from "../src/components/Input/Select";
 import Button from "../src/components/Button";
+import Image from "next/image";
 
 export default function DbStatus() {
   const [area, setArea] = useState("");
@@ -32,12 +36,16 @@ export default function DbStatus() {
             text="초기화"
           />
         </Row>
-        <Row justifyContent={"between"} alignItems={"center"}>
+        <Row
+          justifyContent={"between"}
+          alignItems={"center"}
+          sx={{ borderBottom: "1px solid black", pb: 1 }}
+        >
           <Typography sx={{ fontSize: "30px" }}>분배 가능 DB</Typography>
 
-          <Row sx={{ gap: "21px" }}>
+          <Row sx={{ gap: "21px", mt: 1 }}>
             {select_title.map((title, key) => (
-              <OutLineSelectInput
+              <LabelOutLineSelectInput
                 key={key}
                 title={title}
                 value={
@@ -59,16 +67,35 @@ export default function DbStatus() {
           </Row>
         </Row>
 
-        <Row>
+        <Row alignItems={"center"} justifyContent={"around"} sx={{ mt: 2 }}>
+          <Image
+            src="/left_arrow.png"
+            width={31}
+            height={35}
+            layout="fixed"
+            alt="left"
+          />
           <Column>
-            <Typography>보장</Typography>
+            <Typography sx={{ fontSize: 25, fontWeight: 350 }}>보장</Typography>
+            <Typography sx={{ fontSize: 30, fontWeight: 350 }}>100</Typography>
           </Column>
           <Column>
-            <Typography>재무</Typography>
+            <Typography sx={{ fontSize: 25, fontWeight: 350 }}>재무</Typography>
+            <Typography sx={{ fontSize: 30, fontWeight: 350 }}>100</Typography>
           </Column>
           <Column>
-            <Typography>유전자</Typography>
+            <Typography sx={{ fontSize: 25, fontWeight: 350 }}>
+              유전자
+            </Typography>
+            <Typography sx={{ fontSize: 30, fontWeight: 350 }}>100</Typography>
           </Column>
+          <Image
+            src="/right_arrow.png"
+            width={31}
+            height={35}
+            layout="fixed"
+            alt="right"
+          />
         </Row>
 
         <Column sx={{ mt: 10 }}>
@@ -78,7 +105,7 @@ export default function DbStatus() {
             sx={{ mb: "10px" }}
           >
             <Typography sx={{ fontSize: "30px" }}>접수 현황</Typography>
-            <OutLineSelectInput menuItems={{}}></OutLineSelectInput>
+            <OutLineSelectInput menuItems={{}} />
           </Row>
 
           <ReceptionStatusTable />

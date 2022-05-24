@@ -27,13 +27,14 @@ export default function TopLabelContents({
       justifyContent="start"
       alignItems="start"
       sx={{
-        width: "100%%",
+        width: "100%",
         borderBottom: "1px solid #0D1D41",
-        ...sx,
       }}
     >
-      <Typography variant={fs}>{title}</Typography>
-      <Row>{children}</Row>
+      <Typography variant={fs || "h4"}>{title}</Typography>
+      <Row wrap="wrap" sx={{ ...sx }}>
+        {children}
+      </Row>
     </Column>
   );
 }

@@ -10,6 +10,7 @@ import {
   MenuItem,
   Checkbox,
   Box,
+  FormControlLabel,
 } from "@mui/material";
 
 import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
@@ -20,7 +21,7 @@ import {
   branch_input,
 } from "../../src/components/Table/data-status/ReceptionStatusList";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
-import RoundColorBox from "../../src/components/Box/RoundColorBox";
+import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import {
   status_list,
   status_bgcolor,
@@ -28,11 +29,16 @@ import {
   rank_bgcolor,
 } from "../../src/data/user";
 import ExcelButton from "../../src/components/Button/Excel";
-import Input, { DateInput } from "../../src/components/Input";
+import Input, {
+  DateInput,
+  LabelUnderLineInput,
+} from "../../src/components/Input";
 import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
+import { styles } from "../../src/styles/bojang";
+import { argument_status } from "../../src/data/share/MenuByTextList";
 
 export default function Db() {
   const router = useRouter();
@@ -49,56 +55,118 @@ export default function Db() {
       <Column>
         <Button variant="outlined" text="신청권한" fs="h6" w={80} h={20} />
         <Column sx={{ rowGap: "15px", p: "40px 40px 0 40px" }}>
-          <Typography variant="h4">인수상태</Typography>
-          <TopLabelContents sx={{ pl: 10 }}>
-            {status_list.map((list, key) => (
-              <Row key={key}>
-                <Checkbox />
-                <RoundColorBox background={status_bgcolor[key]}>
-                  <Typography variant="h6">{Object.values(list)[0]}</Typography>
-                </RoundColorBox>
-              </Row>
+          <TopLabelContents
+            title={"인수상태"}
+            sx={styles.argument_status_contents}
+          >
+            {Object.entries(argument_status).map(([list, color], key) => (
+              <FormControlLabel
+                key={key}
+                control={<Checkbox />}
+                label={
+                  <RoundColorBox background={color}>
+                    <Typography variant="h6">{list}</Typography>
+                  </RoundColorBox>
+                }
+              />
             ))}
           </TopLabelContents>
 
-          <Row justifyContent={"between"}>
-            <Row sx={{ gap: "35px", width: "74.5%" }}>
-              <SelectInput title="조직명" w={"33%"} menuItems={{}} />
-              <SelectInput title="소속명" w={"33%"} menuItems={{}} />
-              <SelectInput title="담당자" w={"33%"} menuItems={{}} />
-            </Row>
-
+          <Row justifyContent={"end"}>
             <Button
               variant="contained"
               bgColor="gray"
               text="초기화"
               color="primary.white"
               fs="h6"
-              h="20px"
+              w={60}
+              h={20}
+              sx={styles.init_button}
             />
           </Row>
+          <Row justifyContent={"between"} sx={styles.input_row}>
+            <Column sx={styles.first_input_column}>
+              <SelectInput title="조직명" menuItems={{}} />
+              <SelectInput title="업체승인" menuItems={{}} />
+              <SelectInput title="지역" menuItems={{}} />
+            </Column>
 
-          <Row sx={{ gap: "35px" }}>
-            <SelectInput title="업체승인" w={"25%"} menuItems={{}} />
-            <SelectInput title="등록처" w={"25%"} menuItems={{}} />
-            <Input
-              title="고객명"
-              placeholder={"고객명으로 검색하실 수 있습니다."}
-            />
-            <Input
-              title="연락처"
-              placeholder={"연락처로 검색하실 수 있습니다."}
-            />
-          </Row>
-          <Row sx={{ gap: "35px", width: "50%" }}>
-            <SelectInput title="지역" w={"50%"} menuItems={{}} />
-            <DateInput
-              title="등록일"
-              placeholder={"성명으로 검색하실 수 있습니다."}
-              w="50%"
-              value={date_range}
-              setValue={setDateRange}
-            />
+            <Column sx={styles.second_input_column}>
+              <SelectInput title="소속명" menuItems={{}} />
+              <SelectInput title="등록처" menuItems={{}} />
+              <SelectInput
+                title={
+                  <>
+                    <Row alignItems={"center"} wrap={"wrap"} sx={{ gap: 1 }}>
+                      등록일
+                      <Button
+                        text="금일"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                      />
+                      <Button
+                        text="어제"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                      />
+                      <Button
+                        text="이번주"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                      />
+                      <Button
+                        text="지난달"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                      />
+                    </Row>
+                  </>
+                }
+                menuItems={{}}
+              />
+            </Column>
+
+            <Box sx={styles.third_input_column}>
+              <SelectInput title="담당자" w={styles.input} menuItems={{}} />
+              <LabelUnderLineInput
+                title="고객명"
+                placeholder={"고객명으로 검색하실 수 있습니다."}
+                w={styles.input}
+              />
+              <LabelUnderLineInput
+                title="연락처"
+                placeholder={"연락처로 검색하실 수 있습니다."}
+                w={styles.input}
+                sx={styles.phone_input}
+              />
+            </Box>
+
+            <Column alignItems={"end"} sx={styles.fourth_input_column}>
+              <Button
+                variant="contained"
+                bgColor="gray"
+                text="초기화"
+                color="primary.white"
+                fs="h6"
+                w={60}
+                h={20}
+                sx={styles.init_button2}
+              />
+              <LabelUnderLineInput
+                w={"100%"}
+                title="연락처"
+                placeholder={"연락처로 검색하실 수 있습니다."}
+                sx={{ ...styles.init_input, mt: 4 }}
+              />
+            </Column>
           </Row>
         </Column>
 
@@ -115,7 +183,7 @@ export default function Db() {
                 text="수동 분배"
                 color="primary.white"
                 fs="h6"
-                w={120}
+                w={98}
                 h={20}
                 action={() => router.push("db/division")}
               />
@@ -125,7 +193,7 @@ export default function Db() {
                 text="엑셀 분배"
                 color="primary.white"
                 fs="h6"
-                w={120}
+                w={98}
                 h={20}
               />
             </Row>

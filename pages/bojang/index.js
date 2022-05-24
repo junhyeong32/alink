@@ -10,6 +10,8 @@ import {
   MenuItem,
   Checkbox,
   Box,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 
 import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
@@ -20,13 +22,14 @@ import {
   branch_input,
 } from "../../src/components/Table/data-status/ReceptionStatusList";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
-import RoundColorBox from "../../src/components/Box/RoundColorBox";
+import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import {
   status_list,
   status_bgcolor,
   rank_list,
   rank_bgcolor,
 } from "../../src/data/user";
+import { argument_status } from "../../src/data/share/MenuByTextList";
 import ExcelButton from "../../src/components/Button/Excel";
 import { LabelUnderLineInput, DateInput } from "../../src/components/Input";
 import SelectInput, {
@@ -50,15 +53,20 @@ export default function User() {
       <Column>
         <Button variant="outlined" text="신청권한" fs="h6" w={80} h={20} />
         <Column sx={{ rowGap: "15px", p: "40px 40px 0 40px" }}>
-          <Typography variant="h4">인수상태</Typography>
-          <TopLabelContents sx={{ pl: 10 }}>
-            {status_list.map((list, key) => (
-              <Row key={key}>
-                <Checkbox />
-                <RoundColorBox background={status_bgcolor[key]}>
-                  <Typography variant="h6">{Object.values(list)[0]}</Typography>
-                </RoundColorBox>
-              </Row>
+          <TopLabelContents
+            title="인수상태"
+            sx={styles.argument_status_contents}
+          >
+            {Object.entries(argument_status).map(([list, color], key) => (
+              <FormControlLabel
+                key={key}
+                control={<Checkbox />}
+                label={
+                  <RoundColorBox background={color}>
+                    <Typography variant="h6">{list}</Typography>
+                  </RoundColorBox>
+                }
+              />
             ))}
           </TopLabelContents>
           <Row justifyContent={"end"}>
@@ -83,59 +91,62 @@ export default function User() {
             <Column sx={styles.second_input_column}>
               <SelectInput title="소속명" menuItems={{}} />
               <SelectInput title="등록처" menuItems={{}} />
-              <SelectInput title="등록일" menuItems={{}} />
+              <SelectInput
+                title={
+                  <>
+                    <Row alignItems={"center"} wrap={"wrap"} sx={{ gap: 1 }}>
+                      등록일
+                      <Button
+                        text="금일"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                      />
+                      <Button
+                        text="어제"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                      />
+                      <Button
+                        text="이번주"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                      />
+                      <Button
+                        text="지난달"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                      />
+                    </Row>
+                  </>
+                }
+                menuItems={{}}
+              />
             </Column>
 
-            <Box
-              sx={{
-                width: { lg: "25%", md: "100%", sm: "100%", xs: "100%" },
-                gap: { lg: 2.6, xs: 1 },
-                display: "flex",
-                flexWrap: "wrap",
-                flexDirection: {
-                  lg: "column",
-                  sm: "column",
-                  md: "row",
-                  xs: "row",
-                },
-                justifyContent: "space-between",
-              }}
-            >
+            <Box sx={styles.third_input_column}>
               <SelectInput title="담당자" w={styles.input} menuItems={{}} />
               <LabelUnderLineInput
                 title="고객명"
                 placeholder={"고객명으로 검색하실 수 있습니다."}
                 w={styles.input}
               />
-              <SelectInput title="지역" menuItems={{}} w={styles.input} />
               <LabelUnderLineInput
                 title="연락처"
                 placeholder={"연락처로 검색하실 수 있습니다."}
                 w={styles.input}
-                sx={{
-                  display: {
-                    lg: "none",
-                    sm: "none",
-                    md: "flex",
-                    xs: "flex",
-                  },
-                }}
+                sx={styles.phone_input}
               />
             </Box>
 
-            <Column
-              alignItems={"end"}
-              sx={{
-                width: { lg: "25%", md: "100%", sm: "100%", xs: "100%" },
-                gap: { lg: 2.6, xs: 1 },
-                display: {
-                  lg: "flex",
-                  sm: "flex",
-                  md: "none",
-                  xs: "none",
-                },
-              }}
-            >
+            <Column alignItems={"end"} sx={styles.fourth_input_column}>
               <Button
                 variant="contained"
                 bgColor="gray"
@@ -144,27 +155,13 @@ export default function User() {
                 fs="h6"
                 w={60}
                 h={20}
-                sx={{
-                  display: {
-                    lg: "flex",
-                    md: "none",
-                    sm: "none",
-                    xs: "none",
-                  },
-                }}
+                sx={styles.init_button2}
               />
               <LabelUnderLineInput
                 w={"100%"}
                 title="연락처"
                 placeholder={"연락처로 검색하실 수 있습니다."}
-                sx={{
-                  mt: {
-                    lg: 4,
-                    md: 0,
-                    sm: 0,
-                    xs: 0,
-                  },
-                }}
+                sx={{ ...styles.init_input, mt: 4 }}
               />
             </Column>
           </Row>

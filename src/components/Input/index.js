@@ -150,7 +150,6 @@ export function LabelUnderLineInput({
   xs_w,
   ...props
 }) {
-  console.log(props);
   return (
     <Column
       justifyContent="start"
@@ -180,6 +179,77 @@ export function LabelUnderLineInput({
         }}
         props="true"
       />
+    </Column>
+  );
+}
+
+export function LabelOutLineInput({
+  title,
+  placeholder,
+  value,
+  setValue,
+  w,
+  sx,
+  xs_w,
+  ...props
+}) {
+  return (
+    <Column
+      justifyContent="start"
+      alignItems="start"
+      sx={{
+        width: w,
+        borderBottom: "1px solid #0D1D41",
+        ...sx,
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+      <TextField
+        sx={{
+          "& input::placeholder": {
+            fontSize: "10px",
+            color: "#909090 !important",
+            fontWeight: "bold",
+            height: 30,
+          },
+
+          pl: "12px",
+        }}
+        inputProps={{
+          style: {
+            height: 30,
+            paddingLeft: "12px",
+          },
+        }}
+        variant="outlined"
+        fullWidth
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          e.preventDefault();
+        }}
+        props="true"
+      />
+
+      {/* <Input
+        sx={{
+          "& input::placeholder": {
+            fontSize: "10px",
+            color: "#909090 !important",
+            fontWeight: "bold",
+          },
+          pl: "12px",
+        }}
+        fullWidth
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          e.preventDefault();
+        }}
+        props="true"
+      /> */}
     </Column>
   );
 }
