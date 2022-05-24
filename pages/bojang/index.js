@@ -33,6 +33,7 @@ import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
+import { styles } from "../../src/styles/bojang";
 
 export default function User() {
   const router = useRouter();
@@ -69,46 +70,17 @@ export default function User() {
               fs="h6"
               w={60}
               h={20}
-              sx={{
-                display: {
-                  lg: "none",
-                  md: "flex",
-                  sm: "flex",
-                  xs: "flex",
-                },
-              }}
+              sx={styles.init_button}
             />
           </Row>
-          <Row
-            justifyContent={"between"}
-            sx={{
-              columnGap: { lg: 3.8, md: 3.8, sm: 2, xs: 1 },
-              rowGap: 1,
-              flexWrap: {
-                lg: "nowrap",
-                md: "wrap",
-                sm: "nowrap",
-                xs: "wrap",
-              },
-            }}
-          >
-            <Column
-              sx={{
-                width: { lg: "25%", md: "45%", sm: "100%", xs: "100%" },
-                gap: { lg: 2.6, xs: 1 },
-              }}
-            >
+          <Row justifyContent={"between"} sx={styles.input_row}>
+            <Column sx={styles.first_input_column}>
               <SelectInput title="조직명" menuItems={{}} />
               <SelectInput title="업체승인" menuItems={{}} />
               <SelectInput title="지역" menuItems={{}} />
             </Column>
 
-            <Column
-              sx={{
-                width: { lg: "25%", md: "45%", xs: "100%" },
-                gap: { lg: 2.6, xs: 1 },
-              }}
-            >
+            <Column sx={styles.second_input_column}>
               <SelectInput title="소속명" menuItems={{}} />
               <SelectInput title="등록처" menuItems={{}} />
               <SelectInput title="등록일" menuItems={{}} />
