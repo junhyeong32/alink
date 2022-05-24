@@ -75,15 +75,15 @@ export default function DbStatus() {
             layout="fixed"
             alt="left"
           />
-          <Column>
+          <Column alignItems={"center"}>
             <Typography sx={{ fontSize: 25, fontWeight: 350 }}>보장</Typography>
             <Typography sx={{ fontSize: 30, fontWeight: 350 }}>100</Typography>
           </Column>
-          <Column>
+          <Column alignItems={"center"}>
             <Typography sx={{ fontSize: 25, fontWeight: 350 }}>재무</Typography>
             <Typography sx={{ fontSize: 30, fontWeight: 350 }}>100</Typography>
           </Column>
-          <Column>
+          <Column alignItems={"center"}>
             <Typography sx={{ fontSize: 25, fontWeight: 350 }}>
               유전자
             </Typography>

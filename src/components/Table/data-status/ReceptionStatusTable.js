@@ -36,6 +36,7 @@ export default function ReceptionStatus({
       font-weight: bold;
       font-size: 12px;
       padding: 0;
+      min-width: 100px;
     }
     td {
       padding: 8px;

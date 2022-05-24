@@ -34,6 +34,7 @@ export default function DbApplyStatusTable({}) {
       font-weight: bold;
       font-size: 12px;
       padding: 0;
+      min-width: 30px;
     }
     td {
       padding: 8px;
