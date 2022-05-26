@@ -39,16 +39,12 @@ import SelectInput, {
 import Button from "../../src/components/Button";
 import { styles } from "../../src/styles/bojang";
 import { argument_status } from "../../src/data/share/MenuByTextList";
+import UploadModal from "../../src/components/Modal/dna/upload";
 
 export default function Dna() {
   const router = useRouter();
   const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [excel, setExcel] = useState("");
-
-  const [date_range, setDateRange] = useState([null, null]);
+  const [visible, setVisible] = useState(false);
 
   return (
     <Layout>
@@ -178,6 +174,39 @@ export default function Dna() {
           >
             <Row sx={{ gap: "5px" }}>
               <OutLineSelectInput menuItems={{}} placeholder={"조직변경"} />
+              {/* 협력사 */}
+              <Button
+                variant="contained"
+                bgColor="skyblue"
+                text="신규등록"
+                color="primary.white"
+                fs="h6"
+                w={120}
+                h={28}
+                action={() => router.push("dna/new")}
+              />
+              <Button
+                variant="contained"
+                bgColor="excel"
+                text="엑셀등록"
+                color="primary.white"
+                fs="h6"
+                w={120}
+                h={28}
+              />
+              <Button
+                variant="contained"
+                bgColor="primary"
+                text="파일 업로드"
+                color="primary.white"
+                fs="h6"
+                w={120}
+                h={28}
+                action={() => setVisible(true)}
+              />
+              <UploadModal visible={visible} setVisible={setVisible} />
+              visible, setVisible
+              {/* 그 외 */}
               <Button
                 variant="contained"
                 bgColor="primary"

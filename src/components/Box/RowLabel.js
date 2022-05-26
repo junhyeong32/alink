@@ -19,7 +19,7 @@ export default function RowLabel({ title, label, fs, width, sx, children }) {
       <Typography
         variant={fs || "normal"}
         align="left"
-        sx={{ minWidth: "45px" }}
+        sx={{ minWidth: "45px", whiteSpace: "nowrap" }}
       >
         {label}
       </Typography>

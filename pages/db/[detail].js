@@ -13,22 +13,6 @@ import {
   OutlinedInput,
 } from "@mui/material";
 
-import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
-import {
-  select_title,
-  area_input,
-  headquarters_input,
-  branch_input,
-} from "../../src/components/Table/data-status/ReceptionStatusList";
-import TopLabelContents from "../../src/components/Box/TopLableContents";
-import RoundColorBox from "../../src/components/Box/RoundColorBox";
-import {
-  status_list,
-  status_bgcolor,
-  rank_list,
-  rank_bgcolor,
-} from "../../src/data/user";
-import ExcelButton from "../../src/components/Button/Excel";
 import Input, { DateInput, OutLineInput } from "../../src/components/Input";
 import SelectInput, {
   OutLineSelectInput,
