@@ -34,7 +34,7 @@ export default function Db() {
     <Layout>
       <Column justifyContent={"between"} sx={{ gap: 2.8 }}>
         <Row
-          justifyContent={"center"}
+          justifyContent={"start"}
           flexDirection={{
             lg: "row",
             md: "row",
@@ -43,7 +43,7 @@ export default function Db() {
           }}
           sx={{ columnGap: "100px", rowGap: 3 }}
         >
-          <Column sx={{ width: { lg: "50%", xs: "100%" }, gap: 2.8 }}>
+          <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
             <Typography variant="h1">고객 정보</Typography>
             <RowLabel label="분배일시">
               <Typography>1</Typography>
@@ -65,7 +65,7 @@ export default function Db() {
             <RowLabel label="특이사항"></RowLabel>
             <RowLabel label="지역"></RowLabel>
           </Column>
-          <Column sx={{ width: { lg: "50%", xs: "100%" }, gap: 2.8 }}>
+          <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
             <Typography variant="h1">담당자 정보</Typography>
             <RowLabel label="소속명"></RowLabel>
             <RowLabel label="팀명/성명"></RowLabel>
@@ -80,7 +80,7 @@ export default function Db() {
           녹취파일 및 메모는 등록 후 삭제가 불가하며, 업로드 하지 않을 시 저장이
           되지 않습니다.
         </Typography>
-        <Column sx={{ gap: 1 }}>
+        <Column sx={{ gap: 1, maxWidth: 1020 }}>
           <Row alignItems={"center"} sx={{ gap: 2 }}>
             <Typography variant="h1">메모관리</Typography>
             <Button
@@ -108,7 +108,7 @@ export default function Db() {
             </Column>
           </Row>
         </Column>
-        <Row justifyContent={"between"} sx={{ gap: "12px" }}>
+        <Row justifyContent={"between"} sx={{ gap: "12px", maxWidth: 1020 }}>
           <Button
             variant="contained"
             bgColor="primary"

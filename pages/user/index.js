@@ -20,7 +20,7 @@ import RoundColorBox from "../../src/components/Box/RoundColorBox";
 
 import {
   status,
-  rank,
+  rank_list,
   argument_status,
 } from "../../src/data/share/MenuByTextList";
 import ExcelButton from "../../src/components/Button/Excel";
@@ -30,11 +30,7 @@ import Button from "../../src/components/Button";
 
 export default function User() {
   const router = useRouter();
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [excel, setExcel] = useState("");
+  const [rank, setRank] = useState();
 
   return (
     <Layout>
@@ -57,7 +53,7 @@ export default function User() {
             )}
           </TopLabelContents>
           <TopLabelContents title="등급" sx={{ pl: 10 }}>
-            {Object.entries(rank).map(([list, color], key) => (
+            {Object.entries(rank_list).map(([list, color], key) => (
               <FormControlLabel
                 key={key}
                 control={<Checkbox />}
@@ -123,6 +119,7 @@ export default function User() {
               fs={"h6"}
               color="primary.white"
               h={20}
+              action={() => router.push("user/new-id")}
             />
 
             <ExcelButton action={() => setExcel("1")} />

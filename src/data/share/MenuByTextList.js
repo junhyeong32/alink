@@ -5,14 +5,14 @@ export const status = {
   퇴사자: "#000000",
 };
 
-export const rank = {
+export const rank_list = {
   전체: "#909090",
   부관리자: "#ACC000",
   본부장: "#6FBC00",
   지점장: "#00A0EB",
   팀장: "#FFA850",
   담당자: "#00B2C7",
-  협력사: "00B361",
+  협력사: "#00B361",
   협력사: "#246648",
 };
 

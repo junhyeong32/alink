@@ -2,12 +2,20 @@ import Image from "next/image";
 import { Container, Typography, Button } from "@mui/material";
 import Row from "./Row";
 
-export default function RowLabel({ title, label, fs, width, sx, children }) {
+export default function RowLabel({
+  title,
+  label,
+  label_w,
+  fs,
+  width,
+  sx,
+  children,
+}) {
   return (
     <Row
       alignItems="center"
       justifyContent="start"
-      wrap="norwap"
+    wrap="norwap"
       sx={{
         width: "100%",
         columnGap: "47px",
@@ -19,7 +27,7 @@ export default function RowLabel({ title, label, fs, width, sx, children }) {
       <Typography
         variant={fs || "normal"}
         align="left"
-        sx={{ minWidth: "45px", whiteSpace: "nowrap" }}
+        sx={{ minWidth: label_w || "45px", whiteSpace: "nowrap" }}
       >
         {label}
       </Typography>

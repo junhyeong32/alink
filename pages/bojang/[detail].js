@@ -35,6 +35,8 @@ import SelectInput, {
 import Button from "../../src/components/Button";
 import RowLabel from "../../src/components/Box/RowLabel";
 import { OutLineInput } from "../../src/components/Input";
+import MemoBox from "../../src/components/Box/Memo";
+import DisableBox from "../../src/components/Box/DisableBox";
 
 export default function Detail() {
   const router = useRouter();
@@ -50,7 +52,7 @@ export default function Detail() {
     <Layout>
       <Column justifyContent={"between"} sx={{ gap: 2.8 }}>
         <Row
-          justifyContent={"center"}
+          justifyContent={"start"}
           flexDirection={{
             lg: "row",
             md: "row",
@@ -59,7 +61,7 @@ export default function Detail() {
           }}
           sx={{ columnGap: "100px", rowGap: 3 }}
         >
-          <Column sx={{ width: { lg: "50%", xs: "100%" }, gap: 2.8 }}>
+          <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
             <Typography variant="h1">고객 정보</Typography>
             <RowLabel label="고객명">
               <OutLineInput />
@@ -73,16 +75,7 @@ export default function Detail() {
             <RowLabel label="성명"></RowLabel>
             <RowLabel label="결혼여부"></RowLabel>
             <RowLabel label="특이사항">
-              <Box
-                sx={{
-                  background: "#E6E6E6",
-                  height: "95px",
-                  p: 1,
-                  width: "80%",
-                }}
-              >
-                text
-              </Box>
+              <DisableBox text="text" h={90} />
             </RowLabel>
             <RowLabel label="등록일시">text</RowLabel>
             <RowLabel label="지역">
@@ -92,7 +85,7 @@ export default function Detail() {
             <RowLabel label="등록처">text</RowLabel>
           </Column>
 
-          <Column sx={{ width: { lg: "50%", xs: "100%" }, gap: 2.8 }}>
+          <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
             <Typography variant="h1">담당자 정보</Typography>
             <RowLabel label="인수상태">text</RowLabel>
             <RowLabel label="업체승인">
@@ -135,7 +128,7 @@ export default function Detail() {
           </Row>
         </Column>
 
-        <Column sx={{ gap: 1 }}>
+        <Column sx={{ gap: 1, maxWidth: 1020 }}>
           <Row alignItems={"center"} sx={{ gap: 2 }}>
             <Typography variant="h1">메모관리</Typography>
             <Button
@@ -148,28 +141,11 @@ export default function Detail() {
             />
           </Row>
           <OutLineInput placeholder="메모를 입력해주세요." rows={4} multiline />
-          <Row>
-            <Column
-              sx={{
-                border: "1px solid black",
-                borderRadius: "5px",
-                p: 1,
-                width: {
-                  lg: "33%",
-                  md: "33%",
-                  sm: "33%",
-                  xs: "100%",
-                },
-              }}
-            >
-              <Typography variant="h6">text</Typography>
-              <Box sx={{ background: "#E6E6E6", p: 0.5 }}>
-                <Typography>text</Typography>
-              </Box>
-            </Column>
+          <Row sx={{ width: "100%", gap: 3, maxWidth: 1020 }}>
+            <MemoBox time="2022-04-05  13:04:05" text="text" />
           </Row>
         </Column>
-        <Row justifyContent={"between"} sx={{ gap: "12px" }}>
+        <Row justifyContent={"between"} sx={{ gap: "12px", maxWidth: 1020 }}>
           <Button
             variant="contained"
             bgColor="print"

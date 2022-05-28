@@ -8,8 +8,8 @@ import theme from "../src/theme";
 import createEmotionCache from "../src/components/createEmotionCache";
 import "../styles/globals.css";
 import { SnackbarProvider } from "notistack";
-import { ModalContext, ModalProvider } from "/src/contexts/ModalContext";
 import { OrganizationProvider } from "../src/contexts/OrganizationListContext";
+import { ModalProvider } from "../src/contexts/ModalContext";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -19,7 +19,6 @@ export default function MyApp({
   emotionCache = clientSideEmotionCache,
   pageProps,
 }) {
-  
   return (
     <SnackbarProvider
       anchorOrigin={{

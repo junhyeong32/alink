@@ -1,49 +1,17 @@
-import { useEffect, useState, createContext } from "react";
+import React from "react";
+import useModal from "../hooks/share/useModal";
+import { createContext } from "react";
 
-export const ModalContext = createContext({
-  modal_list: [],
-  modal_data: [],
-  addModalList: () => {},
-  deleteModalList: () => {},
-  addModalData: () => {},
-});
+let ModalContext;
+const { Provider } = (ModalContext = createContext());
 
-export function ModalProvider({ children }) {
-  const [modal_list, setModalList] = useState([]);
-  const [modal_data, setModalData] = useState([]);
-
-  const addModalList = (modal_message) => {
-    setModalList((prev) => {
-      const new_modal_list = [...prev];
-      new_modal_list.push(modal_message);
-
-      return new_modal_list;
-    });
-  };
-
-  const deleteModalList = (index) => {
-    setModalList(() => {
-      const new_modal_list = [...modal_list];
-      new_modal_list.splice(index, 1);
-      return new_modal_list;
-    });
-  };
-
-  const addModalData = (data) => {
-    setModalData(data);
-  };
-
+const ModalProvider = ({ children }) => {
+  const { visible, modal, openModal, closeModal, modalContent } = useModal();
   return (
-    <ModalContext.Provider
-      value={{
-        modal_list,
-        modal_data,
-        addModalList,
-        deleteModalList,
-        addModalData,
-      }}
-    >
+    <Provider value={{ visible, modal, openModal, closeModal, modalContent }}>
       {children}
-    </ModalContext.Provider>
+    </Provider>
   );
-}
+};
+
+export { ModalContext, ModalProvider };

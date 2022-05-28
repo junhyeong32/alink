@@ -55,7 +55,15 @@ export default function UnderLineInput({
   );
 }
 
-export function OutLineInput({ title, placeholder, value, setValue, sx, w }) {
+export function OutLineInput({
+  title,
+  placeholder,
+  value,
+  setValue,
+  sx,
+  w,
+  h,
+}) {
   return (
     <Box sx={{ ...sx, width: w }}>
       <TextField
@@ -64,15 +72,14 @@ export function OutLineInput({ title, placeholder, value, setValue, sx, w }) {
             fontSize: "10px",
             color: "#909090 !important",
             fontWeight: "bold",
-            height: 30,
+            paddingLeft: 0,
           },
-
-          pl: "12px",
         }}
-        inputProps={{
+        InputProps={{
           style: {
-            height: 30,
-            paddingLeft: "12px",
+            height: h || 30,
+            borderRadius: 5,
+            paddingLeft: 0,
           },
         }}
         variant="outlined"

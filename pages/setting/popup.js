@@ -10,6 +10,8 @@ import {
   MenuItem,
   Checkbox,
   Box,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 
 import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
@@ -28,12 +30,13 @@ import {
   rank_bgcolor,
 } from "../../src/data/user";
 import ExcelButton from "../../src/components/Button/Excel";
-import Input, { DateInput } from "../../src/components/Input";
+import Input, { DateInput, OutLineInput } from "../../src/components/Input";
 import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
 import RowLabel from "../../src/components/Box/RowLabel";
+import RadioInput from "../../src/components/Radio";
 
 export default function Popup() {
   const router = useRouter();
@@ -46,15 +49,30 @@ export default function Popup() {
 
   const [date_range, setDateRange] = useState([null, null]);
 
+  // console.log(
+  //   path.dirname("../../smarteditor2/workspace/static/SmartEditor2Skin.html")
+  // );
+
   return (
     <Layout>
-      <Column>
-        <RowLabel label="조직"></RowLabel>
-        <RowLabel label="유형"></RowLabel>
-        <RowLabel label="제목"></RowLabel>
-        <RowLabel label="위치"></RowLabel>
+      <Column sx={{ gap: 2, maxWidth: 927 }}>
+        <RowLabel label="조직">
+          <OutLineSelectInput menuItems={{}} />
+        </RowLabel>
+        <RowLabel label="유형">
+          <FormControlLabel label="레이어 팝업" control={<RadioInput />} />
+          <FormControlLabel label="윈도우 팝업" control={<RadioInput />} />
+        </RowLabel>
+        <RowLabel label="제목">
+          <OutLineInput />
+        </RowLabel>
+        <RowLabel label="위치">
+          <OutLineSelectInput menuItems={{}} />
+        </RowLabel>
         <RowLabel label="크기"></RowLabel>
-        <RowLabel label="활성화"></RowLabel>
+        <RowLabel label="활성화">
+          <OutLineSelectInput menuItems={{}} />
+        </RowLabel>
         <Row sx={{ mt: "70px" }}>
           <Button
             variant="contained"
@@ -76,6 +94,12 @@ export default function Popup() {
             action={() => router.push("/setting")}
           />
         </Row>
+        <iframe
+          frameBorder="0"
+          scrolling="no"
+          // style={"width: 100%; height: 449px"}}
+          src="../../smarteditor2/workspace/static/SmartEditor2Skin.html"
+        ></iframe>
       </Column>
     </Layout>
   );

@@ -17,6 +17,7 @@ import MenuBox from "../Box/MenuBox";
 import { menuText, img_src, menu_link } from "../../data/home";
 import checkLogin from "../../hooks/account/useCheckLogin";
 import Button from "../Button";
+import Modal from "../Modal";
 
 export default function Layout({ getCookies, children }) {
   const router = useRouter();
@@ -160,6 +161,7 @@ export default function Layout({ getCookies, children }) {
           }}
         >
           {children}
+          <Modal />
         </Container>
       </main>
     </>

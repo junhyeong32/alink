@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -40,11 +40,13 @@ import Button from "../../src/components/Button";
 import { styles } from "../../src/styles/bojang";
 import { argument_status } from "../../src/data/share/MenuByTextList";
 import UploadModal from "../../src/components/Modal/dna/upload";
+import { ModalContext } from "../../src/contexts/ModalContext";
 
 export default function Dna() {
   const router = useRouter();
   const [area, setArea] = useState("");
   const [visible, setVisible] = useState(false);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   return (
     <Layout>
@@ -202,10 +204,15 @@ export default function Dna() {
                 fs="h6"
                 w={120}
                 h={28}
-                action={() => setVisible(true)}
+                action={() =>
+                  openModal({
+                    modal: "upload",
+                    content: {
+                      title: "파일업로드",
+                    },
+                  })
+                }
               />
-              <UploadModal visible={visible} setVisible={setVisible} />
-              visible, setVisible
               {/* 그 외 */}
               <Button
                 variant="contained"

@@ -50,13 +50,13 @@ export default function Dna() {
   const [branch, setBranch] = useState("");
   const [date, setDate] = useState("");
   const [excel, setExcel] = useState("");
-  
 
   const [date_range, setDateRange] = useState([null, null]);
 
   return (
     <Layout>
       <Column sx={{ width: 463, gap: 2 }}>
+        <Typography variant="h1">고객 정보</Typography>
         <RowLabel label="등록처" fs="h6">
           text
         </RowLabel>

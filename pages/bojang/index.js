@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -14,7 +14,7 @@ import {
   Radio,
 } from "@mui/material";
 
-import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
+import BojangTable from "../../src/components/Table/bojang";
 import {
   select_title,
   area_input,
@@ -37,6 +37,7 @@ import SelectInput, {
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
 import { styles } from "../../src/styles/bojang";
+import { ModalContext } from "../../src/contexts/ModalContext";
 
 export default function User() {
   const router = useRouter();
@@ -47,6 +48,8 @@ export default function User() {
   const [excel, setExcel] = useState("");
 
   const [date_range, setDateRange] = useState(new Date());
+
+  const { openModal, closeModal } = useContext(ModalContext);
 
   return (
     <Layout>
@@ -94,7 +97,11 @@ export default function User() {
               <SelectInput
                 title={
                   <>
-                    <Row alignItems={"center"} wrap={"wrap"} sx={{ gap: 1 }}>
+                    <Row
+                      alignItems={"center"}
+                      wrap={"wrap"}
+                      sx={{ gap: 1, whiteSpace: "nowrap" }}
+                    >
                       등록일
                       <Button
                         text="금일"
@@ -183,11 +190,19 @@ export default function User() {
                 fs="h6"
                 w={120}
                 h={28}
+                action={() =>
+                  openModal({
+                    modal: "needConfirm",
+                    content: {
+                      contents: "자동분배를 진행하시겠습니까?",
+                    },
+                  })
+                }
               />
             </Row>
             <ExcelButton action={() => setExcel("1")} />
           </Row>
-          <ReceptionStatusTable />
+          <BojangTable openModal={openModal} closeModal={closeModal} />
         </Column>
       </Column>
     </Layout>

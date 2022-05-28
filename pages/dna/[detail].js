@@ -48,9 +48,8 @@ export default function Detail() {
 
   return (
     <Layout>
-      <Column justifyContent={"between"} sx={{ gap: 2.8 }}>
+      <Column justifyContent={"start"} sx={{ gap: 2.8 }}>
         <Row
-          justifyContent={"center"}
           flexDirection={{
             lg: "row",
             md: "row",
@@ -59,7 +58,7 @@ export default function Detail() {
           }}
           sx={{ columnGap: "100px", rowGap: 3 }}
         >
-          <Column sx={{ width: { lg: "50%", xs: "100%" }, gap: 2.8 }}>
+          <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
             <Typography variant="h1">고객 정보</Typography>
             <RowLabel label="고객명">
               <OutLineInput />
@@ -92,7 +91,7 @@ export default function Detail() {
             <RowLabel label="등록처">text</RowLabel>
           </Column>
 
-          <Column sx={{ width: { lg: "50%", xs: "100%" }, gap: 2.8 }}>
+          <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
             <Typography variant="h1">담당자 정보</Typography>
             <RowLabel label="인수상태">text</RowLabel>
             <RowLabel label="업체승인">
@@ -135,7 +134,7 @@ export default function Detail() {
           </Row>
         </Column>
 
-        <Column sx={{ gap: 1 }}>
+        <Column sx={{ gap: 1, maxWidth: 1020 }}>
           <Row alignItems={"center"} sx={{ gap: 2 }}>
             <Typography variant="h1">메모관리</Typography>
             <Button
@@ -169,7 +168,7 @@ export default function Detail() {
             </Column>
           </Row>
         </Column>
-        <Row justifyContent={"between"} sx={{ gap: "12px" }}>
+        <Row justifyContent={"between"} sx={{ gap: "12px", maxWidth: 1020 }}>
           <Button
             variant="contained"
             bgColor="print"
