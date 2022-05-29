@@ -33,8 +33,8 @@ import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
-import MenuTable from "../../src/components/Table/setting/Menu";
-import PopupTable from "../../src/components/Table/setting/Popup";
+import MenuTable from "../../src/components/Table/setting/menu";
+import PopupTable from "../../src/components/Table/setting/popup";
 
 export default function Dna() {
   const router = useRouter();
