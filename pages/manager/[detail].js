@@ -36,10 +36,37 @@ export default function Detail() {
               sx={{
                 width: { lg: 481, md: 481, sm: 481, xs: "100%" },
               }}
-            ></RowLabel>
+            >
+              <Typography variant="h6">text</Typography>
+            </RowLabel>
           ))}
         </Column>
-        <Column></Column>
+        <Column sx={{ gap: 1 }}>
+          <Typography variant="h1">DB관리</Typography>
+          <RowLabel label="보장할당">
+            <Button
+              text="OFF"
+              variant={"contained"}
+              bgColor="gray"
+              color="primary.white"
+              fs={"h6"}
+              w={48}
+              h={18}
+            />
+            {/* <Typography
+              variant="h6"
+              sx={{
+                position: "absolute",
+                color: "#FFFFFF",
+                left: bojang ? "124px" : "145px",
+              }}
+            >
+              {bojang ? "ON" : "OFF"}
+            </Typography> */}
+          </RowLabel>
+          <RowLabel label="재무할당"></RowLabel>
+          <RowLabel label="유전자할당"></RowLabel>
+        </Column>
 
         <Row justifyContent={"center"}>
           <Button

@@ -36,7 +36,7 @@ const rowLabelWidth = {
   },
 };
 
-export default function User() {
+export default function Detail() {
   const [rank, setRank] = useState("");
   const [headquarters, setHeadquarters] = useState("");
   const [branch, setBranch] = useState("");
@@ -59,9 +59,7 @@ export default function User() {
               return (
                 <FormControlLabel
                   key={key}
-                  control={<Checkbox
-                    
-                    />}
+                  control={<Checkbox />}
                   label={
                     <RoundColorBox background={color}>
                       <Typography variant="h6">{list}</Typography>
@@ -99,60 +97,28 @@ export default function User() {
               )
           )}
         </TopLabelContents>
-        {rank === "부관리자" && (
-          <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
-            <OutLineInput w="50%" />
-          </RowLabel>
-        )}
-        {(rank === "본부장" ||
-          rank === "지점장" ||
-          rank === "팀장" ||
-          rank === "담당자") && (
-          <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
-            <OutLineSelectInput w="50%" menuItems={{}} />
-          </RowLabel>
-        )}
-        {rank === "협력사" && (
-          <RowLabel label="협력사명" sx={rowLabelWidth} label_w={83}>
-            <OutLineSelectInput w="50%" menuItems={{}} />
-          </RowLabel>
-        )}
-        {rank !== "" &&
-          rank !== "팀장" &&
-          rank !== "담당자" &&
-          rank !== "협력사" && (
-            <RowLabel label="본부명" sx={rowLabelWidth} label_w={83}>
-              {rank === "본부장" ? (
-                <OutLineInput w="50%" />
-              ) : (
-                <OutLineSelectInput w="50%" menuItems={{}} />
-              )}
-            </RowLabel>
-          )}
 
-        {(rank === "지점장" || rank === "팀장") && (
-          <RowLabel label="지점명" sx={rowLabelWidth} label_w={83}>
-            <OutLineInput w="50%" />
-          </RowLabel>
-        )}
-        {(rank === "팀장" || rank === "담당자") && (
+        {rank !== "협력사" ? (
           <>
-            <RowLabel label="팀명" sx={rowLabelWidth} label_w={83}>
+            <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
+              <OutLineSelectInput w="50%" menuItems={{}} />
+            </RowLabel>
+            <RowLabel label="직급" sx={rowLabelWidth} label_w={83}>
+              <OutLineInput w="50%" />
+            </RowLabel>
+            <RowLabel label="소속" sx={rowLabelWidth} label_w={83}>
               <OutLineInput w="50%" menuItems={{}} />
             </RowLabel>
+            <RowLabel label="성명" sx={rowLabelWidth} label_w={83}>
+              <OutLineInput w="50%" />
+            </RowLabel>
           </>
-        )}
-
-        {rank !== "" && (
+        ) : (
           <RowLabel label="이용자명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput w="50%" />
           </RowLabel>
         )}
-        {rank === "" && (
-          <RowLabel label="성명" sx={rowLabelWidth} label_w={83}>
-            <OutLineInput w="50%" />
-          </RowLabel>
-        )}
+
         <RowLabel label="아이디" sx={rowLabelWidth} label_w={83}>
           <OutLineInput w="50%" />
           <Button
@@ -176,9 +142,11 @@ export default function User() {
         <RowLabel label="연락처" sx={rowLabelWidth} label_w={83}>
           <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="생년월일" sx={rowLabelWidth} label_w={83}>
-          <OutLineInput w="50%" />
-        </RowLabel>
+        {rank !== "협력사" && (
+          <RowLabel label="생년월일" sx={rowLabelWidth} label_w={83}>
+            <OutLineInput w="50%" />
+          </RowLabel>
+        )}
         <Row justifyContent={"center"} sx={{ width: "40%", gap: "15px" }}>
           <Button
             text="생성"
@@ -201,10 +169,7 @@ export default function User() {
         </Row>
       </Column>
 
-      {(rank === "본부장" ||
-        rank === "지점장" ||
-        rank === "팀장" ||
-        rank === "담당자") && (
+      {rank !== "협력사" && (
         <Column sx={{ p: "40px", gap: "20px" }}>
           <Typography variant="h1">DB 관리</Typography>
           <RowLabel label="보장할당" fs="h4" label_w={83}>

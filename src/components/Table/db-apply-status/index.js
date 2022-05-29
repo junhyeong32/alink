@@ -26,8 +26,8 @@ export default function DbApplyStatusTable({}) {
     }
 
     th {
-      background: #f2f2f2;
       border-top: 3px solid #0d1d41;
+      border-bottom: none;
       height: 37px;
       text-align: center;
       box-shadow: none;

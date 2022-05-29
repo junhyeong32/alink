@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -19,6 +19,7 @@ import SelectInput, {
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
 import RowLabel from "../../src/components/Box/RowLabel";
+import { ModalContext } from "../../src/contexts/ModalContext";
 
 export default function Db() {
   const router = useRouter();
@@ -29,6 +30,8 @@ export default function Db() {
   const [excel, setExcel] = useState("");
 
   const [date_range, setDateRange] = useState([null, null]);
+
+  const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
   return (
     <Layout>
@@ -111,7 +114,7 @@ export default function Db() {
         <Row justifyContent={"between"} sx={{ gap: "12px", maxWidth: 1020 }}>
           <Button
             variant="contained"
-            bgColor="primary"
+            bgColor="print"
             text="인쇄"
             color="primary.white"
             fs="h6"
@@ -125,6 +128,14 @@ export default function Db() {
               color="primary.white"
               fs="h6"
               h={20}
+              action={() =>
+                openModal({
+                  modal: "needConfirm",
+                  content: {
+                    contents: "수정을 진행하시겠습니까? ",
+                  },
+                })
+              }
             />
 
             <Button
@@ -134,15 +145,25 @@ export default function Db() {
               color="primary.white"
               fs="h6"
               h={20}
+              action={() => router.back()}
             />
           </Row>
           <Button
             variant="contained"
-            bgColor="gray"
-            text="선택"
+            bgColor="red"
+            text="삭제"
             color="primary.white"
             fs="h6"
-            h={20}
+            h={25}
+            action={() =>
+              openModal({
+                modal: "needConfirm",
+                content: {
+                  contents: "해당DB를 삭제하시겠습니까?",
+                  buttonText: "삭제",
+                },
+              })
+            }
           />
         </Row>
       </Column>

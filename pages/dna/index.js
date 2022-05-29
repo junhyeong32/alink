@@ -39,8 +39,8 @@ import SelectInput, {
 import Button from "../../src/components/Button";
 import { styles } from "../../src/styles/bojang";
 import { argument_status } from "../../src/data/share/MenuByTextList";
-import UploadModal from "../../src/components/Modal/dna/upload";
 import { ModalContext } from "../../src/contexts/ModalContext";
+import DnaTable from "../../src/components/Table/dna";
 
 export default function Dna() {
   const router = useRouter();
@@ -195,6 +195,14 @@ export default function Dna() {
                 fs="h6"
                 w={120}
                 h={28}
+                action={() =>
+                  openModal({
+                    modal: "upload",
+                    content: {
+                      title: "파일업로드",
+                    },
+                  })
+                }
               />
               <Button
                 variant="contained"
@@ -222,11 +230,19 @@ export default function Dna() {
                 fs="h6"
                 w={120}
                 h={28}
+                action={() =>
+                  openModal({
+                    modal: "needConfirm",
+                    content: {
+                      title: "파일업로드",
+                    },
+                  })
+                }
               />
             </Row>
             <ExcelButton action={() => setExcel("1")} />
           </Row>
-          <ReceptionStatusTable />
+          <DnaTable openModal={openModal} closeModal={closeModal} />
         </Column>
       </Column>
     </Layout>

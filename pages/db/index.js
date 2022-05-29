@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -39,7 +39,8 @@ import SelectInput, {
 import Button from "../../src/components/Button";
 import { styles } from "../../src/styles/bojang";
 import { argument_status } from "../../src/data/share/MenuByTextList";
-
+import DbTable from "../../src/components/Table/db";
+import { ModalContext } from "../../src/contexts/ModalContext";
 export default function Db() {
   const router = useRouter();
   const [area, setArea] = useState("");
@@ -50,6 +51,7 @@ export default function Db() {
 
   const [date_range, setDateRange] = useState([null, null]);
 
+  const { openModal, closeModal, modalContent } = useContext(ModalContext);
   return (
     <Layout>
       <Column>
@@ -195,11 +197,23 @@ export default function Db() {
                 fs="h6"
                 w={98}
                 h={20}
+                onClick={() =>
+                  openModal({
+                    modal: "upload",
+                    content: {
+                      title: "파일업로드",
+                    },
+                  })
+                }
               />
             </Row>
             <ExcelButton action={() => setExcel("1")} />
           </Row>
-          <ReceptionStatusTable />
+          <DbTable
+            openModal={openModal}
+            closeModal={closeModal}
+            modalContent={modalContent}
+          />
         </Column>
       </Column>
     </Layout>

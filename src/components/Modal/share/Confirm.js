@@ -30,7 +30,7 @@ export default function Confirm({
   const { enqueueSnackbar } = useSnackbar();
 
   return (
-    <Dia open={visible} onClose={() => setVisible(false)}>
+    <Dialog open={visible} onClose={() => setVisible(false)}>
       <Box
         sx={{
           width: { lg: "715px", md: "715px", sm: "715px", xs: "90%" },
@@ -72,6 +72,6 @@ export default function Confirm({
           </Row>
         </Column>
       </Box>
-    </Dia>
+    </Dialog>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -13,7 +13,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
+import UserTable from "../../src/components/Table/user";
 
 import TopLabelContents from "../../src/components/Box/TopLableContents";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
@@ -27,10 +27,13 @@ import ExcelButton from "../../src/components/Button/Excel";
 import Input, { LabelUnderLineInput } from "../../src/components/Input";
 import SelectInput from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
+import { ModalContext } from "../../src/contexts/ModalContext";
 
 export default function User() {
   const router = useRouter();
   const [rank, setRank] = useState();
+
+  const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
   return (
     <Layout>
@@ -126,7 +129,11 @@ export default function User() {
           </Row>
         </Column>
 
-        <ReceptionStatusTable />
+        <UserTable
+          openModal={openModal}
+          closeModal={closeModal}
+          modalContent={modalContent}
+        />
       </Column>
     </Layout>
   );

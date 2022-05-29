@@ -95,15 +95,17 @@ export default function ReadFile() {
   return (
     <Modal open={visible} onClose={closeModal}>
       <Box>
-        <Image
-          src="/black_x.png"
-          width={19}
-          height={19}
-          alt="x"
-          layout="fixed"
-          onClick={closeModal}
-        />
         <Column alignItems={"center"} justifyContent={"center"} sx={style}>
+          <Row justifyContent={"end"} sx={{ width: "100%", cursor: "pointer" }}>
+            <Image
+              src="/black_x.png"
+              width={19}
+              height={19}
+              alt="x"
+              layout="fixed"
+              onClick={closeModal}
+            />
+          </Row>
           <Column
             alignItems={"center"}
             justifyContent={"center"}

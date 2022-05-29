@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -37,6 +37,7 @@ import RowLabel from "../../src/components/Box/RowLabel";
 import { OutLineInput } from "../../src/components/Input";
 import MemoBox from "../../src/components/Box/Memo";
 import DisableBox from "../../src/components/Box/DisableBox";
+import { ModalContext } from "../../src/contexts/ModalContext";
 
 export default function Detail() {
   const router = useRouter();
@@ -47,6 +48,7 @@ export default function Detail() {
   const [excel, setExcel] = useState("");
 
   const [date_range, setDateRange] = useState(new Date());
+  const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
   return (
     <Layout>
@@ -91,9 +93,7 @@ export default function Detail() {
             <RowLabel label="업체승인">
               <OutLineSelectInput menuItems={{}} />
             </RowLabel>
-            <RowLabel label="조직">
-              <OutLineInput />
-            </RowLabel>
+            <RowLabel label="조직">AFG</RowLabel>
             <RowLabel label="고객명">
               <OutLineSelectInput menuItems={{}} />
               <OutLineSelectInput menuItems={{}} />
@@ -152,7 +152,7 @@ export default function Detail() {
             text="인쇄"
             color="primary.white"
             fs="h6"
-            h={20}
+            h={25}
           />
           <Row sx={{ gap: 1 }}>
             <Button
@@ -161,7 +161,15 @@ export default function Detail() {
               text="수정"
               color="primary.white"
               fs="h6"
-              h={20}
+              h={25}
+              action={() =>
+                openModal({
+                  modal: "needConfirm",
+                  content: {
+                    contents: "수정을 진행하시겠습니까? ",
+                  },
+                })
+              }
             />
 
             <Button
@@ -170,7 +178,8 @@ export default function Detail() {
               text="목록보기"
               color="primary.white"
               fs="h6"
-              h={20}
+              h={25}
+              action={() => router.back()}
             />
           </Row>
           <Button
@@ -179,7 +188,16 @@ export default function Detail() {
             text="삭제"
             color="primary.white"
             fs="h6"
-            h={20}
+            h={25}
+            action={() =>
+              openModal({
+                modal: "needConfirm",
+                content: {
+                  contents: "해당DB를 삭제하시겠습니까?",
+                  buttonText: "삭제",
+                },
+              })
+            }
           />
         </Row>
       </Column>

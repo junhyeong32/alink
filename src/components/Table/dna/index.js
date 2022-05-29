@@ -11,12 +11,12 @@ import {
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
 import { useState } from "react";
-import { bojangHeaderList } from "./bojangHedaderList";
+import { dnaHeaderList } from "./dnaHedaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
 import MemoBox from "../../Box/Memo";
 
-export default function BojangTable({ openModal, closeModal }) {
+export default function DnaTable({ openModal, closeModal }) {
   const [all_checked, setAllChecked] = useState(false);
   const [checked, setChecked] = useState([]);
   const Root = styled("div")`
@@ -53,7 +53,7 @@ export default function BojangTable({ openModal, closeModal }) {
         >
           <TableHead>
             <TableRow key="head">
-              {bojangHeaderList?.map((data, key) => (
+              {dnaHeaderList?.map((data, key) => (
                 <TableCell key={key} align="center">
                   {data}
                 </TableCell>
@@ -66,13 +66,13 @@ export default function BojangTable({ openModal, closeModal }) {
               <TableCell>
                 <Box sx={{ cursor: "pointer" }}>
                   <Image
-                    src="/recording.png"
-                    width={19}
-                    height={23}
+                    src="/dna.png"
+                    width={12}
+                    height={25}
                     alt=""
                     onClick={() =>
                       openModal({
-                        modal: "readFile",
+                        modal: "result",
                         content: {
                           contents: "hi",
                         },
@@ -93,7 +93,7 @@ export default function BojangTable({ openModal, closeModal }) {
                         modal: "readFile",
                         content: {
                           contents: <MemoBox />,
-                    },
+                        },
                       })
                     }
                   />

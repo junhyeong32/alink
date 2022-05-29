@@ -41,12 +41,7 @@ import RadioInput from "../../src/components/Radio";
 export default function Popup() {
   const router = useRouter();
   const [menu, setMenu] = useState("popup");
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [excel, setExcel] = useState("");
-
+  const [scale, setScale] = useState("");
   const [date_range, setDateRange] = useState([null, null]);
 
   // console.log(
@@ -56,32 +51,75 @@ export default function Popup() {
   return (
     <Layout>
       <Column sx={{ gap: 2, maxWidth: 927 }}>
-        <RowLabel label="조직">
+        <RowLabel label="조직" fs="h4" label_w={45}>
           <OutLineSelectInput menuItems={{}} />
         </RowLabel>
-        <RowLabel label="유형">
+        <RowLabel label="유형" fs="h4" label_w={45}>
           <FormControlLabel label="레이어 팝업" control={<RadioInput />} />
           <FormControlLabel label="윈도우 팝업" control={<RadioInput />} />
         </RowLabel>
-        <RowLabel label="제목">
-          <OutLineInput />
+        <RowLabel label="제목" fs="h4" label_w={45}>
+          <OutLineInput w="70%" />
         </RowLabel>
-        <RowLabel label="위치">
+        <RowLabel label="위치" fs="h4" label_w={45}>
           <OutLineSelectInput menuItems={{}} />
         </RowLabel>
-        <RowLabel label="크기"></RowLabel>
-        <RowLabel label="활성화">
+        <RowLabel label="크기" fs="h4" label_w={45}>
+          <Column>
+            <Row>
+              <FormControlLabel
+                label="대(가로:600, 세로:800)"
+                control={<RadioInput />}
+              />
+              <FormControlLabel
+                label="중(가로:600, 세로:800)"
+                control={<RadioInput />}
+              />
+              <FormControlLabel
+                label="소(가로:600, 세로:800)"
+                control={<RadioInput />}
+              />
+              <FormControlLabel
+                label="사용자 지정"
+                control={
+                  <RadioInput
+                    checked={scale === "custom"}
+                    onClick={() => setScale("custom")}
+                  />
+                }
+              />
+            </Row>
+            {scale === "custom" && (
+              <Row justifyContent={"end"} sx={{ width: "100%", gap: 1 }}>
+                <Row alignItems={"center"}>
+                  <Typography variant="h6">가로</Typography>
+                  <OutLineInput w={65} sx={{ ml: 1, mr: 0.5 }} />
+                  <Typography variant="h6">px</Typography>
+                </Row>
+                <Row alignItems={"center"}>
+                  <Typography variant="h6">세로</Typography>
+                  <OutLineInput w={65} sx={{ ml: 1, mr: 0.5 }} />
+                  <Typography variant="h6">px</Typography>
+                </Row>
+              </Row>
+            )}
+          </Column>
+        </RowLabel>
+        <RowLabel label="활성화" fs="h4" label_w={45}>
           <OutLineSelectInput menuItems={{}} />
         </RowLabel>
-        <Row sx={{ mt: "70px" }}>
+        <Row
+          justifyContent={"center"}
+          sx={{ mt: "70px", maxWidth: "1039px", gap: 1 }}
+        >
           <Button
             variant="contained"
             bgColor="primary"
             text="등록"
             color="primary.white"
             fs="h6"
-            w={100}
-            h={20}
+            w={160}
+            h={25}
           />
           <Button
             variant="contained"
@@ -89,17 +127,17 @@ export default function Popup() {
             text="취소"
             color="primary.white"
             fs="h6"
-            w={100}
-            h={20}
+            w={160}
+            h={25}
             action={() => router.push("/setting")}
           />
         </Row>
-        <iframe
+        {/* <iframe
           frameBorder="0"
           scrolling="no"
           // style={"width: 100%; height: 449px"}}
           src="../../smarteditor2/workspace/static/SmartEditor2Skin.html"
-        ></iframe>
+        ></iframe> */}
       </Column>
     </Layout>
   );

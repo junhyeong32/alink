@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import Layout from "../src/components/Layout";
 import Column from "../src/components/Box/Column";
@@ -40,6 +40,7 @@ import RowLabel from "../src/components/Box/RowLabel";
 
 import Image from "next/image";
 import SmsTable from "../src/components/Table/sms";
+import { ModalContext } from "../src/contexts/ModalContext";
 
 export default function Privacy() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function Privacy() {
   const [excel, setExcel] = useState("");
 
   const [date_range, setDateRange] = useState([null, null]);
-
+  const { openModal, closeModal, modalContent } = useContext(ModalContext);
   return (
     <Layout>
       <Column alignItems="center" sx={{ gap: "50px" }}>
@@ -98,7 +99,18 @@ export default function Privacy() {
             xs_w="100%"
           />
         </Row>
-        <Button text="수정" fs={"h6"} w={90} h={22} />
+        <Button
+          text="수정"
+          fs={"h6"}
+          w={90}
+          h={22}
+          action={() =>
+            openModal({
+              modal: "needConfirm",
+              contetns: "개인정보수정을 진행하시겠습니까? ",
+            })
+          }
+        />
       </Column>
     </Layout>
   );

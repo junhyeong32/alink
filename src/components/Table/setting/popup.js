@@ -10,12 +10,14 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { popup_header } from "./popupHeaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
 
 export default function PopupTable({}) {
+  const router = useRouter();
   const [all_checked, setAllChecked] = useState(false);
   const [checked, setChecked] = useState([]);
   const Root = styled("div")`
@@ -76,6 +78,7 @@ export default function PopupTable({}) {
                     fs="h6"
                     w={56}
                     h={17}
+                    action={() => router.push("/setting/popup")}
                   />
                   <Button
                     variant="contained"

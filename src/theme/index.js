@@ -3,6 +3,7 @@ import { red } from "@mui/material/colors";
 import { typography } from "../theme/typography";
 import { button } from "../theme/components/button";
 import { fiiled_input } from "../theme/components/input";
+import { formControlLabel } from "./components/formControlLabel";
 
 const theme = createTheme({
   palette: {
@@ -60,6 +61,7 @@ const theme = createTheme({
   typography: typography,
   components: {
     MuiButton: button,
+    MuiFormControlLabel: formControlLabel,
     MuiFilledInput: fiiled_input,
     MuiTableCell: {
       styleOverrides: {

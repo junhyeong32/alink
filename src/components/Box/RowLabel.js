@@ -10,15 +10,16 @@ export default function RowLabel({
   width,
   sx,
   children,
+  columnGap,
 }) {
   return (
     <Row
       alignItems="center"
       justifyContent="start"
-    wrap="norwap"
+      wrap="norwap"
       sx={{
         width: "100%",
-        columnGap: "47px",
+        columnGap: columnGap || "47px",
         borderBottom: "1px solid #000000",
         pb: 1,
         ...sx,

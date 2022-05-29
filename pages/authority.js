@@ -10,7 +10,6 @@ import useGetGroupList from "../src/hooks/share/useGetGroupList";
 
 export default function Authority() {
   const router = useRouter();
-  //   const group_list = useGetGroupList();
 
   return (
     <Layout>

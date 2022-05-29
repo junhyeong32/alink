@@ -11,12 +11,12 @@ import {
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
 import { useState } from "react";
-import { bojangHeaderList } from "./bojangHedaderList";
+import { areaHeaderList } from "./areaHeaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
-import MemoBox from "../../Box/Memo";
+import RadioInput from "../../Radio";
 
-export default function BojangTable({ openModal, closeModal }) {
+export default function AreaTable({}) {
   const [all_checked, setAllChecked] = useState(false);
   const [checked, setChecked] = useState([]);
   const Root = styled("div")`
@@ -35,7 +35,6 @@ export default function BojangTable({ openModal, closeModal }) {
       font-weight: bold;
       font-size: 12px;
       padding: 0;
-      min-width: 30px;
     }
     td {
       padding: 8px;
@@ -53,7 +52,7 @@ export default function BojangTable({ openModal, closeModal }) {
         >
           <TableHead>
             <TableRow key="head">
-              {bojangHeaderList?.map((data, key) => (
+              {areaHeaderList?.map((data, key) => (
                 <TableCell key={key} align="center">
                   {data}
                 </TableCell>
@@ -64,40 +63,7 @@ export default function BojangTable({ openModal, closeModal }) {
           <TableBody>
             <TableRow>
               <TableCell>
-                <Box sx={{ cursor: "pointer" }}>
-                  <Image
-                    src="/recording.png"
-                    width={19}
-                    height={23}
-                    alt=""
-                    onClick={() =>
-                      openModal({
-                        modal: "readFile",
-                        content: {
-                          contents: "hi",
-                        },
-                      })
-                    }
-                  />
-                </Box>
-              </TableCell>
-              <TableCell align="center">
-                <Box sx={{ cursor: "pointer" }}>
-                  <Image
-                    src="/memo.png"
-                    width={25}
-                    height={25}
-                    alt=""
-                    onClick={() =>
-                      openModal({
-                        modal: "readFile",
-                        content: {
-                          contents: <MemoBox />,
-                    },
-                      })
-                    }
-                  />
-                </Box>
+                <RadioInput />
               </TableCell>
             </TableRow>
           </TableBody>

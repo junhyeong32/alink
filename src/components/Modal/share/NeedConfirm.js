@@ -35,7 +35,7 @@ const style = {
   p: 2.7,
 };
 
-export default function Contract({ index, text }) {
+export default function NeedConfirm({ doubleVisible, setdoubleVisible }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [loading, setLoading] = useState(false);
@@ -43,7 +43,7 @@ export default function Contract({ index, text }) {
   const [cookies] = useCookies();
 
   const { visible, closeModal, modalContent } = useContext(ModalContext);
-  const { contents, action } = modalContent;
+  const { contents, action, buttonText = "승인" } = modalContent;
 
   // useEffect(async () => {
   //   if (!action) return;
@@ -91,7 +91,6 @@ export default function Contract({ index, text }) {
   //     });
   //   }
   // }, [document_code, action]);
-
   return (
     <Modal open={visible} onClose={closeModal}>
       <Box>
@@ -102,16 +101,39 @@ export default function Contract({ index, text }) {
             sx={{ width: "100%", height: "100%", gap: "25px" }}
           >
             <TopLabelContents title="확인 필요" sx={{ pb: 1 }} />
-            <Typography>{contents}</Typography>
+            {typeof contents === "object" ? (
+              contents
+            ) : (
+              <Typography>{contents}</Typography>
+            )}
             <Row sx={{ gap: 2.5 }}>
-              <Button text="승인" w={97} h={30} action={action} />
+              <Button
+                text={buttonText}
+                bgColor={buttonText === "삭제" ? "red" : "primary"}
+                color="primary.white"
+                w={97}
+                h={30}
+                fs={"h4"}
+                action={() => {
+                  if (doubleVisible !== undefined) {
+                    setdoubleVisible(false);
+                  }
+                  action();
+                  closeModal();
+                }}
+              />
               <Button
                 text="취소"
                 w={97}
                 h={30}
                 bgColor={"gray"}
                 color={"primary.white"}
-                action={closeModal}
+                fs={"h4"}
+                action={
+                  doubleVisible !== undefined
+                    ? setdoubleVisible(false)
+                    : closeModal
+                }
               />
             </Row>
           </Column>
