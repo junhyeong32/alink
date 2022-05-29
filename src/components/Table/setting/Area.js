@@ -35,6 +35,7 @@ export default function AreaTable({}) {
       font-weight: bold;
       font-size: 12px;
       padding: 0;
+      min-width: 80px;
     }
     td {
       padding: 8px;

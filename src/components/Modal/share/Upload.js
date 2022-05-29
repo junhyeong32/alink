@@ -9,7 +9,7 @@ import {
   forwardRef,
   createRef,
 } from "react";
-import { Modal, Box, Typography, Grid } from "@mui/material";
+import { Modal, Box, Typography, Grid, Divider } from "@mui/material";
 import Column from "../../Box/Column";
 import RowLabel from "../../Box/RowLabel";
 import { useCookies } from "react-cookie";
@@ -31,11 +31,10 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   bgcolor: "background.paper",
-  borderRadius: "5",
+  borderRadius: "10px",
   boxShadow: 24,
-  pt: 2,
-  px: 4,
-  pb: 3,
+  padding: { lg: "32px 60px 32px 60px", xs: "32px 30px 32px 30px" },
+  gap: 1.3,
 };
 
 export default function Upload() {
@@ -45,9 +44,19 @@ export default function Upload() {
   return (
     <Modal open={visible} onClose={closeModal}>
       <Box>
-        <Column alignItems={"center"} justifyContent={"center"} sx={style}>
-          <TopLabelContents title={title} sx={{ pb: 1, gap: 1 }} />
-          <RowLabel label="Sample">
+        <Column alignItems={"start"} justifyContent={"center"} sx={style}>
+          <TopLabelContents title={title} sx={{ pb: 1 }} />
+          <RowLabel label="Sample" w={430} sx={{ pl: 3, position: "relative" }}>
+            <Divider
+              absolute
+              orientation="vertical"
+              sx={{
+                height: "75px",
+                top: "-5px",
+                left: { lg: -"80%", xs: "-75%" },
+                borderColor: "black",
+              }}
+            />
             <Button
               text="다운로드"
               w={60}
@@ -56,8 +65,11 @@ export default function Upload() {
               onClick={download}
             />
           </RowLabel>
-          <RowLabel label="관련 파일">
-            <OutLineInput />
+          <Row alignItems={"center"} sx={{ pl: 3 }}>
+            <Typography variant="normal" sx={{ mr: 4 }}>
+              관련 파일
+            </Typography>
+            <OutLineInput sx={{ mr: 1.4 }} />
             <Button
               text="파일선택"
               w={60}
@@ -65,13 +77,16 @@ export default function Upload() {
               fs={"h6"}
               onClick={choiceFile}
             />
-          </RowLabel>
-          <Row sx={{ mt: 2.7, gap: 5 }}>
+          </Row>
+          <Row
+            justifyContent={"center"}
+            sx={{ width: "100%", mt: 2.7, gap: 5 }}
+          >
             <Button
               text="파일 업로드"
               w={166}
               h={52}
-              fs={"h5"}
+              fs={"h4"}
               onClick={uploadFIle}
             />
             <Button
@@ -79,7 +94,7 @@ export default function Upload() {
               bgColor={"gray"}
               w={166}
               h={52}
-              fs={"h5"}
+              fs={"h4"}
               color="primary.white"
               action={closeModal}
             />

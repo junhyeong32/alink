@@ -41,7 +41,7 @@ export default function UserTable({ openModal, closeModal }) {
       font-weight: bold;
       font-size: 12px;
       padding: 0;
-      min-width: 30px;
+      min-width: 80px;
     }
     td {
       padding: 8px;

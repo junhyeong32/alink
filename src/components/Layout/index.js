@@ -94,7 +94,15 @@ export default function Layout({ getCookies, children }) {
                 onClick={() => setVisible(false)}
               />
             </Row>
-            <Image src="/alink.png" width={240} height={63} alt="" />
+            <Box sx={{ cursor: "pointer" }}>
+              <Image
+                src="/alink.png"
+                width={240}
+                height={63}
+                alt=""
+                onClick={() => router.push("/")}
+              />
+            </Box>
             <Row
               alignItems={"start"}
               justifyContent={"between"}

@@ -84,19 +84,17 @@ export default function Privacy() {
               },
             }}
           >
-            <LabelUnderLineInput title="아이디" w={294} xs_w="100%" />
+            <LabelUnderLineInput title="아이디" w={{ lg: 294, xs: "100%" }} />
             <LabelUnderLineInput
               title="신규 비밀번호"
               placeholder={"변경시에만 입력하세요"}
-              w={294}
-              xs_w="100%"
+              w={{ lg: 294, xs: "100%" }}
             />
           </Column>
           <LabelUnderLineInput
             title="비밀번호 확인"
             placeholder={"변경시에만 입력하세요"}
-            w={294}
-            xs_w="100%"
+            w={{ lg: 294, xs: "100%" }}
           />
         </Row>
         <Button

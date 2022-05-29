@@ -7,7 +7,7 @@ export default function RowLabel({
   label,
   label_w,
   fs,
-  width,
+  w,
   sx,
   children,
   columnGap,
@@ -18,6 +18,7 @@ export default function RowLabel({
       justifyContent="start"
       wrap="norwap"
       sx={{
+        maxWidth: w,
         width: "100%",
         columnGap: columnGap || "47px",
         borderBottom: "1px solid #000000",

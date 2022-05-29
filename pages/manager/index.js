@@ -6,7 +6,6 @@ import Row from "../../src/components/Box/Row";
 import {
   Container,
   Typography,
-  Button,
   Select,
   MenuItem,
   Checkbox,
@@ -32,6 +31,7 @@ import ExcelButton from "../../src/components/Button/Excel";
 import { LabelUnderLineInput } from "../../src/components/Input";
 import SelectInput from "../../src/components/Input/Select";
 import ManagerTable from "../../src/components/Table/manager";
+import Button from "../../src/components/Button";
 
 export default function User() {
   const router = useRouter();
@@ -45,39 +45,113 @@ export default function User() {
     <Layout>
       <Column>
         <Column sx={{ rowGap: "15px" }}>
+          <Row
+            justifyContent={"end"}
+            sx={{
+              display: { lg: "none", md: "none", sm: "none", xs: "flex" },
+            }}
+          >
+            <Button
+              text="초기화"
+              variant="contained"
+              bgColor={"gray"}
+              color="primary.white"
+              fs="h6"
+              w={60}
+              h={20}
+            />
+          </Row>
           <Row justifyContent={"between"}>
-            <Row sx={{ gap: "35px", width: "74.5%" }}>
-              <SelectInput title="소속명" menuItems={{}} w={"31.5%"} />
+            <Row
+              sx={{
+                gap: "35px",
+                width: {
+                  lg: "74.5%",
+                  md: "74.5%",
+                  sm: "74.5%",
+                  xs: "100%",
+                },
+              }}
+            >
+              <SelectInput
+                title="소속명"
+                menuItems={{}}
+                w={{
+                  lg: "31.2%",
+                  md: "60.5%",
+                  sm: "60.5%",
+                  xs: "100%",
+                }}
+              />
             </Row>
-            <Button variant="contained" color="gray" sx={{ height: "20px" }}>
-              <Typography variant="h6" color="primary.white">
-                초기화
-              </Typography>
-            </Button>
+            <Button
+              text="초기화"
+              variant="contained"
+              bgColor={"gray"}
+              color="primary.white"
+              fs="h6"
+              w={60}
+              h={20}
+              sx={{
+                display: { lg: "flex", md: "flex", sm: "flex", xs: "none" },
+              }}
+            />
           </Row>
 
-          <Row sx={{ gap: "35px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: {
+                lg: "nowrap",
+                md: "wrap",
+                sm: "wrap",
+                xs: "wrap",
+              },
+              gap: "35px",
+            }}
+          >
             <LabelUnderLineInput
               title="이메일"
               placeholder={"이메일로 검색하실 수 있습니다."}
-              w="25%"
+              w={{
+                lg: "25%",
+                md: "45%",
+                sm: "45%",
+                xs: "100%",
+              }}
             />
             <LabelUnderLineInput
               title="아이디"
               placeholder={"아이디로 검색하실 수 있습니다."}
-              w="25%"
+              w={{
+                lg: "25%",
+                md: "45%",
+                sm: "45%",
+                xs: "100%",
+              }}
             />
             <LabelUnderLineInput
               title="이용자명"
               placeholder={"성명으로 검색하실 수 있습니다."}
-              w="25%"
+              w={{
+                lg: "25%",
+                md: "45%",
+                sm: "45%",
+                xs: "100%",
+              }}
             />
             <LabelUnderLineInput
               title="연락처"
               placeholder={"연락처로 검색하실 수 있습니다."}
-              w="25%"
+              w={{
+                lg: "25%",
+                md: "45%",
+                sm: "45%",
+                xs: "100%",
+              }}
             />
-          </Row>
+          </Box>
           <Row alignItems={"center"} justifyContent={"end"} sx={{ mb: "15px" }}>
             <ExcelButton action={() => setExcel("1")} />
           </Row>
