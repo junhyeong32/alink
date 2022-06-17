@@ -21,7 +21,7 @@ import { OutLineInput } from "../../Input";
 import Row from "../../Box/Row";
 import { ModalContext } from "../../../contexts/ModalContext";
 import OutLineSelectInput from "../../Input/Select";
-import AreaTable from "../../Table/setting/area";
+// import AreaTable from "../../Table/setting/area";
 import NeedConfirmModal from "../share/NeedConfirm";
 
 const style = {
@@ -74,7 +74,7 @@ export default function Area() {
                 <Button text="소속설정" fs="h6" w={62} h={15} />
               </Row>
 
-              <AreaTable />
+              {/* <AreaTable /> */}
             </Column>
           </Column>
           <Row sx={{ mt: 3, gap: 1 }}>
