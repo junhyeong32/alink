@@ -59,9 +59,7 @@ export default function User() {
               return (
                 <FormControlLabel
                   key={key}
-                  control={<Checkbox
-                    
-                    />}
+                  control={<Checkbox />}
                   label={
                     <RoundColorBox background={color}>
                       <Typography variant="h6">{list}</Typography>
@@ -118,9 +116,11 @@ export default function User() {
           </RowLabel>
         )}
         {rank !== "" &&
+          rank !== "부관리자" &&
           rank !== "팀장" &&
           rank !== "담당자" &&
-          rank !== "협력사" && (
+          rank !== "협력사" &&
+          rank !== "부협력사" && (
             <RowLabel label="본부명" sx={rowLabelWidth} label_w={83}>
               {rank === "본부장" ? (
                 <OutLineInput w="50%" />

@@ -50,20 +50,17 @@ export default function User() {
               },
             }}
           >
-            {Object.entries(status).map(
-              ([list, color], key) =>
-                (key === 1 || key === 2) && (
-                  <FormControlLabel
-                    key={key}
-                    control={<Checkbox />}
-                    label={
-                      <RoundColorBox background={color}>
-                        <Typography variant="h6">{list}</Typography>
-                      </RoundColorBox>
-                    }
-                  />
-                )
-            )}
+            {Object.entries(status).map(([list, color], key) => (
+              <FormControlLabel
+                key={key}
+                control={<Checkbox />}
+                label={
+                  <RoundColorBox background={color}>
+                    <Typography variant="h6">{list}</Typography>
+                  </RoundColorBox>
+                }
+              />
+            ))}
           </TopLabelContents>
           <TopLabelContents
             title="등급"

@@ -52,13 +52,13 @@ export default function Division() {
             <RowLabel label="DB 유입일" label_w={80}>
               <OutLineInput />
             </RowLabel>
-            <RowLabel label_w={80}>
+            <RowLabel label="고객명" label_w={80}>
               <OutLineInput />
             </RowLabel>
-            <RowLabel label_w={80}>
+            <RowLabel label="연락처" label_w={80}>
               <OutLineInput />
             </RowLabel>
-            <RowLabel label_w={80}>
+            <RowLabel label="나이" label_w={80}>
               <OutLineInput />
             </RowLabel>
 

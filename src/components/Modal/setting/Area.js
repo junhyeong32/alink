@@ -21,7 +21,7 @@ import { OutLineInput } from "../../Input";
 import Row from "../../Box/Row";
 import { ModalContext } from "../../../contexts/ModalContext";
 import OutLineSelectInput from "../../Input/Select";
-import AreaTable from "../../Table/setting/Area";
+import AreaTable from "../../Table/setting/area";
 import NeedConfirmModal from "../share/NeedConfirm";
 
 const style = {

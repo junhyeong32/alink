@@ -13,7 +13,7 @@ export const rank_list = {
   팀장: "#FFA850",
   담당자: "#00B2C7",
   협력사: "#00B361",
-  협력사: "#246648",
+  부협력사: "#246648",
 };
 
 export const argument_status = {
