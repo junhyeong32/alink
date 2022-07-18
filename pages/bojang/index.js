@@ -60,17 +60,20 @@ export default function User() {
             title="인수상태"
             sx={styles.argument_status_contents}
           >
-            {Object.entries(argument_status).map(([list, color], key) => (
-              <FormControlLabel
-                key={key}
-                control={<Checkbox />}
-                label={
-                  <RoundColorBox background={color}>
-                    <Typography variant="h6">{list}</Typography>
-                  </RoundColorBox>
-                }
-              />
-            ))}
+            {Object.entries(argument_status).map(
+              ([list, color], key) =>
+                key !== 6 && (
+                  <FormControlLabel
+                    key={key}
+                    control={<Checkbox />}
+                    label={
+                      <RoundColorBox background={color}>
+                        <Typography variant="h6">{list}</Typography>
+                      </RoundColorBox>
+                    }
+                  />
+                )
+            )}
           </TopLabelContents>
           <Row justifyContent={"end"}>
             <Button
@@ -88,7 +91,19 @@ export default function User() {
             <Column sx={styles.first_input_column}>
               <SelectInput title="조직명" menuItems={{}} />
               <SelectInput title="업체승인" menuItems={{}} />
-              <SelectInput title="지역" menuItems={{}} />
+              <Row alignItems={"end"}>
+                <SelectInput
+                  title="지역"
+                  placeholder={"시도"}
+                  w={"50%"}
+                  menuItems={{}}
+                />
+                <SelectInput
+                  w={"50%"}
+                  placeholder={"지역상세"}
+                  menuItems={{}}
+                />
+              </Row>
             </Column>
 
             <Column sx={styles.second_input_column}>
@@ -181,14 +196,30 @@ export default function User() {
             sx={{ mb: "10px" }}
           >
             <Row sx={{ gap: "5px" }}>
-              <OutLineSelectInput menuItems={{}} placeholder={"조직변경"} />
+              <Button
+                variant="contained"
+                bgColor="primary"
+                text="조직변경"
+                color="primary.white"
+                fs="h6"
+                w={90}
+                h={28}
+                action={() =>
+                  openModal({
+                    modal: "change",
+                    content: {
+                      contents: "자동분배를 진행하시겠습니까?",
+                    },
+                  })
+                }
+              />
               <Button
                 variant="contained"
                 bgColor="primary"
                 text="자동분배"
                 color="primary.white"
                 fs="h6"
-                w={120}
+                w={90}
                 h={28}
                 action={() =>
                   openModal({

@@ -186,7 +186,7 @@ export default function Db() {
                 color="primary.white"
                 fs="h6"
                 w={98}
-                h={20}
+                h={28}
                 action={() => router.push("db/division")}
               />
               <Button
@@ -196,7 +196,7 @@ export default function Db() {
                 color="primary.white"
                 fs="h6"
                 w={98}
-                h={20}
+                h={28}
                 onClick={() =>
                   openModal({
                     modal: "upload",

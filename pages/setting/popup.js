@@ -37,16 +37,16 @@ import SelectInput, {
 import Button from "../../src/components/Button";
 import RowLabel from "../../src/components/Box/RowLabel";
 import RadioInput from "../../src/components/Radio";
+import Editor from "../../src/components/Editor";
 
 export default function Popup() {
   const router = useRouter();
   const [menu, setMenu] = useState("popup");
   const [scale, setScale] = useState("");
   const [date_range, setDateRange] = useState([null, null]);
+  const [editor, setEditor] = useState("");
 
-  // console.log(
-  //   path.dirname("../../smarteditor2/workspace/static/SmartEditor2Skin.html")
-  // );
+  console.log(editor);
 
   return (
     <Layout>
@@ -66,7 +66,7 @@ export default function Popup() {
         </RowLabel>
         <RowLabel label="크기" fs="h4" label_w={45}>
           <Column>
-            <Row>
+            <Row wrap={"wrap"}>
               <FormControlLabel
                 label="대(가로:600, 세로:800)"
                 control={<RadioInput />}
@@ -108,6 +108,9 @@ export default function Popup() {
         <RowLabel label="활성화" fs="h4" label_w={45}>
           <OutLineSelectInput menuItems={{}} />
         </RowLabel>
+
+        <Editor value={editor} onChange={(e) => setEditor(e)} />
+
         <Row
           justifyContent={"center"}
           sx={{ mt: "70px", maxWidth: "1039px", gap: 1 }}
@@ -132,12 +135,6 @@ export default function Popup() {
             action={() => router.push("/setting")}
           />
         </Row>
-        {/* <iframe
-          frameBorder="0"
-          scrolling="no"
-          // style={"width: 100%; height: 449px"}}
-          src="../../smarteditor2/workspace/static/SmartEditor2Skin.html"
-        ></iframe> */}
       </Column>
     </Layout>
   );

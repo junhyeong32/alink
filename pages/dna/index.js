@@ -183,7 +183,7 @@ export default function Dna() {
                 text="신규등록"
                 color="primary.white"
                 fs="h6"
-                w={120}
+                w={98}
                 h={28}
                 action={() => router.push("dna/new")}
               />
@@ -193,7 +193,7 @@ export default function Dna() {
                 text="엑셀등록"
                 color="primary.white"
                 fs="h6"
-                w={120}
+                w={98}
                 h={28}
                 action={() =>
                   openModal({
@@ -210,7 +210,7 @@ export default function Dna() {
                 text="파일 업로드"
                 color="primary.white"
                 fs="h6"
-                w={120}
+                w={98}
                 h={28}
                 action={() =>
                   openModal({
@@ -228,7 +228,7 @@ export default function Dna() {
                 text="자동분배"
                 color="primary.white"
                 fs="h6"
-                w={120}
+                w={98}
                 h={28}
                 action={() =>
                   openModal({

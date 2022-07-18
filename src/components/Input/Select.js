@@ -37,7 +37,6 @@ export default function UnderLineSelectInput({
         onChange={(e) => {
           setValue(e.target.value);
         }}
-        sx={{ pl: "12px" }}
       >
         {Object.entries(menuItems).map(([value, data], key) => (
           <MenuItem value={value} key={key}>
@@ -110,7 +109,7 @@ export function LabelOutLineSelectInput({
         onChange={(e) => {
           setValue(e.target.value);
         }}
-        sx={{ pl: "12px", height: "28px" }}
+        sx={{ height: "28px" }}
       >
         {Object.entries(menuItems).map(([value, data], key) => (
           <MenuItem value={value} key={key}>

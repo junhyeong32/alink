@@ -126,7 +126,7 @@ export default function User() {
                 gap: 1.5,
               }}
             >
-              <SelectInput title="조직명" menuItems={{}} w="100%" />
+              <SelectInput title="소속명" menuItems={{}} w="100%" />
               <LabelUnderLineInput
                 title="아이디"
                 placeholder={"아이디로 검색하실 수 있습니다."}
@@ -139,7 +139,7 @@ export default function User() {
                 gap: 1.5,
               }}
             >
-              <SelectInput title="조직명" menuItems={{}} w="100%" />
+              <SelectInput title="지역" menuItems={{}} w="100%" />
               <LabelUnderLineInput
                 title="이용자명"
                 placeholder={"성명으로 검색하실 수 있습니다."}

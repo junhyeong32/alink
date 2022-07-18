@@ -10,37 +10,43 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { menu_header } from "./menuHeaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
+import { ModalContext } from "../../../contexts/ModalContext";
+import { useRouter } from "next/router";
+
+const Root = styled("div")`
+  table {
+    box-shadow: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  th {
+    background: #f2f2f2;
+    border-top: 3px solid #0d1d41;
+    height: 37px;
+    text-align: center;
+    box-shadow: none;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 0;
+    min-width: 80px;
+  }
+  td {
+    padding: 8px;
+    font-size: 12px;
+  }
+`;
 
 export default function MenuTable({}) {
+  const router = useRouter();
   const [all_checked, setAllChecked] = useState(false);
   const [checked, setChecked] = useState([]);
-  const Root = styled("div")`
-    table {
-      box-shadow: none;
-      width: 100%;
-      height: 100%;
-    }
 
-    th {
-      background: #f2f2f2;
-      border-top: 3px solid #0d1d41;
-      height: 37px;
-      text-align: center;
-      box-shadow: none;
-      font-weight: bold;
-      font-size: 12px;
-      padding: 0;
-      min-width: 80px;
-    }
-    td {
-      padding: 8px;
-      font-size: 12px;
-    }
-  `;
+  const { openModal, closeModal } = useContext(ModalContext);
 
   return (
     <Root sx={{ width: "100%" }}>
@@ -82,6 +88,7 @@ export default function MenuTable({}) {
                     fs="h6"
                     w={56}
                     h={17}
+                    action={() => router.push("/setting/menu")}
                   />
                   <Button
                     variant="contained"
@@ -91,6 +98,15 @@ export default function MenuTable({}) {
                     fs="h6"
                     w={56}
                     h={17}
+                    action={() =>
+                      openModal({
+                        modal: "needConfirm",
+                        content: {
+                          buttonText: "삭제",
+                          contents: "팝업을 삭제하시겠습니까?",
+                        },
+                      })
+                    }
                   />
                 </Row>
               </TableCell>

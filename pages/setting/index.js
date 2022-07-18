@@ -55,7 +55,7 @@ export default function Dna() {
             variant="contained"
             bgColor={menu === "popup" ? "primary" : "light_gray"}
             text="팝업 관리"
-            fs="h6"
+            fs="h4"
             h={38}
             action={() => setMenu("popup")}
           />
@@ -63,7 +63,7 @@ export default function Dna() {
             variant="contained"
             bgColor={menu === "menu" ? "primary" : "light_gray"}
             text="메뉴 관리"
-            fs="h6"
+            fs="h4"
             h={38}
             action={() => setMenu("menu")}
           />

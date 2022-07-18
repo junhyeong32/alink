@@ -59,7 +59,7 @@ export default function Dna() {
             text="담당 지역 변경"
             color="primary.white"
             fs="h6"
-            h="20px"
+            h={25}
           />
         </Row>
         <Column sx={{ gap: 3 }}>
@@ -73,9 +73,9 @@ export default function Dna() {
             bgColor="primary"
             text="신청"
             color="primary.white"
-            fs="h6"
+            fs="h5"
             w={160}
-            h={20}
+            h={30}
           />
         </Row>
       </Column>

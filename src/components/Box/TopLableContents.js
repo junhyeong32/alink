@@ -29,12 +29,15 @@ export default function TopLabelContents({
       sx={{
         width: "100%",
         borderBottom: "1px solid #0D1D41",
+        pb: 1,
       }}
     >
       <Typography variant={fs || "h4"}>{title}</Typography>
-      <Row wrap="wrap" sx={{ ...sx }}>
-        {children}
-      </Row>
+      {children && (
+        <Row wrap="wrap" sx={{ ...sx }}>
+          {children}
+        </Row>
+      )}
     </Column>
   );
 }

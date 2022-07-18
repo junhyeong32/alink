@@ -32,7 +32,7 @@ export default function CustomButton({
       }}
       onClick={action}
     >
-      <Typography variant={fs} color={color}>
+      <Typography variant={fs} color={color || "primary.white"}>
         {text}
       </Typography>
     </Button>

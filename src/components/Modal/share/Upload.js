@@ -10,6 +10,7 @@ import {
   createRef,
 } from "react";
 import { Modal, Box, Typography, Grid, Divider } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import Column from "../../Box/Column";
 import RowLabel from "../../Box/RowLabel";
 import { useCookies } from "react-cookie";
@@ -20,6 +21,8 @@ import UnderLineSelectInput from "../../Input/Select";
 import { OutLineInput } from "../../Input";
 import Row from "../../Box/Row";
 import { ModalContext } from "../../../contexts/ModalContext";
+import { styled } from "@mui/material/styles";
+
 
 const style = {
   width: { lg: "715px", md: "715px", sm: "715px", xs: "90%" },
@@ -37,67 +40,166 @@ const style = {
   gap: 1.3,
 };
 
+const Input = styled("input")({
+  display: "none",
+});
+
 export default function Upload() {
+  const [cookies, setCookie, removeCookie] = useCookies();
   const { enqueueSnackbar } = useSnackbar();
+  const [file, setFile] = useState("");
+  const [loading, setLoading] = useState(false);
   const { visible, closeModal, modalContent } = useContext(ModalContext);
   const { title, download, choiceFile, uploadFIle } = modalContent;
   return (
     <Modal open={visible} onClose={closeModal}>
       <Box>
         <Column alignItems={"start"} justifyContent={"center"} sx={style}>
-          <TopLabelContents title={title} sx={{ pb: 1 }} />
-          <RowLabel label="Sample" w={430} sx={{ pl: 3, position: "relative" }}>
+          <Typography variant="h1">파일 업로드</Typography>
+          <Row
+            alignItems={"center"}
+            w={430}
+            sx={{
+              width: "100%",
+              pl: 3,
+              position: "relative",
+              borderTop: "2px solid black",
+              borderBottom: "2px solid black",
+              height: 58,
+              mb: "-12px",
+            }}
+          >
+            <Typography
+              variant="h4"
+              align="left"
+              sx={{ minWidth: "45px", mr: 5.2 }}
+            >
+              Sample
+            </Typography>
             <Divider
-              absolute
-              orientation="vertical"
+              vertical
               sx={{
-                height: "75px",
-                top: "-5px",
-                left: { lg: -"80%", xs: "-75%" },
-                borderColor: "black",
+                height: "100%",
+                mr: 2.8,
+                border: "1px solid black",
               }}
             />
-            <Button
-              text="다운로드"
-              w={60}
-              h={20}
-              fs={"h6"}
-              onClick={download}
-            />
-          </RowLabel>
-          <Row alignItems={"center"} sx={{ pl: 3 }}>
-            <Typography variant="normal" sx={{ mr: 4 }}>
-              관련 파일
+            <a href="/file/관리자_엑셀_업로드_양식.xlsx">
+              <Button
+                variant="contained"
+                component="span"
+                text="다운로드"
+                fs="h6"
+              />
+            </a>
+          </Row>
+          <Row
+            alignItems={"center"}
+            sx={{
+              pl: 3,
+              borderBottom: "2px solid black",
+              width: "100%",
+              height: 70,
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{ mr: "41.92px", whiteSpace: "nowrap" }}
+            >
+              DB 파일
             </Typography>
-            <OutLineInput sx={{ mr: 1.4 }} />
-            <Button
-              text="파일선택"
-              w={60}
-              h={20}
-              fs={"h6"}
-              onClick={choiceFile}
+            <Divider
+              vertical
+              sx={{
+                height: "100%",
+                mr: 2.8,
+                border: "1px solid black",
+              }}
             />
+
+            <Row
+              alignItems={"center"}
+              sx={{
+                width: " 219px",
+                height: " 36px",
+                background: "#E6E6E6",
+                borderRadius: " 5px",
+                p: 1,
+                mr: 3,
+              }}
+            >
+              <Typography variant="small">
+                {file ? file.name : "엑셀(.xlsx, .xls) 파일만 등록가능"}
+              </Typography>
+            </Row>
+            <label htmlFor="contained-button-file">
+              <Input
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                id="contained-button-file"
+                // multiple
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+              <Button
+                variant="contained"
+                component="span"
+                text="파일선택"
+                fs="h6"
+              />
+            </label>
           </Row>
           <Row
             justifyContent={"center"}
             sx={{ width: "100%", mt: 2.7, gap: 5 }}
           >
-            <Button
-              text="파일 업로드"
-              w={166}
-              h={52}
-              fs={"h4"}
-              onClick={uploadFIle}
-            />
+            <LoadingButton
+              variant="contained"
+              color="primary"
+              loading={loading}
+              sx={{ width: 166, height: 50 }}
+              onClick={async () => {
+                if (!file)
+                  return enqueueSnackbar("파일을 업로드 해주세요.", {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
+                setLoading(true);
+                const formData = new FormData();
+
+                formData.append("platform", "web");
+                formData.append("token", cookies.access_token);
+                formData.append("file", file);
+                const config = {
+                  headers: {
+                    "content-type": "multipart/form-data",
+                  },
+                };
+
+                const upload = (
+                  await Axios.Post(`document/upload-excel`, formData, config)
+                )?.code;
+                if (upload === 200) {
+                  enqueueSnackbar("파일이 업로드 되었습니다.", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+                  setLoading(true);
+                }
+
+                deleteModalList(index);
+              }}
+            >
+              {!loading && <Typography variant="h4">파일 업로드</Typography>}
+            </LoadingButton>
             <Button
               text="취소"
-              bgColor={"gray"}
+              variant="contained"
+              bgColor="gray"
+              fs="h4"
               w={166}
-              h={52}
-              fs={"h4"}
-              color="primary.white"
-              action={closeModal}
-            />
+              h={50}
+              onClick={() => deleteModalList(index)}
+            ></Button>
           </Row>
         </Column>
       </Box>

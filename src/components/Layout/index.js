@@ -74,6 +74,8 @@ export default function Layout({ getCookies, children }) {
         <aside
           style={{
             display: visible && "flex",
+            position: visible && "absolute",
+            zIndex: 1,
           }}
         >
           <Column>

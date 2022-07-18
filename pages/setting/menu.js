@@ -57,7 +57,7 @@ export default function Menu() {
   const { openModal } = useContext(ModalContext);
   return (
     <Layout>
-      <Column sx={{ gap: 4.7, width: { xs: "100%", sm: 550 } }}>
+      <Column sx={{ gap: 4.7, width: { xs: "100%", sm: "100%", md: 550 } }}>
         <Column sx={{ gap: 1 }}>
           <Typography variant="h1">DB 추가</Typography>
           <RowLabel label="제목" label_w={68}>

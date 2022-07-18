@@ -4,6 +4,7 @@ import NeedConfirm from "./share/NeedConfirm";
 import ReadFile from "./share/ReadFile";
 import Result from "./dna/Result";
 import Area from "./setting/Area";
+import Change from "./bojang/ChangeOrg";
 
 import { useContext } from "react";
 
@@ -19,6 +20,7 @@ export default function Modal() {
       {modal === "readFile" && <ReadFile />}
       {modal === "result" && <Result />}
       {modal === "area" && <Area />}
+      {modal === "change" && <Change />}
     </>
   );
 }

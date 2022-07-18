@@ -55,7 +55,17 @@ export default function Dna() {
 
   return (
     <Layout>
-      <Column sx={{ width: 463, gap: 2 }}>
+      <Column
+        sx={{
+          width: {
+            lg: 463,
+            md: 463,
+            sm: "100%",
+            xs: "100%",
+          },
+          gap: 2,
+        }}
+      >
         <Typography variant="h1">고객 정보</Typography>
         <RowLabel label="등록처" fs="h6">
           text

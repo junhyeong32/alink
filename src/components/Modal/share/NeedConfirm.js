@@ -43,7 +43,12 @@ export default function NeedConfirm({ doubleVisible, setdoubleVisible }) {
   const [cookies] = useCookies();
 
   const { visible, closeModal, modalContent } = useContext(ModalContext);
-  const { contents, action, buttonText = "승인" } = modalContent;
+  const {
+    contents,
+    action,
+    buttonText = "승인",
+    actionButtonColor,
+  } = modalContent;
 
   // useEffect(async () => {
   //   if (!action) return;

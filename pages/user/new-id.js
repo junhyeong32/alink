@@ -31,7 +31,7 @@ const rowLabelWidth = {
   width: {
     lg: "40%",
     md: "60%",
-    sm: "60%",
+    sm: "100%",
     xs: "100%",
   },
 };
