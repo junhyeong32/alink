@@ -10,6 +10,8 @@ import "../styles/globals.css";
 import { SnackbarProvider } from "notistack";
 import { OrganizationProvider } from "../src/contexts/OrganizationListContext";
 import { ModalProvider } from "../src/contexts/ModalContext";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -39,7 +41,9 @@ export default function MyApp({
           <CssBaseline />
           <ModalProvider>
             <OrganizationProvider>
-              <Component {...pageProps} />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Component {...pageProps} />
+              </LocalizationProvider>
             </OrganizationProvider>
           </ModalProvider>
         </ThemeProvider>

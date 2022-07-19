@@ -116,6 +116,7 @@ const RenderInput = forwardRef((props, ref) => {
         placeholder: "YYYY-MM-DD",
         style: { textAlign: "center" },
       }}
+      {...props}
       value={props.value}
       onClick={props.onClick}
       onChange={props.onChange}
@@ -146,7 +147,13 @@ export function InformationDateInput({
       }}
     >
       <Typography variant="h6">{title}</Typography>
-      <LocalizationProvider className="date" dateAdapter={AdapterDateFns}>
+      <RenderInput
+        id="date"
+        type="date"
+        defaultValue="2017-05-24"
+        sx={{ width: 220 }}
+      />
+      {/* <LocalizationProvider  der className="date" dateAdapter={AdapterDateFns}>
         <DateRangePicker
           calendars={2}
           value={value}
@@ -176,7 +183,7 @@ export function InformationDateInput({
             </React.Fragment>
           )}
         />
-      </LocalizationProvider>
+      </LocalizationProvider> */}
     </Column>
   );
 }

@@ -127,3 +127,11 @@ body
   overflow-y: scroll;
   overflow-x: scroll;
 }
+
+.DateRangePicker__Month {
+  width: 100%;
+}
+
+.DateRangePicker__CalendarSelection--is-pending {
+  background-color: #0d1d41 !important;
+}

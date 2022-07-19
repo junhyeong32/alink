@@ -31,25 +31,41 @@ import {
 } from "../../src/data/user";
 import { argument_status } from "../../src/data/share/MenuByTextList";
 import ExcelButton from "../../src/components/Button/Excel";
-import { LabelUnderLineInput, DateInput } from "../../src/components/Input";
+import {
+  LabelUnderLineInput,
+  DateInput,
+  Date1,
+} from "../../src/components/Input";
 import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
 import { styles } from "../../src/styles/bojang";
 import { ModalContext } from "../../src/contexts/ModalContext";
+import originalMoment from "moment";
+import { extendMoment } from "moment-range";
+import { useEffect } from "react";
+const moment = extendMoment(originalMoment);
 
 export default function User() {
   const router = useRouter();
   const [area, setArea] = useState("");
   const [headquarters, setHeadquarters] = useState("");
   const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
   const [excel, setExcel] = useState("");
-
-  const [date_range, setDateRange] = useState(new Date());
+  const [date_range, setDateRange] = useState(
+    moment.range(moment().clone().subtract(7, "days"), moment().clone())
+  );
+  const [date, setDate] = useState(null);
 
   const { openModal, closeModal } = useContext(ModalContext);
+  useEffect(() => {
+    setDate(
+      `${date_range.start.format("YYYY-MM-DD")} ~ ${date_range.end.format(
+        "YYYY-MM-DD"
+      )}`
+    );
+  }, [date_range]);
 
   return (
     <Layout>
@@ -109,7 +125,10 @@ export default function User() {
             <Column sx={styles.second_input_column}>
               <SelectInput title="소속명" menuItems={{}} />
               <SelectInput title="등록처" menuItems={{}} />
-              <SelectInput
+              <DateInput
+                value={date_range}
+                setValue={setDateRange}
+                textValue={date}
                 title={
                   <>
                     <Row
@@ -124,6 +143,7 @@ export default function User() {
                         fs={"h6"}
                         color={"primary.white"}
                         h={14}
+                        action={() => setDate(moment().format("YYYY-MM-DD"))}
                       />
                       <Button
                         text="어제"
@@ -131,6 +151,11 @@ export default function User() {
                         fs={"h6"}
                         color={"primary.white"}
                         h={14}
+                        action={() =>
+                          setDate(
+                            moment().subtract(1, "days").format("YYYY-MM-DD")
+                          )
+                        }
                       />
                       <Button
                         text="이번주"
@@ -138,6 +163,11 @@ export default function User() {
                         fs={"h6"}
                         color={"primary.white"}
                         h={14}
+                        action={() =>
+                          setDate(
+                            moment().subtract(7, "days").format("YYYY-MM-DD")
+                          )
+                        }
                       />
                       <Button
                         text="지난달"
@@ -145,6 +175,11 @@ export default function User() {
                         fs={"h6"}
                         color={"primary.white"}
                         h={14}
+                        // action={() =>
+                        //   setDate(
+                        //     moment().subtract(7, "days").format("YYYY-MM-DD")
+                        //   )
+                        // }
                       />
                     </Row>
                   </>
