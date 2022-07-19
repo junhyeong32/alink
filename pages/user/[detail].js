@@ -45,6 +45,9 @@ export default function Detail() {
 
   console.log(rank);
 
+  //TODO
+  // new-id랑 똑같이
+
   return (
     <Layout>
       <Column sx={{ p: "40px", gap: "20px" }}>
@@ -111,7 +114,7 @@ export default function Detail() {
             </RowLabel>
             <RowLabel label="성명" sx={rowLabelWidth} label_w={83}>
               <OutLineInput w="50%" />
-            </RowLabel>
+          </RowLabel>
           </>
         ) : (
           <RowLabel label="이용자명" sx={rowLabelWidth} label_w={83}>
@@ -142,6 +145,9 @@ export default function Detail() {
         <RowLabel label="연락처" sx={rowLabelWidth} label_w={83}>
           <OutLineInput w="50%" />
         </RowLabel>
+        {/* todo 
+        date input
+        */}
         {rank !== "협력사" && (
           <RowLabel label="생년월일" sx={rowLabelWidth} label_w={83}>
             <OutLineInput w="50%" />

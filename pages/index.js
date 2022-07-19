@@ -1,10 +1,19 @@
 import Layout from "../src/components/Layout";
-import { LicenseInfo } from "@mui/x-license-pro";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-LicenseInfo.setLicenseKey(
-  "x0jTPl0USVkVZV0SsMjM1kDNyADM5cjM2ETPZJVSQhVRsIDN0YTM6IVREJ1T0b9586ef25c9853decfa7709eee27a1e"
-);
-
-export default function Home() {
+export default function Home({ getCookies }) {
+  const router = useRouter();
+  useEffect(() => {
+    !getCookies && router.replace("/login");
+  }, []);
   return <Layout />;
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      getCookies: context.req.cookies.user_info || null,
+    },
+  };
 }

@@ -52,6 +52,7 @@ export default function Db() {
   const [date_range, setDateRange] = useState([null, null]);
 
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
+  
   return (
     <Layout>
       <Column>

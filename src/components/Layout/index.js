@@ -10,6 +10,7 @@ import {
   Container,
   Divider,
   CircularProgress,
+  Switch,
 } from "@mui/material";
 import Row from "../Box/Row";
 import Column from "../Box/Column";
@@ -18,7 +19,7 @@ import { menuText, img_src, menu_link } from "../../data/home";
 import checkLogin from "../../hooks/account/useCheckLogin";
 import Button from "../Button";
 import Modal from "../Modal";
-
+import CustomSwitch from "../Switch";
 export default function Layout({ getCookies, children }) {
   const router = useRouter();
   const [menu_list, setMenuList] = useState([]);
@@ -145,9 +146,29 @@ export default function Layout({ getCookies, children }) {
                 rowGap: 1.2,
               }}
             >
+              {/* TODO 
+              스위치 스타일 바구기
+              */}
               {menuText.map((menu, key) => {
-                if (menu === "AP 관리" && cookies.user_info?.rank === "AP") {
-                  return;
+                if (
+                  menu === "보장 리스트" ||
+                  menu === "재무 리스트" ||
+                  menu === "유전자 리스트"
+                ) {
+                  return (
+                    <Row justifyContent={"between"}>
+                      <MenuBox
+                        key={key}
+                        w={92}
+                        text={menu}
+                        link={menu_link[key]}
+                      />
+                      <Typography variant="h5" color="primary.white">
+                        0
+                      </Typography>
+                      <CustomSwitch />
+                    </Row>
+                  );
                 } else {
                   return (
                     <MenuBox key={key} text={menu} link={menu_link[key]} />

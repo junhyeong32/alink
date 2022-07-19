@@ -3,13 +3,13 @@ import { Box, Button, Typography } from "@mui/material";
 import Row from "./Row";
 import { useRouter } from "next/router";
 
-export default function MenuBox({ img_src, text, link }) {
+export default function MenuBox({ img_src, w, text, link }) {
   const router = useRouter();
   return (
     <Button
       onClick={() => router.push(link)}
       sx={{
-        width: "100%",
+        width: w || "100%",
         columnGap: "10.6px",
         display: "flex",
         justifyContent: "flex-start",

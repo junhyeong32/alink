@@ -29,7 +29,6 @@ export default function Login() {
     setLoading(true);
     const res = (
       await Axios.Post("user/signin", {
-        platform: "web",
         id: id,
         password: password,
       })
@@ -37,13 +36,15 @@ export default function Login() {
     // A0000001
     // 830223 사장
 
-    if (res?.web_token) {
+    console.log(res);
+
+    if (res) {
       setCookie("user_info", res, {
         path: "/",
         maxAge: 86400,
       });
 
-      setCookie("access_token", res?.web_token, {
+      setCookie("access_token", res?.access_token, {
         path: "/",
         maxAge: 86400,
       });

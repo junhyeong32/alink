@@ -19,6 +19,7 @@ export default function CustomButton({
   text,
   fs,
   sx,
+  ...props
 }) {
   return (
     <Button
@@ -30,6 +31,7 @@ export default function CustomButton({
         height: h,
         ...sx,
       }}
+      {...props}
       onClick={action}
     >
       <Typography variant={fs} color={color || "primary.white"}>

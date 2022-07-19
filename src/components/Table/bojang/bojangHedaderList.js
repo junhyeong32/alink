@@ -1,6 +1,7 @@
 export const bojangHeaderList = [
   "",
   "번호",
+  "고객명",
   "휴대폰 번호",
   "나이",
   "지역",

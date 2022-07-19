@@ -23,6 +23,9 @@ export default function Detail() {
   const [date, setDate] = useState("");
   const [excel, setExcel] = useState("");
 
+  //TODO
+  // 상태 - 아이콘
+
   return (
     <Layout>
       <Column sx={{ gap: 2.8 }}>
@@ -33,6 +36,7 @@ export default function Detail() {
               label={label}
               fs={"h4"}
               key={key}
+              label_w={60}
               sx={{
                 width: { lg: 481, md: 481, sm: 481, xs: "100%" },
               }}
@@ -41,9 +45,15 @@ export default function Detail() {
             </RowLabel>
           ))}
         </Column>
-        <Column sx={{ gap: 1 }}>
-          <Typography variant="h1">DB관리</Typography>
+        <Column sx={{ gap: 3 }}>
+          <Typography variant="h1" mb={1}>
+            DB관리
+          </Typography>
           <RowLabel label="보장할당">
+            {/* TODO
+          버튼 아님
+          그냥 보여주기용
+          */}
             <Button
               text="OFF"
               variant={"contained"}

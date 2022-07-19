@@ -8,8 +8,9 @@ import {
   Typography,
   Select,
   MenuItem,
-  Checkbox,
   Box,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 
 import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
@@ -50,6 +51,13 @@ export default function Detail() {
   const [date_range, setDateRange] = useState(new Date());
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
+  //TODO
+  // 체크박스
+  // 녹취파일 업로드
+  // 녹취파일 태그 입력
+  // 프린트 
+
+
   return (
     <Layout>
       <Column justifyContent={"between"} sx={{ gap: 2.8 }}>
@@ -74,7 +82,24 @@ export default function Detail() {
             <RowLabel label="나이">
               <OutLineInput />
             </RowLabel>
-            <RowLabel label="성명"></RowLabel>
+            <RowLabel label="성별">
+              <FormControlLabel
+                control={<Checkbox />}
+                label={
+                  <RoundColorBox>
+                    <Typography variant="h6">남</Typography>
+                  </RoundColorBox>
+                }
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label={
+                  <RoundColorBox>
+                    <Typography variant="h6">여</Typography>
+                  </RoundColorBox>
+                }
+              />
+            </RowLabel>
             <RowLabel label="결혼여부"></RowLabel>
             <RowLabel label="특이사항">
               <DisableBox text="text" h={90} />

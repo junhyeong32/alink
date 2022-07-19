@@ -35,7 +35,7 @@ import SelectInput, {
 import Button from "../../src/components/Button";
 import RowLabel from "../../src/components/Box/RowLabel";
 
-export default function Dna() {
+export default function DBApply() {
   const router = useRouter();
   const [area, setArea] = useState("");
   const [headquarters, setHeadquarters] = useState("");
@@ -44,6 +44,9 @@ export default function Dna() {
   const [excel, setExcel] = useState("");
 
   const [date_range, setDateRange] = useState([null, null]);
+
+  //TODO
+  // 모달창
 
   return (
     <Layout>

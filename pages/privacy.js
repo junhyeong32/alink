@@ -102,12 +102,7 @@ export default function Privacy() {
           fs={"h6"}
           w={90}
           h={22}
-          action={() =>
-            openModal({
-              modal: "needConfirm",
-              contetns: "개인정보수정을 진행하시겠습니까? ",
-            })
-          }
+          //TODO enque 수정됫습니다 변경
         />
       </Column>
     </Layout>

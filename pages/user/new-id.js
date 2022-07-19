@@ -42,8 +42,10 @@ export default function User() {
   const [branch, setBranch] = useState("");
   const [date, setDate] = useState("");
   const [excel, setExcel] = useState("");
-
-  console.log(rank);
+  //TODO
+  //지점명 select
+  //팀명 select
+  //생년월일 datepicker
 
   return (
     <Layout>
@@ -110,7 +112,7 @@ export default function User() {
             <OutLineSelectInput w="50%" menuItems={{}} />
           </RowLabel>
         )}
-        {rank === "협력사" && (
+        {rank === "부협력사" && (
           <RowLabel label="협력사명" sx={rowLabelWidth} label_w={83}>
             <OutLineSelectInput w="50%" menuItems={{}} />
           </RowLabel>
@@ -176,9 +178,12 @@ export default function User() {
         <RowLabel label="연락처" sx={rowLabelWidth} label_w={83}>
           <OutLineInput w="50%" />
         </RowLabel>
-        <RowLabel label="생년월일" sx={rowLabelWidth} label_w={83}>
-          <OutLineInput w="50%" />
-        </RowLabel>
+        {rank !== "협락사" ||
+          (rank !== "부협락사" && (
+            <RowLabel label="생년월일" sx={rowLabelWidth} label_w={83}>
+              <OutLineInput w="50%" />
+            </RowLabel>
+          ))}
         <Row justifyContent={"center"} sx={{ width: "40%", gap: "15px" }}>
           <Button
             text="생성"

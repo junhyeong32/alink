@@ -3,38 +3,9 @@ import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
 import Row from "../../src/components/Box/Row";
-import {
-  Container,
-  Typography,
-  Select,
-  MenuItem,
-  Checkbox,
-  Box,
-  FormLabel,
-  FormControlLabel,
-  Radio,
-} from "@mui/material";
-
-import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
-import {
-  select_title,
-  area_input,
-  headquarters_input,
-  branch_input,
-} from "../../src/components/Table/data-status/ReceptionStatusList";
-import TopLabelContents from "../../src/components/Box/TopLableContents";
-import RoundColorBox from "../../src/components/Box/RoundColorBox";
-import {
-  status_list,
-  status_bgcolor,
-  rank_list,
-  rank_bgcolor,
-} from "../../src/data/user";
+import { Typography, Box, FormControlLabel, Radio } from "@mui/material";
 import Button from "../../src/components/Button";
 import Input, { DateInput, OutLineInput } from "../../src/components/Input";
-import SelectInput, {
-  OutLineSelectInput,
-} from "../../src/components/Input/Select";
 import RowLabel from "../../src/components/Box/RowLabel";
 import {
   list_filter,
@@ -55,6 +26,7 @@ export default function Menu() {
 
   const [date_range, setDateRange] = useState([null, null]);
   const { openModal } = useContext(ModalContext);
+  
   return (
     <Layout>
       <Column sx={{ gap: 4.7, width: { xs: "100%", sm: "100%", md: 550 } }}>
