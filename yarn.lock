@@ -2142,10 +2142,10 @@
   "resolved" "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz"
   "version" "1.2.6"
 
-"moment-range@^3.0.3":
-  "integrity" "sha512-VqJIVDs6wUzCjTkSmkOwqRseqAo3+En2rdsKEKIWtPxzo+uJdRQGjU2HWJr6/zL3fZJdNtpddyDkB4Pfyg8KLQ=="
-  "resolved" "https://registry.npmjs.org/moment-range/-/moment-range-3.1.1.tgz"
-  "version" "3.1.1"
+"moment-range@^3.0.3", "moment-range@^4.0.2":
+  "integrity" "sha512-n8sceWwSTjmz++nFHzeNEUsYtDqjgXgcOBzsHi+BoXQU2FW+eU92LUaK8gqOiSu5PG57Q9sYj1Fz4LRDj4FtKA=="
+  "resolved" "https://registry.npmjs.org/moment-range/-/moment-range-4.0.2.tgz"
+  "version" "4.0.2"
   dependencies:
     "es6-symbol" "^3.1.0"
 

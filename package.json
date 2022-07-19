@@ -22,6 +22,7 @@
     "git": "^0.1.5",
     "material": "^0.4.3",
     "moment": "^2.29.4",
+    "moment-range": "^4.0.2",
     "next": "12.1.6",
     "notistack": "^2.0.4",
     "react": "18.1.0",
