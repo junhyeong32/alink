@@ -29,7 +29,15 @@ export default function MenuBox({ img_src, w, text, link }) {
       }}
     >
       {/* <Image src={img_src} width={22} height={22} alt="setting" /> */}
-      <Typography variant="h4" color="primary.white">
+      <Typography
+        variant="h4"
+        color="primary.white"
+        sx={{
+          borderBottom: link === router.asPath && "2px solid white",
+          pb: "2px",
+          // textDecoration:  "underline" : "none",
+        }}
+      >
         {text}
       </Typography>
     </Button>

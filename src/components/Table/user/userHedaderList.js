@@ -7,10 +7,8 @@ export const userHeaderList = [
   "아이디",
   "이용자명",
   "연락처",
-  "/left_arrow.png",
   "보장할당",
   "재무할당",
   "유전자할당",
-  "/right_arrow.png",
-  "신청일",
+  // "신청일",
 ];

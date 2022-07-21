@@ -5,7 +5,6 @@ import Column from "../src/components/Box/Column";
 import Row from "../src/components/Box/Row";
 import Button from "../src/components/Button";
 import AuthorityTable from "../src/components/Table/authority";
-import OrganizationList from "../src/components/OrganizationList/List";
 import useGetGroupList from "../src/hooks/share/useGetGroupList";
 
 export default function Authority() {
@@ -14,7 +13,7 @@ export default function Authority() {
   return (
     <Layout>
       <Row sx={{ width: "100%" }}>
-        <OrganizationList />
+        {/* <OrganizationList /> */}
         {/* group_list={group_list} */}
         <Column sx={{ width: "80%" }}>
           <Row justifyContent={"end"} sx={{ width: "100%", gap: 1, mb: 1 }}>

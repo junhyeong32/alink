@@ -6,23 +6,29 @@ export default function RoundColorBox({
   wrap,
   children,
   sx,
+  w,
+  fc,
+  fs,
   ...props
 }) {
   return (
     <Box
       sx={{
+        width: w,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: "5px",
         height: "20px",
         background: background,
-        color: "#FFFFFF",
+        color: fc || "#FFFFFF",
         p: "7px",
         whiteSpace: "nowrap",
+        fontSize: fs,
+        fontWeight: 700,
         ...sx,
       }}
-      props
+      {...props}
     >
       {children}
     </Box>

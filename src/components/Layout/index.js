@@ -20,17 +20,14 @@ import checkLogin from "../../hooks/account/useCheckLogin";
 import Button from "../Button";
 import Modal from "../Modal";
 import CustomSwitch from "../Switch";
-export default function Layout({ getCookies, children }) {
+export default function Layout({ loading, getCookies, children }) {
   const router = useRouter();
   const [menu_list, setMenuList] = useState([]);
   const [current_menu, setCurrentMenu] = useState();
   const [cookies, setCookie, removeCookie] = useCookies();
   const [visible, setVisible] = useState(false);
-  //   const { modal_list, addModalList, deleteModalList } =
-  //     useContext(ModalContext);
-
-  //   useEffect(() => !getCookies && router.replace("/login"), []);
-  const is_loggedin = checkLogin();
+  const [rank, setRank] = useState(cookies?.user_info?.grade);
+  const [showChild, setShowChild] = useState(false);
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });
@@ -38,20 +35,17 @@ export default function Layout({ getCookies, children }) {
     router.replace("login");
   };
 
-  //   if (!is_loggedin)
-  //     return (
-  //       <Row
-  //         justifyContent="center"
-  //         alignItems="center"
-  //         sx={{
-  //           width: "100%",
-  //           mt: 5,
-  //           minHeight: "999px",
-  //         }}
-  //       >
-  //         <CircularProgress size="60px" thickness={5} color="primary" />
-  //       </Row>
-  //     );
+  useEffect(() => {
+    setShowChild(true);
+  }, []);
+
+  if (!showChild) {
+    return null;
+  }
+
+  if (typeof window === "undefined") {
+    return <></>;
+  }
 
   return (
     <>
@@ -112,25 +106,36 @@ export default function Layout({ getCookies, children }) {
               sx={{ mt: 5.2 }}
             >
               <Typography variant="h2" color="primary.white">
-                환영합니다.
-                {/* {cookies.user_info?.name} {cookies.user_info?.rank}님 */}{" "}
+                {cookies.user_info?.name} {rank}
               </Typography>
 
-              <Column justifyContent="between" alignItems={"start"}>
-                <Button
-                  text="이용권한"
-                  color="primary.white"
-                  fs="h7"
-                  sx={{ p: 0 }}
-                  action={() => router.push("/authority")}
-                />
-                <Button
-                  text="개인 정보 수정"
-                  color="primary.white"
-                  fs="h7"
-                  sx={{ p: 0 }}
-                  action={() => router.push("/privacy")}
-                />
+              <Column
+                justifyContent="between"
+                alignItems={"start"}
+                sx={{ mt: "3px", gap: 1 }}
+              >
+                {rank === "관리자" && (
+                  <Button
+                    text="이용권한"
+                    color="primary.white"
+                    fs="h7"
+                    sx={{ p: 0 }}
+                    action={() => router.push("/authority")}
+                  />
+                )}
+                {(rank === "관리자" ||
+                  rank === "협력사부운영자" ||
+                  rank === "협력사운영자" ||
+                  rank === "부관리자") && (
+                  <Button
+                    text="개인 정보 수정"
+                    color="primary.white"
+                    fs="h7"
+                    sx={{ p: 0 }}
+                    action={() => router.push("/privacy")}
+                  />
+                )}
+
                 <Button
                   text="로그아웃"
                   color="primary.white"
@@ -151,12 +156,12 @@ export default function Layout({ getCookies, children }) {
               */}
               {menuText.map((menu, key) => {
                 if (
-                  menu === "보장 리스트" ||
+                  (rank !== "관리자" && menu === "보장 리스트") ||
                   menu === "재무 리스트" ||
                   menu === "유전자 리스트"
                 ) {
                   return (
-                    <Row justifyContent={"between"}>
+                    <Row justifyContent={"between"} key={key}>
                       <MenuBox
                         key={key}
                         w={92}
@@ -169,6 +174,14 @@ export default function Layout({ getCookies, children }) {
                       <CustomSwitch />
                     </Row>
                   );
+                } else if (
+                  (rank === "본부장" ||
+                    rank === "지점장" ||
+                    rank === "팀장" ||
+                    rank === "담당자") &&
+                  (menu === "문자 발송 내역" || menu === "설정")
+                ) {
+                  return;
                 } else {
                   return (
                     <MenuBox key={key} text={menu} link={menu_link[key]} />
@@ -191,7 +204,7 @@ export default function Layout({ getCookies, children }) {
             overflowY: "scroll",
           }}
         >
-          {children}
+          {loading ? "loading" : children}
           <Modal />
         </Container>
       </main>

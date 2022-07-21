@@ -37,24 +37,34 @@ const style = {
   borderRadius: "10px",
 };
 
-export default function Change({ index, modal_props, deleteModalList }) {
-  const { visible, openModal, closeModal, modalContent } =
-    useContext(ModalContext);
+export default function Change() {
+  const {
+    visible,
+    openModal,
+    data = {},
+    closeModal,
+    modalContent,
+  } = useContext(ModalContext);
+
+  console.log("data", data);
+
+  const { title, buttonName, buttonAction } = modalContent;
   return (
     <Modal open={visible} onClose={closeModal}>
       <Box>
         <Column alignItems={"center"} justifyContent={"between"} sx={style}>
-          <TopLabelContents title="DB 조직 변경" fs="h2" />
-          <UnderLineSelectInput menuItems={{}} />
+          <TopLabelContents title={title} fs="h2" />
+          <UnderLineSelectInput menuItems={data} />
           <Row sx={{ gap: 2 }}>
             <Button
-              text="변경"
+              text={buttonName}
               variant="contained"
               bgColor="primary"
               color="primary.white"
               fs="h6"
               w={97}
               h={30}
+              action={buttonAction}
             />
             <Button
               text="취소"
@@ -64,6 +74,7 @@ export default function Change({ index, modal_props, deleteModalList }) {
               fs="h6"
               w={97}
               h={30}
+              action={closeModal}
             />
           </Row>
         </Column>

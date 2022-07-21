@@ -12,19 +12,12 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { useState } from "react";
-import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
-import {
-  select_title,
-  area_input,
-  headquarters_input,
-  branch_input,
-} from "../../src/components/Table/data-status/ReceptionStatusList";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
 import RowLabel from "../../src/components/Box/RowLabel";
 import UnderLineInput, { OutLineInput } from "../../src/components/Input";
 import Button from "../../src/components/Button";
 import { OutLineSelectInput } from "../../src/components/Input/Select";
-import { status, rank_list } from "../../src/data/share/MenuByTextList";
+import { status_list, rank_list } from "../../src/data/share/MenuByTextList";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import { styles } from "../../src/styles/bojang";
 const rowLabelWidth = {
@@ -56,7 +49,7 @@ export default function User() {
           fs="h4"
           sx={{ ...styles.argument_status_contents }}
         >
-          {Object.entries(status).map(([list, color], key) => {
+          {Object.entries(status_list).map(([list, color], key) => {
             if (key === 1 || key === 2)
               return (
                 <FormControlLabel

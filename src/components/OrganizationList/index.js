@@ -4,7 +4,7 @@ import { Button, Typography } from "@mui/material";
 import Column from "../Box/Column";
 import Row from "../Box/Row";
 import styles from "./styles";
-import useGetGroupList from "../../hooks/share/useGetGroupList";
+import useGetGroupList from "../../hooks/apManagement/useGetGroupList";
 import { ModalContext } from "../../contexts/ModalContext";
 import { useContext } from "react";
 import { OrganizationContext } from "../../contexts/OrganizationListContext";
@@ -30,8 +30,8 @@ export default function OrganizationList() {
         alignItems="center"
         sx={{
           ...styles.organization_container,
-          // position: open && router.asPath !== "/apManagement" && "absolute",
-          // display: open ? "flex" : "none",
+          position: open && router.asPath !== "/apManagement" && "absolute",
+          display: open ? "flex" : "none",
         }}
       >
         <Row
@@ -41,7 +41,7 @@ export default function OrganizationList() {
             width: "100%",
             // padding: "20px 18px 0 0",
             cursor: "pointer",
-            // display: router.asPath === "/apManagement" && "none",
+            display: router.asPath === "/apManagement" && "none",
           }}
         >
           <Image

@@ -1,9 +1,10 @@
 import { Radio, Box } from "@mui/material";
 import React from "react";
 import Image from "next/image";
-export default function RadioInput({ checked, onClick }) {
+export default function RadioInput({ checked, onClick, ...props }) {
   return (
     <Radio
+      {...props}
       checked={checked}
       onClick={onClick}
       icon={

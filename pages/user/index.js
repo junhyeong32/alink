@@ -19,7 +19,7 @@ import TopLabelContents from "../../src/components/Box/TopLableContents";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
 
 import {
-  status,
+  status_list,
   rank_list,
   argument_status,
 } from "../../src/data/share/MenuByTextList";
@@ -28,10 +28,42 @@ import Input, { LabelUnderLineInput } from "../../src/components/Input";
 import SelectInput from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
 import { ModalContext } from "../../src/contexts/ModalContext";
+import useGetUsers from "../../src/hooks/user/useGetUsers";
 
 export default function User() {
   const router = useRouter();
-  const [rank, setRank] = useState();
+  //filter
+
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(20);
+  const [status, setStatus] = useState();
+  const [grade, setGrade] = useState();
+  const [head_office_org_code, setHead_office_org_code] = useState();
+  const [org_code, setOrgCode] = useState();
+  const [geo, setGeo] = useState();
+  const [email, setEmail] = useState();
+  const [id, setId] = useState();
+  const [name, setName] = useState();
+  const [phone, setPhone] = useState();
+  const [excel, setExcel] = useState();
+
+  const { users, allocation_total, getUsers, isUsersPending } = useGetUsers(
+    page,
+    count,
+    status,
+    grade,
+    head_office_org_code,
+    org_code,
+    geo,
+    email,
+    id,
+    name,
+    phone,
+    excel
+  );
+
+  //data
+  console.log("users", users);
 
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
@@ -50,7 +82,7 @@ export default function User() {
               },
             }}
           >
-            {Object.entries(status).map(([list, color], key) => (
+            {Object.entries(status_list).map(([list, color], key) => (
               <FormControlLabel
                 key={key}
                 control={<Checkbox />}
@@ -196,11 +228,7 @@ export default function User() {
           </Row>
         </Column>
 
-        <UserTable
-          openModal={openModal}
-          closeModal={closeModal}
-          modalContent={modalContent}
-        />
+        <UserTable data={users} allocation_total={allocation_total} />
       </Column>
     </Layout>
   );

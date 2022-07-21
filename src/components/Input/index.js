@@ -66,6 +66,7 @@ export function OutLineInput({
   sx,
   w,
   h,
+  ...props
 }) {
   return (
     <Box sx={{ ...sx, width: w }}>
@@ -90,10 +91,13 @@ export function OutLineInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => {
-          setValue(e.target.value);
+          if (setValue) {
+            setValue(e.target.value);
+          }
+
           e.preventDefault();
         }}
-        props="true"
+        {...props}
       />
     </Box>
   );

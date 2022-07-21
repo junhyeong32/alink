@@ -6,8 +6,7 @@ import Row from "../../src/components/Box/Row";
 import Button from "../../src/components/Button";
 import MenuTable from "../../src/components/Table/setting/menu";
 import PopupTable from "../../src/components/Table/setting/popup";
-
-import { InformationDateInput } from "../../src/components/InformationInput";
+import useGetMenus from "../../src/hooks/setting/useGetMenus";
 
 export default function Dna() {
   const router = useRouter();
@@ -18,7 +17,7 @@ export default function Dna() {
   const [date, setDate] = useState("");
   const [excel, setExcel] = useState("");
 
-  const [date_range, setDateRange] = useState([null, null]);
+  const { menus } = useGetMenus();
 
   return (
     <Layout>
@@ -56,7 +55,7 @@ export default function Dna() {
                 : router.push("setting/menu")
             }
           />
-          {menu === "popup" ? <PopupTable /> : <MenuTable />}
+          {menu === "popup" ? <PopupTable /> : <MenuTable data={menus} />}
         </Column>
       </Column>
     </Layout>

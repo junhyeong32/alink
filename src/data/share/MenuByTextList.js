@@ -1,4 +1,4 @@
-export const status = {
+export const status_list = {
   전체: "#909090",
   승인: "#3532C7",
   미승인: "#FF5432",

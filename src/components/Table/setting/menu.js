@@ -16,6 +16,9 @@ import Button from "../../Button";
 import Row from "../../Box/Row";
 import { ModalContext } from "../../../contexts/ModalContext";
 import { useRouter } from "next/router";
+import api from "../../../utility/api";
+import { getAccessToken } from "../../../utility/getCookie";
+import { useSnackbar } from "notistack";
 
 const Root = styled("div")`
   table {
@@ -41,12 +44,12 @@ const Root = styled("div")`
   }
 `;
 
-export default function MenuTable({}) {
+export default function MenuTable({ data }) {
   const router = useRouter();
-  const [all_checked, setAllChecked] = useState(false);
-  const [checked, setChecked] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
 
   const { openModal, closeModal } = useContext(ModalContext);
+  console.log(data);
 
   return (
     <Root sx={{ width: "100%" }}>
@@ -67,50 +70,94 @@ export default function MenuTable({}) {
           </TableHead>
 
           <TableBody>
-            <TableRow>
-              <TableCell>
-                <Row sx={{ gap: 1 }}>
-                  <Box sx={{ cursor: "pointer" }}>
-                    <Image src="/up.png" width={14} height={9} alt="" />
-                  </Box>
-                  <Box sx={{ cursor: "pointer" }}>
-                    <Image src="/down.png" width={14} height={9} alt="" />
-                  </Box>
-                </Row>
-              </TableCell>
-              <TableCell align="center">
-                <Row sx={{ gap: 1 }}>
-                  <Button
-                    variant="contained"
-                    bgColor="primary"
-                    text="수정"
-                    color="primary.white"
-                    fs="h6"
-                    w={56}
-                    h={17}
-                    action={() => router.push("/setting/menu")}
-                  />
-                  <Button
-                    variant="contained"
-                    bgColor="red"
-                    text="삭제"
-                    color="primary.white"
-                    fs="h6"
-                    w={56}
-                    h={17}
-                    action={() =>
-                      openModal({
-                        modal: "needConfirm",
-                        content: {
-                          buttonText: "삭제",
-                          contents: "팝업을 삭제하시겠습니까?",
-                        },
-                      })
-                    }
-                  />
-                </Row>
-              </TableCell>
-            </TableRow>
+            {data?.map((list, key) => {
+              return (
+                <TableRow align="center" key={key}>
+                  <TableCell align="center">
+                    <Row justifyContent={"center"} sx={{ gap: 1 }}>
+                      <Image
+                        src="/up.png"
+                        width={14}
+                        height={9}
+                        alt=""
+                        className="pointer"
+                      />
+                      <Image
+                        src="/down.png"
+                        width={14}
+                        height={9}
+                        alt=""
+                        className="pointer"
+                      />
+                    </Row>
+                  </TableCell>
+                  <TableCell align="center">
+                    {list?.organization.name}
+                  </TableCell>
+                  <TableCell align="center">{list?.title}</TableCell>
+                  <TableCell align="center">
+                    {list?.cooperation_organizations.map((cop, key) => {
+                      if (list?.cooperation_organizations.length === key + 1) {
+                        return cop.name;
+                      }
+                      return cop.name + ",";
+                    })}
+                  </TableCell>
+                  <TableCell align="center">
+                    {list?.is_activated === 0 ? "비활성화" : "활성화"}
+                  </TableCell>
+                  <TableCell align="center">
+                    {list?.updated_date.slice(0, 10)}
+                  </TableCell>
+                  <TableCell align="center">
+                    <Row justifyContent={"center"} sx={{ gap: 1 }}>
+                      <Button
+                        variant="contained"
+                        bgColor="primary"
+                        text="수정"
+                        color="primary.white"
+                        fs="h6"
+                        w={56}
+                        h={17}
+                        action={() => router.push(`/setting/menu/${list?.pk}`)}
+                      />
+                      <Button
+                        variant="contained"
+                        bgColor="red"
+                        text="삭제"
+                        color="primary.white"
+                        fs="h6"
+                        w={56}
+                        h={17}
+                        action={() =>
+                          openModal({
+                            modal: "needConfirm",
+                            contents: {
+                              buttonText: "삭제",
+                              contentt: {
+                                text: "팝업을 삭제하시겠습니까?",
+                                action: async () => {
+                                  const res = api.Post("db/menu/delete", {
+                                    token: getAccessToken(),
+                                    db_pk: list?.pk,
+                                  });
+
+                                  if (res?.code === 200)
+                                    enqueueSnackbar("삭제되었습니다.", {
+                                      variant: "success",
+                                      autoHideDuration: 2000,
+                                    });
+                                },
+                              },
+                            },
+                          })
+                        }
+                      />
+                    </Row>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>

@@ -1,6 +1,8 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import TreeView from "@mui/lab/TreeView";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TreeItem, { useTreeItem } from "@mui/lab/TreeItem";
 import clsx from "clsx";
 import Typography from "@mui/material/Typography";
@@ -15,17 +17,14 @@ import { useCookies } from "react-cookie";
 import getLastTeam from "../../hooks/share/getLastTeam";
 import { useRouter } from "next/router";
 
-const CustomContent = React.forwardRef(function CustomContent(
-  props,
-  ref
-  //   { setRowCheck, setRowUserInfo }
-) {
+const CustomContent = React.forwardRef(function CustomContent(props, ref) {
   const {
     classes,
     className,
     label,
     onClick,
     nodeId,
+    test,
     icon: iconProp,
     expansionIcon,
     displayIcon,
@@ -41,18 +40,13 @@ const CustomContent = React.forwardRef(function CustomContent(
     preventSelection,
   } = useTreeItem(nodeId);
 
-  const { addModalData, modal_data } = useContext(ModalContext);
+  const { addModalData, modal_data, modal_list } = useContext(ModalContext);
   const { addOrganizationData } = useContext(OrganizationContext);
 
   const router = useRouter();
   const [cookies, setCookie, removeCookie] = useCookies();
 
   const icon = iconProp || expansionIcon || displayIcon;
-
-  //   const handleMouseDown = (event) => {
-  //     console.log("1", event);
-  //     preventSelection(event);
-  //   };
 
   const handleExpansionClick = (event) => {
     handleExpansion(event);
@@ -105,6 +99,18 @@ const CustomContent = React.forwardRef(function CustomContent(
           });
         }
       })();
+    } else if (modal_list[1]?.name === "openSettingFsModal") {
+      addModalData(() => {
+        const new_data = [...modal_data];
+
+        new_data.push({
+          org_name:
+            event.target.offsetParent.childNodes[0].children[0].textContent,
+          org_code: nodeId,
+        });
+
+        return new_data;
+      });
     } else {
       addOrganizationData(nodeId);
     }
@@ -137,9 +143,11 @@ const CustomContent = React.forwardRef(function CustomContent(
   );
 });
 
-const CustomTreeItem = (props) => (
-  <TreeItem ContentComponent={CustomContent} {...props} />
-);
+const CustomTreeItem = (props) => {
+  return (
+    <TreeItem ContentComponent={CustomContent} {...props} test={props.test} />
+  );
+};
 
 const getAllCodeOfTree = (el) => {
   const arr = [];
@@ -158,6 +166,7 @@ const TreeViewRecursive = ({ el, depth }) => {
   return (
     <CustomTreeItem
       nodeId={el.code}
+      test={el?.name}
       label={
         <Row>
           <Typography variant="h6">{el?.name}</Typography>

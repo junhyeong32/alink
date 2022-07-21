@@ -36,8 +36,6 @@ export default function Login() {
     // A0000001
     // 830223 사장
 
-    console.log(res);
-
     if (res) {
       setCookie("user_info", res, {
         path: "/",

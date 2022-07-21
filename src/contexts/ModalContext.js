@@ -6,9 +6,12 @@ let ModalContext;
 const { Provider } = (ModalContext = createContext());
 
 const ModalProvider = ({ children }) => {
-  const { visible, modal, openModal, closeModal, modalContent } = useModal();
+  const {  modal, openModal, closeModal, modalContent, data } =
+    useModal();
   return (
-    <Provider value={{ visible, modal, openModal, closeModal, modalContent }}>
+    <Provider
+      value={{  modal, data, openModal, closeModal, modalContent }}
+    >
       {children}
     </Provider>
   );
