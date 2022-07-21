@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:9898/api/v1";
+const baseURL = "http://alinkapi.afg.kr/api/v1";
 
 const api = {
   Get: async (url, parms) => {
