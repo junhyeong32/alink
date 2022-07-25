@@ -49,7 +49,7 @@ export default function Menu() {
     const res = await Axios.Post("db/menu", {
       token: getAccessToken(),
       db_pk: undefined, //수정 시에만 필요한 값,
-      organization_code: organization,
+      organization_codes: organization, // 조직 코드 목록 (,)로 구분
       title: title,
       is_cooperated: is_cooperated,
       cooperation_organization_codes: cooperation_organization || undefined, //협력사 조직코드 (,)로 구분
