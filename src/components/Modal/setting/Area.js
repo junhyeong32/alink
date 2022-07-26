@@ -23,7 +23,7 @@ import { ModalContext } from "../../../contexts/ModalContext";
 import OutLineSelectInput from "../../Input/Select";
 // import AreaTable from "../../Table/setting/area";
 import NeedConfirmModal from "../share/NeedConfirm";
-import AreaTable from "../../Table/setting/area";
+import AreaTable from "../../Table/setting/Area";
 import BackgroundInput from "../../Input/Background";
 
 const style = {
