@@ -35,14 +35,14 @@ const style = {
   p: 2.7,
 };
 
-export default function NeedConfirm({ doubleVisible, setdoubleVisible }) {
+export default function NeedConfirm({ index }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [loading, setLoading] = useState(false);
   const [confirmLoading, setConfrmLoading] = useState(false);
   const [cookies] = useCookies();
 
-  const { visible, closeModal, modalContent } = useContext(ModalContext);
+  const { modal, closeModal, modalContent } = useContext(ModalContext);
   const {
     contents,
     action,
@@ -97,7 +97,10 @@ export default function NeedConfirm({ doubleVisible, setdoubleVisible }) {
   //   }
   // }, [document_code, action]);
   return (
-    <Modal open={visible} onClose={closeModal}>
+    <Modal
+      open={modal[index] === "needconfirm" ? true : false}
+      onClose={closeModal}
+    >
       <Box>
         <Column alignItems={"center"} justifyContent={"center"} sx={style}>
           <Column
@@ -106,11 +109,13 @@ export default function NeedConfirm({ doubleVisible, setdoubleVisible }) {
             sx={{ width: "100%", height: "100%", gap: "25px" }}
           >
             <TopLabelContents title="확인 필요" sx={{ pb: 1 }} />
-            {typeof contents === "object" ? (
+            {/* {typeof contents === "object" ? (
               contents
             ) : (
               <Typography>{contents}</Typography>
             )}
+            [] */}
+            {contents}
             <Row sx={{ gap: 2.5 }}>
               <Button
                 text={buttonText}
@@ -120,9 +125,6 @@ export default function NeedConfirm({ doubleVisible, setdoubleVisible }) {
                 h={30}
                 fs={"h4"}
                 action={() => {
-                  if (doubleVisible !== undefined) {
-                    setdoubleVisible(false);
-                  }
                   action();
                   closeModal();
                 }}
@@ -134,11 +136,7 @@ export default function NeedConfirm({ doubleVisible, setdoubleVisible }) {
                 bgColor={"gray"}
                 color={"primary.white"}
                 fs={"h4"}
-                action={
-                  doubleVisible !== undefined
-                    ? setdoubleVisible(false)
-                    : closeModal
-                }
+                action={closeModal}
               />
             </Row>
           </Column>

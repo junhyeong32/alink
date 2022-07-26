@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { userHeaderList } from "./userHedaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
@@ -21,12 +21,15 @@ import RoundColorBox from "../../Box/RoundColorBox";
 import { status_list, rank_list } from "../../../data/share/MenuByTextList";
 import Column from "../../Box/Column";
 import { useRouter } from "next/router";
+import { ModalContext } from "../../../contexts/ModalContext";
 
 export default function UserTable({ data, allocation_total }) {
   const router = useRouter();
   const [bojang, setBojang] = useState(false);
   const [db, setDb] = useState(false);
   const [dna, setDna] = useState(false);
+
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const Root = styled("div")`
     table {
@@ -71,6 +74,12 @@ export default function UserTable({ data, allocation_total }) {
                   </TableCell>
                 );
               })}
+              {allocation_total?.map((location, key) => (
+                <TableCell key={key} align="center">
+                  {location?.db.title}
+                  <Column>{location?.count}</Column>
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
 
@@ -136,87 +145,36 @@ export default function UserTable({ data, allocation_total }) {
                     {user?.phone}
                   </TableCell>
 
-                  <TableCell align="center" sx={{ width: 150 }}>
-                    <Row justifyContent={"center"} sx={{ gap: "10px" }}>
-                      <CustomSwitch
-                        checked={user?.allocations[0].is_activated === 1}
-                        onClick={(e) => {
-                          openModal({
-                            modal: "needConfirm",
-                            content: {
-                              contents: (
-                                <Typography variant="h6">
-                                  <Typography variant="small">text</Typography>
-                                  <br />
-                                  {bojang
-                                    ? "보장DB를 OFF으로 설정하시겠습니까?"
-                                    : "보장DB를 ON으로 설정하시겠습니까?"}
-                                </Typography>
-                              ),
-                              action: () => setBojang(e.target.checked),
-                              buttonText: "확인",
-                            },
-                          });
-                        }}
-                      />
-                      {user?.allocations[0]?.count} 개
-                    </Row>
-                  </TableCell>
-
-                  <TableCell align="center" sx={{ width: 150 }}>
-                    <Row justifyContent={"center"} sx={{ gap: "10px" }}>
-                      <CustomSwitch
-                        checked={user?.allocations[1].is_activated === 1}
-                        onClick={(e) => {
-                          openModal({
-                            modal: "needConfirm",
-                            content: {
-                              contents: (
-                                <Typography variant="h6">
-                                  <Typography variant="small">text</Typography>
-                                  <br />
-                                  {db
-                                    ? "재무B를 OFF으로 설정하시겠습니까?"
-                                    : "재무B를 ON으로 설정하시겠습니까?"}
-                                </Typography>
-                              ),
-                              action: () => setDb(e.target.checked),
-                              buttonText: "확인",
-                            },
-                          });
-                        }}
-                      />
-                      {user?.allocations[1]?.count} 개
-                    </Row>
-                  </TableCell>
-
-                  <TableCell align="center" sx={{ width: 150 }}>
-                    <Row justifyContent={"center"} sx={{ gap: "10px" }}>
-                      <CustomSwitch
-                        checked={user?.allocations[1].is_activated === 2}
-                        onClick={(e) => {
-                          openModal({
-                            modal: "needConfirm",
-                            content: {
-                              contents: (
-                                <Typography variant="h6">
-                                  <Typography variant="small">text</Typography>
-                                  <br />
-                                  {dna
-                                    ? "유전자DB를 OFF으로 설정하시겠습니까?"
-                                    : "유전자DB를 ON으로 설정하시겠습니까?"}
-                                </Typography>
-                              ),
-                              action: () => setDna(e.target.checked),
-                              buttonText: "확인",
-                            },
-                          });
-                        }}
-                      />
-                      {user?.allocations[1]?.count} 개
-                    </Row>
-                  </TableCell>
-                  {/* <TableCell align="center">{user?.pay_amount}</TableCell> */}
+                  {user?.allocations.map((location, _key) => (
+                    <TableCell key={_key} align="center" sx={{ width: 150 }}>
+                      <Row justifyContent={"center"} sx={{ gap: "10px" }}>
+                        <CustomSwitch
+                          checked={location[key]?.is_activated === 1}
+                          onClick={(e) => {
+                            openModal({
+                              modal: "needconfirm",
+                              content: {
+                                contents: (
+                                  <Typography variant="h6">
+                                    <Typography variant="small">
+                                      text
+                                    </Typography>
+                                    <br />
+                                    {bojang
+                                      ? "보장DB를 OFF으로 설정하시겠습니까?"
+                                      : "보장DB를 ON으로 설정하시겠습니까?"}
+                                  </Typography>
+                                ),
+                                action: () => setBojang(e.target.checked),
+                                buttonText: "확인",
+                              },
+                            });
+                          }}
+                        />
+                        {user?.allocations[0]?.count} 개
+                      </Row>
+                    </TableCell>
+                  ))}
                 </TableRow>
               );
             })}

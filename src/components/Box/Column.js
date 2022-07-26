@@ -38,7 +38,7 @@ export default function Column({
         flexDirection: flexDirection || "column",
         justifyContent: _justifyContent[justifyContent],
         alignItems: _alignItems[alignItems],
-        wrap: _wrap[_wrap],
+        flexWrap: _wrap[wrap],
         ...sx,
       }}
       props

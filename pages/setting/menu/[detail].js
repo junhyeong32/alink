@@ -27,6 +27,8 @@ export default function MenuDetail() {
   const [menu, setMenu] = useState("popup");
   const [title, setTitle] = useState("");
   const [organization, setOrganization] = useState("");
+  const [org_list, setOrgList] = useState([]);
+  const [area_org, setAreaOrg] = useState({});
   const [is_cooperated, setIscooperated] = useState(false);
   const [is_activated, setIsActivated] = useState(false);
   const [cooperation_organization, setCooperationOrganization] = useState("");
@@ -49,26 +51,30 @@ export default function MenuDetail() {
     router.query.detail
   );
 
+  console.log(area);
+
   const handleAddDb = async () => {
     console.log("test");
     const res = await Axios.Post("db/menu", {
       token: getAccessToken(),
-      db_pk: undefined, //수정 시에만 필요한 값,
-      organization_code: organization,
+      db_pk: router.query.detail || undefined, //수정 시에만 필요한 값,
+      organization_codes: org_list.join(","),
       title: title,
       is_cooperated: is_cooperated,
       cooperation_organization_codes: cooperation_organization || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
-      geomap: area,
+      geomap: [...area, area_org],
       // geomap: geomap, //[{parent, name, children}, ...]
-      fields: db_fields,
+      fields: db_fields || menu_detail?.fields,
     });
     if (res?.code === 200) {
       enqueueSnackbar("DB생성이 완료되었습니다.", {
         variant: "success",
         autoHideDuration: 2000,
       });
+
+      router.push("/setting");
     }
   };
 
@@ -90,22 +96,32 @@ export default function MenuDetail() {
   }, [isPending]);
 
   useEffect(() => {
-    const { title, organization, is_activated, is_cooperated, sample } =
-      menu_detail;
+    const {
+      title,
+      organization,
+      is_activated,
+      is_cooperated,
+      sample,
+      organizations,
+    } = menu_detail;
     setTitle(title);
-    setOrganization(organization?.code);
 
     setIsActivated(is_activated);
     setIscooperated(is_cooperated);
     setDbFields(menu_detail?.fields);
     setSample(sample);
+    setOrgList((prev) => {
+      const arr = [];
+      organizations?.map((org, key) => arr.push(org.code));
+      return arr;
+    });
   }, [menu_detail]);
 
   useEffect(() => {
     const result = {};
     const getOrganiztionList = (el) => {
       if (!el) {
-        sales[0]?.children.map((child) => {
+        sales?.[0]?.children.map((child) => {
           Object.assign(result, { [child.code]: child.name });
           return getOrganiztionList((el = child));
         });
@@ -121,10 +137,18 @@ export default function MenuDetail() {
     setMenuItems(result);
   }, [org_pending]);
 
+  useEffect(() => {
+    if (organization) setOrgList((prev) => [...prev, organization]);
+  }, [organization]);
+
+  console.log(organization);
+
+  console.log("org_list", org_list);
+
   if (menu_detail?.length === 0) return <div>loading</div>;
 
   return (
-    <Layout loading={isPending}>
+    <Layout loading={menu_detail?.length === 0 || isPending}>
       <Column sx={{ gap: 4.7, width: { xs: "100%", sm: "100%", md: 550 } }}>
         <Column sx={{ gap: 1 }}>
           <Typography variant="h1">DB 추가</Typography>
@@ -136,15 +160,50 @@ export default function MenuDetail() {
               w={231}
               value={organization}
               setValue={setOrganization}
-              menuItems={menuItems}
+              placeholder={"placeholder"}
+              menuItems={{ 선택: "선택", ...menuItems }}
             />
           </RowLabel>
+          <Column
+            wrap={"wrap"}
+            sx={{
+              p: 1,
+              gap: 1,
+              width: "100%",
+              height: "85px",
+              border: "3px solid #909090",
+              borderRadius: "5px",
+            }}
+          >
+            {org_list?.map((org, key) => (
+              <Row key={key} alignItems={"center"} sx={{ gap: 1 }}>
+                <Typography variant="h6">
+                  {org === "T0000" ? "(주)어센틱금융그룹" : menuItems[org]}
+                </Typography>
+                <Image
+                  src="/cancel.png"
+                  width={15}
+                  height={15}
+                  alt="x"
+                  layout="fixed"
+                  style={{ marginTop: "3px", cursor: "pointer" }}
+                  onClick={() =>
+                    setOrgList((prev) => {
+                      const new_arr = [...prev];
+                      new_arr.splice(key, 1);
+                      return new_arr;
+                    })
+                  }
+                />
+              </Row>
+            ))}
+          </Column>
           <RowLabel label="협력사" label_w={68}>
             <FormControlLabel
               label="유"
               control={
                 <RadioInput
-                  checked={is_cooperated === 1 && true}
+                  checked={is_cooperated === 1}
                   onClick={() => setIscooperated(1)}
                 />
               }
@@ -153,7 +212,7 @@ export default function MenuDetail() {
               label="무"
               control={
                 <RadioInput
-                  checked={is_cooperated === 0 && true}
+                  checked={is_cooperated === 0}
                   onClick={() => setIscooperated(0)}
                 />
               }
@@ -171,7 +230,6 @@ export default function MenuDetail() {
                   // 태웅이 수정 후 작업
                   setFileName(e.target.files[0].name);
                   const _uploadFile = await uploadFile(e.target.files[0]);
-                  console.log(_uploadFile);
                   setSample(_uploadFile);
                 }}
                 sx={{ display: "none" }}
@@ -192,7 +250,7 @@ export default function MenuDetail() {
               label="활성화"
               control={
                 <RadioInput
-                  checked={is_activated === 1 && true}
+                  checked={is_activated === 1}
                   onClick={() => setIsActivated(1)}
                 />
               }
@@ -201,7 +259,7 @@ export default function MenuDetail() {
               label="비활성화"
               control={
                 <RadioInput
-                  checked={is_activated === 0 && true}
+                  checked={is_activated === 0}
                   onClick={() => setIsActivated(0)}
                 />
               }
@@ -216,7 +274,13 @@ export default function MenuDetail() {
             w={60}
             h={20}
             fs="h6"
-            action={() => openModal({ modal: "area", data: area })}
+            action={() =>
+              openModal({
+                modal: "area",
+                content: { buttonAction: setAreaOrg },
+                data: area,
+              })
+            }
           />
         </Row>
 
@@ -237,7 +301,11 @@ export default function MenuDetail() {
                 label="필터노출"
                 control={
                   <RadioInput
-                    checked={menu_detail?.fields[key]?.is_filter_shown && 1}
+                    checked={
+                      menu_detail?.fields[key]?.is_filter_shown === 1
+                        ? true
+                        : false
+                    }
                     onClick={() =>
                       setDbFields(() => {
                         const arr = [...db_fields];
@@ -246,7 +314,7 @@ export default function MenuDetail() {
                           {
                             ...arr[key],
                             is_filter_shown:
-                              arr[key].is_filter_shown === 1 ? 0 : 1,
+                              arr[key]?.is_filter_shown === 1 ? 0 : 1,
                           }
                         );
 
@@ -263,7 +331,7 @@ export default function MenuDetail() {
                 control={
                   <RadioInput
                     disabled={field?.is_list_shown === 0}
-                    checked={menu_detail?.fields[key]?.is_list_shown && 1}
+                    checked={menu_detail?.fields[key]?.is_list_shown === 1}
                     onClick={() =>
                       setDbFields(() => {
                         const arr = [...db_fields];
@@ -271,7 +339,8 @@ export default function MenuDetail() {
                           {},
                           {
                             ...arr[key],
-                            is_list_shown: arr[key].is_list_shown === 1 ? 0 : 1,
+                            is_list_shown:
+                              arr[key]?.is_list_shown === 1 ? 0 : 1,
                           }
                         );
 
@@ -287,7 +356,7 @@ export default function MenuDetail() {
                 control={
                   <RadioInput
                     disabled={field?.is_detail_shown === 0}
-                    checked={menu_detail?.fields[key]?.is_detail_shown && 1}
+                    checked={menu_detail?.fields[key]?.is_detail_shown === 1}
                     onClick={() =>
                       setDbFields(() => {
                         const arr = [...db_fields];

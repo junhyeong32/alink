@@ -37,24 +37,30 @@ const style = {
   borderRadius: "10px",
 };
 
-export default function Change() {
+export default function Change({ index }) {
   const {
-    visible,
     openModal,
+    modal,
     data = {},
     closeModal,
     modalContent,
   } = useContext(ModalContext);
 
-  console.log("data", data);
+  const { title, buttonName, buttonAction } = modalContent[index];
 
-  const { title, buttonName, buttonAction } = modalContent;
+  const [select, setSelect] = useState("");
+  console.log(data[index], select);
   return (
-    <Modal open={visible} onClose={closeModal}>
+    <Modal open={modal[index] === "change"} onClose={() => closeModal(index)}>
       <Box>
         <Column alignItems={"center"} justifyContent={"between"} sx={style}>
           <TopLabelContents title={title} fs="h2" />
-          <UnderLineSelectInput menuItems={data} />
+          <UnderLineSelectInput
+            menuItems={data[index]}
+            value={select}
+            setValue={setSelect}
+            w={148}
+          />
           <Row sx={{ gap: 2 }}>
             <Button
               text={buttonName}
@@ -64,7 +70,10 @@ export default function Change() {
               fs="h6"
               w={97}
               h={30}
-              action={buttonAction}
+              action={() => {
+                buttonAction(select);
+                closeModal(index);
+              }}
             />
             <Button
               text="취소"
@@ -74,7 +83,7 @@ export default function Change() {
               fs="h6"
               w={97}
               h={30}
-              action={closeModal}
+              action={() => closeModal(index)}
             />
           </Row>
         </Column>

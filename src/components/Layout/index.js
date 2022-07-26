@@ -21,6 +21,7 @@ import Button from "../Button";
 import Modal from "../Modal";
 import CustomSwitch from "../Switch";
 export default function Layout({ loading, getCookies, children }) {
+  console.log(loading);
   const router = useRouter();
   const [menu_list, setMenuList] = useState([]);
   const [current_menu, setCurrentMenu] = useState();
@@ -204,7 +205,19 @@ export default function Layout({ loading, getCookies, children }) {
             overflowY: "scroll",
           }}
         >
-          {loading ? "loading" : children}
+          {loading ? (
+            <Row
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                height: "100%",
+              }}
+            >
+              <CircularProgress size="60px" thickness={5} color="primary" />
+            </Row>
+          ) : (
+            children
+          )}
           <Modal />
         </Container>
       </main>

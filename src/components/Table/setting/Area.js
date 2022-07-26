@@ -41,9 +41,10 @@ const Root = styled("div")`
   }
 `;
 
-export default function AreaTable({ data }) {
-  const [all_checked, setAllChecked] = useState(false);
-  const [checked, setChecked] = useState([]);
+export default function AreaTable({ data, area_list, setAreaList }) {
+  console.log("data", area_list);
+  // TODO
+  //다시 체크 시 arr 제거하기
 
   return (
     <Root sx={{ width: "100%" }}>
@@ -59,7 +60,23 @@ export default function AreaTable({ data }) {
                 if (data === "") {
                   return (
                     <TableCell key={key} align="center">
-                      <RadioInput />
+                      <RadioInput
+                        checked={
+                          area_list.length === data.length && data.length !== 0
+                        }
+                        onClick={() =>
+                          setAreaList((prev) => {
+                            const new_data = [...prev];
+                            console.log(
+                              "new_data",
+                              new_data.length,
+                              data.length
+                            );
+                            if (new_data.length < data.length) return [data];
+                            return [];
+                          })
+                        }
+                      />
                     </TableCell>
                   );
                 } else {
@@ -75,10 +92,27 @@ export default function AreaTable({ data }) {
 
           <TableBody>
             {data?.map((list, key) => {
+              console.log(area_list[key], data[list]);
               return (
                 <TableRow align="center" key={key}>
                   <TableCell align="center">
-                    <RadioInput />
+                    <RadioInput
+                      // checked={list === area_list[area_list.indexOf(list)]}
+                      onClick={(e) => {
+                        console.log(e.target.checked);
+                        if (!e.target.checked) {
+                          setAreaList((prev) => {
+                            const new_area = [...prev];
+                            const foundIndex = new_area.indexOf(list);
+                            console.log(foundIndex);
+                            new_area.splice(key, 1);
+                            return new_area;
+                          });
+                        } else {
+                          setAreaList((prev) => [...prev, list]);
+                        }
+                      }}
+                    />
                   </TableCell>
                   <TableCell align="center">
                     <Row

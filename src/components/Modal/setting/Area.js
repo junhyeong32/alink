@@ -50,16 +50,19 @@ export default function Area({ index }) {
   const [table_data, setTableData] = useState([]);
   const [division, setDivision] = useState([]);
 
+  const [select, setSelect] = useState("");
+
+  const [area_org, setAreaOrg] = useState({});
+
   const { modal, data, openModal, closeModal, modalContent } =
     useContext(ModalContext);
 
-  const [needConfirmModalViisible, setNeedConfirmModalViisible] =
-    useState(false);
+  // const { buttonAction } = modalContent[index];
 
   useEffect(() => {
     setMenuItems(() => {
       const obj = {};
-      data?.map((d, key) => {
+      data[index]?.map((d, key) => {
         Object.assign(obj, { [d.parent]: d.parent });
       });
       return obj;
@@ -67,15 +70,15 @@ export default function Area({ index }) {
   }, []);
 
   useEffect(() => {
-    const foundIndex = data.findIndex((d) => d.parent === parent_area);
+    const foundIndex = data[index].findIndex((d) => d.parent === parent_area);
 
-    setTableData(data[foundIndex]?.children);
+    setTableData(data[index][foundIndex]?.children);
   }, [parent_area]);
 
-  console.log("areaareaareaarea");
+  console.log(modalContent);
 
   return (
-    <Modal open={true} onClose={closeModal}>
+    <Modal open={modal[index] === "area" ? true : false} onClose={closeModal}>
       <Box>
         <Column alignItems={"center"} justifyContent={"start"} sx={style}>
           <RowLabel label="담당 지역 설정" fs="h4"></RowLabel>
@@ -135,6 +138,14 @@ export default function Area({ index }) {
                           alt="x"
                           layout="fixed"
                           className="pointer"
+                          onClick={() =>
+                            setDivision((prev) => {
+                              const arr = [...prev];
+                              arr.splice(key, 1);
+
+                              return arr;
+                            })
+                          }
                         />
                       }
                     />
@@ -166,17 +177,38 @@ export default function Area({ index }) {
                   w={62}
                   h={20}
                   action={() => {
+                    if (division.length === 0)
+                      return enqueueSnackbar(
+                        "분할 지역을 입력해 선택해주세요",
+                        {
+                          variant: "error",
+                          autoHideDuration: 2000,
+                        }
+                      );
+                    if (area_list.length === 0)
+                      return enqueueSnackbar("지역을 선택해주세요", {
+                        variant: "error",
+                        autoHideDuration: 2000,
+                      });
+
                     let obj = {};
-                    const dv = division.map((d) =>
-                      Object.assign(obj, { ...obj, name: d })
-                    );
+                    division.map((d) => Object.assign(obj, { ...obj, [d]: d }));
                     openModal({
                       modal: "change",
-                      data: dv,
+                      data: obj,
+                      content: {
+                        title: "소속 설정",
+                        buttonName: "설정",
+                        buttonAction: setSelect,
+                      },
                     });
                   }}
                 />
-                <AreaTable data={table_data} />
+                <AreaTable
+                  data={table_data}
+                  area_list={area_list}
+                  setAreaList={setAreaList}
+                />
               </Column>
             </Column>
           </Column>
@@ -188,10 +220,18 @@ export default function Area({ index }) {
               w={100}
               h={20}
               action={() => {
-                if (area_list.length === 0) setNeedConfirmModalViisible(true);
-                else {
-                  closeModal();
-                }
+                if (area_list.length === 0)
+                  return enqueueSnackbar("지역을 선택해주세요", {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
+
+                buttonAction({
+                  parent: parent_area,
+                  name: select,
+                  children: area_list,
+                });
+                closeModal(index);
               }}
             />
             <Button
@@ -203,12 +243,6 @@ export default function Area({ index }) {
               h={20}
               action={closeModal}
             />
-            {needConfirmModalViisible && (
-              <NeedConfirmModal
-                doubleVisible={needConfirmModalViisible}
-                setdoubleVisible={setNeedConfirmModalViisible}
-              />
-            )}
           </Row>
         </Column>
       </Box>

@@ -64,6 +64,7 @@ export function OutLineSelectInput({
         variant="outlined"
         fullWidth
         placeholder={placeholder}
+        defaultValue={""}
         value={value}
         onChange={(e) => {
           setValue(e.target.value);
@@ -71,11 +72,17 @@ export function OutLineSelectInput({
         sx={{ height: "28px" }}
         {...props}
       >
-        {Object.entries(menuItems).map(([value, data], key) => (
-          <MenuItem value={value} key={key}>
-            {data}
-          </MenuItem>
-        ))}
+        {Object.entries(menuItems).map(([value, data], key) =>
+          data === "선택" ? (
+            <MenuItem disabled value="" key={key}>
+              {data}
+            </MenuItem>
+          ) : (
+            <MenuItem value={value} key={key}>
+              {data}
+            </MenuItem>
+          )
+        )}
       </Select>
     </Box>
   );

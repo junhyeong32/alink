@@ -12,21 +12,23 @@ import { ModalContext } from "../../contexts/ModalContext";
 export default function Modal() {
   const { modal } = useContext(ModalContext);
 
-  console.log("index", modal);
-  modal.map((data, index) => {
-    console.log(data);
+  return modal.map((data, index) => {
     if (data === "upload") {
-      return <Upload index={index} />;
+      return <Upload key={index} index={index} />;
     } else if (data === "needConfirm") {
-      return <NeedConfirm index={index} />;
+      return <NeedConfirm key={index} index={index} />;
     } else if (data === "readFile") {
-      return <ReadFile index={index} />;
+      return <ReadFile key={index} index={index} />;
     } else if (data === "result") {
-      return <Result index={index} />;
+      return <Result key={index} index={index} />;
     } else if (data === "area") {
-      return <Area index={index} />;
+      return <Area key={index} index={index} />;
     } else if (data === "change") {
-      return <Change index={index} />;
+      return <Change key={index} index={index} />;
+    } else if (data === "needconfirm") {
+      return <NeedConfirm key={index} index={index} />;
+    } else {
+      return console.log("hi");
     }
   });
 }

@@ -44,6 +44,7 @@ export default function UserDetail() {
   const { enqueueSnackbar } = useSnackbar();
 
   //data
+  const [loading, setLoading] = useState(true);
   const { user_detail } = useGetUserDetail(router.query.detail);
 
   const { sales, isUserDetailPending } = useGetOrganization("sales");
@@ -55,7 +56,6 @@ export default function UserDetail() {
   console.log(menus);
 
   //change state
-  const [loading, setLoaidng] = useState(true);
   const [org_code, setOrgCode] = useState("");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -75,7 +75,7 @@ export default function UserDetail() {
   const [finance, setFinance] = useState("");
   const [dna, setDna] = useState("");
 
-  //not change state
+  //menuList
   const [orgMenuList, setOrgMenuList] = useState({});
   const [teamMenuList, setTeamMenuList] = useState({});
 
@@ -119,6 +119,7 @@ export default function UserDetail() {
       org_code,
       head_office_org_code,
     } = user_detail;
+
     setId(id);
     setPassword();
     setStatus(status);
@@ -133,13 +134,16 @@ export default function UserDetail() {
     setHeaderOrg(head_office_org_code);
     setTeam(org_code);
 
-    console.log("db?.[0]?.allocation", db?.[0]);
     setBojang(db?.[0]);
     setFinance(db?.[1]);
     setDna(db?.[2]);
   }, [user_detail]);
 
-  console.log(db);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  }, []);
 
   // 조직 가져올떄
   //조직명 - sales
@@ -177,11 +181,12 @@ export default function UserDetail() {
 
   //팀장 - 팀명이 인풋박스 변경, 지점명 추가(unit - branch)
   //
-  console.log(bojang);
-  if (org_pending || isUserDetailPending) return <div>loading</div>;
+
+  //TODO
+  //DB관리 setstate
 
   return (
-    <Layout>
+    <Layout loading={loading}>
       <Column sx={{ p: "40px", gap: "20px" }}>
         <Typography variant="h1">
           {router.query.detail ? "이용자 정보" : "신규 생성"}
@@ -352,190 +357,88 @@ export default function UserDetail() {
           </RowLabel>
         )}
       </Column>
+      <Column sx={{ p: "40px", gap: "20px" }}>
+        <Typography variant="h1">DB 관리</Typography>
+        {grade !== "협력사" &&
+          user_detail?.db?.map((db, key) => (
+            <Column key={key}>
+              <RowLabel label={db?.title} fs="h4" label_w={83}>
+                <Row alignItems={"center"}>
+                  <OutLineInput
+                    disabled={user_detail?.status === "퇴사자"}
+                    w={90}
+                    defaultValue={db?.allocation?.count}
+                    onBlur={(e) =>
+                      setBojang((prev) => {
+                        const obj = { ...prev };
+                        obj.allocation.count = e.target.value;
 
-      {grade !== "협력사" && (
-        <Column sx={{ p: "40px", gap: "20px" }}>
-          <Typography variant="h1">DB 관리</Typography>
-          <RowLabel label="보장할당" fs="h4" label_w={83}>
-            <Row alignItems={"center"}>
-              <OutLineInput
-                disabled={user_detail?.status === "퇴사자"}
-                w={90}
-                defaultValue={bojang?.allocation?.count}
-                onBlur={(e) =>
-                  setBojang((prev) => {
-                    const obj = { ...prev };
-                    obj.allocation.count = e.target.value;
-
-                    return obj;
-                  })
-                }
-              />
-              <Typography variant="h6" pl={1}>
-                개
-              </Typography>
-              <CustomSwitch
-                sx={{ ml: 3 }}
-                onClick={(e) => {
-                  console.log(e.target.checked);
-                  setBojang((prev) => {
-                    const obj = { ...prev };
-                    if (e.target.value) {
-                      obj.allocation.is_activated = 1;
-                    } else {
-                      obj.allocation.is_activated = 0;
+                        return obj;
+                      })
                     }
+                  />
+                  <Typography variant="h6" pl={1}>
+                    개
+                  </Typography>
+                  <CustomSwitch
+                    sx={{ ml: 3 }}
+                    checked={db?.allocation?.is_activated === 1}
+                    onClick={(e) => {
+                      console.log(e.target.checked);
+                      setBojang((prev) => {
+                        const obj = { ...prev };
+                        if (e.target.value) {
+                          obj.allocation.is_activated = 1;
+                        } else {
+                          obj.allocation.is_activated = 0;
+                        }
 
-                    return obj;
-                  });
-                }}
-              />
-            </Row>
-            <Row wrap={"wrap"} sx={{ gap: 1 }}>
-              {menus[0]?.geomap?.map((map, key) => (
-                <RoundColorBox
-                  key={key}
-                  background={
-                    bojang?.geomap?.find((d) => d?.name === map?.name)
-                      ? "#0D1D41"
-                      : "#E6E6E6"
-                  }
-                  fc={
-                    bojang?.geomap?.find((d) => d?.name === map?.name)
-                      ? "#FFFFFF"
-                      : "#000000"
-                  }
-                  fs={12}
-                  sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
-                  onClick={() =>
-                    setBojang((prev) => {
-                      const obj = { ...prev };
-                      const foundIndex = obj?.geomap?.findIndex(
-                        (d) => d?.name === map?.name
-                      );
-
-                      if (foundIndex === -1) {
-                        obj.geomap.push({ name: map?.name });
-                      } else {
-                        obj?.geomap.splice(foundIndex, 1);
+                        return obj;
+                      });
+                    }}
+                  />
+                </Row>
+                <Row wrap={"wrap"} sx={{ gap: 1 }}>
+                  {menus[0]?.geomap?.map((map, key) => (
+                    <RoundColorBox
+                      key={key}
+                      background={
+                        bojang?.geomap?.find((d) => d?.name === map?.name)
+                          ? "#0D1D41"
+                          : "#E6E6E6"
                       }
+                      fc={
+                        bojang?.geomap?.find((d) => d?.name === map?.name)
+                          ? "#FFFFFF"
+                          : "#000000"
+                      }
+                      fs={12}
+                      sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
+                      onClick={() =>
+                        setBojang((prev) => {
+                          const obj = { ...prev };
+                          const foundIndex = obj?.geomap?.findIndex(
+                            (d) => d?.name === map?.name
+                          );
 
-                      return obj;
-                    })
-                  }
-                >
-                  {map?.name}
-                </RoundColorBox>
-              ))}
-            </Row>
-          </RowLabel>
-          <RowLabel label="재무할당" fs="h4" label_w={83}>
-            <Row alignItems={"center"}>
-              <OutLineInput
-                disabled={user_detail?.status === "퇴사자"}
-                w={90}
-                defaultValue={db?.length > 0 && db[1]?.allocation.count}
-              />
-              <Typography variant="h6" pl={1}>
-                개
-              </Typography>
-              <CustomSwitch sx={{ ml: 3 }} />
-            </Row>
-            <Row wrap={"wrap"} sx={{ gap: 1 }}>
-              {menus[1]?.geomap?.map((map, key) => (
-                <RoundColorBox
-                  key={key}
-                  background={"#E6E6E6"}
-                  fc="#000000"
-                  fs={12}
-                  sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
-                >
-                  {map?.name}
-                </RoundColorBox>
-              ))}
-            </Row>
-          </RowLabel>
-          <RowLabel label="유전자할당" fs="h4" label_w={83}>
-            <Row alignItems={"center"}>
-              <OutLineInput
-                disabled={user_detail?.status === "퇴사자"}
-                w={90}
-                defaultValue={db?.length > 0 && db[2]?.allocation.count}
-              />
-              <Typography variant="h6" pl={1}>
-                개
-              </Typography>
-              <CustomSwitch sx={{ ml: 3 }} />
-            </Row>
-            <Row wrap={"wrap"} sx={{ gap: 1 }}>
-              {menus[2]?.geomap?.map((map, key) => (
-                <RoundColorBox
-                  key={key}
-                  background={"#E6E6E6"}
-                  fc="#000000"
-                  fs={12}
-                  sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
-                >
-                  {map?.name}
-                </RoundColorBox>
-              ))}
-            </Row>
-          </RowLabel>
-          <Row justifyContent={"center"} sx={{ width: "100%", gap: "15px" }}>
-            <Button
-              text={router.query.detail ? "수정" : "생성"}
-              variant="contained"
-              bgColor="primary"
-              color="primary.white"
-              w={158}
-              h={25}
-              fs="h6"
-              disabled={user_detail?.status === "퇴사자"}
-              action={async () => {
-                const res = await api.Post("member", {
-                  token: getAccessToken(),
-                  member_pk: router.query.detail ? user_detail?.pk : undefined,
-                  id: id,
-                  password: new_password || undefined,
-                  status: status,
-                  grade: grade,
-                  name: name,
-                  email: email,
-                  phone: phone,
-                  birthdate: birthdate,
-                  db: db,
-                  head_office_org_code: header_org,
-                  org_code: team,
-                });
+                          if (foundIndex === -1) {
+                            obj.geomap.push({ name: map?.name });
+                          } else {
+                            obj?.geomap.splice(foundIndex, 1);
+                          }
 
-                if (res?.code === 200) {
-                  enqueueSnackbar(
-                    router.query.detail
-                      ? "수정이 완료되었습니다."
-                      : "신규 생성이 완료되었습니다",
-                    {
-                      variant: "success",
-                      autoHideDuration: 2000,
-                    }
-                  );
-                  router.push("/user");
-                }
-                console.log(res);
-              }}
-            />
-            <Button
-              text="취소"
-              variant="contained"
-              bgColor="gray"
-              color="primary.white"
-              w={158}
-              h={25}
-              fs="h6"
-              disabled={user_detail?.status === "퇴사자"}
-            />
-          </Row>
-        </Column>
-      )}
+                          return obj;
+                        })
+                      }
+                    >
+                      {map?.name}
+                    </RoundColorBox>
+                  ))}
+                </Row>
+              </RowLabel>
+            </Column>
+          ))}
+      </Column>
     </Layout>
   );
 }
