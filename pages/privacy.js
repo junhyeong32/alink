@@ -66,24 +66,33 @@ export default function Privacy() {
 
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
-  const handleUserUpdate = async () => {
-    const res = await Axios.Post("user/signin_info", {
-      token: getAccessToken(),
-      id: id,
-      password: password,
-      name: name,
-      email: email,
-      phone: phone,
-    });
+  const handleUserUpdate = () => {
+    openModal({
+      modal: "needconfirm",
+      content: {
+        text: "개인정보수정을 진행하시겠습니까?",
+        action: async () => {
+          const res = await Axios.Post("user/signin_info", {
+            token: getAccessToken(),
+            id: id,
+            password: password,
+            name: name,
+            email: email,
+            phone: phone,
+          });
 
-    if (res?.code) {
-      setNewPassword("");
-      setPassword("");
-      return enqueueSnackbar("회원정보가 수정되었습니다.", {
-        variant: "success",
-        autoHideDuration: 2000,
-      });
-    }
+          if (res?.code) {
+            setNewPassword("");
+            setPassword("");
+            enqueueSnackbar("회원정보가 수정되었습니다.", {
+              variant: "success",
+              autoHideDuration: 2000,
+            });
+            closeModal();
+          }
+        },
+      },
+    });
   };
 
   useEffect(() => {
