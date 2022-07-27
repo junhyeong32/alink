@@ -23,13 +23,14 @@ import Column from "../../Box/Column";
 import { useRouter } from "next/router";
 import { ModalContext } from "../../../contexts/ModalContext";
 import api from "../../../utility/api";
-import { getAccessToken } from "../../../utility/getCookie";
+import { getAccessToken, getCookie } from "../../../utility/getCookie";
 
 export default function UserTable({ data, allocation_total }) {
   const router = useRouter();
   const [bojang, setBojang] = useState(false);
   const [db, setDb] = useState(false);
   const [dna, setDna] = useState(false);
+  const [rank, setRank] = useState(getCookie("user_info")?.grade);
 
   const { openModal, closeModal } = useContext(ModalContext);
 
@@ -150,40 +151,86 @@ export default function UserTable({ data, allocation_total }) {
                   {user?.allocations.map((location, _key) => (
                     <TableCell key={_key} align="center" sx={{ width: 150 }}>
                       <Row justifyContent={"center"} sx={{ gap: "10px" }}>
-                        <CustomSwitch
-                          checked={location[key]?.is_activated === 1}
-                          onClick={(e) => {
-                            openModal({
-                              modal: "needconfirm",
-                              content: {
-                                contents: (
-                                  <Typography variant="h6">
-                                    <Typography variant="small">
-                                      text
-                                    </Typography>
-                                    <br />
-                                    {bojang
-                                      ? "보장DB를 OFF으로 설정하시겠습니까?"
-                                      : "보장DB를 ON으로 설정하시겠습니까?"}
-                                  </Typography>
-                                ),
-                                action: async () => {
-                                  const res = await api.Post(
-                                    "user/db/allocation",
-                                    {
-                                      token: getAccessToken(),
-                                      allocation_pk: location?.pk,
-                                      onoff: 1,
-                                      db_pk: location?.db?.pk,
-                                    }
-                                  );
-                                  console.log(res);
+                        {rank === "관리자" ? (
+                          <CustomSwitch
+                            checked={
+                              location?.is_activated === 1 ? true : false
+                            }
+                            onClick={(e) => {
+                              openModal({
+                                modal: "needconfirm",
+                                content: {
+                                  contents: (
+                                    <Column
+                                      alignItems={"center"}
+                                      justifyContent={"center"}
+                                      sx={{ gap: 1 }}
+                                    >
+                                      <Row
+                                        alignItems={"center"}
+                                        justifyContent={"center"}
+                                        sx={{ gap: 1 }}
+                                      >
+                                        <Typography
+                                          variant="small"
+                                          component={"span"}
+                                        >
+                                          {user?.region +
+                                            user?.branch +
+                                            user?.team}
+                                        </Typography>
+                                        <RoundColorBox
+                                          w={61}
+                                          background={
+                                            rank_list[user?.grade] || "#000000"
+                                          }
+                                          fs={12}
+                                        >
+                                          {user?.grade}
+                                        </RoundColorBox>
+                                        <Typography
+                                          variant="small"
+                                          component={"span"}
+                                        >
+                                          {user?.name}
+                                        </Typography>
+                                      </Row>
+                                      <Typography variant="h6">
+                                        {location[key]?.is_activated === 1
+                                          ? "보장DB를 OFF으로 설정하시겠습니까?"
+                                          : "보장DB를 ON으로 설정하시겠습니까?"}
+                                      </Typography>
+                                    </Column>
+                                  ),
+                                  action: async () => {
+                                    const res = await api.Post(
+                                      "member/allocation",
+                                      {
+                                        token: getAccessToken(),
+                                        allocation_pk: location?.pk,
+                                        onoff: 1,
+                                        db_pk: location?.db?.pk,
+                                        user_pk: user?.pk,
+                                      }
+                                    );
+                                    console.log(res);
+                                  },
+                                  buttonText: "확인",
                                 },
-                                buttonText: "확인",
-                              },
-                            });
-                          }}
-                        />
+                              });
+                            }}
+                          />
+                        ) : (
+                          <RoundColorBox
+                            background={
+                              location?.is_activated === 1
+                                ? "#0D1D41"
+                                : "#909090"
+                            }
+                          >
+                            {location?.is_activated === 1 ? "ON" : "OFF"}
+                          </RoundColorBox>
+                        )}
                         {location?.count} 개
                       </Row>
                     </TableCell>

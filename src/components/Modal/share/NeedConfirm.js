@@ -66,8 +66,7 @@ export default function NeedConfirm({ index }) {
             sx={{ width: "100%", height: "100%", gap: "25px" }}
           >
             <TopLabelContents title="확인 필요" sx={{ pb: 1 }} />
-            {contents}
-            <Typography variant="h5">{text}</Typography>
+            {contents || <Typography variant="h5">{text}</Typography>}
             <Row sx={{ gap: 2.5 }}>
               <Button
                 text={buttonText}

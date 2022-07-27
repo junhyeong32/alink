@@ -106,7 +106,7 @@ export default memo(function User() {
     setSalesMenuItems(() => {
       const obj = {};
       sales?.map((org, key) => {
-        Object.assign(obj, { [org.code]: org });
+        Object.assign(obj, { [org.code]: org.name });
       });
       return obj;
     });
