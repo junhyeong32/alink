@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
 import Layout from "../src/components/Layout";
@@ -44,37 +44,34 @@ import SmsTable from "../src/components/Table/sms";
 import { ModalContext } from "../src/contexts/ModalContext";
 import Axios from "../src/utility/api";
 import { useSnackbar } from "notistack";
+import getUser from "../src/hooks/user/useGetMyInformation";
+import { getAccessToken, getCookie } from "../src/utility/getCookie";
+
 export default function Privacy() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const [menu, setMenu] = useState("popup");
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [cookies, setCookie, removeCookie] = useCookies();
-  const [rank, setRank] = useState(cookies?.user_info?.grade);
-  const [status, setStatus] = useState(cookies?.user_info?.status);
-  const [org, setOrg] = useState(cookies?.user_info?.head_office);
-  const [id, setId] = useState(cookies?.user_info?.id);
-  const [user, setUser] = useState(cookies?.user_info?.name);
+
+  const [rank, setRank] = useState(getCookie("user_info")?.grade);
+  const [status, setStatus] = useState();
+  const [org, setOrg] = useState();
+  const [id, setId] = useState();
+  const [name, setName] = useState();
   const [new_password, setNewPassword] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  // const [date, setDate]= useState(cookies?.user_info?.grade);
+  const [date, setDate] = useState("");
 
-  const [date_range, setDateRange] = useState([null, null]);
+  const { user, isUserPending } = getUser();
+
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
   const handleUserUpdate = async () => {
-    // if(!user)
-
     const res = await Axios.Post("user/signin_info", {
-      token: cookies.access_token,
+      token: getAccessToken(),
       id: id,
       password: password,
-      name: user,
+      name: name,
       email: email,
       phone: phone,
     });
@@ -82,14 +79,22 @@ export default function Privacy() {
     if (res?.code) {
       setNewPassword("");
       setPassword("");
-      setEmail("");
-      setPhone("");
       return enqueueSnackbar("회원정보가 수정되었습니다.", {
         variant: "success",
         autoHideDuration: 2000,
       });
     }
   };
+
+  useEffect(() => {
+    setStatus(user?.status);
+    setOrg(user?.head_office);
+    setId(user?.id);
+    setName(user?.name || "");
+    setEmail(user?.email || "");
+    setPhone(user?.phone || "");
+    setDate(user?.created_date);
+  }, [isUserPending]);
 
   return (
     <Layout>
@@ -123,11 +128,17 @@ export default function Privacy() {
             }}
           >
             {rank === "부관리자" && (
-              <LabelUnderLineInput
+              <TopLabelContents
                 title="상태"
-                placeholder={"변경시에만 입력하세요"}
-                w={{ lg: 294, xs: "100%" }}
-              />
+                fs="h6"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ width: "100%" }}
+              >
+                <RoundColorBox background={"#0071D0"} w={90} fs={14}>
+                  {status}
+                </RoundColorBox>
+              </TopLabelContents>
             )}
             <LabelUnderLineInput
               title="아이디"
@@ -157,6 +168,7 @@ export default function Privacy() {
                 title="등록일시"
                 w={{ lg: 294, xs: "100%" }}
                 disabled
+                value={date}
               />
             )}
           </Column>
@@ -188,8 +200,8 @@ export default function Privacy() {
                 title="이용자명"
                 placeholder={"변경시에만 입력하세요"}
                 w={{ lg: 294, xs: "100%" }}
-                value={user}
-                setValue={setUser}
+                value={name}
+                setValue={setName}
               />
             )}
             <LabelUnderLineInput

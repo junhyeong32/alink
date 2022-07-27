@@ -20,6 +20,8 @@ export default function TopLabelContents({
   setValue,
   sx,
   fs,
+  alignItems,
+  justifyContent,
   ...props
 }) {
   return (
@@ -34,7 +36,12 @@ export default function TopLabelContents({
     >
       <Typography variant={fs || "h4"}>{title}</Typography>
       {children && (
-        <Row wrap="wrap" sx={{ ...sx }}>
+        <Row
+          alignItems={alignItems}
+          justifyContent={justifyContent}
+          wrap="wrap"
+          sx={{ ...sx }}
+        >
           {children}
         </Row>
       )}
