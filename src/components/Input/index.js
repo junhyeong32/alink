@@ -247,7 +247,7 @@ export function LabelUnderLineInput({
           setValue(e.target.value);
           e.preventDefault();
         }}
-        props="true"
+        {...props}
       />
     </Column>
   );

@@ -80,8 +80,12 @@ export default function Privacy() {
     });
 
     if (res?.code) {
+      setNewPassword("");
+      setPassword("");
+      setEmail("");
+      setPhone("");
       return enqueueSnackbar("회원정보가 수정되었습니다.", {
-        variant: "sucess",
+        variant: "success",
         autoHideDuration: 2000,
       });
     }
@@ -137,6 +141,7 @@ export default function Privacy() {
               w={{ lg: 294, xs: "100%" }}
               value={new_password}
               setValue={setNewPassword}
+              type="password"
             />
             {rank === "부관리자" && (
               <LabelUnderLineInput
@@ -193,6 +198,7 @@ export default function Privacy() {
               w={{ lg: 294, xs: "100%" }}
               value={password}
               setValue={setPassword}
+              type="password"
             />
             {rank === "부관리자" && (
               <LabelUnderLineInput
