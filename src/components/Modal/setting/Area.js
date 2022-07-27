@@ -52,12 +52,10 @@ export default function Area({ index }) {
 
   const [select, setSelect] = useState("");
 
-  const [area_org, setAreaOrg] = useState({});
-
   const { modal, data, openModal, closeModal, modalContent } =
     useContext(ModalContext);
 
-  // const { buttonAction } = modalContent[index];
+  const { buttonAction } = modalContent[index];
 
   useEffect(() => {
     setMenuItems(() => {
@@ -70,12 +68,50 @@ export default function Area({ index }) {
   }, []);
 
   useEffect(() => {
-    const foundIndex = data[index].findIndex((d) => d.parent === parent_area);
-
-    setTableData(data[index][foundIndex]?.children);
+    setDivision([]);
+    setAreaList([]);
   }, [parent_area]);
 
-  console.log(modalContent);
+  useEffect(() => {
+    const foundSelectedList = data[index].filter(
+      (d) => d.parent === parent_area
+    );
+
+    console.log(foundSelectedList);
+    //분할지역
+    setDivision(() => {
+      const _division = [];
+
+      foundSelectedList?.map((list, key) => {
+        if (list.parent === list.name) return;
+        _division.push(list.name);
+      });
+
+      return _division;
+    });
+
+    //테이블 데이터 지역 + 소속
+    setTableData(() => {
+      let origin_data = [];
+
+      foundSelectedList?.map((list, key) => {
+        if (list.parent === list.name) return (origin_data = list.children);
+        list.children.map((child, _key) => {
+          const foundIndex = origin_data.indexOf(child);
+          if (foundIndex !== -1) {
+            origin_data.splice(foundIndex, 1, {
+              area: child,
+              org: list.name,
+            });
+          }
+        });
+      });
+
+      return origin_data;
+    });
+  }, [parent_area]);
+
+  console.log("division", data);
 
   return (
     <Modal open={modal[index] === "area" ? true : false} onClose={closeModal}>
@@ -122,6 +158,7 @@ export default function Area({ index }) {
                   <Row sx={{ width: "100%" }} alignItems={"center"} key={key}>
                     <BackgroundInput
                       h={25}
+                      defaultValue={d}
                       onBlur={(e) => {
                         setDivision((prev) => {
                           const arr = [...prev];

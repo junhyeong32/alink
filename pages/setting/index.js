@@ -17,7 +17,7 @@ export default function Dna() {
   const [date, setDate] = useState("");
   const [excel, setExcel] = useState("");
 
-  const { menus } = useGetMenus();
+  const { menus, getMenus } = useGetMenus();
 
   return (
     <Layout>
@@ -55,7 +55,11 @@ export default function Dna() {
                 : router.push("setting/menu")
             }
           />
-          {menu === "popup" ? <PopupTable /> : <MenuTable data={menus} />}
+          {menu === "popup" ? (
+            <PopupTable />
+          ) : (
+            <MenuTable data={menus} getMenus={getMenus} />
+          )}
         </Column>
       </Column>
     </Layout>

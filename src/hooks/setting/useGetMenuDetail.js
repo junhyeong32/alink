@@ -8,6 +8,7 @@ export default function useGetMenuDetail(menu_id) {
   const router = useRouter();
   const [menu_detail, setMenuDetail] = useState([]);
   const [menuDetailPending, startTransition] = useTransition();
+  const [area, setArea] = useState([]);
 
   const getMenuDetail = async () => {
     if (router.isReady) {
@@ -22,6 +23,7 @@ export default function useGetMenuDetail(menu_id) {
       if (res?.code === 200)
         startTransition(() => {
           setMenuDetail(res?.data);
+          setArea(res?.data?.geomap);
         });
     }
   };
@@ -30,6 +32,5 @@ export default function useGetMenuDetail(menu_id) {
     getMenuDetail();
   }, [router.isReady]);
 
-  return { menuDetailPending, menu_detail, getMenuDetail };
+  return { menuDetailPending, menu_detail, getMenuDetail, area, setArea };
 }
-

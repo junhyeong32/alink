@@ -33,8 +33,9 @@ export default function Login() {
         password: password,
       })
     )?.data;
-    // A0000001
-    // 830223 사장
+    //관리자 계정 
+    //ALINK000
+    //alink000!!
 
     if (res) {
       setCookie("user_info", res, {

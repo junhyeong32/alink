@@ -11,6 +11,7 @@ import {
   Checkbox,
   Box,
   FormControlLabel,
+  Pagination,
 } from "@mui/material";
 
 import UserTable from "../../src/components/Table/user";
@@ -43,8 +44,8 @@ export default memo(function User() {
 
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
-  const [status, setStatus] = useState("");
-  const [grade, setGrade] = useState("");
+  const [status, setStatus] = useState("전체");
+  const [grade, setGrade] = useState("전체");
   const [head_office_org_code, setHead_office_org_code] = useState("");
   const [org_code, setOrgCode] = useState("");
   const [geo, setGeo] = useState("");
@@ -58,28 +59,29 @@ export default memo(function User() {
   const { cooperation } = useGetOrganization("cooperation");
   const { area } = useGetArea();
 
-  const { users, allocation_total, getUsers, isUsersPending } = useGetUsers(
-    page,
-    count,
-    status,
-    grade,
-    head_office_org_code,
-    org_code,
-    geo,
-    email,
-    id,
-    name,
-    phone,
-    excel
-  );
+  const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
+    useGetUsers(
+      page,
+      count,
+      status,
+      grade,
+      head_office_org_code,
+      org_code,
+      geo,
+      email,
+      id,
+      name,
+      phone,
+      excel
+    );
 
   //data
 
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
   const handleInit = () => {
-    setStatus("");
-    setGrade("");
+    setStatus("전체");
+    setGrade("전체");
     setHead_office_org_code("");
     setOrgCode("");
     setGeo("");
@@ -131,7 +133,7 @@ export default memo(function User() {
   }, [org_pending]);
 
   return (
-    <Layout>
+    <Layout loading={coopMenuItems.length === 0 || isUsersPending}>
       <Column>
         <Column sx={{ rowGap: "15px" }}>
           <TopLabelContents
@@ -347,6 +349,23 @@ export default memo(function User() {
         </Column>
 
         <UserTable data={users} allocation_total={allocation_total} />
+        <Row
+          alignItems="center"
+          justifyContent="center"
+          sx={{ width: "100%", mt: "86px", pb: 4 }}
+        >
+          <Pagination
+            component="div"
+            page={page}
+            count={totalCouunt}
+            onChange={(subject, newPage) => {
+              setPage(newPage);
+            }}
+            color="primary"
+            // hidePrevButton
+            // hideNextButton
+          />
+        </Row>
       </Column>
     </Layout>
   );

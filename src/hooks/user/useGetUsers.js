@@ -22,6 +22,7 @@ export default function useGetUsers(
   const [users, setUsers] = useState([]);
   const [allocation_total, setTotal] = useState([]);
   const [isUsersPending, startTransition] = useTransition();
+  const [totalCouunt, setTotalCount] = useState();
 
   const getUsers = async () => {
     const res = (
@@ -30,8 +31,8 @@ export default function useGetUsers(
           token: getAccessToken(),
           page: page,
           count: count,
-          status: status,
-          grade: grade,
+          status: status === "전체" ? undefined : status,
+          grade: grade === "전체" ? undefined : grade,
           head_office_org_code: head_office_org_code,
           org_code: org_code,
           geo: geo,
@@ -49,12 +50,13 @@ export default function useGetUsers(
       startTransition(() => {
         setUsers(res?.data.result);
         setTotal(res?.data.allocation_total);
+        setTotalCount(Math.ceil(res?.data.total_count / 20));
       });
   };
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [page]);
 
-  return { users, allocation_total, getUsers, isUsersPending };
+  return { users, allocation_total, getUsers, isUsersPending, totalCouunt };
 }

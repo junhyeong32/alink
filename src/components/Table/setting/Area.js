@@ -92,12 +92,17 @@ export default function AreaTable({ data, area_list, setAreaList }) {
 
           <TableBody>
             {data?.map((list, key) => {
-              console.log(area_list[key], data[list]);
               return (
                 <TableRow align="center" key={key}>
                   <TableCell align="center">
                     <RadioInput
-                      // checked={list === area_list[area_list.indexOf(list)]}
+                      checked={
+                        area_list.indexOf(
+                          typeof list === "object" ? list?.area : list
+                        ) !== -1
+                          ? true
+                          : false
+                      }
                       onClick={(e) => {
                         console.log(e.target.checked);
                         if (!e.target.checked) {
@@ -109,7 +114,10 @@ export default function AreaTable({ data, area_list, setAreaList }) {
                             return new_area;
                           });
                         } else {
-                          setAreaList((prev) => [...prev, list]);
+                          setAreaList((prev) => [
+                            ...prev,
+                            typeof list === "object" ? list?.area : list,
+                          ]);
                         }
                       }}
                     />
@@ -123,10 +131,10 @@ export default function AreaTable({ data, area_list, setAreaList }) {
                         borderRadius: "5px",
                       }}
                     >
-                      {list}
+                      {list?.area || list}
                     </Row>
                   </TableCell>
-                  <TableCell align="center"></TableCell>
+                  <TableCell align="center">{list?.org}</TableCell>
                 </TableRow>
               );
             })}

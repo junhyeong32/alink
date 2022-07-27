@@ -22,6 +22,8 @@ import { status_list, rank_list } from "../../../data/share/MenuByTextList";
 import Column from "../../Box/Column";
 import { useRouter } from "next/router";
 import { ModalContext } from "../../../contexts/ModalContext";
+import api from "../../../utility/api";
+import { getAccessToken } from "../../../utility/getCookie";
 
 export default function UserTable({ data, allocation_total }) {
   const router = useRouter();
@@ -165,13 +167,24 @@ export default function UserTable({ data, allocation_total }) {
                                       : "보장DB를 ON으로 설정하시겠습니까?"}
                                   </Typography>
                                 ),
-                                action: () => setBojang(e.target.checked),
+                                action: async () => {
+                                  const res = await api.Post(
+                                    "user/db/allocation",
+                                    {
+                                      token: getAccessToken(),
+                                      allocation_pk: location?.pk,
+                                      onoff: 1,
+                                      db_pk: location?.db?.pk,
+                                    }
+                                  );
+                                  console.log(res);
+                                },
                                 buttonText: "확인",
                               },
                             });
                           }}
                         />
-                        {user?.allocations[0]?.count} 개
+                        {location?.count} 개
                       </Row>
                     </TableCell>
                   ))}

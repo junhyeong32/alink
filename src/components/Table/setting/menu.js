@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -8,19 +8,19 @@ import {
   TableRow,
   Checkbox,
   CircularProgress,
-} from '@mui/material';
-import {Box, styled} from '@mui/system';
-import {useContext, useState} from 'react';
-import {menu_header} from './menuHeaderList';
-import Button from '../../Button';
-import Row from '../../Box/Row';
-import {ModalContext} from '../../../contexts/ModalContext';
-import {useRouter} from 'next/router';
-import api from '../../../utility/api';
-import {getAccessToken} from '../../../utility/getCookie';
-import {useSnackbar} from 'notistack';
+} from "@mui/material";
+import { Box, styled } from "@mui/system";
+import { useContext, useState } from "react";
+import { menu_header } from "./menuHeaderList";
+import Button from "../../Button";
+import Row from "../../Box/Row";
+import { ModalContext } from "../../../contexts/ModalContext";
+import { useRouter } from "next/router";
+import api from "../../../utility/api";
+import { getAccessToken } from "../../../utility/getCookie";
+import { useSnackbar } from "notistack";
 
-const Root = styled('div')`
+const Root = styled("div")`
   table {
     box-shadow: none;
     width: 100%;
@@ -45,19 +45,18 @@ const Root = styled('div')`
   }
 `;
 
-export default function MenuTable({data}) {
+export default function MenuTable({ data, getMenus }) {
   const router = useRouter();
-  const {enqueueSnackbar} = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const {openModal, closeModal} = useContext(ModalContext);
-  console.log(data);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   return (
-    <Root sx={{width: '100%'}}>
+    <Root sx={{ width: "100%" }}>
       <TableContainer>
         <Table
           sx={{
-            width: '100%',
+            width: "100%",
           }}
         >
           <TableHead>
@@ -93,20 +92,22 @@ export default function MenuTable({data}) {
                   {/*  </Row>*/}
                   {/*</TableCell>*/}
                   <TableCell align="center">
-                    {list?.organizations.map(org => org.name).join(', ')}
+                    {list?.organizations.map((org) => org.name).join(", ")}
                   </TableCell>
                   <TableCell align="center">{list?.title}</TableCell>
                   <TableCell align="center">
-                    {list?.cooperation_organizations.map(cop => cop.name).join(', ')}
+                    {list?.cooperation_organizations
+                      .map((cop) => cop.name)
+                      .join(", ")}
                   </TableCell>
                   <TableCell align="center">
-                    {list?.is_activated === 0 ? '비활성화' : '활성화'}
+                    {list?.is_activated === 0 ? "비활성화" : "활성화"}
                   </TableCell>
                   <TableCell align="center">
                     {list?.updated_date.slice(0, 10)}
                   </TableCell>
                   <TableCell align="center">
-                    <Row justifyContent={'center'} sx={{gap: 1}}>
+                    <Row justifyContent={"center"} sx={{ gap: 1 }}>
                       <Button
                         variant="contained"
                         bgColor="primary"
@@ -127,23 +128,26 @@ export default function MenuTable({data}) {
                         h={17}
                         action={() =>
                           openModal({
-                            modal: 'needConfirm',
-                            contents: {
-                              buttonText: '삭제',
-                              contentt: {
-                                text: '팝업을 삭제하시겠습니까?',
-                                action: async () => {
-                                  const res = api.Post('db/menu/delete', {
-                                    token: getAccessToken(),
-                                    db_pk: list?.pk,
-                                  });
+                            modal: "needconfirm",
+                            content: {
+                              buttonText: "삭제",
+                              content: "팝업을 삭제하시겠습니까?",
+                              action: async () => {
+                                const res = await api.Post("db/menu/delete", {
+                                  token: getAccessToken(),
+                                  db_pk: list?.pk,
+                                });
 
-                                  if (res?.code === 200)
-                                    enqueueSnackbar('삭제되었습니다.', {
-                                      variant: 'success',
-                                      autoHideDuration: 2000,
-                                    });
-                                },
+                                console.log(res);
+
+                                if (res?.code === 200) {
+                                  enqueueSnackbar("삭제되었습니다.", {
+                                    variant: "success",
+                                    autoHideDuration: 2000,
+                                  });
+                                  closeModal();
+                                  getMenus();
+                                }
                               },
                             },
                           })

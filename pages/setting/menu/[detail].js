@@ -17,7 +17,6 @@ import { useSnackbar } from "notistack";
 import uploadFile from "../../../src/utility/uploadFile";
 import { OutLineSelectInput } from "../../../src/components/Input/Select";
 import useGetOrganization from "../../../src/hooks/share/useGetOrganization";
-import useGetArea from "../../../src/hooks/setting/useGetArea";
 import useGetMenuDetail from "../../../src/hooks/setting/useGetMenuDetail";
 
 export default function MenuDetail() {
@@ -45,13 +44,10 @@ export default function MenuDetail() {
   const { isPending, fields } = useGetFields();
   const { org_pending, sales } = useGetOrganization("sales");
   const { cooperation } = useGetOrganization("cooperation");
-  const { area } = useGetArea();
 
-  const { menu_detail, menuDetailPending } = useGetMenuDetail(
+  const { menu_detail, area, menuDetailPending, setArea } = useGetMenuDetail(
     router.query.detail
   );
-
-  console.log(area);
 
   const handleAddDb = async () => {
     console.log("test");
@@ -64,8 +60,7 @@ export default function MenuDetail() {
       cooperation_organization_codes: cooperation_organization || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
-      geomap: [...area, area_org],
-      // geomap: geomap, //[{parent, name, children}, ...]
+      geomap: area,
       fields: db_fields || menu_detail?.fields,
     });
     if (res?.code === 200) {
@@ -141,7 +136,12 @@ export default function MenuDetail() {
     if (organization) setOrgList((prev) => [...prev, organization]);
   }, [organization]);
 
-  console.log(organization);
+  useEffect(() => {
+    if (JSON.stringify(area_org) !== "{}")
+      setArea((prev) => [...prev, area_org]);
+  }, [area_org]);
+
+  console.log("area_org", area_org);
 
   console.log("org_list", org_list);
 

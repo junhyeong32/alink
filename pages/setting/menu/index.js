@@ -26,6 +26,8 @@ export default function Menu() {
   const [menu, setMenu] = useState("popup");
   const [title, setTitle] = useState("");
   const [organization, setOrganization] = useState("");
+  const [org_list, setOrgList] = useState([]);
+  const [area_org, setAreaOrg] = useState({});
   const [is_cooperated, setIscooperated] = useState(false);
   const [is_activated, setIsActivated] = useState(false);
   const [cooperation_organization, setCooperationOrganization] = useState("");
@@ -49,21 +51,21 @@ export default function Menu() {
     const res = await Axios.Post("db/menu", {
       token: getAccessToken(),
       db_pk: undefined, //수정 시에만 필요한 값,
-      organization_codes: organization, // 조직 코드 목록 (,)로 구분
+      organization_codes: org_list.join(","),
       title: title,
       is_cooperated: is_cooperated,
       cooperation_organization_codes: cooperation_organization || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
-      geomap: area,
-      // geomap: geomap, //[{parent, name, children}, ...]
-      fields: db_fields,
+      geomap: [...area, area_org],
+      fields: db_fields || menu_detail?.fields,
     });
     if (res?.code === 200) {
       enqueueSnackbar("DB생성이 완료되었습니다.", {
         variant: "success",
         autoHideDuration: 2000,
       });
+      router.push("/setting/menu");
     }
   };
 
@@ -92,7 +94,9 @@ export default function Menu() {
     setMenuItems(result);
   }, [org_pending]);
 
-  console.log(area);
+  useEffect(() => {
+    if (organization) setOrgList((prev) => [...prev, organization]);
+  }, [organization]);
 
   if (isPending) return <div>loading</div>;
 
@@ -112,6 +116,40 @@ export default function Menu() {
               menuItems={menuItems}
             />
           </RowLabel>
+          <Column
+            wrap={"wrap"}
+            sx={{
+              p: 1,
+              gap: 1,
+              width: "100%",
+              height: "85px",
+              border: "3px solid #909090",
+              borderRadius: "5px",
+            }}
+          >
+            {org_list?.map((org, key) => (
+              <Row key={key} alignItems={"center"} sx={{ gap: 1 }}>
+                <Typography variant="h6">
+                  {org === "T0000" ? "(주)어센틱금융그룹" : menuItems[org]}
+                </Typography>
+                <Image
+                  src="/cancel.png"
+                  width={15}
+                  height={15}
+                  alt="x"
+                  layout="fixed"
+                  style={{ marginTop: "3px", cursor: "pointer" }}
+                  onClick={() =>
+                    setOrgList((prev) => {
+                      const new_arr = [...prev];
+                      new_arr.splice(key, 1);
+                      return new_arr;
+                    })
+                  }
+                />
+              </Row>
+            ))}
+          </Column>
           <RowLabel label="협력사" label_w={68}>
             <FormControlLabel
               label="유"
@@ -189,7 +227,13 @@ export default function Menu() {
             w={60}
             h={20}
             fs="h6"
-            action={() => openModal({ modal: "area", data: area })}
+            action={() =>
+              openModal({
+                modal: "area",
+                content: { buttonAction: setAreaOrg },
+                data: area,
+              })
+            }
           />
         </Row>
 

@@ -44,11 +44,13 @@ export default function NeedConfirm({ index }) {
 
   const { modal, closeModal, modalContent } = useContext(ModalContext);
   const {
-    contents,
+    content,
     action,
     buttonText = "승인",
     actionButtonColor,
-  } = modalContent;
+  } = modalContent[index];
+
+  console.log(modalContent);
 
   // useEffect(async () => {
   //   if (!action) return;
@@ -115,7 +117,7 @@ export default function NeedConfirm({ index }) {
               <Typography>{contents}</Typography>
             )}
             [] */}
-            {contents}
+            {content}
             <Row sx={{ gap: 2.5 }}>
               <Button
                 text={buttonText}
@@ -126,7 +128,6 @@ export default function NeedConfirm({ index }) {
                 fs={"h4"}
                 action={() => {
                   action();
-                  closeModal();
                 }}
               />
               <Button
