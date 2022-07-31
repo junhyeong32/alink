@@ -160,34 +160,42 @@ export default function Layout({ loading, children }) {
               스위치 스타일 바구기
               */}
               {menuText.map((menu, key) => {
-                if (
-                  (rank !== "관리자" && menu === "보장 리스트") ||
-                  menu === "재무 리스트" ||
-                  menu === "유전자 리스트"
-                ) {
-                  return (
-                    <Row justifyContent={"between"} key={key}>
-                      <MenuBox
-                        key={key}
-                        w={92}
-                        text={menu}
-                        link={menu_link[key]}
-                      />
-                      <Typography variant="h5" color="primary.white">
-                        0
-                      </Typography>
-                      <CustomSwitch />
-                    </Row>
-                  );
-                } else if (
-                  (rank === "본부장" ||
+                if (menu === "DB 현황") {
+                  if (rank !== "협력시" || rank !== "부협력사") {
+                    return (
+                      <MenuBox key={key} text={menu} link={menu_link[key]} />
+                    );
+                  }
+                } else if (menu === "DB 신청하기" || menu === "DB 신청현황") {
+                  if (
+                    rank === "본부장" ||
                     rank === "지점장" ||
-                    rank === "팀장" ||
-                    rank === "담당자") &&
-                  (menu === "문자 발송 내역" || menu === "설정")
+                    rank === "팀장"
+                  ) {
+                    return (
+                      <MenuBox key={key} text={menu} link={menu_link[key]} />
+                    );
+                  }
+                } else if (menu === "이용자 관리") {
+                  if (rank === "관리자" || rank === "부관리자") {
+                    return (
+                      <MenuBox key={key} text={menu} link={menu_link[key]} />
+                    );
+                  }
+                } else if (menu === "담당자 관리") {
+                  if (
+                    rank === "본부장" ||
+                    rank === "지점장" ||
+                    rank === "팀장"
+                  ) {
+                    return (
+                      <MenuBox key={key} text={menu} link={menu_link[key]} />
+                    );
+                  }
+                } else if (
+                  (menu === "푸쉬 알림 내역" || menu === "설정") &&
+                  rank === "관리자"
                 ) {
-                  return;
-                } else {
                   return (
                     <MenuBox key={key} text={menu} link={menu_link[key]} />
                   );
@@ -197,23 +205,32 @@ export default function Layout({ loading, children }) {
                 return (
                   <Row justifyContent={"between"} key={key}>
                     <MenuBox key={key} w={92} text={d?.title} link={d?.pk} />
-                    <Typography variant="h5" color="primary.white">
-                      {d?.allocation?.count}
-                    </Typography>
-                    <NavSwitch
-                      sx={{ ml: 3 }}
-                      checked={d?.allocation?.is_activated === 1 ? true : false}
-                      // onClick={(e) => {
-                      //   setChangeDb((prev) => {
-                      //     const newData = [...prev];
-                      //     if (newData[key].allocation[0].is_activated === 1)
-                      //       newData[key].allocation[0].is_activated = 0;
-                      //     else newData[key].allocation[0].is_activated = 1;
+                    {(rank === "본부장" ||
+                      rank === "지점장" ||
+                      rank === "팀장" ||
+                      rank === "담당자") && (
+                      <>
+                        <Typography variant="h5" color="primary.white">
+                          {d?.allocation?.count}
+                        </Typography>
+                        <NavSwitch
+                          sx={{ ml: 3 }}
+                          checked={
+                            d?.allocation?.is_activated === 1 ? true : false
+                          }
+                          // onClick={(e) => {
+                          //   setChangeDb((prev) => {
+                          //     const newData = [...prev];
+                          //     if (newData[key].allocation[0].is_activated === 1)
+                          //       newData[key].allocation[0].is_activated = 0;
+                          //     else newData[key].allocation[0].is_activated = 1;
 
-                      //     return newData;
-                      //   });
-                      // }}
-                    />
+                          //     return newData;
+                          //   });
+                          // }}
+                        />
+                      </>
+                    )}
                   </Row>
                 );
               })}
