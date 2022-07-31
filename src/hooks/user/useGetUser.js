@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Axios from "../../utility/api";
 import { getAccessToken } from "../../utility/getCookie";
 
-export default function getUser() {
+export default function useGetUser() {
   const router = useRouter();
   const [user, setUser] = useState([]);
   const [isUserPending, startTransition] = useTransition();

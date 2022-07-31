@@ -20,8 +20,9 @@ import checkLogin from "../../hooks/account/useCheckLogin";
 import Button from "../Button";
 import Modal from "../Modal";
 import CustomSwitch from "../Switch";
-export default function Layout({ loading, getCookies, children }) {
-  console.log(loading);
+import useGetUser from "../../hooks/user/useGetUser";
+import NavSwitch from "../Switch/NavSwitch";
+export default function Layout({ loading, children }) {
   const router = useRouter();
   const [menu_list, setMenuList] = useState([]);
   const [current_menu, setCurrentMenu] = useState();
@@ -29,11 +30,12 @@ export default function Layout({ loading, getCookies, children }) {
   const [visible, setVisible] = useState(false);
   const [rank, setRank] = useState(cookies?.user_info?.grade);
   const [showChild, setShowChild] = useState(false);
+  const { user, isUserPending } = useGetUser();
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });
     removeCookie("user_info", { path: "/" });
-    router.replace("login");
+    router.replace("/login");
   };
 
   useEffect(() => {
@@ -47,6 +49,8 @@ export default function Layout({ loading, getCookies, children }) {
   if (typeof window === "undefined") {
     return <></>;
   }
+
+  if (isUserPending) return <></>;
 
   return (
     <>
@@ -188,6 +192,30 @@ export default function Layout({ loading, getCookies, children }) {
                     <MenuBox key={key} text={menu} link={menu_link[key]} />
                   );
                 }
+              })}
+              {user?.db?.map((d, key) => {
+                return (
+                  <Row justifyContent={"between"} key={key}>
+                    <MenuBox key={key} w={92} text={d?.title} link={d?.pk} />
+                    <Typography variant="h5" color="primary.white">
+                      {d?.allocation?.count}
+                    </Typography>
+                    <NavSwitch
+                      sx={{ ml: 3 }}
+                      checked={d?.allocation?.is_activated === 1 ? true : false}
+                      // onClick={(e) => {
+                      //   setChangeDb((prev) => {
+                      //     const newData = [...prev];
+                      //     if (newData[key].allocation[0].is_activated === 1)
+                      //       newData[key].allocation[0].is_activated = 0;
+                      //     else newData[key].allocation[0].is_activated = 1;
+
+                      //     return newData;
+                      //   });
+                      // }}
+                    />
+                  </Row>
+                );
               })}
             </Column>
           </Column>

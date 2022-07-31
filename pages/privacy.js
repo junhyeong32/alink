@@ -44,7 +44,7 @@ import SmsTable from "../src/components/Table/sms";
 import { ModalContext } from "../src/contexts/ModalContext";
 import Axios from "../src/utility/api";
 import { useSnackbar } from "notistack";
-import getUser from "../src/hooks/user/useGetMyInformation";
+import getUser from "../src/hooks/user/useGetUser";
 import { getAccessToken, getCookie } from "../src/utility/getCookie";
 
 export default function Privacy() {
@@ -67,6 +67,11 @@ export default function Privacy() {
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
   const handleUserUpdate = () => {
+    if (!password || !new_password) {
+      return enqueueSnackbar("비밀번호를 입력해주세요.");
+    } else if (password !== new_password) {
+      return enqueueSnackbar("비밀번호가 일치하지 않습니다.");
+    }
     openModal({
       modal: "needconfirm",
       content: {

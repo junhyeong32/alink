@@ -13,6 +13,7 @@ import {
 import { OutLineSelectInput } from "../src/components/Input/Select";
 import Button from "../src/components/Button";
 import DbApplyStatusTable from "../src/components/Table/db-apply-status";
+import getUser from "../src/hooks/user/useGetUser";
 
 export default function DbStatus() {
   const [area, setArea] = useState("");
@@ -20,13 +21,15 @@ export default function DbStatus() {
   const [branch, setBranch] = useState("");
   const [date, setDate] = useState("");
 
+  const { user } = getUser();
+
   return (
     <Layout>
       <Column>
         <Typography variant="h1" sx={{ mb: 6 }}>
           DB 신청현황
         </Typography>
-        <DbApplyStatusTable />
+        <DbApplyStatusTable data={user} />
       </Column>
     </Layout>
   );

@@ -6,16 +6,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Checkbox,
   CircularProgress,
 } from "@mui/material";
+import CustomCheckBox from "../../CheckBox";
+import { getOrgWithUnit } from "../../../utility/organization/getOrgWithUnit";
 import { Box, styled } from "@mui/system";
 import { useState } from "react";
 import { authority_header } from "./authorityHedaerList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
+import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
+import { numberFormat } from "../../../utility/math";
 
-export default function AuthorityTable({}) {
+export default function AuthorityTable({ data, checkList, setCheckList }) {
   const [all_checked, setAllChecked] = useState(false);
   const [checked, setChecked] = useState([]);
   const Root = styled("div")`
@@ -52,6 +55,12 @@ export default function AuthorityTable({}) {
         >
           <TableHead>
             <TableRow key="head">
+              <TableCell align="center">
+                <CustomCheckBox
+                  // checked={checkList.indexOf(list?.pk) !== -1 ? true : false}
+                  onClick={() => setCheckList([...checkList, list?.pk])}
+                />
+              </TableCell>
               {authority_header?.map((data, key) => (
                 <TableCell key={key} align="center">
                   {data}
@@ -59,37 +68,30 @@ export default function AuthorityTable({}) {
               ))}
             </TableRow>
           </TableHead>
-
+          {/* TODO
+            프로필 이미지
+          */}
           <TableBody>
-            {/* <TableRow>
-              <TableCell align="center">
-                <Box sx={{ cursor: "pointer" }}>
-                  <Image src="/preview.png" width={21} height={21} alt="" />
-                </Box>
-              </TableCell>
-              <TableCell align="center">
-                <Row sx={{ gap: 1 }}>
-                  <Button
-                    variant="contained"
-                    bgColor="primary"
-                    text="수정"
-                    color="primary.white"
-                    fs="h6"
-                    w={56}
-                    h={17}
+            {data?.map((list, key) => (
+              <TableRow key={key}>
+                <TableCell align="center">
+                  <CustomCheckBox
+                    checked={checkList.indexOf(list?.pk) !== -1 ? true : false}
+                    onClick={() => setCheckList([...checkList, list?.pk])}
                   />
-                  <Button
-                    variant="contained"
-                    bgColor="red"
-                    text="삭제"
-                    color="primary.white"
-                    fs="h6"
-                    w={56}
-                    h={17}
-                  />
-                </Row>
-              </TableCell>
-            </TableRow> */}
+                </TableCell>
+                <TableCell align="center">{list?.status}</TableCell>
+                <TableCell align="center">{list?.id}</TableCell>
+                <TableCell align="center">{list?.name}</TableCell>
+                <TableCell align="center">{list?.rank}</TableCell>
+                <TableCell align="center">{getTitleOfOrg(list)}</TableCell>
+                <TableCell align="center">
+                  {numberFormat(list?.pay_amount)}
+                </TableCell>
+                <TableCell align="center">{list?.deposit_status}</TableCell>
+                <TableCell align="center">{list?.status}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>

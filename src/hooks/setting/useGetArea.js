@@ -28,5 +28,5 @@ export default function useGetArea() {
     getArea();
   }, []);
 
-  return { isPending, area, getArea };
+  return { isPending, area, setArea, getArea };
 }

@@ -96,7 +96,7 @@ export default function Db() {
 
             <Column sx={styles.second_input_column}>
               <SelectInput title="소속명" menuItems={{}} />
-              <SelectInput title="등록처" menuItems={{}} />
+            <SelectInput title="등록처" menuItems={{}} />
               <SelectInput
                 title={
                   <>

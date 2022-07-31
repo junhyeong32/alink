@@ -6,7 +6,7 @@ export default function useGetOrganization(type, head_office) {
   const [sales, setSales] = useState([]);
   const [cooperation, setCooperation] = useState([]);
   const [office_by_org, setOfficeByOrg] = useState([]);
-  const [org_pending, startTransition] = useTransition();
+  const [org_pending, setOrgPending] = useState(true);
 
   const getOrganization = async () => {
     const res = (
@@ -18,22 +18,18 @@ export default function useGetOrganization(type, head_office) {
         },
       })
     )?.data;
+
     if (res?.data.length !== 0) {
       console.log(res);
       if (type === "sales" && !head_office) {
-        startTransition(() => {
-          setSales(res?.data);
-        });
+        setSales(res?.data);
       } else if (type === "cooperation" && !head_office) {
-        startTransition(() => {
-          setCooperation(res?.data);
-        });
+        setCooperation(res?.data);
       } else {
-        startTransition(() => {
-          setOfficeByOrg(res?.data);
-        });
+        setOfficeByOrg(res?.data);
       }
     }
+    setOrgPending(false);
   };
   useEffect(() => {
     getOrganization();

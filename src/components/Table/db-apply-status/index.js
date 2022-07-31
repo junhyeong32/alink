@@ -15,7 +15,7 @@ import { db_apply_status_title } from "./dbApplyStatusHeaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
 
-export default function DbApplyStatusTable({}) {
+export default function DbApplyStatusTable({data}) {
   const [all_checked, setAllChecked] = useState(false);
   const [checked, setChecked] = useState([]);
   const Root = styled("div")`

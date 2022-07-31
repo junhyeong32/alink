@@ -55,12 +55,14 @@ export default memo(function User() {
   const [phone, setPhone] = useState("");
   const [excel, setExcel] = useState();
 
+  const [loading, setLoading] = useState(true);
+
   const { org_pending, sales } = useGetOrganization("sales");
   const { cooperation } = useGetOrganization("cooperation");
   const { area } = useGetArea();
 
   const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
-    useGetUsers(
+    useGetUsers({
       page,
       count,
       status,
@@ -72,8 +74,9 @@ export default memo(function User() {
       id,
       name,
       phone,
-      excel
-    );
+      excel,
+      setExcel
+    });
 
   //data
 
@@ -90,6 +93,8 @@ export default memo(function User() {
     setName("");
     setPhone("");
     setExcel("");
+
+    getUsers(true);
   };
 
   useEffect(() => {
@@ -132,8 +137,16 @@ export default memo(function User() {
     setCoopMenuItems(result);
   }, [org_pending]);
 
+  useEffect(() => {
+    if (!org_pending && !isUsersPending) {
+      setLoading(false);
+    }
+  }, [org_pending, isUsersPending]);
+
+  console.log("excel", excel);
+
   return (
-    <Layout loading={coopMenuItems.length === 0 || isUsersPending}>
+    <Layout loading={loading}>
       <Column>
         <Column sx={{ rowGap: "15px" }}>
           <TopLabelContents

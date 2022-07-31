@@ -49,7 +49,7 @@ export default function Change({ index }) {
   const { title, buttonName, buttonAction } = modalContent[index];
 
   const [select, setSelect] = useState("");
-  console.log(data[index], select);
+
   return (
     <Modal open={modal[index] === "change"} onClose={() => closeModal(index)}>
       <Box>
@@ -71,7 +71,7 @@ export default function Change({ index }) {
               w={97}
               h={30}
               action={() => {
-                buttonAction(select);
+                buttonAction();
                 closeModal(index);
               }}
             />

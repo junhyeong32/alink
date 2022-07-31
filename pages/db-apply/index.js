@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -11,42 +11,78 @@ import {
   Checkbox,
   Box,
 } from "@mui/material";
-
-import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
-import {
-  select_title,
-  area_input,
-  headquarters_input,
-  branch_input,
-} from "../../src/components/Table/data-status/ReceptionStatusList";
-import TopLabelContents from "../../src/components/Box/TopLableContents";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
-import {
-  status_list,
-  status_bgcolor,
-  rank_list,
-  rank_bgcolor,
-} from "../../src/data/user";
-import ExcelButton from "../../src/components/Button/Excel";
-import Input, { DateInput } from "../../src/components/Input";
-import SelectInput, {
-  OutLineSelectInput,
-} from "../../src/components/Input/Select";
+
 import Button from "../../src/components/Button";
 import RowLabel from "../../src/components/Box/RowLabel";
+import { OutLineInput } from "../../src/components/Input";
+import CustomSwitch from "../../src/components/Switch";
+import useGetUser from "../../src/hooks/user/useGetUser";
+import useGetArea from "../../src/hooks/setting/useGetArea";
+import Axios from "../../src/utility/api";
+import { getAccessToken } from "../../src/utility/getCookie";
 
 export default function DBApply() {
   const router = useRouter();
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [excel, setExcel] = useState("");
+  const [org_name, setOrgName] = useState("");
+  const [org_code, setOrgCode] = useState("");
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [new_password, setNewPassword] = useState("");
+  const [status, setStatus] = useState("");
+  const [grade, setGrade] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [db, setDb] = useState([]); //화면에 뿌려주는 state
+  const [changeDb, setChangeDb] = useState([]); //전송 state
+  const [head_office_name, setHeadOfficeName] = useState("");
+  const [head_office_code, setHeadOfficeCode] = useState("");
+  const [pk, setPk] = useState("");
 
-  const [date_range, setDateRange] = useState([null, null]);
+  const { user, isUserPending } = useGetUser();
+  const { area } = useGetArea();
+  console.log(user);
+
+  useEffect(() => {
+    const { id, status, pk, grade, name, phone, db } = user;
+
+    setId(id);
+    setPassword();
+    setStatus(status);
+    setGrade(grade || "");
+    setName(name);
+    setPhone(phone);
+    setBirthdate(birthdate);
+    setDb(db);
+    setChangeDb((prev) => {
+      const newData = [...prev];
+      db?.map((d) =>
+        newData.push({
+          db_pk: d.pk,
+          allocation: [
+            {
+              is_activated: d.allocation.is_activated,
+              count: d.allocation.count,
+            },
+          ],
+          geomap: (() => {
+            const geoData = [];
+            d.geomap?.map((geo) => geoData.push({ name: geo?.name }));
+            return geoData;
+          })(),
+        })
+      );
+
+      return newData;
+    });
+    setPk(pk);
+  }, [isUserPending]);
 
   //TODO
   // 모달창
+  // 디비 수량 신청 및 지역 설정
 
   return (
     <Layout>
@@ -65,10 +101,98 @@ export default function DBApply() {
             h={25}
           />
         </Row>
-        <Column sx={{ gap: 3 }}>
-          <RowLabel label="보장할당"></RowLabel>
-          <RowLabel label="재무 할당"></RowLabel>
-          <RowLabel label="유전자 할당"></RowLabel>
+        <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
+          <Typography variant="h1">DB 신청</Typography>
+          {db?.map((d, key) => (
+            <Column key={key}>
+              <RowLabel label={d?.title} fs="h4" label_w={83} sx={{ gap: 10 }}>
+                <Row alignItems={"center"}>
+                  <OutLineInput
+                    disabled={status === "퇴사자"}
+                    w={90}
+                    defaultValue={d?.allocation?.count}
+                    onBlur={(e) =>
+                      setChangeDb((prev) => {
+                        const newData = [...prev];
+                        newData[key].allocation[0].count = e.target.value;
+
+                        return newData;
+                      })
+                    }
+                  />
+                  <Typography variant="h6" pl={1}>
+                    개
+                  </Typography>
+
+                  {/* <CustomSwitch
+                    sx={{ ml: 3 }}
+                    checked={
+                      changeDb[key]?.allocation[0].is_activated === 1
+                        ? true
+                        : false
+                    }
+                    onClick={(e) => {
+                      setChangeDb((prev) => {
+                        const newData = [...prev];
+                        if (newData[key].allocation[0].is_activated === 1)
+                          newData[key].allocation[0].is_activated = 0;
+                        else newData[key].allocation[0].is_activated = 1;
+
+                        return newData;
+                      });
+                    }}
+                  /> */}
+                </Row>
+                <Row wrap={"wrap"} sx={{ gap: 1 }}>
+                  <Typography variant="h4" mr={3}>
+                    담당 지역
+                  </Typography>
+
+                  {area?.map((map, area_key) => (
+                    <RoundColorBox
+                      key={area_key}
+                      background={
+                        changeDb[key]?.geomap?.find(
+                          (d) => d?.name === map?.name
+                        )
+                          ? "#0D1D41"
+                          : "#E6E6E6"
+                      }
+                      fc={
+                        changeDb[key]?.geomap?.find(
+                          (d) => d?.name === map?.name
+                        )
+                          ? "#FFFFFF"
+                          : "#000000"
+                      }
+                      fs={12}
+                      sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
+                      onClick={() =>
+                        setChangeDb((prev) => {
+                          const newData = [...prev];
+                          const newDataGeo = newData[key].geomap;
+
+                          const foundIndex = newDataGeo?.findIndex(
+                            (d) => d?.name === map?.name
+                          );
+
+                          if (foundIndex === -1) {
+                            newDataGeo.push({ name: map?.name });
+                          } else {
+                            newDataGeo.splice(foundIndex, 1);
+                          }
+
+                          return newData;
+                        })
+                      }
+                    >
+                      {map?.name}
+                    </RoundColorBox>
+                  ))}
+                </Row>
+              </RowLabel>
+            </Column>
+          ))}
         </Column>
         <Row justifyContent={"center"} sx={{ mt: 18 }}>
           <Button
@@ -79,6 +203,12 @@ export default function DBApply() {
             fs="h5"
             w={160}
             h={30}
+            action={async () => {
+              const res = Axios.Post("user/db/count", {
+                token: getAccessToken(),
+                db: changeDb,
+              });
+            }}
           />
         </Row>
       </Column>

@@ -31,6 +31,7 @@ import useGetMenus from "../../src/hooks/setting/useGetMenus";
 import BackgroundTextBox from "../../src/components/Box/BackgroundText";
 import Axios from "../../src/utility/api";
 import { getOrgWithUnit } from "../../src/utility/organization/getOrgWithUnit";
+import useGetArea from "../../src/hooks/setting/useGetArea";
 
 const rowLabelWidth = {
   width: {
@@ -47,10 +48,10 @@ export default function UserDetail() {
 
   //data
   const [loading, setLoading] = useState(true);
-  const { user_detail } = useGetUserDetail(router.query.detail);
+  // const { user_detail } = useGetUserDetail(router.query.detail);
 
   const { sales, org_pending } = useGetOrganization("sales");
-  const { cooperation } = useGetOrganization("cooperation");
+  const { area } = useGetArea();
 
   const { menus } = useGetMenus();
   const [org_code_by_sales, setOrgCodeBySales] = useState([]);
@@ -67,9 +68,11 @@ export default function UserDetail() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [birthdate, setBirthdate] = useState("");
-  const [db, setDb] = useState([]);
+  const [db, setDb] = useState([]); //화면에 뿌려주는 state
+  const [changeDb, setChangeDb] = useState([]); //전송 state
   const [head_office_name, setHeadOfficeName] = useState("");
   const [head_office_code, setHeadOfficeCode] = useState("");
+  const [pk, setPk] = useState("");
 
   const [header_org, setHeaderOrg] = useState("");
   const [branch_name, setBranchName] = useState("");
@@ -98,7 +101,8 @@ export default function UserDetail() {
           params: {
             token: getAccessToken(),
             type: "sales",
-            head_office_org_code: org_code || user_detail?.org_code,
+            // head_office_org_code: org_code || user_detail?.org_code,
+            head_office_org_code: org_code,
           },
         })
       )?.data;
@@ -134,37 +138,106 @@ export default function UserDetail() {
   }, [org_code, grade]);
 
   useEffect(() => {
-    const {
-      id,
-      status,
-      grade,
-      name,
-      phone,
-      email,
-      birthdate,
-      db,
-      org_code,
-      head_office_org_code,
-    } = user_detail;
+    if (!router.isReady) return;
 
-    setId(id);
-    setPassword();
-    setStatus(status);
-    setGrade(grade);
-    setName(name);
-    setPhone(phone);
-    setBirthdate(birthdate);
-    setDb(db);
-    setEmail(email);
-    setBirthdate(birthdate);
-    setOrgCode(org_code);
-    setHeaderOrg(head_office_org_code);
-    setTeamCode(org_code);
+    if (router.query.detail !== "new-id") {
+      const getDetail = async () => {
+        const res = (
+          await Axios.Get(`member/${router.query.detail}`, {
+            params: {
+              token: getAccessToken(),
+            },
+          })
+        )?.data;
+        if (res?.code === 200) {
+          const {
+            id,
+            status,
+            pk,
+            grade,
+            name,
+            phone,
+            email,
+            birthdate,
+            db,
+            org_code,
+            head_office_org_code,
+            parent_org_code,
+            branch,
+            head_office,
+          } = res?.data;
+          setId(id);
+          setPassword();
+          setStatus(status);
+          setGrade(grade || "");
+          setName(name);
+          setPhone(phone);
+          setBirthdate(birthdate);
+          setDb(db);
+          setChangeDb((prev) => {
+            const newData = [...prev];
+            db.map((d) =>
+              newData.push({
+                db_pk: d.pk,
+                allocation: [
+                  {
+                    is_activated: d.allocation.is_activated,
+                    count: d.allocation.count,
+                  },
+                ],
+                geomap: (() => {
+                  const geoData = [];
+                  d.geomap?.map((geo) => geoData.push({ name: geo?.name }));
+                  return geoData;
+                })(),
+              })
+            );
 
-    setBojang(db?.[0]);
-    setFinance(db?.[1]);
-    setDna(db?.[2]);
-  }, [user_detail]);
+            return newData;
+          });
+          setEmail(email);
+          setBirthdate(birthdate);
+          setOrgCode(head_office_org_code);
+          setHeaderOrg(head_office_org_code);
+          setHeadOfficeCode(parent_org_code);
+          setHeadOfficeName(head_office);
+          setBranchName(branch);
+          setTeamCode(org_code);
+          setPk(pk);
+          console.log(orgMenuList, head_office_org_code, parent_org_code);
+        }
+      };
+
+      getDetail();
+    } else {
+      console.log("실행함??");
+      setDb((prev) => {
+        const newData = [...prev];
+
+        menus.map((m) =>
+          newData.push({
+            title: m?.title,
+            geomap: [],
+            allocation: { is_activated: 0, count: 0 },
+          })
+        );
+
+        return newData;
+      });
+      setChangeDb((prev) => {
+        const newData = [...prev];
+        menus.map((m) =>
+          newData.push({
+            db_pk: m?.pk,
+            geomap: [],
+            allocation: [{ is_activated: 0, count: 0 }],
+          })
+        );
+
+        return newData;
+      });
+    }
+  }, [router.isReady, menus]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -175,7 +248,7 @@ export default function UserDetail() {
   //TODO
   //DB관리 setstate
 
-  console.log("branchMenuList", branchMenuList);
+  console.log("db", db, changeDb);
 
   return (
     <Layout loading={loading}>
@@ -195,8 +268,8 @@ export default function UserDetail() {
                   key={key}
                   control={
                     <Checkbox
-                      disabled={user_detail?.status === "퇴사자"}
-                      checked={user_detail?.status === list || status === list}
+                      disabled={status === "퇴사자"}
+                      checked={status === list || status === list}
                       onClick={() => setStatus(list)}
                     />
                   }
@@ -224,8 +297,8 @@ export default function UserDetail() {
                   key={key}
                   control={
                     <Checkbox
-                      disabled={user_detail?.status === "퇴사자"}
-                      checked={user_detail?.grade === list || grade === list}
+                      disabled={status === "퇴사자"}
+                      checked={grade === list || grade === list}
                       onClick={() => setGrade(list)}
                     />
                   }
@@ -241,7 +314,11 @@ export default function UserDetail() {
 
         {grade === "부관리자" && (
           <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
-            <OutLineInput w="50%" onBlur={(e) => setOrgName(e.target.value)} />
+            <OutLineInput
+              w="50%"
+              defaultValue={head_office_name}
+              onBlur={(e) => setOrgName(e.target.value)}
+            />
           </RowLabel>
         )}
         {(grade === "본부장" ||
@@ -251,6 +328,7 @@ export default function UserDetail() {
           <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
             <OutLineSelectInput
               w="50%"
+              defaultValue={org_code}
               menuItems={orgMenuList}
               value={org_code}
               setValue={setOrgCode}
@@ -259,7 +337,11 @@ export default function UserDetail() {
         )}
         {grade === "부협력사" && (
           <RowLabel label="협력사명" sx={rowLabelWidth} label_w={83}>
-            <OutLineSelectInput w="50%" menuItems={{}} />
+            <OutLineSelectInput
+              defaultValue={org_code}
+              w="50%"
+              menuItems={{}}
+            />
           </RowLabel>
         )}
         {grade !== "" &&
@@ -272,6 +354,7 @@ export default function UserDetail() {
               {grade === "본부장" ? (
                 <OutLineInput
                   w="50%"
+                  defaultValue={head_office_name}
                   onBlur={(e) => setHeadOfficeName(e.target.value)}
                 />
               ) : (
@@ -289,6 +372,7 @@ export default function UserDetail() {
           <RowLabel label="지점명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
               w="50%"
+              defaultValue={branch_name}
               onBlur={(e) => setBranchName(e.target.value)}
             />
           </RowLabel>
@@ -309,7 +393,7 @@ export default function UserDetail() {
             <RowLabel label="팀명" sx={rowLabelWidth} label_w={83}>
               <OutLineInput
                 w="50%"
-                menuItems={{}}
+                defaultValue={team_name}
                 onBlur={(e) => setTeamName(e.target.value)}
               />
             </RowLabel>
@@ -318,23 +402,41 @@ export default function UserDetail() {
         {grade === "담당자" && (
           <>
             <RowLabel label="팀명" sx={rowLabelWidth} label_w={83}>
-              <OutLineSelectInput w="50%" menuItems={{}} />
+              <OutLineSelectInput
+                w="50%"
+                menuItems={teamMenuList}
+                defaultValue={team_code}
+                value={team_code}
+                setValue={setTeamCode}
+              />
             </RowLabel>
           </>
         )}
 
         {grade !== "" && (
           <RowLabel label="이용자명" sx={rowLabelWidth} label_w={83}>
-            <OutLineInput w="50%" onBlur={(e) => setName(e.target.value)} />
+            <OutLineInput
+              w="50%"
+              defaultValue={name}
+              onBlur={(e) => setName(e.target.value)}
+            />
           </RowLabel>
         )}
         {grade === "" && (
           <RowLabel label="성명" sx={rowLabelWidth} label_w={83}>
-            <OutLineInput w="50%" onBlur={(e) => setName(e.target.value)} />
+            <OutLineInput
+              w="50%"
+              defaultValue={name}
+              onBlur={(e) => setName(e.target.value)}
+            />
           </RowLabel>
         )}
         <RowLabel label="아이디" sx={rowLabelWidth} label_w={83}>
-          <OutLineInput w="50%" onBlur={(e) => setId(e.target.value)} />
+          <OutLineInput
+            w="50%"
+            defaultValue={id}
+            onBlur={(e) => setId(e.target.value)}
+          />
           <Button
             text="중복체크"
             variant="contained"
@@ -377,106 +479,129 @@ export default function UserDetail() {
           />
         </RowLabel>
         <RowLabel label="이메일" sx={rowLabelWidth} label_w={83}>
-          <OutLineInput w="50%" onBlur={(e) => setEmail(e.target.value)} />
+          <OutLineInput
+            w="50%"
+            defaultValue={email}
+            onBlur={(e) => setEmail(e.target.value)}
+          />
         </RowLabel>
         <RowLabel label="연락처" sx={rowLabelWidth} label_w={83}>
-          <OutLineInput w="50%" onBlur={(e) => setPhone(e.target.value)} />
+          <OutLineInput
+            w="50%"
+            defaultValue={phone}
+            onBlur={(e) => setPhone(e.target.value)}
+          />
         </RowLabel>
         {(grade !== "협락사" || grade !== "부협락사") && (
           <RowLabel label="생년월일" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
               w="50%"
+              defaultValue={birthdate}
               onBlur={(e) => setBirthdate(e.target.value)}
             />
           </RowLabel>
         )}
 
-        <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
-          <Typography variant="h1">DB 관리</Typography>
-          {grade !== "협력사" &&
-            user_detail?.db?.map((db, key) => (
-              <Column key={key}>
-                <RowLabel label={db?.title} fs="h4" label_w={83}>
-                  <Row alignItems={"center"}>
-                    <OutLineInput
-                      disabled={user_detail?.status === "퇴사자"}
-                      w={90}
-                      defaultValue={db?.allocation?.count}
-                      onBlur={(e) =>
-                        setBojang((prev) => {
-                          const obj = { ...prev };
-                          obj.allocation.count = e.target.value;
+        {grade !== "협력사" &&
+          grade !== "부관리자" &&
+          grade !== "부협력사" &&
+          grade && (
+            <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
+              <Typography variant="h1">DB 관리</Typography>
+              {db?.map((d, key) => (
+                <Column key={key}>
+                  <RowLabel label={d?.title} fs="h4" label_w={83}>
+                    <Row alignItems={"center"}>
+                      <OutLineInput
+                        disabled={status === "퇴사자"}
+                        w={90}
+                        defaultValue={d?.allocation?.count}
+                        onBlur={(e) =>
+                          setChangeDb((prev) => {
+                            const newData = [...prev];
+                            newData[key].allocation[0].count = e.target.value;
 
-                          return obj;
-                        })
-                      }
-                    />
-                    <Typography variant="h6" pl={1}>
-                      개
-                    </Typography>
-                    <CustomSwitch
-                      sx={{ ml: 3 }}
-                      checked={db?.allocation?.is_activated === 1}
-                      onClick={(e) => {
-                        console.log(e.target.checked);
-                        setBojang((prev) => {
-                          const obj = { ...prev };
-                          if (e.target.value) {
-                            obj.allocation.is_activated = 1;
-                          } else {
-                            obj.allocation.is_activated = 0;
-                          }
-
-                          return obj;
-                        });
-                      }}
-                    />
-                  </Row>
-                  <Row wrap={"wrap"} sx={{ gap: 1 }}>
-                    {menus[0]?.geomap?.map((map, key) => (
-                      <RoundColorBox
-                        key={key}
-                        background={
-                          bojang?.geomap?.find((d) => d?.name === map?.name)
-                            ? "#0D1D41"
-                            : "#E6E6E6"
-                        }
-                        fc={
-                          bojang?.geomap?.find((d) => d?.name === map?.name)
-                            ? "#FFFFFF"
-                            : "#000000"
-                        }
-                        fs={12}
-                        sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
-                        onClick={() =>
-                          setBojang((prev) => {
-                            const obj = { ...prev };
-                            const foundIndex = obj?.geomap?.findIndex(
-                              (d) => d?.name === map?.name
-                            );
-
-                            if (foundIndex === -1) {
-                              obj.geomap.push({ name: map?.name });
-                            } else {
-                              obj?.geomap.splice(foundIndex, 1);
-                            }
-
-                            return obj;
+                            return newData;
                           })
                         }
-                      >
-                        {map?.name}
-                      </RoundColorBox>
-                    ))}
-                  </Row>
-                </RowLabel>
-              </Column>
-            ))}
-        </Column>
+                      />
+                      <Typography variant="h6" pl={1}>
+                        개
+                      </Typography>
+                      {console.log(
+                        "changeDb",
+                        changeDb[key]?.allocation.is_activated
+                      )}
+                      <CustomSwitch
+                        sx={{ ml: 3 }}
+                        checked={
+                          changeDb[key]?.allocation[0].is_activated === 1
+                            ? true
+                            : false
+                        }
+                        onClick={(e) => {
+                          setChangeDb((prev) => {
+                            const newData = [...prev];
+                            if (newData[key].allocation[0].is_activated === 1)
+                              newData[key].allocation[0].is_activated = 0;
+                            else newData[key].allocation[0].is_activated = 1;
 
+                            return newData;
+                          });
+                        }}
+                      />
+                    </Row>
+                    <Row wrap={"wrap"} sx={{ gap: 1 }}>
+                      {area?.map((map, area_key) => (
+                        <RoundColorBox
+                          key={area_key}
+                          background={
+                            changeDb[key]?.geomap?.find(
+                              (d) => d?.name === map?.name
+                            )
+                              ? "#0D1D41"
+                              : "#E6E6E6"
+                          }
+                          fc={
+                            changeDb[key]?.geomap?.find(
+                              (d) => d?.name === map?.name
+                            )
+                              ? "#FFFFFF"
+                              : "#000000"
+                          }
+                          fs={12}
+                          sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
+                          onClick={() =>
+                            setChangeDb((prev) => {
+                              const newData = [...prev];
+                              const newDataGeo = newData[key].geomap;
+
+                              const foundIndex = newDataGeo?.findIndex(
+                                (d) => d?.name === map?.name
+                              );
+
+                              if (foundIndex === -1) {
+                                newDataGeo.push({ name: map?.name });
+                              } else {
+                                newDataGeo.splice(foundIndex, 1);
+                              }
+
+                              return newData;
+                            })
+                          }
+                        >
+                          {map?.name}
+                        </RoundColorBox>
+                      ))}
+                    </Row>
+                  </RowLabel>
+                </Column>
+              ))}
+            </Column>
+          )}
         <Row justifyContent={"center"} sx={{ gap: "15px", mt: 5 }}>
           <Button
-            text="생성"
+            text={router.query.detail === "new-id" ? "생성" : "수정"}
             variant="contained"
             bgColor="primary"
             color="primary.white"
@@ -484,54 +609,63 @@ export default function UserDetail() {
             h={35}
             fs="h5"
             action={async () => {
-              if (router.query.detail === "new-id") {
-                const res = await Axios.Post("member", {
-                  token: getAccessToken(),
-                  id: id,
-                  password: new_password,
-                  status: status,
-                  grade: grade,
-                  name: name,
-                  phone: phone,
-                  email: email,
-                  birthdate: birthdate,
-                  db: { allocation: [], geomap: [] },
-                  head_office_org_code:
-                    grade === "부관리자"
-                      ? org_name
-                      : grade === "본부장" ||
-                        grade === "지점장" ||
-                        grade === "팀장" ||
-                        grade === "담당자"
-                      ? org_code
-                      : grade === "협력사"
-                      ? name
-                      : "협력사 코드",
-                  parent_org_code:
-                    grade === "지점장"
-                      ? head_office_code
-                      : grade === "팀장"
-                      ? "지점코드"
-                      : undefined,
-                  org_code:
-                    grade === "본부장"
-                      ? head_office_name
-                      : grade === "지점장"
-                      ? branch_name
-                      : grade === "팀장"
-                      ? team_name
-                      : grade === "담당자"
-                      ? team_code
-                      : undefined,
-                });
-                if (res?.code === 200) {
-                  enqueueSnackbar("신규 아이디 생성 완료되었습니다", {
+              // if (grade === "지점장") {
+              //   enqueueSnackbar("항목을 입력해주세요", {
+              //     variant: "error",
+              //     autoHideDuration: 2000,
+              //   });
+              // }
+              const res = await Axios.Post("member", {
+                token: getAccessToken(),
+                member_pk: pk || undefined,
+                id: id,
+                password: new_password,
+                status: status,
+                grade: grade,
+                name: name,
+                phone: phone,
+                email: email,
+                birthdate: birthdate,
+                db: changeDb,
+                head_office_org_code:
+                  grade === "부관리자"
+                    ? org_name
+                    : grade === "본부장" ||
+                      grade === "지점장" ||
+                      grade === "팀장" ||
+                      grade === "담당자"
+                    ? org_code
+                    : grade === "협력사"
+                    ? name
+                    : "협력사 코드",
+                parent_org_code:
+                  grade === "지점장"
+                    ? head_office_code
+                    : grade === "팀장"
+                    ? "지점코드"
+                    : undefined,
+                org_code:
+                  grade === "본부장"
+                    ? head_office_name
+                    : grade === "지점장"
+                    ? branch_name
+                    : grade === "팀장"
+                    ? team_name
+                    : grade === "담당자"
+                    ? team_code
+                    : undefined,
+              });
+              if (res?.code === 200) {
+                enqueueSnackbar(
+                  router.query.detail === "new-id"
+                    ? "신규 아이디 생성 완료되었습니다"
+                    : "수정이 완료되었습니다",
+                  {
                     variant: "success",
                     autoHideDuration: 2000,
-                  });
-                }
-              } else {
-                console.log("hi");
+                  }
+                );
+                router.back();
               }
             }}
           />

@@ -44,7 +44,7 @@ export default function Menu() {
   const { isPending, fields } = useGetFields();
   const { org_pending, sales } = useGetOrganization("sales");
   const { cooperation } = useGetOrganization("cooperation");
-  const { area } = useGetArea();
+  const { area, setArea } = useGetArea();
 
   const handleAddDb = async () => {
     console.log("test");
@@ -57,7 +57,7 @@ export default function Menu() {
       cooperation_organization_codes: cooperation_organization || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
-      geomap: [...area, area_org],
+      geomap: area,
       fields: db_fields || menu_detail?.fields,
     });
     if (res?.code === 200) {
@@ -231,7 +231,10 @@ export default function Menu() {
               openModal({
                 modal: "area",
                 content: { buttonAction: setAreaOrg },
-                data: area,
+                data: {
+                  geomaps: area,
+                  setGeomaps: setArea,
+                },
               })
             }
           />

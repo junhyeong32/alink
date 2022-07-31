@@ -2,7 +2,7 @@ import Layout from "../src/components/Layout";
 import Column from "../src/components/Box/Column";
 import Row from "../src/components/Box/Row";
 import { Container, Typography, Select, MenuItem } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReceptionStatusTable from "../src/components/Table/data-status/ReceptionStatusTable";
 import {
   select_title,
@@ -16,12 +16,23 @@ import {
 } from "../src/components/Input/Select";
 import Button from "../src/components/Button";
 import Image from "next/image";
+import Axios from "../src/utility/api";
+import { getAccessToken } from "../src/utility/getCookie";
 
 export default function DbStatus() {
   const [area, setArea] = useState("");
   const [headquarters, setHeadquarters] = useState("");
   const [branch, setBranch] = useState("");
   const [date, setDate] = useState("");
+
+  useEffect(() => {
+    const a = async () => {
+      const res = await Axios.Get(`user/db/count?token=${getAccessToken()}`);
+      console.log(res);
+    };
+
+    a();
+  }, []);
 
   return (
     <Layout>

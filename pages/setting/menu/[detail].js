@@ -141,10 +141,6 @@ export default function MenuDetail() {
       setArea((prev) => [...prev, area_org]);
   }, [area_org]);
 
-  console.log("area_org", area_org);
-
-  console.log("org_list", org_list);
-
   if (menu_detail?.length === 0) return <div>loading</div>;
 
   return (
@@ -278,7 +274,10 @@ export default function MenuDetail() {
               openModal({
                 modal: "area",
                 content: { buttonAction: setAreaOrg },
-                data: area,
+                data: {
+                  geomaps: area,
+                  setGeomaps: setArea,
+                },
               })
             }
           />

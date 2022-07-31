@@ -49,7 +49,7 @@ export default function UnderLineInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => {
-          setValue(e.target.value);
+          setValue && setValue(e.target.value);
           e.preventDefault();
         }}
         {...props}
@@ -244,8 +244,10 @@ export function LabelUnderLineInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => {
-          setValue(e.target.value);
-          e.preventDefault();
+          if (setValue) {
+            setValue(e.target.value);
+            e.preventDefault();
+          }
         }}
         {...props}
       />

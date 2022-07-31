@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -10,39 +10,47 @@ import {
   MenuItem,
   Checkbox,
   Box,
+  Pagination,
 } from "@mui/material";
 
-import ReceptionStatusTable from "../../src/components/Table/data-status/ReceptionStatusTable";
-import {
-  select_title,
-  area_input,
-  headquarters_input,
-  branch_input,
-} from "../../src/components/Table/data-status/ReceptionStatusList";
-import TopLabelContents from "../../src/components/Box/TopLableContents";
-import RoundColorBox from "../../src/components/Box/RoundColorBox";
-import {
-  status_list,
-  status_bgcolor,
-  rank_list,
-  rank_bgcolor,
-} from "../../src/data/user";
-import ExcelButton from "../../src/components/Button/Excel";
 import { LabelUnderLineInput } from "../../src/components/Input";
 import SelectInput from "../../src/components/Input/Select";
 import ManagerTable from "../../src/components/Table/manager";
 import Button from "../../src/components/Button";
+import Axios from "../../src/utility/api";
+import useGetUsers from "../../src/hooks/user/useGetUsers";
+import { useTransition } from "react";
 
-export default function User() {
+export default memo(function User() {
   const router = useRouter();
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [excel, setExcel] = useState("");
+
+  const [checkList, setCheckList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(20);
+  const [org_code, setOrgCode] = useState("");
+  const [email, setEmail] = useState("");
+  const [id, setId] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
+    useGetUsers({ page, count, org_code, email, id, name, phone });
+
+  const handleInit = () => {
+    // const doucument.
+    // console.log()
+
+    setOrgCode("");
+    setEmail("");
+    setId("");
+    setName("");
+    setPhone("");
+
+    getUsers(true);
+  };
 
   return (
-    <Layout>
+    <Layout loading={isUsersPending}>
       <Column>
         <Column sx={{ rowGap: "15px" }}>
           <Row
@@ -52,6 +60,16 @@ export default function User() {
             }}
           >
             <Button
+              text="검색"
+              variant="contained"
+              bgColor={"primary"}
+              color="primary.white"
+              fs="h6"
+              w={60}
+              h={20}
+              action={getUsers}
+            />
+            <Button
               text="초기화"
               variant="contained"
               bgColor={"gray"}
@@ -59,6 +77,7 @@ export default function User() {
               fs="h6"
               w={60}
               h={20}
+              action={handleInit}
             />
           </Row>
           <Row justifyContent={"between"}>
@@ -76,6 +95,8 @@ export default function User() {
               <SelectInput
                 title="소속명"
                 menuItems={{}}
+                value={org_code}
+                setValue={setOrgCode}
                 w={{
                   lg: "31.2%",
                   md: "60.5%",
@@ -84,18 +105,34 @@ export default function User() {
                 }}
               />
             </Row>
-            <Button
-              text="초기화"
-              variant="contained"
-              bgColor={"gray"}
-              color="primary.white"
-              fs="h6"
-              w={60}
-              h={20}
-              sx={{
-                display: { lg: "flex", md: "flex", sm: "flex", xs: "none" },
-              }}
-            />
+            <Row sx={{ gap: 1 }}>
+              <Button
+                text="검색"
+                variant="contained"
+                bgColor={"primary"}
+                color="primary.white"
+                fs="h6"
+                w={60}
+                h={20}
+                sx={{
+                  display: { lg: "flex", md: "flex", sm: "flex", xs: "none" },
+                }}
+                action={getUsers}
+              />
+              <Button
+                text="초기화"
+                variant="contained"
+                bgColor={"gray"}
+                color="primary.white"
+                fs="h6"
+                w={60}
+                h={20}
+                sx={{
+                  display: { lg: "flex", md: "flex", sm: "flex", xs: "none" },
+                }}
+                action={handleInit}
+              />
+            </Row>
           </Row>
 
           <Box
@@ -114,6 +151,8 @@ export default function User() {
             <LabelUnderLineInput
               title="이메일"
               placeholder={"이메일로 검색하실 수 있습니다."}
+              value={email}
+              setValue={setEmail}
               w={{
                 lg: "25%",
                 md: "45%",
@@ -124,6 +163,8 @@ export default function User() {
             <LabelUnderLineInput
               title="아이디"
               placeholder={"아이디로 검색하실 수 있습니다."}
+              value={id}
+              setValue={setId}
               w={{
                 lg: "25%",
                 md: "45%",
@@ -134,6 +175,8 @@ export default function User() {
             <LabelUnderLineInput
               title="이용자명"
               placeholder={"성명으로 검색하실 수 있습니다."}
+              value={name}
+              setValue={setName}
               w={{
                 lg: "25%",
                 md: "45%",
@@ -144,6 +187,8 @@ export default function User() {
             <LabelUnderLineInput
               title="연락처"
               placeholder={"연락처로 검색하실 수 있습니다."}
+              value={phone}
+              setValue={setPhone}
               w={{
                 lg: "25%",
                 md: "45%",
@@ -153,12 +198,29 @@ export default function User() {
             />
           </Box>
           <Row alignItems={"center"} justifyContent={"end"} sx={{ mb: "15px" }}>
-            <ExcelButton action={() => setExcel("1")} />
+            {/* <ExcelButton action={() => setExcel("1")} /> */}
           </Row>
         </Column>
 
-        <ManagerTable />
+        <ManagerTable data={users} allocation_total={allocation_total} />
+        <Row
+          alignItems="center"
+          justifyContent="center"
+          sx={{ width: "100%", mt: "86px", pb: 4 }}
+        >
+          <Pagination
+            component="div"
+            page={page}
+            count={totalCouunt}
+            onChange={(subject, newPage) => {
+              setPage(newPage);
+            }}
+            color="primary"
+            // hidePrevButton
+            // hideNextButton
+          />
+        </Row>
       </Column>
     </Layout>
   );
-}
+});

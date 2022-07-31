@@ -150,7 +150,7 @@ export default function UserTable({ data, allocation_total }) {
 
                   {user?.allocations.map((location, _key) => (
                     <TableCell key={_key} align="center" sx={{ width: 150 }}>
-                      <Row justifyContent={"center"} sx={{ gap: "10px" }}>
+                      <Row justifyContent={"start"} sx={{ gap: "10px" }}>
                         {rank === "관리자" ? (
                           <CustomSwitch
                             checked={

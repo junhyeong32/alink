@@ -2,8 +2,9 @@ import Upload from "./share/Upload";
 import NeedConfirm from "./share/NeedConfirm";
 import ReadFile from "./share/ReadFile";
 import Result from "./dna/Result";
-import Area from "./setting/Area";
+import Area from "./setting/AreaModal";
 import Change from "./bojang/ChangeOrg";
+import Division from "./Division";
 
 import { useContext } from "react";
 
@@ -25,10 +26,12 @@ export default function Modal() {
       return <Area key={index} index={index} />;
     } else if (data === "change") {
       return <Change key={index} index={index} />;
+    } else if (data === "division") {
+      return <Division key={index} index={index} />;
     } else if (data === "needconfirm") {
       return <NeedConfirm key={index} index={index} />;
     } else {
-      return console.log("hi");
+      return;
     }
   });
 }
