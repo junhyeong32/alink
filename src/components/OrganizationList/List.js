@@ -8,7 +8,6 @@ import clsx from "clsx";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import Row from "../Box/Row";
-import getApInfoWithSpecificAp from "../../hooks/apManagement/getApInfoWithSpecificAp";
 import { ModalContext } from "../../contexts/ModalContext";
 import { OrganizationContext } from "../../contexts/OrganizationListContext";
 import { useContext } from "react";
@@ -50,70 +49,13 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
 
   const handleExpansionClick = (event) => {
     handleExpansion(event);
+    addOrganizationData(nodeId);
   };
 
   const handleSelectionClick = (event) => {
     handleSelection(event);
 
-    if (router.pathname === "/apManagement") {
-      (async () => {
-        const ap_info = (
-          await Axios.Get(`ap/org/${nodeId}`, {
-            params: {
-              platform: "web",
-              token: cookies.access_token,
-            },
-          })
-        )?.data;
-
-        if (ap_info.code === 200) {
-          addOrganizationData(nodeId);
-          addModalData(() => {
-            const row_check = [];
-            const row_user_info = [];
-
-            ap_info?.data.map((info, key) => {
-              row_check.push(info.id);
-              row_user_info.push({
-                profile_img: info?.profile_image,
-                user_info:
-                  "[" +
-                  getLastTeam(
-                    info?.region,
-                    info?.studio,
-                    info?.branch,
-                    info?.team
-                  ) +
-                  "]" +
-                  " " +
-                  info?.name +
-                  " " +
-                  info?.rank,
-              });
-            });
-
-            return {
-              row_check: row_check,
-              row_user_info: row_user_info,
-            };
-          });
-        }
-      })();
-    } else if (modal_list[1]?.name === "openSettingFsModal") {
-      addModalData(() => {
-        const new_data = [...modal_data];
-
-        new_data.push({
-          org_name:
-            event.target.offsetParent.childNodes[0].children[0].textContent,
-          org_code: nodeId,
-        });
-
-        return new_data;
-      });
-    } else {
-      addOrganizationData(nodeId);
-    }
+    addOrganizationData(nodeId);
   };
 
   return (
@@ -197,7 +139,7 @@ export default function OrganizationList({ group_list }) {
           <TreeView
             key={list_key}
             mt={2}
-            sx={{ overflowY: "scroll" }}
+            sx={{ height: "100%", overflowY: "scroll" }}
             defaultExpanded={getAllCodeOfTree(list)}
             defaultCollapseIcon={
               <Image src="/tree_arrow.png" width={10} height={9} alt="" />

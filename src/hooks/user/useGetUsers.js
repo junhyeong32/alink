@@ -19,13 +19,12 @@ export default function useGetUsers({
   excel,
   setExcel,
 }) {
-  const router = useRouter();
   const [users, setUsers] = useState([]);
   const [allocation_total, setTotal] = useState([]);
   const [isUsersPending, setIsUsersPending] = useState(true);
   const [totalCouunt, setTotalCount] = useState();
 
-  const getUsers = async (is_init) => {
+  const getUsers = async (is_init, orgCode) => {
     if (excel === 1) {
       window.open(
         "http://localhost:9898/api/v1?" +
@@ -69,7 +68,7 @@ export default function useGetUsers({
               status: status === "전체" ? undefined : status,
               grade: grade === "전체" ? undefined : grade,
               head_office_org_code: head_office_org_code,
-              org_code: org_code,
+              org_code: org_code || orgCode,
               geo: geo,
               email: email,
               id: id,

@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "../src/components/Layout";
 import Column from "../src/components/Box/Column";
 import Row from "../src/components/Box/Row";
 import Button from "../src/components/Button";
 import AuthorityTable from "../src/components/Table/authority";
-import useGetGroupList from "../src/hooks/share/useGetGroupList";
 import useGetUsers from "../src/hooks/user/useGetUsers";
 import { Pagination } from "@mui/material";
 import Axios from "../src/utility/api";
 import { getAccessToken } from "../src/utility/getCookie";
 import { useSnackbar } from "notistack";
+import useGetOrganization from "../src/hooks/share/useGetOrganization";
+import OrganizationList from "../src/components/OrganizationList/List";
+import { useContext } from "react";
+import { OrganizationContext } from "../src/contexts/OrganizationListContext";
 
 export default function Authority() {
   const router = useRouter();
@@ -20,14 +23,17 @@ export default function Authority() {
   const [count, setCount] = useState(20);
   const [org_code, setOrgCode] = useState("");
 
+  const { sales } = useGetOrganization("sales");
+
   const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
     useGetUsers({ page, count, org_code });
+
+  const { organization } = useContext(OrganizationContext);
 
   return (
     <Layout loading={isUsersPending}>
       <Row sx={{ width: "100%" }}>
-        {/* <OrganizationList /> */}
-        {/* group_list={group_list} */}
+        <OrganizationList group_list={sales} />
         <Column sx={{ width: "80%" }}>
           <Row justifyContent={"end"} sx={{ width: "100%", gap: 1, mb: 1 }}>
             <Button
