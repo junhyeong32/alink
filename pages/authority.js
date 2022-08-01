@@ -9,9 +9,12 @@ import useGetGroupList from "../src/hooks/share/useGetGroupList";
 import useGetUsers from "../src/hooks/user/useGetUsers";
 import { Pagination } from "@mui/material";
 import Axios from "../src/utility/api";
+import { getAccessToken } from "../src/utility/getCookie";
+import { useSnackbar } from "notistack";
 
 export default function Authority() {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [checkList, setCheckList] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
@@ -34,9 +37,18 @@ export default function Authority() {
               bgColor={"primary"}
               fs={"h6"}
               action={async () => {
-                const res = Axios.Post("member/USER_PK/deposit_status", {
+                const res = await Axios.Post("member/deposit_status", {
+                  token: getAccessToken(),
+                  user_pks: checkList.join(","),
                   deposit_status: "입금 완료",
                 });
+                if (res?.code === 200)
+                  enqueueSnackbar("입금 완료처리 되었습니다.", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+                setCheckList([]);
+                getUsers();
               }}
             />
             <Button
@@ -46,9 +58,18 @@ export default function Authority() {
               bgColor={"orange"}
               fs={"h6"}
               action={async () => {
-                const res = Axios.Post("member/USER_PK/deposit_status", {
+                const res = await Axios.Post("member/deposit_status", {
+                  token: getAccessToken(),
+                  user_pks: checkList.join(","),
                   deposit_status: "입금 미완료",
                 });
+                if (res?.code === 200)
+                  enqueueSnackbar("입금 미완료처리 되었습니다.", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+                setCheckList([]);
+                getUsers();
               }}
             />
             <Button
@@ -59,8 +80,17 @@ export default function Authority() {
               fs={"h6"}
               action={async () => {
                 const res = Axios.Post("member/USER_PK/status", {
+                  token: getAccessToken(),
+                  user_pks: checkList.join(","),
                   status: "승인",
                 });
+                if (res?.code === 200)
+                  enqueueSnackbar("승인 처리 되었습니다.", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+                setCheckList([]);
+                getUsers();
               }}
             />
             <Button
@@ -71,8 +101,17 @@ export default function Authority() {
               fs={"h6"}
               action={async () => {
                 const res = Axios.Post("member/USER_PK/status", {
+                  token: getAccessToken(),
+                  user_pks: checkList.join(","),
                   status: "미승인",
                 });
+                if (res?.code === 200)
+                  enqueueSnackbar("미승인 처리 되었습니다.", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+                setCheckList([]);
+                getUsers();
               }}
             />
           </Row>
