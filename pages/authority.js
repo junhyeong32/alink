@@ -22,13 +22,44 @@ export default function Authority() {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
   const [org_code, setOrgCode] = useState("");
+  const [users, setUsers] = useState([]);
+  const [isUsersPending, setIsUsersPending] = useState(true);
+  const [totalCouunt, setTotalCount] = useState();
 
   const { sales } = useGetOrganization("sales");
 
-  const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
-    useGetUsers({ page, count, org_code });
-
   const { organization } = useContext(OrganizationContext);
+
+  const getUsers = async (is_init) => {
+    const res = is_init
+      ? (
+          await Axios.Get(`member`, {
+            params: {
+              token: getAccessToken(),
+            },
+          })
+        )?.data
+      : (
+          await Axios.Get(`member`, {
+            params: {
+              token: getAccessToken(),
+              page: page,
+              count: count,
+              org_code: organization,
+            },
+          })
+        )?.data;
+
+    if (res?.code === 200) {
+      setUsers(res?.data.result);
+      setTotalCount(Math.ceil(res?.data.total_count / 20));
+      setIsUsersPending(false);
+    }
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, [page, organization]);
 
   return (
     <Layout loading={isUsersPending}>
