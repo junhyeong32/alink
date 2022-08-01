@@ -42,9 +42,6 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
   const { addModalData, modal_data, modal_list } = useContext(ModalContext);
   const { addOrganizationData } = useContext(OrganizationContext);
 
-  const router = useRouter();
-  const [cookies, setCookie, removeCookie] = useCookies();
-
   const icon = iconProp || expansionIcon || displayIcon;
 
   const handleExpansionClick = (event) => {

@@ -35,5 +35,5 @@ export default function useGetOrganization(type, head_office) {
     getOrganization();
   }, [head_office]);
 
-  return { org_pending, sales, cooperation, office_by_org };
+  return { org_pending, sales, cooperation, office_by_org, getOrganization };
 }

@@ -14,6 +14,7 @@ import useGetOrganization from "../src/hooks/share/useGetOrganization";
 import OrganizationList from "../src/components/OrganizationList/List";
 import { useContext } from "react";
 import { OrganizationContext } from "../src/contexts/OrganizationListContext";
+import UnderLineInput from "../src/components/Input";
 
 export default function Authority() {
   const router = useRouter();
@@ -25,8 +26,9 @@ export default function Authority() {
   const [users, setUsers] = useState([]);
   const [isUsersPending, setIsUsersPending] = useState(true);
   const [totalCouunt, setTotalCount] = useState();
+  const [search, setSearch] = useState("");
 
-  const { sales } = useGetOrganization("sales");
+  const { sales, getOrganization } = useGetOrganization("sales");
 
   const { organization } = useContext(OrganizationContext);
 
@@ -63,8 +65,29 @@ export default function Authority() {
 
   return (
     <Layout loading={isUsersPending}>
-      <Row sx={{ width: "100%" }}>
-        <OrganizationList group_list={sales} />
+      <Row sx={{ width: "100%", overflowY: "hidden" }}>
+        <Column
+          alignItems={"center"}
+          sx={{
+            width: 246,
+            height: "100%",
+            overflowY: "scroll",
+            gap: 2,
+            border: "1px solid #EFEFEF",
+          }}
+        >
+          검색어는 상의 후 적용
+          <UnderLineInput
+            w={"80%"}
+            placeholder="검색어를 입력해주세요"
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                getOrganization();
+              }
+            }}
+          />
+          <OrganizationList group_list={sales} />
+        </Column>
         <Column sx={{ width: "80%" }}>
           <Row justifyContent={"end"} sx={{ width: "100%", gap: 1, mb: 1 }}>
             <Button
