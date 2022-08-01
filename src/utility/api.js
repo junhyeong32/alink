@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const baseURL = "https://alinkapi.afg.kr/api/v1";
-// const baseURL = "http://localhost:9898/api/v1";
+// const baseURL = "https://alinkapi.afg.kr/api/v1";
+const baseURL = "http://localhost:9898/api/v1";
 
 const api = {
   Get: async (url, parms) => {

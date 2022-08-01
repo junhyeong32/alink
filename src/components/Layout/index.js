@@ -22,6 +22,7 @@ import Modal from "../Modal";
 import CustomSwitch from "../Switch";
 import useGetUser from "../../hooks/user/useGetUser";
 import NavSwitch from "../Switch/NavSwitch";
+import { getCookie } from "../../utility/getCookie";
 export default function Layout({ loading, children }) {
   const router = useRouter();
   const [menu_list, setMenuList] = useState([]);
@@ -30,7 +31,7 @@ export default function Layout({ loading, children }) {
   const [visible, setVisible] = useState(false);
   const [rank, setRank] = useState(cookies?.user_info?.grade);
   const [showChild, setShowChild] = useState(false);
-  const { user, isUserPending } = useGetUser();
+  const [user, setUser] = useState(getCookie("db"));
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });
@@ -49,8 +50,6 @@ export default function Layout({ loading, children }) {
   if (typeof window === "undefined") {
     return <></>;
   }
-
-  if (isUserPending) return <></>;
 
   return (
     <>

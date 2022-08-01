@@ -10,6 +10,7 @@ import { useCookies } from "react-cookie";
 import reduceImageSize from "../src/utility/image";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
+import { getCookie } from "../src/utility/getCookie";
 
 export default function Login() {
   const { enqueueSnackbar } = useSnackbar();
@@ -18,6 +19,14 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
+
+  const getUser = async (token) => {
+    if (router.isReady) {
+      const res = (await Axios.Get(`user/db/count?token=${token}`))?.data;
+
+      if (res?.code === 200) return res?.data;
+    }
+  };
 
   const handleLogin = async () => {
     if (!id || !password) {
@@ -33,7 +42,7 @@ export default function Login() {
         password: password,
       })
     )?.data;
-    //관리자 계정 
+    //관리자 계정
     //ALINK000
     //alink000!!
 
@@ -47,6 +56,8 @@ export default function Login() {
         path: "/",
         maxAge: 86400,
       });
+
+      setCookie("db", await getUser(res?.access_token));
 
       setLoading(false);
       enqueueSnackbar("로그인 되었습니다.", {
