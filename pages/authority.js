@@ -139,7 +139,7 @@ export default function Authority() {
               bgColor={"primary"}
               fs={"h6"}
               action={async () => {
-                const res = Axios.Post("member/USER_PK/status", {
+                const res = Axios.Post("member/status", {
                   token: getAccessToken(),
                   user_pks: checkList.join(","),
                   status: "승인",
@@ -160,7 +160,7 @@ export default function Authority() {
               bgColor={"orange"}
               fs={"h6"}
               action={async () => {
-                const res = Axios.Post("member/USER_PK/status", {
+                const res = Axios.Post("member/status", {
                   token: getAccessToken(),
                   user_pks: checkList.join(","),
                   status: "미승인",

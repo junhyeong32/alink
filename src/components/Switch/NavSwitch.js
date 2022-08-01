@@ -8,20 +8,38 @@ import {
   Switch,
 } from "@mui/material";
 import { styled } from "@mui/system";
+import Row from "../Box/Row";
 
 // TODO
 // on off 텍스트 넣기
 
 const NavSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
+  <Row sx={{ position: "relative" }}>
+    <Switch
+      focusVisibleClassName=".Mui-focusVisible"
+      disableRipple
+      {...props}
+    />
+    <Typography
+      sx={{ position: "absolute", left: "42px", top: "1px", zIndex: 1 }}
+      color={props.checked ? "primary.white" : "primary.gray"}
+      variant="h5"
+    >
+      {props.checked ? "ON" : "OFF"}
+    </Typography>
+  </Row>
+))(({ theme, checked }) => ({
   width: 49,
   height: 20,
   padding: 0,
+  borderRadius: "15px",
   position: "relative",
   "& .MuiSwitch-switchBase": {
+    width: 10,
+    height: 7,
     padding: 0,
-    margin: 2,
+    margin: 6,
+    color: checked ? "#FFFFFF" : "#909090",
     transitionDuration: "300ms",
     "&.Mui-checked": {
       transform: "translateX(16px)",
@@ -54,7 +72,7 @@ const NavSwitch = styled((props) => (
   },
   "& .MuiSwitch-track": {
     borderRadius: 15,
-    backgroundColor: "#909090",
+    backgroundColor: "#FFFFFF",
     opacity: 1,
     transition: theme.transitions.create(["background-color"], {
       duration: 500,

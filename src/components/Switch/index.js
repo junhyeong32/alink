@@ -8,12 +8,26 @@ import {
   Switch,
 } from "@mui/material";
 import { styled } from "@mui/system";
+import Row from "../Box/Row";
 
 // TODO
 // on off 텍스트 넣기
 
 const CustomSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+  <Row sx={{ position: "relative" }}>
+    <Switch
+      focusVisibleClassName=".Mui-focusVisible"
+      disableRipple
+      {...props}
+    />
+    <Typography
+      sx={{ position: "absolute", left: "42px", top: "1px", zIndex: 1 }}
+      color={props.checked ? "primary.white" : "primary.gray"}
+      variant="h5"
+    >
+      {props.checked ? "ON" : "OFF"}
+    </Typography>
+  </Row>
 ))(({ theme }) => ({
   width: 49,
   height: 20,
