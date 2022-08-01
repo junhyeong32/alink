@@ -88,7 +88,17 @@ export default function AuthorityTable({ data, checkList, setCheckList }) {
                 <TableCell align="center">
                   {numberFormat(list?.pay_amount)}
                 </TableCell>
-                <TableCell align="center">{list?.deposit_status}</TableCell>
+                <TableCell
+                  sx={{
+                    color:
+                      list?.deposit_status === "입금 완료"
+                        ? "#0D1D41"
+                        : "#FF0000",
+                  }}
+                  align="center"
+                >
+                  {list?.deposit_status}
+                </TableCell>
                 <TableCell align="center">{list?.status}</TableCell>
               </TableRow>
             ))}
