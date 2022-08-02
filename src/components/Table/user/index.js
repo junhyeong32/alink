@@ -25,7 +25,32 @@ import { ModalContext } from "../../../contexts/ModalContext";
 import api from "../../../utility/api";
 import { getAccessToken, getCookie } from "../../../utility/getCookie";
 
-export default function UserTable({ data, allocation_total }) {
+const Root = styled("div")`
+  table {
+    box-shadow: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  th {
+    border-top: 3px solid #0d1d41;
+    border-bottom: none;
+    height: 45px;
+    text-align: center;
+    box-shadow: none;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 0;
+    min-width: 100px;
+  }
+  td {
+    padding: 8px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+`;
+
+export default function UserTable({ data, allocation_total, getUsers }) {
   const router = useRouter();
   const [bojang, setBojang] = useState(false);
   const [db, setDb] = useState(false);
@@ -33,31 +58,6 @@ export default function UserTable({ data, allocation_total }) {
   const [rank, setRank] = useState(getCookie("user_info")?.grade);
 
   const { openModal, closeModal } = useContext(ModalContext);
-
-  const Root = styled("div")`
-    table {
-      box-shadow: none;
-      width: 100%;
-      height: 100%;
-    }
-
-    th {
-      border-top: 3px solid #0d1d41;
-      border-bottom: none;
-      height: 45px;
-      text-align: center;
-      box-shadow: none;
-      font-weight: bold;
-      font-size: 12px;
-      padding: 0;
-      min-width: 100px;
-    }
-    td {
-      padding: 8px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-  `;
 
   return (
     <Root sx={{ width: "100%" }}>
@@ -213,7 +213,10 @@ export default function UserTable({ data, allocation_total }) {
                                         user_pk: user?.pk,
                                       }
                                     );
-                                    console.log(res);
+                                    if (res?.code === 200) {
+                                      getUsers();
+                                      closeModal();
+                                    }
                                   },
                                   buttonText: "확인",
                                 },

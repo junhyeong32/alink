@@ -17,6 +17,7 @@ import { status_list, rank_list } from "../../../data/share/MenuByTextList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
 import Column from "../../Box/Column";
+import { useRouter } from "next/router";
 const Root = styled("div")`
   table {
     box-shadow: none;
@@ -42,6 +43,7 @@ const Root = styled("div")`
 `;
 
 export default function ManagerTable({ data, allocation_total }) {
+  const router = useRouter();
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>

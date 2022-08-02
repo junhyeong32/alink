@@ -139,11 +139,12 @@ export default function Authority() {
               bgColor={"primary"}
               fs={"h6"}
               action={async () => {
-                const res = Axios.Post("member/status", {
+                const res = await Axios.Post("member/status", {
                   token: getAccessToken(),
                   user_pks: checkList.join(","),
                   status: "승인",
                 });
+                console.log(res);
                 if (res?.code === 200)
                   enqueueSnackbar("승인 처리 되었습니다.", {
                     variant: "success",
@@ -160,7 +161,7 @@ export default function Authority() {
               bgColor={"orange"}
               fs={"h6"}
               action={async () => {
-                const res = Axios.Post("member/status", {
+                const res = await Axios.Post("member/status", {
                   token: getAccessToken(),
                   user_pks: checkList.join(","),
                   status: "미승인",

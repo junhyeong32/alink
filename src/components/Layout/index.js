@@ -33,6 +33,8 @@ export default function Layout({ loading, children }) {
   const [showChild, setShowChild] = useState(false);
   const [user, setUser] = useState(getCookie("db"));
 
+  console.log(user);
+
   const logout = () => {
     removeCookie("access_token", { path: "/" });
     removeCookie("user_info", { path: "/" });
@@ -169,7 +171,8 @@ export default function Layout({ loading, children }) {
                   if (
                     rank === "본부장" ||
                     rank === "지점장" ||
-                    rank === "팀장"
+                    rank === "팀장" ||
+                    rank === "담당자"
                   ) {
                     return (
                       <MenuBox key={key} text={menu} link={menu_link[key]} />

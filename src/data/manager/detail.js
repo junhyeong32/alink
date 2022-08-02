@@ -7,3 +7,5 @@ export const userListLabel = [
   "연락처",
   "등록일시",
 ];
+
+export const field = ["status"];

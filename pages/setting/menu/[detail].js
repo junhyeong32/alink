@@ -18,6 +18,7 @@ import uploadFile from "../../../src/utility/uploadFile";
 import { OutLineSelectInput } from "../../../src/components/Input/Select";
 import useGetOrganization from "../../../src/hooks/share/useGetOrganization";
 import useGetMenuDetail from "../../../src/hooks/setting/useGetMenuDetail";
+import { setCookie } from "../../../src/utility/getCookie";
 
 export default function MenuDetail() {
   const router = useRouter();
@@ -49,6 +50,14 @@ export default function MenuDetail() {
     router.query.detail
   );
 
+  const getUser = async (token) => {
+    if (router.isReady) {
+      const res = (await Axios.Get(`user/db/count?token=${token}`))?.data;
+
+      if (res?.code === 200) return res?.data;
+    }
+  };
+
   const handleAddDb = async () => {
     console.log("test");
     const res = await Axios.Post("db/menu", {
@@ -64,6 +73,7 @@ export default function MenuDetail() {
       fields: db_fields || menu_detail?.fields,
     });
     if (res?.code === 200) {
+      setCookie("db", await getUser(res?.access_token));
       enqueueSnackbar("DB생성이 완료되었습니다.", {
         variant: "success",
         autoHideDuration: 2000,

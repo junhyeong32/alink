@@ -50,6 +50,7 @@ aside {
   background: #0d1d41;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   padding: 35px 20px 0 20px;
+  overflow-y: scroll;
 }
 @media only screen and (max-width: 900px) {
   aside {

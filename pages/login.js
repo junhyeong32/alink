@@ -20,6 +20,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
 
+
   const getUser = async (token) => {
     if (router.isReady) {
       const res = (await Axios.Get(`user/db/count?token=${token}`))?.data;

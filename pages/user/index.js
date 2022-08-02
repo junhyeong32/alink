@@ -75,7 +75,7 @@ export default memo(function User() {
       name,
       phone,
       excel,
-      setExcel
+      setExcel,
     });
 
   //data
@@ -361,7 +361,11 @@ export default memo(function User() {
           </Row>
         </Column>
 
-        <UserTable data={users} allocation_total={allocation_total} />
+        <UserTable
+          data={users}
+          allocation_total={allocation_total}
+          getUsers={getUsers}
+        />
         <Row
           alignItems="center"
           justifyContent="center"

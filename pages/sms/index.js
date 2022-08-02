@@ -89,7 +89,7 @@ export default function Sms() {
             h={20}
             fs="h6"
           />
-          <Typography variant="h6">보유 포인트 : </Typography>
+          {/* <Typography variant="h6">보유 포인트 : </Typography> */}
         </Row>
         <SmsTable />
       </Column>

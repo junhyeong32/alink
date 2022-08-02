@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -12,70 +12,124 @@ import {
   Box,
 } from "@mui/material";
 import RowLabel from "../../src/components/Box/RowLabel";
-import { userListLabel } from "../../src/data/manager/detail";
+import { userListLabel, field } from "../../src/data/manager/detail";
 import Button from "../../src/components/Button";
+import Axios from "../../src/utility/api";
+import { getAccessToken } from "../../src/utility/getCookie";
+import { useTransition } from "react";
+import useGetArea from "../../src/hooks/setting/useGetArea";
+import { OutLineInput } from "../../src/components/Input";
+import RoundColorBox from "../../src/components/Box/RoundColorBox";
 
 export default function Detail() {
   const router = useRouter();
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [excel, setExcel] = useState("");
+  const [user, setUser] = useState([]);
+  const [isPending, startTransition] = useTransition();
+  const { area } = useGetArea();
 
-  //TODO
-  // 상태 - 아이콘
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const getDetail = async () => {
+      const res = (
+        await Axios.Get(`member/${router.query.detail}`, {
+          params: {
+            token: getAccessToken(),
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        startTransition(() => {
+          setUser(res?.data);
+        });
+      }
+    };
+    getDetail();
+  }, [router.isReady]);
+  console.log("user", user);
 
   return (
-    <Layout>
+    <Layout loading={isPending}>
       <Column sx={{ gap: 2.8 }}>
         <Typography variant="h1">이용자 정보</Typography>
-        <Column sx={{ rowGap: "15px" }}>
+        <Column sx={{ gap: 3 }}>
           {userListLabel.map((label, key) => (
             <RowLabel
+              key={key}
               label={label}
               fs={"h4"}
-              key={key}
               label_w={60}
               sx={{
                 width: { lg: 481, md: 481, sm: 481, xs: "100%" },
               }}
             >
-              <Typography variant="h6">text</Typography>
+              <Typography variant="h4">
+                {key === 0
+                  ? user?.status
+                  : key === 1
+                  ? user?.id
+                  : key === 2
+                  ? user?.head_office
+                  : key === 3
+                  ? user?.email
+                  : key === 4
+                  ? user?.birthdate
+                  : key === 5
+                  ? user?.phone
+                  : user?.created_date}
+              </Typography>
             </RowLabel>
           ))}
         </Column>
-        <Column sx={{ gap: 3 }}>
-          <Typography variant="h1" mb={1}>
-            DB관리
-          </Typography>
-          <RowLabel label="보장할당">
-            {/* TODO
-          버튼 아님
-          그냥 보여주기용
-          */}
-            <Button
-              text="OFF"
-              variant={"contained"}
-              bgColor="gray"
-              color="primary.white"
-              fs={"h6"}
-              w={48}
-              h={18}
-            />
-            {/* <Typography
-              variant="h6"
-              sx={{
-                position: "absolute",
-                color: "#FFFFFF",
-                left: bojang ? "124px" : "145px",
-              }}
-            >
-              {bojang ? "ON" : "OFF"}
-            </Typography> */}
-          </RowLabel>
-          <RowLabel label="재무할당"></RowLabel>
-          <RowLabel label="유전자할당"></RowLabel>
+
+        <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
+          <Typography variant="h1">DB 관리</Typography>
+          {user?.db?.map((d, key) => (
+            <Column key={key}>
+              <RowLabel label={d?.title} fs="h4" label_w={83}>
+                <Row alignItems={"center"}>
+                  <OutLineInput
+                    disabled
+                    w={90}
+                    defaultValue={d?.allocation?.count}
+                  />
+                  <Typography variant="h6" pl={1}>
+                    개
+                  </Typography>
+                </Row>
+                <RoundColorBox
+                  background={
+                    d?.location?.is_activated === 1 ? "#0D1D41" : "#909090"
+                  }
+                >
+                  {d?.location?.is_activated === 1 ? "ON" : "OFF"}
+                </RoundColorBox>
+
+                <Row wrap={"wrap"} sx={{ gap: 1 }}>
+                  {area?.map((map, area_key) => (
+                    <RoundColorBox
+                      key={area_key}
+                      background={
+                        d?.geomap?.find((d) => d?.name === map?.name)
+                          ? "#0D1D41"
+                          : "#E6E6E6"
+                      }
+                      fc={
+                        d?.geomap?.find((d) => d?.name === map?.name)
+                          ? "#FFFFFF"
+                          : "#000000"
+                      }
+                      fs={12}
+                      sx={{ maxWidth: 100, gap: 1 }}
+                    >
+                      {map?.name}
+                    </RoundColorBox>
+                  ))}
+                </Row>
+              </RowLabel>
+            </Column>
+          ))}
         </Column>
 
         <Row justifyContent={"center"}>

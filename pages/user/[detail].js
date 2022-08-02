@@ -24,7 +24,7 @@ import { styles } from "../../src/styles/bojang";
 import useGetUserDetail from "../../src/hooks/user/useGetUserDetail";
 import useGetOrganization from "../../src/hooks/share/useGetOrganization";
 import api from "../../src/utility/api";
-import { getAccessToken } from "../../src/utility/getCookie";
+import { getAccessToken, getCookie } from "../../src/utility/getCookie";
 import CustomSwitch from "../../src/components/Switch";
 import { useSnackbar } from "notistack";
 import useGetMenus from "../../src/hooks/setting/useGetMenus";
@@ -56,6 +56,8 @@ export default function UserDetail() {
   const { menus } = useGetMenus();
   const [org_code_by_sales, setOrgCodeBySales] = useState([]);
 
+  //login info
+  const [rank] = useState(getCookie("user_info")?.grade);
   //change state
   const [org_name, setOrgName] = useState("");
   const [org_code, setOrgCode] = useState("");
@@ -268,7 +270,7 @@ export default function UserDetail() {
                   key={key}
                   control={
                     <Checkbox
-                      disabled={status === "퇴사자"}
+                      disabled={status === "퇴사자" || rank === "부관리자"}
                       checked={status === list || status === list}
                       onClick={() => setStatus(list)}
                     />
@@ -297,7 +299,7 @@ export default function UserDetail() {
                   key={key}
                   control={
                     <Checkbox
-                      disabled={status === "퇴사자"}
+                      disabled={status === "퇴사자" || rank === "부관리자"}
                       checked={grade === list || grade === list}
                       onClick={() => setGrade(list)}
                     />
@@ -315,6 +317,7 @@ export default function UserDetail() {
         {grade === "부관리자" && (
           <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
+              disabled={status === "퇴사자" || rank === "부관리자"}
               w="50%"
               defaultValue={head_office_name}
               onBlur={(e) => setOrgName(e.target.value)}
@@ -327,6 +330,7 @@ export default function UserDetail() {
           grade === "담당자") && (
           <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
             <OutLineSelectInput
+              disabled={status === "퇴사자" || rank === "부관리자"}
               w="50%"
               defaultValue={org_code}
               menuItems={orgMenuList}
@@ -338,6 +342,7 @@ export default function UserDetail() {
         {grade === "부협력사" && (
           <RowLabel label="협력사명" sx={rowLabelWidth} label_w={83}>
             <OutLineSelectInput
+              disabled={status === "퇴사자" || rank === "부관리자"}
               defaultValue={org_code}
               w="50%"
               menuItems={{}}
@@ -353,12 +358,14 @@ export default function UserDetail() {
             <RowLabel label="본부명" sx={rowLabelWidth} label_w={83}>
               {grade === "본부장" ? (
                 <OutLineInput
+                  disabled={status === "퇴사자" || rank === "부관리자"}
                   w="50%"
                   defaultValue={head_office_name}
                   onBlur={(e) => setHeadOfficeName(e.target.value)}
                 />
               ) : (
                 <OutLineSelectInput
+                  disabled={status === "퇴사자" || rank === "부관리자"}
                   w="50%"
                   menuItems={headOfficeMenuList}
                   value={head_office_code}
@@ -371,6 +378,7 @@ export default function UserDetail() {
         {grade === "지점장" && (
           <RowLabel label="지점명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
+              disabled={status === "퇴사자" || rank === "부관리자"}
               w="50%"
               defaultValue={branch_name}
               onBlur={(e) => setBranchName(e.target.value)}
@@ -380,6 +388,7 @@ export default function UserDetail() {
         {grade === "팀장" && (
           <RowLabel label="지점명" sx={rowLabelWidth} label_w={83}>
             <OutLineSelectInput
+              disabled={status === "퇴사자" || rank === "부관리자"}
               w="50%"
               menuItems={branchMenuList}
               value={branch_code}
@@ -392,6 +401,7 @@ export default function UserDetail() {
           <>
             <RowLabel label="팀명" sx={rowLabelWidth} label_w={83}>
               <OutLineInput
+                disabled={status === "퇴사자" || rank === "부관리자"}
                 w="50%"
                 defaultValue={team_name}
                 onBlur={(e) => setTeamName(e.target.value)}
@@ -403,6 +413,7 @@ export default function UserDetail() {
           <>
             <RowLabel label="팀명" sx={rowLabelWidth} label_w={83}>
               <OutLineSelectInput
+                disabled={status === "퇴사자" || rank === "부관리자"}
                 w="50%"
                 menuItems={teamMenuList}
                 defaultValue={team_code}
@@ -416,6 +427,7 @@ export default function UserDetail() {
         {grade !== "" && (
           <RowLabel label="이용자명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
+              disabled={status === "퇴사자" || rank === "부관리자"}
               w="50%"
               defaultValue={name}
               onBlur={(e) => setName(e.target.value)}
@@ -425,6 +437,7 @@ export default function UserDetail() {
         {grade === "" && (
           <RowLabel label="성명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
+              disabled={status === "퇴사자" || rank === "부관리자"}
               w="50%"
               defaultValue={name}
               onBlur={(e) => setName(e.target.value)}
@@ -433,6 +446,7 @@ export default function UserDetail() {
         )}
         <RowLabel label="아이디" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
+            disabled={status === "퇴사자" || rank === "부관리자"}
             w="50%"
             defaultValue={id}
             onBlur={(e) => setId(e.target.value)}
@@ -444,6 +458,7 @@ export default function UserDetail() {
             color="primary.white"
             h={20}
             fs="h6"
+            disabled={status === "퇴사자" || rank === "부관리자"}
             action={async () => {
               const res = await Axios.Post("member/iddupcheck", {
                 token: getAccessToken(),
@@ -466,6 +481,7 @@ export default function UserDetail() {
         </RowLabel>
         <RowLabel label="신규 비밀번호" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
+            disabled={status === "퇴사자" || rank === "부관리자"}
             w="50%"
             onBlur={(e) => setNewPassword(e.target.value)}
             type={"password"}
@@ -473,6 +489,7 @@ export default function UserDetail() {
         </RowLabel>
         <RowLabel label="비밀번호 확인" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
+            disabled={status === "퇴사자" || rank === "부관리자"}
             w="50%"
             onBlur={(e) => setPassword(e.target.value)}
             type={"password"}
@@ -480,6 +497,7 @@ export default function UserDetail() {
         </RowLabel>
         <RowLabel label="이메일" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
+            disabled={status === "퇴사자" || rank === "부관리자"}
             w="50%"
             defaultValue={email}
             onBlur={(e) => setEmail(e.target.value)}
@@ -487,6 +505,7 @@ export default function UserDetail() {
         </RowLabel>
         <RowLabel label="연락처" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
+            disabled={status === "퇴사자" || rank === "부관리자"}
             w="50%"
             defaultValue={phone}
             onBlur={(e) => setPhone(e.target.value)}
@@ -495,6 +514,7 @@ export default function UserDetail() {
         {(grade !== "협락사" || grade !== "부협락사") && (
           <RowLabel label="생년월일" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
+              disabled={status === "퇴사자" || rank === "부관리자"}
               w="50%"
               defaultValue={birthdate}
               onBlur={(e) => setBirthdate(e.target.value)}
@@ -513,7 +533,7 @@ export default function UserDetail() {
                   <RowLabel label={d?.title} fs="h4" label_w={83}>
                     <Row alignItems={"center"}>
                       <OutLineInput
-                        disabled={status === "퇴사자"}
+                        disabled={status === "퇴사자" || rank === "부관리자"}
                         w={90}
                         defaultValue={d?.allocation?.count}
                         onBlur={(e) =>
@@ -534,6 +554,7 @@ export default function UserDetail() {
                       )}
                       <CustomSwitch
                         sx={{ ml: 3 }}
+                        disabled={status === "퇴사자" || rank === "부관리자"}
                         checked={
                           changeDb[key]?.allocation[0].is_activated === 1
                             ? true
@@ -571,7 +592,9 @@ export default function UserDetail() {
                           }
                           fs={12}
                           sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
-                          onClick={() =>
+                          onClick={() => {
+                            if (status === "퇴사자" || rank === "부관리자")
+                              return;
                             setChangeDb((prev) => {
                               const newData = [...prev];
                               const newDataGeo = newData[key].geomap;
@@ -587,8 +610,8 @@ export default function UserDetail() {
                               }
 
                               return newData;
-                            })
-                          }
+                            });
+                          }}
                         >
                           {map?.name}
                         </RoundColorBox>

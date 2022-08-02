@@ -35,7 +35,9 @@ export default function MenuBox({ img_src, w, text, link }) {
         sx={{
           borderBottom: link === router.asPath && "2px solid white",
           pb: "2px",
-          // textDecoration:  "underline" : "none",
+          maxWidth: 85,
+          whiteSpace: "break-spaces",
+          textAlign: "start",
         }}
       >
         {text}

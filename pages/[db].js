@@ -43,6 +43,7 @@ import { extendMoment } from "moment-range";
 import { useEffect } from "react";
 import Axios from "../src/utility/api";
 import { getAccessToken } from "../src/utility/getCookie";
+import GridBox from "../src/components/Box/Grid";
 
 const moment = extendMoment(originalMoment);
 
@@ -71,7 +72,7 @@ export default function Db() {
     };
 
     getDbDetail();
-  }, [router.isReady]);
+  }, [router.isReady, router.query.db]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -89,23 +90,25 @@ export default function Db() {
     };
 
     getDbDetail();
-  }, [router.isReady]);
+  }, [router.isReady, router.query.db]);
 
-  useEffect(() => {
-    if (!router.isReady) return;
-    const getDbDetail = async () => {
-      const res = (await Axios.Get(`db/list/4?token=${getAccessToken()}`))
-        ?.data;
+  //   useEffect(() => {
+  //     if (!router.isReady) return;
+  //     const getDbDetail = async () => {
+  //       const res = (await Axios.Get(`db/list/4?token=${getAccessToken()}`))
+  //         ?.data;
 
-      console.log("res2", res);
-    };
+  //       console.log("res2", res);
+  //     };
 
-    getDbDetail();
-  }, [router.isReady]);
+  //     getDbDetail();
+  //   }, [router.isReady, router.query.db]);
 
   //인수상태, 조직명, 소속명, 업체승인, 지역, 등록일
 
-  console.log("db_list", db_list);
+  menu_detail?.fields
+    ?.filter((d) => d?.is_filter_shown === 1)
+    .map((fil) => console.log(fil?.property?.name));
 
   return (
     <Layout>
@@ -131,7 +134,16 @@ export default function Db() {
                 )
             )}
           </TopLabelContents>
-          <Row justifyContent={"end"}>
+          <Row justifyContent={"end"} sx={{ gap: 1 }}>
+            <Button
+              variant="contained"
+              bgColor="primary"
+              text="검색"
+              color="primary.white"
+              fs="h6"
+              w={60}
+              h={25}
+            />
             <Button
               variant="contained"
               bgColor="gray"
@@ -139,96 +151,107 @@ export default function Db() {
               color="primary.white"
               fs="h6"
               w={60}
-              h={20}
-              sx={styles.init_button}
+              h={25}
             />
           </Row>
-          <Row justifyContent={"between"} sx={styles.input_row}>
-            <Column sx={styles.first_input_column}>
-              <SelectInput title="조직명" menuItems={{}} />
-              <SelectInput title="업체승인" menuItems={{}} />
-              <Row alignItems={"end"}>
-                <SelectInput
-                  title="지역"
-                  placeholder={"시도"}
-                  w={"50%"}
-                  menuItems={{}}
-                />
-                <SelectInput
-                  w={"50%"}
-                  placeholder={"지역상세"}
-                  menuItems={{}}
-                />
-              </Row>
-            </Column>
-
-            <Column sx={styles.second_input_column}>
-              <SelectInput title="소속명" menuItems={{}} />
-              <SelectInput title="등록처" menuItems={{}} />
-              <DateInput
-                value={date_range}
-                setValue={setDateRange}
-                textValue={date}
-                title={
-                  <>
-                    <Row
-                      alignItems={"center"}
-                      wrap={"wrap"}
-                      sx={{ gap: 1, whiteSpace: "nowrap" }}
-                    >
-                      등록일
-                      <Button
-                        text="금일"
-                        bgColor={"gray"}
-                        fs={"h6"}
-                        color={"primary.white"}
-                        h={14}
-                        action={() => setDate(moment().format("YYYY-MM-DD"))}
-                      />
-                      <Button
-                        text="어제"
-                        bgColor={"gray"}
-                        fs={"h6"}
-                        color={"primary.white"}
-                        h={14}
-                        action={() =>
-                          setDate(
-                            moment().subtract(1, "days").format("YYYY-MM-DD")
-                          )
-                        }
-                      />
-                      <Button
-                        text="이번주"
-                        bgColor={"gray"}
-                        fs={"h6"}
-                        color={"primary.white"}
-                        h={14}
-                        action={() =>
-                          setDate(
-                            moment().subtract(7, "days").format("YYYY-MM-DD")
-                          )
-                        }
-                      />
-                      <Button
-                        text="지난달"
-                        bgColor={"gray"}
-                        fs={"h6"}
-                        color={"primary.white"}
-                        h={14}
-                        // action={() =>
-                        //   setDate(
-                        //     moment().subtract(7, "days").format("YYYY-MM-DD")
-                        //   )
-                        // }
-                      />
-                    </Row>
-                  </>
-                }
+          <GridBox
+            alignItems={"center"}
+            wrap="wrap"
+            itemCount={4}
+            sx={{ width: "100%", gap: 1 }}
+          >
+            <SelectInput w="100%" title="조직명" menuItems={{}} />
+            <SelectInput w="100%" title="업체승인" menuItems={{}} />
+            <Row alignItems={"end"} sx={{ width: "100%" }}>
+              <SelectInput
+                title="지역"
+                placeholder={"시도"}
+                w={"50%"}
                 menuItems={{}}
               />
-            </Column>
+              <SelectInput w={"50%"} placeholder={"지역상세"} menuItems={{}} />
+            </Row>
+            <SelectInput w="100%" title="소속명" menuItems={{}} />
+            <SelectInput w="100%" title="등록처" menuItems={{}} />
+            <DateInput
+              value={date_range}
+              setValue={setDateRange}
+              textValue={date}
+              w="100%"
+              title={
+                <>
+                  <Row
+                    alignItems={"center"}
+                    wrap={"wrap"}
+                    sx={{ gap: 1, whiteSpace: "nowrap" }}
+                  >
+                    등록일
+                    <Button
+                      text="금일"
+                      bgColor={"gray"}
+                      fs={"h6"}
+                      color={"primary.white"}
+                      h={14}
+                      action={() => setDate(moment().format("YYYY-MM-DD"))}
+                    />
+                    <Button
+                      text="어제"
+                      bgColor={"gray"}
+                      fs={"h6"}
+                      color={"primary.white"}
+                      h={14}
+                      action={() =>
+                        setDate(
+                          moment().subtract(1, "days").format("YYYY-MM-DD")
+                        )
+                      }
+                    />
+                    <Button
+                      text="이번주"
+                      bgColor={"gray"}
+                      fs={"h6"}
+                      color={"primary.white"}
+                      h={14}
+                      action={() =>
+                        setDate(
+                          moment().subtract(7, "days").format("YYYY-MM-DD")
+                        )
+                      }
+                    />
+                    <Button
+                      text="지난달"
+                      bgColor={"gray"}
+                      fs={"h6"}
+                      color={"primary.white"}
+                      h={14}
+                      // action={() =>
+                      //   setDate(
+                      //     moment().subtract(7, "days").format("YYYY-MM-DD")
+                      //   )
+                      // }
+                    />
+                  </Row>
+                </>
+              }
+              menuItems={{}}
+            />
+            {menu_detail?.fields
+              ?.filter((d) => d?.is_filter_shown === 1)
+              ?.map((filter, key) => {
+                console.log(filter);
+                return (
+                  <LabelUnderLineInput
+                    key={key}
+                    w={"100%"}
+                    title={filter?.property?.name}
+                    placeholder={"연락처로 검색하실 수 있습니다."}
+                    // sx={{ ...styles.init_input, mt: 4 }}
+                  />
+                );
+              })}
+          </GridBox>
 
-            <Box sx={styles.third_input_column}>
+          {/* <Box sx={styles.third_input_column}>
               <SelectInput title="담당자" w={styles.input} menuItems={{}} />
               <LabelUnderLineInput
                 title="고객명"
@@ -241,9 +264,9 @@ export default function Db() {
                 w={styles.input}
                 sx={styles.phone_input}
               />
-            </Box>
+            </Box> */}
 
-            <Column alignItems={"end"} sx={styles.fourth_input_column}>
+          {/* <Column alignItems={"end"} sx={styles.fourth_input_column}>
               <Button
                 variant="contained"
                 bgColor="gray"
@@ -260,12 +283,11 @@ export default function Db() {
                 placeholder={"연락처로 검색하실 수 있습니다."}
                 sx={{ ...styles.init_input, mt: 4 }}
               />
-            </Column>
-          </Row>
+            </Column> */}
         </Column>
 
         <Column sx={{ mt: "15px" }}>
-          <Row
+          {/* <Row
             alignItems={"center"}
             justifyContent={"between"}
             sx={{ mb: "10px" }}
@@ -307,7 +329,7 @@ export default function Db() {
               />
             </Row>
             <ExcelButton action={() => setExcel("1")} />
-          </Row>
+          </Row> */}
           <BojangTable
             openModal={openModal}
             closeModal={closeModal}
