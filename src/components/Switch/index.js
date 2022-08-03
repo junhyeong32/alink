@@ -21,8 +21,13 @@ const CustomSwitch = styled((props) => (
       {...props}
     />
     <Typography
-      sx={{ position: "absolute", left: "42px", top: "1px", zIndex: 1 }}
-      color={props.checked ? "primary.white" : "primary.gray"}
+      sx={{
+        position: "absolute",
+        left: props.checked ? "5px" : "18.5px",
+        top: "1px",
+        zIndex: 1,
+      }}
+      color="primary.white"
       variant="h5"
     >
       {props.checked ? "ON" : "OFF"}
