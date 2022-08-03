@@ -1,45 +1,31 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { Typography, FormControlLabel } from "@mui/material";
+import UnderLineInput, { OutLineInput } from "../../src/components/Input";
+import { getAccessToken, getCookie } from "../../src/utility/getCookie";
+import { getOrgHeadOffice } from "../../src/utility/organization/getOrgWithUnit";
+import { useSnackbar } from "notistack";
+import { styled } from "@mui/material/styles";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
 import Row from "../../src/components/Box/Row";
-import {
-  Container,
-  Typography,
-  Select,
-  MenuItem,
-  Checkbox,
-  Box,
-  FormControlLabel,
-} from "@mui/material";
-import ExcelButton from "../../src/components/Button/Excel";
-import {
-  DateInput,
-  LabelUnderLineInput,
-  OutLineInput,
-} from "../../src/components/Input";
 import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
-import { styles } from "../../src/styles/bojang";
-import { argument_status } from "../../src/data/share/MenuByTextList";
 import RowLabel from "../../src/components/Box/RowLabel";
 import DisableBox from "../../src/components/Box/DisableBox";
 import useGetArea from "../../src/hooks/setting/useGetArea";
-import { getAccessToken, getCookie } from "../../src/utility/getCookie";
 import useGetOrganization from "../../src/hooks/share/useGetOrganization";
-import { getOrgHeadOffice } from "../../src/utility/organization/getOrgWithUnit";
 import Axios from "../../src/utility/api";
-import { useSnackbar } from "notistack";
 import RadioInput from "../../src/components/Radio";
-import { styled } from "@mui/material/styles";
+import uploadFile from "../../src/utility/uploadFile";
 
 const Input = styled("input")({
   display: "none",
 });
 
-export default function Dna() {
+export default function NewDb() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -60,6 +46,8 @@ export default function Dna() {
   const [parent_area, setParentArea] = useState("");
   const [child_area, setChildArea] = useState("");
   const [values, setValues] = useState([]);
+
+  const [transcript_file, setTranscriptFile] = useState("");
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
@@ -334,7 +322,7 @@ export default function Dna() {
           />
         </RowLabel>
         <RowLabel label="녹취파일" fs="h6">
-          <Column sx={{ gap: 1 }}>
+          {/* <Column sx={{ gap: 1 }}>
             <Row justifyContent={"end"} sx={{ gap: 1 }}>
               <label htmlFor="contained-button-file">
                 <Input
@@ -357,9 +345,64 @@ export default function Dna() {
             </Row>
 
             <DisableBox text="마우스로 파일을 끌어오세요." w={367} h={95} />
-          </Column>
+          </Column> */}
+          <Row alignItems={"center"} sx={{ gap: 2 }}>
+            <Row alignItems={"center"} justifyContent={"start"} sx={{ gap: 1 }}>
+              <label htmlFor="contained-button-file">
+                <Input
+                  accept="audio/*"
+                  id="contained-button-file"
+                  // multiple
+                  type="file"
+                  onChange={(e) => setTranscriptFile(e.target.files[0])}
+                />
+
+                <Button
+                  text="파일찾기"
+                  fs="h6"
+                  bgColor={"gray"}
+                  color={"primary.white"}
+                  h={25}
+                  component={"span"}
+                />
+              </label>
+
+              <UnderLineInput disabled value={transcript_file?.name} />
+              <Button
+                text="업로드"
+                fs="h6"
+                h={25}
+                sx={{ mt: 0.1 }}
+                action={async () => {
+                  const _uploadFile = await uploadFile(transcript_file);
+
+                  if (_uploadFile) {
+                    setValues((prev) => {
+                      const newData = [...prev];
+                      const newObj = Object.assign(
+                        {},
+                        newData?.filter((data) => data?.name === "녹취 파일")[0]
+                      );
+
+                      newObj.value = _uploadFile;
+
+                      newData.push(newObj);
+
+                      return newData;
+                    });
+                    setTranscriptFile();
+                    enqueueSnackbar("파일이 정상적으로 등록 되었습니다.", {
+                      variant: "success",
+                      autoHideDuration: 2000,
+                    });
+                  }
+                }}
+              />
+            </Row>
+          </Row>
         </RowLabel>
       </Column>
+
       <Row justifyContent={"center"} sx={{ width: "100%", mt: 10, gap: 1.5 }}>
         <Button
           text="등록"
