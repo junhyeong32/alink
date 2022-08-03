@@ -3,7 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import Row from "./Row";
 import { useRouter } from "next/router";
 
-export default function MenuBox({ img_src, w, text, link }) {
+export default function MenuBox({ img_src, w, text, link, textWidth }) {
   const router = useRouter();
   return (
     <Button
@@ -35,9 +35,9 @@ export default function MenuBox({ img_src, w, text, link }) {
         sx={{
           borderBottom: link === router.asPath && "2px solid white",
           pb: "2px",
-          maxWidth: 85,
           whiteSpace: "break-spaces",
           textAlign: "start",
+          maxWidth: textWidth,
         }}
       >
         {text}

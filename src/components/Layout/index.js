@@ -206,7 +206,19 @@ export default function Layout({ loading, children }) {
               {user?.db?.map((d, key) => {
                 return (
                   <Row justifyContent={"between"} key={key}>
-                    <MenuBox key={key} w={92} text={d?.title} link={d?.pk} />
+                    <MenuBox
+                      textWidth={
+                        rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === "팀장" ||
+                        rank === "담당자"
+                          ? 85
+                          : "100%"
+                      }
+                      key={key}
+                      text={d?.title}
+                      link={d?.pk}
+                    />
                     {(rank === "본부장" ||
                       rank === "지점장" ||
                       rank === "팀장" ||
