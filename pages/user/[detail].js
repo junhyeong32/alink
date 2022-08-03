@@ -271,7 +271,7 @@ export default function UserDetail() {
                   control={
                     <Checkbox
                       disabled={status === "퇴사자" || rank === "부관리자"}
-                      checked={status === list || status === list}
+                      checked={status === list}
                       onClick={() => setStatus(list)}
                     />
                   }

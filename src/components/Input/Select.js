@@ -17,6 +17,7 @@ export default function UnderLineSelectInput({
   setValue,
   menuItems,
   w,
+  onChange,
   ...props
 }) {
   return (
@@ -35,8 +36,9 @@ export default function UnderLineSelectInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => {
-          setValue(e.target.value);
+          onChange ? onChange(e) : setValue(e.target.value);
         }}
+        sx={{ textAlign: "center" }}
         {...props}
       >
         {Object.entries(menuItems).map(([value, data], key) => (

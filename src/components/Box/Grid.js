@@ -37,6 +37,7 @@ export default function GridBox({
   return (
     <Grid
       sx={{
+        display: "grid",
         justifyContent: _justifyContent[justifyContent],
         alignItems: _alignItems[alignItems],
         gridTemplateColumns: {

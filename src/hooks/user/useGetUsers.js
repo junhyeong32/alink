@@ -27,7 +27,7 @@ export default function useGetUsers({
   const getUsers = async (is_init, orgCode) => {
     if (excel === 1) {
       window.open(
-        "http://localhost:9898/api/v1?" +
+        "https://alinkapi.afg.kr/api/v1?" +
           Object.entries({
             token: getAccessToken(),
             page: page,

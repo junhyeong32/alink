@@ -73,24 +73,6 @@ export default function MenuTable({ data, getMenus }) {
             {data?.map((list, key) => {
               return (
                 <TableRow align="center" key={key}>
-                  {/*<TableCell align="center">*/}
-                  {/*  <Row justifyContent={"center"} sx={{ gap: 1 }}>*/}
-                  {/*    <Image*/}
-                  {/*      src="/up.png"*/}
-                  {/*      width={14}*/}
-                  {/*      height={9}*/}
-                  {/*      alt=""*/}
-                  {/*      className="pointer"*/}
-                  {/*    />*/}
-                  {/*    <Image*/}
-                  {/*      src="/down.png"*/}
-                  {/*      width={14}*/}
-                  {/*      height={9}*/}
-                  {/*      alt=""*/}
-                  {/*      className="pointer"*/}
-                  {/*    />*/}
-                  {/*  </Row>*/}
-                  {/*</TableCell>*/}
                   <TableCell align="center">
                     {list?.organizations.map((org) => org.name).join(", ")}
                   </TableCell>

@@ -81,9 +81,8 @@ export function OutLineInput({
         }}
         InputProps={{
           style: {
-            height: h || 30,
+            height: !props?.multiline && (h || 30),
             borderRadius: 5,
-            paddingLeft: 0,
           },
         }}
         variant="outlined"

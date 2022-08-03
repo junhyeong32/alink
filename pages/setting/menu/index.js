@@ -274,7 +274,15 @@ export default function Menu() {
                         return arr;
                       })
                     }
-                    disabled={field?.is_filter_shown === 0}
+                    disabled={
+                      field?.is_filter_shown === 0 ||
+                      field?.name === "나이" ||
+                      field?.name === "성별" ||
+                      field?.name === "분배일시" ||
+                      field?.name === "등록일시" ||
+                      field?.name === "결혼여부" ||
+                      field?.name === "특이사항"
+                    }
                   />
                 }
               />

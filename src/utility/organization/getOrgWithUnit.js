@@ -1,6 +1,9 @@
 import { getTitleOfOrg_name } from "./getTitleOfOrg";
 
 export function getOrgWithUnit(orgs, unit, result) {
+  Object.assign(result, {
+    전체: "전체",
+  });
   for (let org of orgs) {
     getOrgWithUnit(org.children, unit, result);
 
@@ -10,4 +13,15 @@ export function getOrgWithUnit(orgs, unit, result) {
       });
     }
   }
+}
+
+export function getOrgHeadOffice(orgs, result) {
+  Object.assign(result, {
+    전체: "전체",
+  });
+  orgs?.map((org) =>
+    Object.assign(result, {
+      [org.code]: org.name,
+    })
+  );
 }

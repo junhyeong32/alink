@@ -15,6 +15,7 @@ import { bojangHeaderList } from "./bojangHedaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
 import MemoBox from "../../Box/Memo";
+import { useRouter } from "next/router";
 
 const Root = styled("div")`
   table {
@@ -37,11 +38,13 @@ const Root = styled("div")`
   td {
     padding: 8px;
     font-size: 12px;
+    border-bottom: none;
   }
 `;
 
 export default function BojangTable({ openModal, closeModal, header, data }) {
-  console.log(data);
+  const router = useRouter();
+  console.log("header, data", header, data);
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -63,16 +66,29 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
             </TableRow>
           </TableHead>
 
-          {/* <TableBody>
-            {data?.values?.map((db, key) =>{
-              return(
-                <TableRow>
-
-                </TableRow>
-              )
-            })}
-          
-          </TableBody> */}
+          <TableBody>
+            {data?.map((d, key) => (
+              <TableRow
+                key={key}
+                onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+              >
+                {d?.values?.map((val) =>
+                  header?.fields?.map((head) => {
+                    if (
+                      head?.is_list_shown === 1 &&
+                      head?.pk === val?.field_pk
+                    ) {
+                      return (
+                        <TableCell key={val?.field_pk} align="center">
+                          {val?.value}
+                        </TableCell>
+                      );
+                    }
+                  })
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </TableContainer>
     </Root>

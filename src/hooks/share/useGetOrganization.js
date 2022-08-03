@@ -14,7 +14,8 @@ export default function useGetOrganization(type, head_office) {
         params: {
           token: getAccessToken(),
           type: type,
-          head_office_org_code: head_office,
+          head_office_org_code:
+            head_office === "전체" ? undefined : head_office,
         },
       })
     )?.data;
