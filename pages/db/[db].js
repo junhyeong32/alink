@@ -21,8 +21,10 @@ import useGetArea from "../../src/hooks/setting/useGetArea";
 import RadioInput from "../../src/components/Radio";
 import { useSnackbar } from "notistack";
 import uploadFile from "../../src/utility/uploadFile";
+import { argument_status } from "../../src/data/share/MenuByTextList";
 
 import { styled } from "@mui/material/styles";
+import RoundColorBox from "../../src/components/Box/RoundColorBox";
 
 const Input = styled("input")({
   display: "none",
@@ -52,6 +54,7 @@ export default function DbDetail() {
   const [created_date, setCreatedDate] = useState("");
   const [uploader, setUploader] = useState({});
   const [values, setValues] = useState([]);
+  const [organization, setOrganization] = useState({});
 
   const [transcript_file, setTranscriptFile] = useState("");
   const [memo, setMemo] = useState("");
@@ -125,6 +128,7 @@ export default function DbDetail() {
           uploader,
           values,
           organization_code,
+          organization,
         } = res?.data;
         setDbDetail(res?.data);
         setAllocatedUser(allocated_user);
@@ -136,6 +140,7 @@ export default function DbDetail() {
         setUploader(uploader);
         setValues(values);
         setOrgCode(organization_code);
+        setOrganization(organization);
       }
     };
 
@@ -352,6 +357,9 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="특이사항" fs="h5" key={key}>
                         <OutLineInput
+                          multiline
+                          rows={3}
+                          w={"100%"}
                           defaultValue={
                             values.filter((v) => v?.title === "특이사항")?.[0]
                               ?.value
@@ -370,18 +378,12 @@ export default function DbDetail() {
                         />
                       </RowLabel>
                     );
-                  case "등록일시":
-                    return (
-                      <RowLabel label="등록일시" fs="h5" key={key}>
-                        <Typography variant="h5">
-                          {db_detail?.created_date}
-                        </Typography>
-                      </RowLabel>
-                    );
                 }
               }
             })}
-
+            <RowLabel label="등록일시" fs="h5">
+              <Typography variant="h5">{db_detail?.created_date}</Typography>
+            </RowLabel>
             <RowLabel label="지역" fs="h5">
               <OutLineSelectInput
                 title="지역"
@@ -399,9 +401,30 @@ export default function DbDetail() {
                 setValue={setChildArea}
               />
             </RowLabel>
-
             <RowLabel label="등록처" fs="h5">
               <Typography variant="h5">{db_detail?.uploader?.name}</Typography>
+            </RowLabel>
+          </Column>
+          <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
+            <Typography variant="h1">담당자 정보</Typography>
+            <RowLabel label="인수상태" fs="h5">
+              <RoundColorBox bgColor={argument_status[status]}>
+                {status}
+              </RoundColorBox>
+            </RowLabel>
+            <RowLabel label="업체승인" fs="h5">
+              <OutLineSelectInput
+                w={"50%"}
+                menuItems={{
+                  AS승인: "AS승인",
+                  AS반려: "AS반려",
+                }}
+                value={org_status}
+                setValue={setOrgStatus}
+              />
+            </RowLabel>
+            <RowLabel label="지역" fs="h5">
+              <Typography variant="h6">{organization?.name}</Typography>
             </RowLabel>
           </Column>
         </Row>
@@ -609,6 +632,8 @@ export default function DbDetail() {
                         db_pk: router.query.menu,
                         organization_code: org_code,
                         user_pk: user_info?.pk,
+                        status: status,
+                        org_status: org_status,
                         geo_parent: parent_area,
                         geo_name: child_area,
                         values: [...newValue],
