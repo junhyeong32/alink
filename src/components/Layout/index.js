@@ -160,7 +160,7 @@ export default function Layout({ loading, children }) {
               */}
               {menuText.map((menu, key) => {
                 if (menu === "DB 현황") {
-                  if (rank !== "협력시" || rank !== "부협력사") {
+                  if (rank !== "협력시" && rank !== "부협력사") {
                     return (
                       <MenuBox key={key} text={menu} link={menu_link[key]} />
                     );
