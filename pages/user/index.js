@@ -121,7 +121,7 @@ export default memo(function User() {
     const result = {};
 
     getOrgHeadOffice(sales, head_result);
-    getOrgWithUnit(sales, "region", result);
+    getOrgWithUnit(sales, "team", result);
 
     setSalesMenuItems(head_result);
     setCoopMenuItems(result);

@@ -626,85 +626,100 @@ export default function UserDetail() {
             </Column>
           )}
         <Row justifyContent={"center"} sx={{ gap: "15px", mt: 5 }}>
-          <Button
-            text={router.query.detail === "new-id" ? "생성" : "수정"}
-            variant="contained"
-            bgColor="primary"
-            color="primary.white"
-            w={158}
-            h={35}
-            fs="h5"
-            action={async () => {
-              // if (grade === "지점장") {
-              //   enqueueSnackbar("항목을 입력해주세요", {
-              //     variant: "error",
-              //     autoHideDuration: 2000,
-              //   });
-              // }
-              const res = await Axios.Post("member", {
-                token: getAccessToken(),
-                member_pk: pk || undefined,
-                id: id,
-                password: new_password,
-                status: status,
-                grade: grade,
-                name: name,
-                phone: phone,
-                email: email,
-                birthdate: birthdate,
-                db: changeDb,
-                head_office_org_code:
-                  grade === "부관리자"
-                    ? org_name
-                    : grade === "본부장" ||
-                      grade === "지점장" ||
-                      grade === "팀장" ||
-                      grade === "담당자"
-                    ? org_code
-                    : grade === "협력사"
-                    ? name
-                    : "협력사 코드",
-                parent_org_code:
-                  grade === "지점장"
-                    ? head_office_code
-                    : grade === "팀장"
-                    ? "지점코드"
-                    : undefined,
-                org_code:
-                  grade === "본부장"
-                    ? head_office_name
-                    : grade === "지점장"
-                    ? branch_name
-                    : grade === "팀장"
-                    ? team_name
-                    : grade === "담당자"
-                    ? team_code
-                    : undefined,
-              });
-              if (res?.code === 200) {
-                enqueueSnackbar(
-                  router.query.detail === "new-id"
-                    ? "신규 아이디 생성 완료되었습니다"
-                    : "수정이 완료되었습니다",
-                  {
-                    variant: "success",
-                    autoHideDuration: 2000,
+          {rank === "부관리자" ? (
+            <Button
+              text="목록보기"
+              variant="contained"
+              bgColor="gray"
+              color="primary.white"
+              w={158}
+              h={35}
+              fs="h5"
+              action={() => router.back()}
+            />
+          ) : (
+            <>
+              <Button
+                text={router.query.detail === "new-id" ? "생성" : "수정"}
+                variant="contained"
+                bgColor="primary"
+                color="primary.white"
+                w={158}
+                h={35}
+                fs="h5"
+                action={async () => {
+                  // if (grade === "지점장") {
+                  //   enqueueSnackbar("항목을 입력해주세요", {
+                  //     variant: "error",
+                  //     autoHideDuration: 2000,
+                  //   });
+                  // }
+                  const res = await Axios.Post("member", {
+                    token: getAccessToken(),
+                    member_pk: pk || undefined,
+                    id: id,
+                    password: new_password,
+                    status: status,
+                    grade: grade,
+                    name: name,
+                    phone: phone,
+                    email: email,
+                    birthdate: birthdate,
+                    db: changeDb,
+                    head_office_org_code:
+                      grade === "부관리자"
+                        ? org_name
+                        : grade === "본부장" ||
+                          grade === "지점장" ||
+                          grade === "팀장" ||
+                          grade === "담당자"
+                        ? org_code
+                        : grade === "협력사"
+                        ? name
+                        : "협력사 코드",
+                    parent_org_code:
+                      grade === "지점장"
+                        ? head_office_code
+                        : grade === "팀장"
+                        ? "지점코드"
+                        : undefined,
+                    org_code:
+                      grade === "본부장"
+                        ? head_office_name
+                        : grade === "지점장"
+                        ? branch_name
+                        : grade === "팀장"
+                        ? team_name
+                        : grade === "담당자"
+                        ? team_code
+                        : undefined,
+                  });
+                  if (res?.code === 200) {
+                    enqueueSnackbar(
+                      router.query.detail === "new-id"
+                        ? "신규 아이디 생성 완료되었습니다"
+                        : "수정이 완료되었습니다",
+                      {
+                        variant: "success",
+                        autoHideDuration: 2000,
+                      }
+                    );
+                    router.back();
                   }
-                );
-                router.back();
-              }
-            }}
-          />
-          <Button
-            text="취소"
-            variant="contained"
-            bgColor="gray"
-            color="primary.white"
-            w={158}
-            h={35}
-            fs="h5"
-            action={() => router.back()}
-          />
+                }}
+              />
+              <Button
+                text="취소"
+                variant="contained"
+                bgColor="gray"
+                color="primary.white"
+                w={158}
+                h={35}
+                fs="h5"
+                action={() => router.back()}
+              />
+            </>
+          )}
         </Row>
       </Column>
     </Layout>

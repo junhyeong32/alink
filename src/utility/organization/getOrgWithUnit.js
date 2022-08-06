@@ -1,4 +1,4 @@
-import { getTitleOfOrg_name } from "./getTitleOfOrg";
+import { getTitleOfOrg_name, getTitleOfOrg } from "./getTitleOfOrg";
 
 export function getOrgWithUnit(orgs, unit, result) {
   Object.assign(result, {

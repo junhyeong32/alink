@@ -466,7 +466,26 @@ export default function DbDetail() {
               <Typography variant="h6">{organization?.name}</Typography>
             </RowLabel>
             <RowLabel label="소속/성명" fs="h5">
-              <Typography variant="h6">{organization?.name}</Typography>
+              <OutLineSelectInput
+                disabled={allocated_user?.pk !== user_info?.pk}
+                w={"50%"}
+                menuItems={{
+                  AS승인: "AS승인",
+                  AS반려: "AS반려",
+                }}
+                value={org_status}
+                setValue={setOrgStatus}
+              />
+              <OutLineSelectInput
+                disabled={allocated_user?.pk !== user_info?.pk}
+                w={"50%"}
+                menuItems={{
+                  AS승인: "AS승인",
+                  AS반려: "AS반려",
+                }}
+                value={org_status}
+                setValue={setOrgStatus}
+              />
             </RowLabel>
           </Column>
         </Row>

@@ -194,7 +194,7 @@ export default function Db() {
     const org = {};
 
     getOrgHeadOffice(sales, head_org);
-    getOrgWithUnit(sales, "region", org);
+    getOrgWithUnit(sales, "team", org);
 
     setHeadOfficeMenuList(head_org);
     setOrgMenuList(org);
