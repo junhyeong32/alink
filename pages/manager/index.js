@@ -20,9 +20,12 @@ import Button from "../../src/components/Button";
 import Axios from "../../src/utility/api";
 import useGetUsers from "../../src/hooks/user/useGetUsers";
 import { useTransition } from "react";
+import { getCookie } from "../../src/utility/getCookie";
 
 export default memo(function User() {
   const router = useRouter();
+
+  const [rank] = useState(getCookie("user_info")?.grade);
 
   const [checkList, setCheckList] = useState([]);
   const [page, setPage] = useState(1);
@@ -92,18 +95,20 @@ export default memo(function User() {
                 },
               }}
             >
-              <SelectInput
-                title="소속명"
-                menuItems={{}}
-                value={org_code}
-                setValue={setOrgCode}
-                w={{
-                  lg: "31.2%",
-                  md: "60.5%",
-                  sm: "60.5%",
-                  xs: "100%",
-                }}
-              />
+              {rank !== "팀장" && (
+                <SelectInput
+                  title="소속명"
+                  menuItems={{}}
+                  value={org_code}
+                  setValue={setOrgCode}
+                  w={{
+                    lg: "31.2%",
+                    md: "60.5%",
+                    sm: "60.5%",
+                    xs: "100%",
+                  }}
+                />
+              )}
             </Row>
             <Row sx={{ gap: 1 }}>
               <Button

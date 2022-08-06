@@ -37,7 +37,7 @@ import {
   getOrgWithUnit,
 } from "../../src/utility/organization/getOrgWithUnit";
 import Axios from "../../src/utility/api";
-import { getAccessToken } from "../../src/utility/getCookie";
+import { getAccessToken, getCookie } from "../../src/utility/getCookie";
 
 export default memo(function User() {
   const router = useRouter();
@@ -47,6 +47,7 @@ export default memo(function User() {
   const [coopMenuItems, setCoopMenuItems] = useState({});
 
   //filter
+  const [rank] = useState(getCookie("user_info")?.grade);
 
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
@@ -289,6 +290,7 @@ export default memo(function User() {
                 value={org_code}
                 setValue={setOrgCode}
               />
+
               <LabelUnderLineInput
                 title="아이디"
                 placeholder={"아이디로 검색하실 수 있습니다."}
