@@ -17,14 +17,16 @@ export default function useGetUsers({
   name,
   phone,
   excel,
+  is_search,
   setExcel,
 }) {
   const [users, setUsers] = useState([]);
   const [allocation_total, setTotal] = useState([]);
   const [isUsersPending, setIsUsersPending] = useState(true);
   const [totalCouunt, setTotalCount] = useState();
+  console.log("head_office_org_code", head_office_org_code);
 
-  const getUsers = async (is_init, orgCode) => {
+  const getUsers = async (orgCode) => {
     if (excel === 1) {
       window.open(
         "https://alinkapi.afg.kr/api/v1?" +
@@ -51,33 +53,29 @@ export default function useGetUsers({
       return setExcel("");
     }
 
-    const res = is_init
-      ? (
-          await Axios.Get(`member`, {
-            params: {
-              token: getAccessToken(),
-            },
-          })
-        )?.data
-      : (
-          await Axios.Get(`member`, {
-            params: {
-              token: getAccessToken(),
-              page: page,
-              count: count,
-              status: status === "전체" ? undefined : status,
-              grade: grade === "전체" ? undefined : grade,
-              head_office_org_code: head_office_org_code,
-              org_code: org_code || orgCode,
-              geo: geo,
-              email: email,
-              id: id,
-              name: name,
-              phone: phone,
-              excel: excel,
-            },
-          })
-        )?.data;
+    const res = (
+      await Axios.Get(`member`, {
+        params: {
+          token: getAccessToken(),
+          page: page,
+          count: count,
+          status: status === "전체" ? undefined : status,
+          grade: grade === "전체" ? undefined : grade,
+          head_office_org_code:
+            head_office_org_code === "전체" ? undefined : head_office_org_code,
+          org_code:
+            org_code === "전체" || orgCode === "전체"
+              ? undefined
+              : org_code || orgCode,
+          geo: geo === "전체" ? undefined : geo,
+          email: email,
+          id: id,
+          name: name,
+          phone: phone,
+          excel: excel,
+        },
+      })
+    )?.data;
 
     if (res?.code === 200) {
       setUsers(res?.data.result);
@@ -89,7 +87,7 @@ export default function useGetUsers({
 
   useEffect(() => {
     getUsers();
-  }, [page, excel]);
+  }, [page, excel, is_search]);
 
   return { users, allocation_total, getUsers, isUsersPending, totalCouunt };
 }

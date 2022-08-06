@@ -32,6 +32,12 @@ import { ModalContext } from "../../src/contexts/ModalContext";
 import useGetUsers from "../../src/hooks/user/useGetUsers";
 import useGetOrganization from "../../src/hooks/share/useGetOrganization";
 import useGetArea from "../../src/hooks/setting/useGetArea";
+import {
+  getOrgHeadOffice,
+  getOrgWithUnit,
+} from "../../src/utility/organization/getOrgWithUnit";
+import Axios from "../../src/utility/api";
+import { getAccessToken } from "../../src/utility/getCookie";
 
 export default memo(function User() {
   const router = useRouter();
@@ -46,14 +52,15 @@ export default memo(function User() {
   const [count, setCount] = useState(20);
   const [status, setStatus] = useState("전체");
   const [grade, setGrade] = useState("전체");
-  const [head_office_org_code, setHead_office_org_code] = useState("");
-  const [org_code, setOrgCode] = useState("");
-  const [geo, setGeo] = useState("");
+  const [head_office_org_code, setHead_office_org_code] = useState("전체");
+  const [org_code, setOrgCode] = useState("전체");
+  const [geo, setGeo] = useState("전체");
   const [email, setEmail] = useState("");
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [excel, setExcel] = useState();
+  const [is_search, setIsSearch] = useState(false);
 
   const [loading, setLoading] = useState(true);
 
@@ -75,6 +82,7 @@ export default memo(function User() {
       name,
       phone,
       excel,
+      is_search,
       setExcel,
     });
 
@@ -101,6 +109,7 @@ export default memo(function User() {
     setAreaMenuItems(() => {
       const obj = {};
       area?.map((d, key) => {
+        Object.assign(obj, { 전체: "전체" });
         Object.assign(obj, { [d.parent]: d.parent });
       });
       return obj;
@@ -108,34 +117,42 @@ export default memo(function User() {
   }, [area]);
 
   useEffect(() => {
-    setSalesMenuItems(() => {
-      const obj = {};
-      sales?.map((org, key) => {
-        Object.assign(obj, { [org.code]: org.name });
-      });
-      return obj;
-    });
+    const head_result = {};
+    const result = {};
+
+    getOrgHeadOffice(sales, head_result);
+    getOrgWithUnit(sales, "region", result);
+
+    setSalesMenuItems(head_result);
+    setCoopMenuItems(result);
   }, [sales]);
 
   useEffect(() => {
-    const result = {};
-    const getOrganiztionList = (el) => {
-      if (!el) {
-        cooperation?.[0]?.children.map((child) => {
-          Object.assign(result, { [child.code]: child.name });
-          return getOrganiztionList((el = child));
-        });
-      } else {
-        el.children.map((child_el) => {
-          Object.assign(result, { [child_el.code]: child_el.name });
+    if (head_office_org_code === "전체") return;
+    const org = {};
+    const headOfficeBySales = async () => {
+      const res = (
+        await Axios.Get("organization", {
+          params: {
+            token: getAccessToken(),
+            type: "sales",
+            head_office_org_code: head_office_org_code,
+          },
+        })
+      )?.data;
 
-          return getOrganiztionList((el = child_el));
-        });
+      console.log("res", res);
+
+      if (res?.code === 200) {
+        console.log("res?.", res);
+        getOrgWithUnit(res?.data, "region", org);
+
+        setCoopMenuItems(org);
       }
     };
-    getOrganiztionList();
-    setCoopMenuItems(result);
-  }, [org_pending]);
+
+    headOfficeBySales();
+  }, [head_office_org_code]);
 
   useEffect(() => {
     if (!org_pending && !isUsersPending) {
@@ -143,7 +160,7 @@ export default memo(function User() {
     }
   }, [org_pending, isUsersPending]);
 
-  console.log("excel", excel);
+  console.log("excel", org_pending, isUsersPending);
 
   return (
     <Layout loading={loading}>
@@ -244,7 +261,13 @@ export default memo(function User() {
                 gap: 1.5,
               }}
             >
-              <SelectInput title="조직명" menuItems={salesMenuItems} w="100%" />
+              <SelectInput
+                title="조직명"
+                menuItems={salesMenuItems}
+                w="100%"
+                value={head_office_org_code}
+                setValue={setHead_office_org_code}
+              />
               <LabelUnderLineInput
                 title="이메일"
                 placeholder={"이메일로 검색하실 수 있습니다."}
@@ -259,7 +282,13 @@ export default memo(function User() {
                 gap: 1.5,
               }}
             >
-              <SelectInput title="소속명" menuItems={coopMenuItems} w="100%" />
+              <SelectInput
+                title="소속명"
+                menuItems={coopMenuItems}
+                w="100%"
+                value={org_code}
+                setValue={setOrgCode}
+              />
               <LabelUnderLineInput
                 title="아이디"
                 placeholder={"아이디로 검색하실 수 있습니다."}
@@ -304,7 +333,7 @@ export default memo(function User() {
                   color="primary.white"
                   w={60}
                   h={20}
-                  action={getUsers}
+                  action={() => setIsSearch(!is_search)}
                   sx={{
                     display: {
                       lg: "flex",

@@ -131,7 +131,7 @@ export default function Db() {
                   : uploader_organization_code,
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
               geo_name: child_area === "전체" ? undefined : child_area,
-              values: values,
+              values: newValues,
               created_date: date,
             },
           })
@@ -179,6 +179,7 @@ export default function Db() {
   useEffect(() => {
     setAreaParentMenuList((prev) => {
       const parent = { ...prev };
+
       area?.map((d, key) => {
         Object.assign(parent, { [d.parent]: d.parent });
       });
@@ -190,15 +191,18 @@ export default function Db() {
   useEffect(() => {
     if (sales?.length === 0) return;
     const head_org = {};
+    const org = {};
 
     getOrgHeadOffice(sales, head_org);
+    getOrgWithUnit(sales, "region", org);
 
     setHeadOfficeMenuList(head_org);
+    setOrgMenuList(org);
   }, [sales]);
 
   // db 필터 목록
   useEffect(() => {
-    if (!head_office_org_code) return;
+    if (head_office_org_code === "전체") return;
     const org = {};
     const headOfficeBySales = async () => {
       const res = (
