@@ -54,6 +54,8 @@ export default function UserDetail() {
   // const { user_detail } = useGetUserDetail(router.query.detail);
 
   const { sales, org_pending } = useGetOrganization("sales");
+  const { cooperation } = useGetOrganization("cooperation");
+
   const { area } = useGetArea();
 
   const { menus } = useGetMenus();
@@ -94,6 +96,7 @@ export default function UserDetail() {
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({}); //본부
   const [branchMenuList, setBranchMenuList] = useState({}); //지점
   const [teamMenuList, setTeamMenuList] = useState({}); //팀
+  const [cooperationMenuList, setCooperationMenuList] = useState("");
 
   useEffect(() => {
     const head_org = {};
@@ -143,6 +146,11 @@ export default function UserDetail() {
       getOrgWithUnit(org_code_by_sales, "team", team_result);
 
       setTeamMenuList(team_result);
+    } else if (grade === "부협력사") {
+      const coop_org = {};
+      getOrgHeadOffice(cooperation, coop_org);
+      console.log(coop_org);
+      setCooperationMenuList(coop_org);
     }
   }, [org_code, grade]);
 
@@ -257,7 +265,7 @@ export default function UserDetail() {
   //TODO
   //DB관리 setstate
 
-  console.log("db", db, changeDb);
+  console.log("db", router.query.detail);
 
   return (
     <Layout loading={loading}>
@@ -277,7 +285,10 @@ export default function UserDetail() {
                   key={key}
                   control={
                     <Checkbox
-                      disabled={status === "퇴사자" || rank === "부관리자"}
+                      disabled={
+                        router.query.detail !== "new-id" &&
+                        (status === "퇴사자" || rank === "부관리자")
+                      }
                       checked={status === list}
                       onClick={() => setStatus(list)}
                     />
@@ -306,7 +317,10 @@ export default function UserDetail() {
                   key={key}
                   control={
                     <Checkbox
-                      disabled={status === "퇴사자" || rank === "부관리자"}
+                      disabled={
+                        router.query.detail !== "new-id" &&
+                        (status === "퇴사자" || rank === "부관리자")
+                      }
                       checked={grade === list || grade === list}
                       onClick={() => setGrade(list)}
                     />
@@ -324,7 +338,10 @@ export default function UserDetail() {
         {grade === "부관리자" && (
           <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
-              disabled={status === "퇴사자" || rank === "부관리자"}
+              disabled={
+                router.query.detail !== "new-id" &&
+                (status === "퇴사자" || rank === "부관리자")
+              }
               w="50%"
               defaultValue={head_office_name}
               onBlur={(e) => setOrgName(e.target.value)}
@@ -337,7 +354,10 @@ export default function UserDetail() {
           grade === "담당자") && (
           <RowLabel label="조직명" sx={rowLabelWidth} label_w={83}>
             <OutLineSelectInput
-              disabled={status === "퇴사자" || rank === "부관리자"}
+              disabled={
+                router.query.detail !== "new-id" &&
+                (status === "퇴사자" || rank === "부관리자")
+              }
               w="50%"
               defaultValue={org_code}
               menuItems={orgMenuList}
@@ -349,10 +369,15 @@ export default function UserDetail() {
         {grade === "부협력사" && (
           <RowLabel label="협력사명" sx={rowLabelWidth} label_w={83}>
             <OutLineSelectInput
-              disabled={status === "퇴사자" || rank === "부관리자"}
+              disabled={
+                router.query.detail !== "new-id" &&
+                (status === "퇴사자" || rank === "부관리자")
+              }
               defaultValue={org_code}
               w="50%"
-              menuItems={{}}
+              menuItems={cooperationMenuList}
+              value={org_code}
+              setValue={setOrgCode}
             />
           </RowLabel>
         )}
@@ -365,14 +390,20 @@ export default function UserDetail() {
             <RowLabel label="본부명" sx={rowLabelWidth} label_w={83}>
               {grade === "본부장" ? (
                 <OutLineInput
-                  disabled={status === "퇴사자" || rank === "부관리자"}
+                  disabled={
+                    router.query.detail !== "new-id" &&
+                    (status === "퇴사자" || rank === "부관리자")
+                  }
                   w="50%"
                   defaultValue={head_office_name}
                   onBlur={(e) => setHeadOfficeName(e.target.value)}
                 />
               ) : (
                 <OutLineSelectInput
-                  disabled={status === "퇴사자" || rank === "부관리자"}
+                  disabled={
+                    router.query.detail !== "new-id" &&
+                    (status === "퇴사자" || rank === "부관리자")
+                  }
                   w="50%"
                   menuItems={headOfficeMenuList}
                   value={head_office_code}
@@ -385,7 +416,10 @@ export default function UserDetail() {
         {grade === "지점장" && (
           <RowLabel label="지점명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
-              disabled={status === "퇴사자" || rank === "부관리자"}
+              disabled={
+                router.query.detail !== "new-id" &&
+                (status === "퇴사자" || rank === "부관리자")
+              }
               w="50%"
               defaultValue={branch_name}
               onBlur={(e) => setBranchName(e.target.value)}
@@ -395,7 +429,10 @@ export default function UserDetail() {
         {grade === "팀장" && (
           <RowLabel label="지점명" sx={rowLabelWidth} label_w={83}>
             <OutLineSelectInput
-              disabled={status === "퇴사자" || rank === "부관리자"}
+              disabled={
+                router.query.detail !== "new-id" &&
+                (status === "퇴사자" || rank === "부관리자")
+              }
               w="50%"
               menuItems={branchMenuList}
               value={branch_code}
@@ -408,7 +445,10 @@ export default function UserDetail() {
           <>
             <RowLabel label="팀명" sx={rowLabelWidth} label_w={83}>
               <OutLineInput
-                disabled={status === "퇴사자" || rank === "부관리자"}
+                disabled={
+                  router.query.detail !== "new-id" &&
+                  (status === "퇴사자" || rank === "부관리자")
+                }
                 w="50%"
                 defaultValue={team_name}
                 onBlur={(e) => setTeamName(e.target.value)}
@@ -420,7 +460,10 @@ export default function UserDetail() {
           <>
             <RowLabel label="팀명" sx={rowLabelWidth} label_w={83}>
               <OutLineSelectInput
-                disabled={status === "퇴사자" || rank === "부관리자"}
+                disabled={
+                  router.query.detail !== "new-id" &&
+                  (status === "퇴사자" || rank === "부관리자")
+                }
                 w="50%"
                 menuItems={teamMenuList}
                 defaultValue={team_code}
@@ -434,7 +477,10 @@ export default function UserDetail() {
         {grade !== "" && (
           <RowLabel label="이용자명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
-              disabled={status === "퇴사자" || rank === "부관리자"}
+              disabled={
+                router.query.detail !== "new-id" &&
+                (status === "퇴사자" || rank === "부관리자")
+              }
               w="50%"
               defaultValue={name}
               onBlur={(e) => setName(e.target.value)}
@@ -444,7 +490,10 @@ export default function UserDetail() {
         {grade === "" && (
           <RowLabel label="성명" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
-              disabled={status === "퇴사자" || rank === "부관리자"}
+              disabled={
+                router.query.detail !== "new-id" &&
+                (status === "퇴사자" || rank === "부관리자")
+              }
               w="50%"
               defaultValue={name}
               onBlur={(e) => setName(e.target.value)}
@@ -453,7 +502,10 @@ export default function UserDetail() {
         )}
         <RowLabel label="아이디" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
-            disabled={status === "퇴사자" || rank === "부관리자"}
+            disabled={
+              router.query.detail !== "new-id" &&
+              (status === "퇴사자" || rank === "부관리자")
+            }
             w="50%"
             defaultValue={id}
             onBlur={(e) => setId(e.target.value)}
@@ -465,7 +517,10 @@ export default function UserDetail() {
             color="primary.white"
             h={20}
             fs="h6"
-            disabled={status === "퇴사자" || rank === "부관리자"}
+            disabled={
+              router.query.detail !== "new-id" &&
+              (status === "퇴사자" || rank === "부관리자")
+            }
             action={async () => {
               const res = await Axios.Post("member/iddupcheck", {
                 token: getAccessToken(),
@@ -488,7 +543,10 @@ export default function UserDetail() {
         </RowLabel>
         <RowLabel label="신규 비밀번호" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
-            disabled={status === "퇴사자" || rank === "부관리자"}
+            disabled={
+              router.query.detail !== "new-id" &&
+              (status === "퇴사자" || rank === "부관리자")
+            }
             w="50%"
             onBlur={(e) => setNewPassword(e.target.value)}
             type={"password"}
@@ -496,7 +554,10 @@ export default function UserDetail() {
         </RowLabel>
         <RowLabel label="비밀번호 확인" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
-            disabled={status === "퇴사자" || rank === "부관리자"}
+            disabled={
+              router.query.detail !== "new-id" &&
+              (status === "퇴사자" || rank === "부관리자")
+            }
             w="50%"
             onBlur={(e) => setPassword(e.target.value)}
             type={"password"}
@@ -504,7 +565,10 @@ export default function UserDetail() {
         </RowLabel>
         <RowLabel label="이메일" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
-            disabled={status === "퇴사자" || rank === "부관리자"}
+            disabled={
+              router.query.detail !== "new-id" &&
+              (status === "퇴사자" || rank === "부관리자")
+            }
             w="50%"
             defaultValue={email}
             onBlur={(e) => setEmail(e.target.value)}
@@ -512,7 +576,10 @@ export default function UserDetail() {
         </RowLabel>
         <RowLabel label="연락처" sx={rowLabelWidth} label_w={83}>
           <OutLineInput
-            disabled={status === "퇴사자" || rank === "부관리자"}
+            disabled={
+              router.query.detail !== "new-id" &&
+              (status === "퇴사자" || rank === "부관리자")
+            }
             w="50%"
             defaultValue={phone}
             onBlur={(e) => setPhone(e.target.value)}
@@ -521,7 +588,10 @@ export default function UserDetail() {
         {(grade !== "협락사" || grade !== "부협락사") && (
           <RowLabel label="생년월일" sx={rowLabelWidth} label_w={83}>
             <OutLineInput
-              disabled={status === "퇴사자" || rank === "부관리자"}
+              disabled={
+                router.query.detail !== "new-id" &&
+                (status === "퇴사자" || rank === "부관리자")
+              }
               w="50%"
               defaultValue={birthdate}
               onBlur={(e) => setBirthdate(e.target.value)}
@@ -540,7 +610,10 @@ export default function UserDetail() {
                   <RowLabel label={d?.title} fs="h4" label_w={83}>
                     <Row alignItems={"center"}>
                       <OutLineInput
-                        disabled={status === "퇴사자" || rank === "부관리자"}
+                        disabled={
+                          router.query.detail !== "new-id" &&
+                          (status === "퇴사자" || rank === "부관리자")
+                        }
                         w={90}
                         defaultValue={d?.allocation?.count}
                         onBlur={(e) =>
@@ -557,7 +630,10 @@ export default function UserDetail() {
                       </Typography>
                       <CustomSwitch
                         sx={{ ml: 3 }}
-                        disabled={status === "퇴사자" || rank === "부관리자"}
+                        disabled={
+                          router.query.detail !== "new-id" &&
+                          (status === "퇴사자" || rank === "부관리자")
+                        }
                         checked={
                           changeDb[key]?.allocation[0].is_activated === 1
                             ? true
@@ -676,7 +752,7 @@ export default function UserDetail() {
                         ? org_code
                         : grade === "협력사"
                         ? name
-                        : "협력사 코드",
+                        : org_code,
                     parent_org_code:
                       grade === "지점장"
                         ? head_office_code
