@@ -101,7 +101,10 @@ export default function Db() {
   const { openModal, closeModal } = useContext(ModalContext);
 
   const getDbDetail = async (is_init) => {
-    const newValues = values?.map(v => v.value && Object.assign({}, {field_pk:v.field_pk, value:v.value}))
+    const newValues = values?.map(
+      (v) =>
+        v.value && Object.assign({}, { field_pk: v.field_pk, value: v.value })
+    );
     const res = (
       is_init
         ? await Axios.Get(`db/list`, {
@@ -479,6 +482,7 @@ export default function Db() {
                     modal: "change",
                     content: {
                       contents: "자동분배를 진행하시겠습니까?",
+                      data: {},
                     },
                   })
                 }

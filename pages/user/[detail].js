@@ -30,7 +30,10 @@ import { useSnackbar } from "notistack";
 import useGetMenus from "../../src/hooks/setting/useGetMenus";
 import BackgroundTextBox from "../../src/components/Box/BackgroundText";
 import Axios from "../../src/utility/api";
-import { getOrgWithUnit } from "../../src/utility/organization/getOrgWithUnit";
+import {
+  getOrgWithUnit,
+  getOrgHeadOffice,
+} from "../../src/utility/organization/getOrgWithUnit";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 
 const rowLabelWidth = {
@@ -93,7 +96,11 @@ export default function UserDetail() {
   const [teamMenuList, setTeamMenuList] = useState({}); //팀
 
   useEffect(() => {
-    setOrgMenuList({ [sales[0]?.code]: sales[0]?.name });
+    const head_org = {};
+
+    getOrgHeadOffice(sales, head_org);
+
+    setOrgMenuList(head_org);
   }, [org_pending]);
 
   useEffect(() => {
@@ -548,10 +555,6 @@ export default function UserDetail() {
                       <Typography variant="h6" pl={1}>
                         개
                       </Typography>
-                      {console.log(
-                        "changeDb",
-                        changeDb[key]?.allocation.is_activated
-                      )}
                       <CustomSwitch
                         sx={{ ml: 3 }}
                         disabled={status === "퇴사자" || rank === "부관리자"}

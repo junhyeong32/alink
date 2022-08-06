@@ -65,7 +65,7 @@ export default function Menu() {
         variant: "success",
         autoHideDuration: 2000,
       });
-      router.push("/setting/menu");
+      router.push("/setting");
     }
   };
 

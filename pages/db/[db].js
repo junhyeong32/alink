@@ -33,6 +33,7 @@ const Input = styled("input")({
 export default function DbDetail() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const [rank] = useState(getCookie("user_info")?.grade);
 
   const [menu_detail, setMenuDetail] = useState([]);
   const { sales } = useGetOrganization("sales");
@@ -191,6 +192,7 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="고객명" fs="h5" key={key}>
                         <OutLineInput
+                          disabled={allocated_user?.pk !== user_info?.pk}
                           defaultValue={
                             values.filter((v) => v?.title === "고객명")?.[0]
                               ?.value
@@ -213,6 +215,7 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="연락처" fs="h5" key={key}>
                         <OutLineInput
+                          disabled={allocated_user?.pk !== user_info?.pk}
                           defaultValue={
                             values.filter((v) => v?.title === "연락처")?.[0]
                               ?.value
@@ -235,6 +238,7 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="나이" fs="h5" key={key}>
                         <OutLineInput
+                          disabled={allocated_user?.pk !== user_info?.pk}
                           defaultValue={
                             values.filter((v) => v?.title === "나이")?.[0]
                               ?.value
@@ -260,6 +264,7 @@ export default function DbDetail() {
                           label="남"
                           control={
                             <RadioInput
+                              disabled={allocated_user?.pk !== user_info?.pk}
                               checked={
                                 values.filter((v) => v?.title === "성별")?.[0]
                                   ?.value === "남자"
@@ -282,6 +287,7 @@ export default function DbDetail() {
                           label="여"
                           control={
                             <RadioInput
+                              disabled={allocated_user?.pk !== user_info?.pk}
                               checked={
                                 values.filter((v) => v?.title === "성별")?.[0]
                                   ?.value === "여자"
@@ -309,6 +315,7 @@ export default function DbDetail() {
                           label="미혼"
                           control={
                             <RadioInput
+                              disabled={allocated_user?.pk !== user_info?.pk}
                               checked={
                                 values.filter(
                                   (v) => v?.title === "결혼여부"
@@ -332,6 +339,7 @@ export default function DbDetail() {
                           label="기혼"
                           control={
                             <RadioInput
+                              disabled={allocated_user?.pk !== user_info?.pk}
                               checked={
                                 values.filter(
                                   (v) => v?.title === "결혼여부"
@@ -357,6 +365,7 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="특이사항" fs="h5" key={key}>
                         <OutLineInput
+                          disabled={allocated_user?.pk !== user_info?.pk}
                           multiline
                           rows={3}
                           w={"100%"}
@@ -382,7 +391,7 @@ export default function DbDetail() {
               }
             })}
             <RowLabel label="등록일시" fs="h5">
-              <Typography variant="h5">{db_detail?.created_date}</Typography>
+              <Typography variant="h5"></Typography>
             </RowLabel>
             <RowLabel label="지역" fs="h5">
               <OutLineSelectInput
@@ -392,6 +401,7 @@ export default function DbDetail() {
                 menuItems={areaParentMenuList}
                 value={parent_area}
                 setValue={setParentArea}
+                disabled={allocated_user?.pk !== user_info?.pk}
               />
               <OutLineSelectInput
                 w={"50%"}
@@ -399,6 +409,7 @@ export default function DbDetail() {
                 menuItems={areaChildMenuList}
                 value={child_area}
                 setValue={setChildArea}
+                disabled={allocated_user?.pk !== user_info?.pk}
               />
             </RowLabel>
             <RowLabel label="등록처" fs="h5">
@@ -408,12 +419,40 @@ export default function DbDetail() {
           <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
             <Typography variant="h1">담당자 정보</Typography>
             <RowLabel label="인수상태" fs="h5">
-              <RoundColorBox bgColor={argument_status[status]}>
-                {status}
-              </RoundColorBox>
+              {allocated_user?.pk === user_info?.pk ? (
+                <Row wrap={"wrap"} sx={{ width: "100%" }}>
+                  {Object.entries(argument_status).map(
+                    ([list, color], key) =>
+                      key !== 0 &&
+                      key !== 6 &&
+                      key !== 8 && (
+                        <FormControlLabel
+                          key={key}
+                          control={
+                            <RadioInput
+                              disabled={allocated_user?.pk !== user_info?.pk}
+                              checked={status === list}
+                              onClick={() => setStatus(list)}
+                            />
+                          }
+                          label={
+                            <RoundColorBox background={color}>
+                              <Typography variant="h6">{list}</Typography>
+                            </RoundColorBox>
+                          }
+                        />
+                      )
+                  )}
+                </Row>
+              ) : (
+                <RoundColorBox bgColor={argument_status[status]}>
+                  {status}
+                </RoundColorBox>
+              )}
             </RowLabel>
             <RowLabel label="업체승인" fs="h5">
               <OutLineSelectInput
+                disabled={allocated_user?.pk !== user_info?.pk}
                 w={"50%"}
                 menuItems={{
                   AS승인: "AS승인",
@@ -423,176 +462,182 @@ export default function DbDetail() {
                 setValue={setOrgStatus}
               />
             </RowLabel>
-            <RowLabel label="지역" fs="h5">
+            <RowLabel label="조직" fs="h5">
+              <Typography variant="h6">{organization?.name}</Typography>
+            </RowLabel>
+            <RowLabel label="소속/성명" fs="h5">
               <Typography variant="h6">{organization?.name}</Typography>
             </RowLabel>
           </Column>
         </Row>
-        {menu_detail?.fields
-          ?.filter(
-            (field) =>
-              field?.is_detail_shown === 1 &&
-              field?.property?.name === "녹취 파일"
-          )
-          ?.map((filter_data) => (
-            <>
-              <Typography variant="h4" color="primary.red">
-                녹취파일 및 메모는 등록 후 삭제가 불가하며, 업로드 하지 않을 시
-                저장이 되지 않습니다.
-              </Typography>
+        {allocated_user?.pk === user_info?.pk &&
+          menu_detail?.fields
+            ?.filter(
+              (field) =>
+                field?.is_detail_shown === 1 &&
+                field?.property?.name === "녹취 파일"
+            )
+            ?.map((filter_data) => (
+              <>
+                <Typography variant="h4" color="primary.red">
+                  녹취파일 및 메모는 등록 후 삭제가 불가하며, 업로드 하지 않을
+                  시 저장이 되지 않습니다.
+                </Typography>
 
-              <Column sx={{ gap: 1 }}>
-                <Row alignItems={"center"} sx={{ gap: 2 }}>
-                  <Typography variant="h1">녹취파일</Typography>
-                  <Row
-                    alignItems={"center"}
-                    justifyContent={"start"}
-                    sx={{ gap: 1 }}
-                  >
-                    <label htmlFor="contained-button-file">
-                      <Input
-                        accept="audio/*"
-                        id="contained-button-file"
-                        // multiple
-                        type="file"
-                        onChange={(e) => setTranscriptFile(e.target.files[0])}
-                      />
+                <Column sx={{ gap: 1 }}>
+                  <Row alignItems={"center"} sx={{ gap: 2 }}>
+                    <Typography variant="h1">녹취파일</Typography>
+                    <Row
+                      alignItems={"center"}
+                      justifyContent={"start"}
+                      sx={{ gap: 1 }}
+                    >
+                      <label htmlFor="contained-button-file">
+                        <Input
+                          accept="audio/*"
+                          id="contained-button-file"
+                          // multiple
+                          type="file"
+                          onChange={(e) => setTranscriptFile(e.target.files[0])}
+                        />
 
+                        <Button
+                          text="파일찾기"
+                          fs="h6"
+                          bgColor={"gray"}
+                          color={"primary.white"}
+                          h={25}
+                          component={"span"}
+                        />
+                      </label>
+
+                      <UnderLineInput disabled value={transcript_file?.name} />
                       <Button
-                        text="파일찾기"
+                        text="업로드"
                         fs="h6"
-                        bgColor={"gray"}
-                        color={"primary.white"}
                         h={25}
-                        component={"span"}
-                      />
-                    </label>
+                        sx={{ mt: 0.1 }}
+                        action={async () => {
+                          const _uploadFile = await uploadFile(transcript_file);
 
-                    <UnderLineInput disabled value={transcript_file?.name} />
-                    <Button
-                      text="업로드"
-                      fs="h6"
-                      h={25}
-                      sx={{ mt: 0.1 }}
-                      action={async () => {
-                        const _uploadFile = await uploadFile(transcript_file);
+                          if (_uploadFile) {
+                            setValues((prev) => {
+                              const newData = [...prev];
+                              const newObj = Object.assign(
+                                {},
+                                newData?.filter(
+                                  (data) => data?.title === "녹취 파일"
+                                )[0]
+                              );
 
-                        if (_uploadFile) {
-                          setValues((prev) => {
-                            const newData = [...prev];
-                            const newObj = Object.assign(
-                              {},
-                              newData?.filter(
-                                (data) => data?.title === "녹취 파일"
-                              )[0]
+                              newObj.value = _uploadFile;
+
+                              newData.push(newObj);
+
+                              return newData;
+                            });
+                            setTranscriptFile();
+                            enqueueSnackbar(
+                              "파일이 정상적으로 등록 되었습니다.",
+                              {
+                                variant: "success",
+                                autoHideDuration: 2000,
+                              }
                             );
-
-                            newObj.value = _uploadFile;
-
-                            newData.push(newObj);
-
-                            return newData;
-                          });
-                          setTranscriptFile();
-                          enqueueSnackbar(
-                            "파일이 정상적으로 등록 되었습니다.",
-                            {
-                              variant: "success",
-                              autoHideDuration: 2000,
-                            }
-                          );
-                        }
-                      }}
-                    />
+                          }
+                        }}
+                      />
+                    </Row>
                   </Row>
+                  <Row sx={{ width: "100%", gap: 3, maxWidth: 1020 }}>
+                    {values?.map(
+                      (v, _key) =>
+                        v?.title === "녹취 파일" &&
+                        v?.value && (
+                          <Column
+                            sx={{
+                              width: "auto",
+                              p: 1,
+                              border: "1px solid black",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            <Typography variant="h6" ml={3} mb={1}>
+                              {v?.created_date}{" "}
+                            </Typography>
+                            <audio controls src={v?.value}>
+                              Your browser does not support the
+                              <code>audio</code> element.
+                            </audio>
+                          </Column>
+                        )
+                    )}
+                  </Row>
+                </Column>
+              </>
+            ))}
+        {allocated_user?.pk === user_info?.pk &&
+          menu_detail?.fields
+            ?.filter(
+              (field) =>
+                field?.is_detail_shown === 1 && field?.property?.name === "메모"
+            )
+            ?.map((filter_data, key) => (
+              <Column sx={{ gap: 1, maxWidth: 1020 }} key={key}>
+                <Row alignItems={"center"} sx={{ gap: 2 }}>
+                  <Typography variant="h1">메모관리</Typography>
+                  <Button
+                    variant="contained"
+                    bgColor="primary"
+                    text="메모추가"
+                    color="primary.white"
+                    fs="h5"
+                    h={20}
+                    action={() =>
+                      setValues((prev) => {
+                        setValues((prev) => {
+                          const newData = [...prev];
+                          const newObj = Object.assign(
+                            {},
+                            newData?.filter((data) => data?.title === "메모")[0]
+                          );
+                          newObj.created_date = new Date(
+                            +new Date() + 3240 * 10000
+                          )
+                            .toISOString()
+                            .replace("T", " ")
+                            .replace(/\..*/, "");
+                          newObj.value = memo;
+
+                          newData.push(newObj);
+
+                          return newData;
+                        });
+                        setMemo("");
+                      })
+                    }
+                  />
                 </Row>
+                <OutLineInput
+                  disabled={allocated_user?.pk !== user_info?.pk}
+                  placeholder="메모를 입력해주세요."
+                  rows={4}
+                  multiline
+                  value={memo}
+                  setValue={setMemo}
+                />
                 <Row sx={{ width: "100%", gap: 3, maxWidth: 1020 }}>
                   {values?.map(
                     (v, _key) =>
-                      v?.title === "녹취 파일" &&
+                      v?.title === "메모" &&
                       v?.value && (
-                        <Column
-                          sx={{
-                            width: "auto",
-                            p: 1,
-                            border: "1px solid black",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <Typography variant="h6" ml={3} mb={1}>
-                            {v?.created_date}{" "}
-                          </Typography>
-                          <audio controls src={v?.value}>
-                            Your browser does not support the
-                            <code>audio</code> element.
-                          </audio>
-                        </Column>
+                        <MemoBox time={v?.created_date} text={v?.value} />
                       )
                   )}
                 </Row>
               </Column>
-            </>
-          ))}
+            ))}
 
-        {menu_detail?.fields
-          ?.filter(
-            (field) =>
-              field?.is_detail_shown === 1 && field?.property?.name === "메모"
-          )
-          ?.map((filter_data, key) => (
-            <Column sx={{ gap: 1, maxWidth: 1020 }} key={key}>
-              <Row alignItems={"center"} sx={{ gap: 2 }}>
-                <Typography variant="h1">메모관리</Typography>
-                <Button
-                  variant="contained"
-                  bgColor="primary"
-                  text="메모추가"
-                  color="primary.white"
-                  fs="h5"
-                  h={20}
-                  action={() =>
-                    setValues((prev) => {
-                      setValues((prev) => {
-                        const newData = [...prev];
-                        const newObj = Object.assign(
-                          {},
-                          newData?.filter((data) => data?.title === "메모")[0]
-                        );
-                        newObj.created_date = new Date(
-                          +new Date() + 3240 * 10000
-                        )
-                          .toISOString()
-                          .replace("T", " ")
-                          .replace(/\..*/, "");
-                        newObj.value = memo;
-
-                        newData.push(newObj);
-
-                        return newData;
-                      });
-                      setMemo("");
-                    })
-                  }
-                />
-              </Row>
-              <OutLineInput
-                placeholder="메모를 입력해주세요."
-                rows={4}
-                multiline
-                value={memo}
-                setValue={setMemo}
-              />
-              <Row sx={{ width: "100%", gap: 3, maxWidth: 1020 }}>
-                {values?.map(
-                  (v, _key) =>
-                    v?.title === "메모" &&
-                    v?.value && (
-                      <MemoBox time={v?.created_date} text={v?.value} />
-                    )
-                )}
-              </Row>
-            </Column>
-          ))}
         <Row justifyContent={"between"} sx={{ gap: "12px", maxWidth: 1020 }}>
           <Button
             variant="contained"
@@ -602,56 +647,59 @@ export default function DbDetail() {
             fs="h5"
             h={25}
           />
-          <Row sx={{ gap: 1 }}>
-            <Button
-              variant="contained"
-              bgColor="primary"
-              text="수정"
-              color="primary.white"
-              fs="h5"
-              h={25}
-              action={() =>
-                openModal({
-                  modal: "needconfirm",
-                  content: {
-                    contents: "수정을 진행하시겠습니까? ",
-                    action: async () => {
-                      const newValue = values?.map((v) =>
-                        Object.assign(
-                          {},
-                          {
-                            pk: v.pk,
-                            field_pk: v.field_pk,
-                            value: v.value,
-                          }
-                        )
-                      );
-                      const res = await Axios.Post("db/list", {
-                        token: getAccessToken(),
-                        list_pk: router.query.db,
-                        db_pk: router.query.menu,
-                        organization_code: org_code,
-                        user_pk: user_info?.pk,
-                        status: status,
-                        org_status: org_status,
-                        geo_parent: parent_area,
-                        geo_name: child_area,
-                        values: [...newValue],
-                      });
 
-                      if (res?.code === 200) {
-                        closeModal();
-                        enqueueSnackbar("DB 수정이 완료되었습니다.", {
-                          variant: "success",
-                          autoHideDuration: 2000,
+          <Row sx={{ gap: 1 }}>
+            {allocated_user?.pk === user_info?.pk && (
+              <Button
+                variant="contained"
+                bgColor="primary"
+                text="수정"
+                color="primary.white"
+                fs="h5"
+                h={25}
+                action={() =>
+                  openModal({
+                    modal: "needconfirm",
+                    content: {
+                      contents: "수정을 진행하시겠습니까? ",
+                      action: async () => {
+                        const newValue = values?.map((v) =>
+                          Object.assign(
+                            {},
+                            {
+                              pk: v.pk,
+                              field_pk: v.field_pk,
+                              value: v.value,
+                            }
+                          )
+                        );
+                        const res = await Axios.Post("db/list", {
+                          token: getAccessToken(),
+                          list_pk: router.query.db,
+                          db_pk: router.query.menu,
+                          organization_code: org_code,
+                          user_pk: user_info?.pk,
+                          status: status,
+                          org_status: org_status,
+                          geo_parent: parent_area,
+                          geo_name: child_area,
+                          values: [...newValue],
                         });
-                        router.back();
-                      }
+
+                        if (res?.code === 200) {
+                          closeModal();
+                          enqueueSnackbar("DB 수정이 완료되었습니다.", {
+                            variant: "success",
+                            autoHideDuration: 2000,
+                          });
+                          router.back();
+                        }
+                      },
                     },
-                  },
-                })
-              }
-            />
+                  })
+                }
+              />
+            )}
 
             <Button
               variant="contained"
@@ -663,38 +711,40 @@ export default function DbDetail() {
               action={() => router.back()}
             />
           </Row>
-          <Button
-            variant="contained"
-            bgColor="red"
-            text="삭제"
-            color="primary.white"
-            fs="h5"
-            h={25}
-            action={() =>
-              openModal({
-                modal: "needconfirm",
-                content: {
-                  contents: "해당DB를 삭제하시겠습니까?",
-                  buttonText: "삭제",
-                  action: async () => {
-                    const res = await Axios.Post("db/list/remove", {
-                      token: getAccessToken(),
-                      list_pk: router.query.db,
-                    });
-
-                    if (res?.code === 200) {
-                      closeModal();
-                      enqueueSnackbar("DB가 삭제되었습니다.", {
-                        variant: "success",
-                        autoHideDuration: 2000,
+          {allocated_user?.pk === user_info?.pk && (
+            <Button
+              variant="contained"
+              bgColor="red"
+              text="삭제"
+              color="primary.white"
+              fs="h5"
+              h={25}
+              action={() =>
+                openModal({
+                  modal: "needconfirm",
+                  content: {
+                    contents: "해당DB를 삭제하시겠습니까?",
+                    buttonText: "삭제",
+                    action: async () => {
+                      const res = await Axios.Post("db/list/remove", {
+                        token: getAccessToken(),
+                        list_pk: router.query.db,
                       });
-                      router.back();
-                    }
+
+                      if (res?.code === 200) {
+                        closeModal();
+                        enqueueSnackbar("DB가 삭제되었습니다.", {
+                          variant: "success",
+                          autoHideDuration: 2000,
+                        });
+                        router.back();
+                      }
+                    },
                   },
-                },
-              })
-            }
-          />
+                })
+              }
+            />
+          )}
         </Row>
       </Column>
     </Layout>

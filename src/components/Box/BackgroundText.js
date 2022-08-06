@@ -10,7 +10,7 @@ export default function BackgroundTextBox({ w, h, text, background, sx }) {
       sx={{
         width: w || "100%",
         height: h,
-        background: background || "##0D1D41",
+        background: background || "#0D1D41",
         p: 1,
         whiteSpace: "nowrap",
         ...sx,

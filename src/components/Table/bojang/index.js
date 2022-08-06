@@ -11,11 +11,12 @@ import {
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
 import { useState } from "react";
-import { bojangHeaderList } from "./bojangHedaderList";
+import { dbHeaderList } from "./bojangHedaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
 import MemoBox from "../../Box/Memo";
 import { useRouter } from "next/router";
+import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
 
 const Root = styled("div")`
   table {
@@ -55,6 +56,15 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
         >
           <TableHead>
             <TableRow key="head">
+              <TableCell align="center">
+                <Checkbox />
+              </TableCell>
+              {dbHeaderList?.map((header, key) => (
+                <TableCell align="center" key={key}>
+                  {header}
+                </TableCell>
+              ))}
+
               {header?.fields?.map((head, key) => {
                 if (head?.is_list_shown === 1)
                   return (
@@ -70,8 +80,76 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
             {data?.map((d, key) => (
               <TableRow
                 key={key}
-                onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    background: "#F0EFEF",
+                  },
+                }}
               >
+                <TableCell key={d?.pk + 1} align="center" sx={{ width: 40 }}>
+                  <Checkbox />
+                </TableCell>
+                <TableCell
+                  key={d?.pk + 8}
+                  align="center"
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                >
+                  {key + 1}
+                </TableCell>
+                <TableCell
+                  key={d?.pk + 2}
+                  align="center"
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                >
+                  {d?.geo_parent + " " + d?.geo_name}
+                </TableCell>
+                <TableCell
+                  key={d?.pk + 3}
+                  align="center"
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                >
+                  {d?.status}
+                </TableCell>
+                <TableCell
+                  key={d?.pk + 4}
+                  align="center"
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                  sx={{
+                    color: d?.org_status === "AS승인" ? "#FF0000" : "#3532C7",
+                  }}
+                >
+                  {d?.org_status}
+                </TableCell>
+                <TableCell
+                  key={d?.pk + 5}
+                  align="center"
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                >
+                  {d?.uploader?.name}
+                </TableCell>
+                <TableCell
+                  key={d?.pk + 8}
+                  align="center"
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                >
+                  {d?.allocated_user?.head_office}
+                </TableCell>
+                <TableCell
+                  key={d?.pk + 6}
+                  align="center"
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                >
+                  {getTitleOfOrg(d?.allocated_user)}
+                </TableCell>
+                <TableCell
+                  key={d?.pk + 7}
+                  align="center"
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                >
+                  {d?.allocated_user?.name}
+                </TableCell>
+
                 {d?.values?.map((val) =>
                   header?.fields?.map((head) => {
                     if (
@@ -79,7 +157,13 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
                       head?.pk === val?.field_pk
                     ) {
                       return (
-                        <TableCell key={val?.field_pk} align="center">
+                        <TableCell
+                          key={val?.field_pk}
+                          align="center"
+                          onClick={() =>
+                            router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                          }
+                        >
                           {val?.value}
                         </TableCell>
                       );

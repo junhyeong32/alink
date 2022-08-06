@@ -221,7 +221,7 @@ export default function Layout({ loading, children }) {
                       rank === "지점장" ||
                       rank === "팀장" ||
                       rank === "담당자") && (
-                    <>
+                      <>
                         <Typography variant="h5" color="primary.white">
                           {d?.allocation?.count}
                         </Typography>

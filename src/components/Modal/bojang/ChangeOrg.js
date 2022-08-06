@@ -56,7 +56,7 @@ export default function Change({ index }) {
         <Column alignItems={"center"} justifyContent={"between"} sx={style}>
           <TopLabelContents title={title} fs="h2" />
           <UnderLineSelectInput
-            menuItems={data[index]}
+            menuItems={data[index] || {}}
             value={select}
             setValue={setSelect}
             w={148}

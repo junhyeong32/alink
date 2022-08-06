@@ -11,6 +11,7 @@ export default function RowLabel({
   sx,
   children,
   columnGap,
+  textNoWrap,
 }) {
   return (
     <Row
@@ -26,10 +27,15 @@ export default function RowLabel({
         ...sx,
       }}
     >
-      <Typography
+      <Typography 
         variant={fs || "normal"}
         align="left"
-        sx={{ minWidth: label_w || "45px", whiteSpace: "nowrap" }}
+        sx={{
+          minWidth: label_w || "45px",
+          width: label_w,
+          wordBreak: !textNoWrap && "break-all",
+          whiteSpace: textNoWrap ? "nowrap" : "none",
+        }}
       >
         {label}
       </Typography>

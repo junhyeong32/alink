@@ -47,6 +47,9 @@ export default function Login() {
     //ALINK000
     //alink000!!
 
+    // ALINK0001
+    // link001!!
+
     if (res) {
       setCookie("user_info", res, {
         path: "/",
