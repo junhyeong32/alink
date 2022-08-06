@@ -10,7 +10,8 @@ import useGetMenus from "../../src/hooks/setting/useGetMenus";
 
 export default function Dna() {
   const router = useRouter();
-  const [menu, setMenu] = useState("popup");
+  console.log(router);
+  const [menu, setMenu] = useState(router.query.menu || "popup");
   const [area, setArea] = useState("");
   const [headquarters, setHeadquarters] = useState("");
   const [branch, setBranch] = useState("");

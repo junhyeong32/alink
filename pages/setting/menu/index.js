@@ -18,6 +18,7 @@ import uploadFile from "../../../src/utility/uploadFile";
 import { OutLineSelectInput } from "../../../src/components/Input/Select";
 import useGetOrganization from "../../../src/hooks/share/useGetOrganization";
 import useGetArea from "../../../src/hooks/setting/useGetArea";
+import { getOrgHeadOffice } from "../../../src/utility/organization/getOrgWithUnit";
 
 export default function Menu() {
   const router = useRouter();
@@ -65,7 +66,7 @@ export default function Menu() {
         variant: "success",
         autoHideDuration: 2000,
       });
-      router.push("/setting");
+      router.push("/setting?menu=menu", "/setting");
     }
   };
 
@@ -89,7 +90,9 @@ export default function Menu() {
   console.log(db_fields);
 
   useEffect(() => {
-    const result = { [sales[0]?.code]: sales[0]?.name };
+    const result = {};
+
+    getOrgHeadOffice(sales, result);
 
     setMenuItems(result);
   }, [org_pending]);
