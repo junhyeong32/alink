@@ -37,6 +37,8 @@ export default function MenuDetail() {
   const [db_fields, setDbFields] = useState();
   const [geomap, setGeoMap] = useState();
 
+  const [cooperationMenuList, setCooperationMenuList] = useState("");
+
   const [file_name, setFileName] = useState("");
 
   const [menuItems, setMenuItems] = useState();
@@ -125,10 +127,14 @@ export default function MenuDetail() {
 
   useEffect(() => {
     const result = {};
+    const coop_org = {};
 
     getOrgHeadOffice(sales, result);
+    getOrgHeadOffice(cooperation, coop_org);
 
     setMenuItems(result);
+
+    setCooperationMenuList(coop_org);
   }, [org_pending]);
 
   useEffect(() => {
@@ -203,6 +209,14 @@ export default function MenuDetail() {
                 />
               }
             />
+            {is_cooperated === 1 && (
+              <OutLineSelectInput
+                w="50%"
+                menuItems={cooperationMenuList}
+                value={cooperation_organization}
+                setValue={setCooperationOrganization}
+              />
+            )}
             <FormControlLabel
               label="무"
               control={
