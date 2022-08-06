@@ -22,7 +22,8 @@ import Modal from "../Modal";
 import CustomSwitch from "../Switch";
 import useGetUser from "../../hooks/user/useGetUser";
 import NavSwitch from "../Switch/NavSwitch";
-import { getCookie } from "../../utility/getCookie";
+import { getAccessToken, getCookie } from "../../utility/getCookie";
+import Axios from "../../utility/api";
 export default function Layout({ loading, children }) {
   const router = useRouter();
   const [menu_list, setMenuList] = useState([]);
@@ -31,7 +32,8 @@ export default function Layout({ loading, children }) {
   const [visible, setVisible] = useState(false);
   const [rank, setRank] = useState(cookies?.user_info?.grade);
   const [showChild, setShowChild] = useState(false);
-  const [user, setUser] = useState(getCookie("db"));
+  const { user, getUser } = useGetUser();
+  console.log(user);
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });
@@ -230,16 +232,18 @@ export default function Layout({ loading, children }) {
                           checked={
                             d?.allocation?.is_activated === 1 ? true : false
                           }
-                          // onClick={(e) => {
-                          //   setChangeDb((prev) => {
-                          //     const newData = [...prev];
-                          //     if (newData[key].allocation[0].is_activated === 1)
-                          //       newData[key].allocation[0].is_activated = 0;
-                          //     else newData[key].allocation[0].is_activated = 1;
+                          onClick={async () => {
+                            const res = await Axios.Post("user/db/allocation", {
+                              token: getAccessToken(),
+                              allocation_pk: d?.allocation?.pk,
+                              onoff: d?.allocation?.is_activated === 1 ? 0 : 1,
+                              db_pk: d?.pk,
+                            });
 
-                          //     return newData;
-                          //   });
-                          // }}
+                            if (res?.code === 200) {
+                              getUser();
+                            }
+                          }}
                         />
                       </>
                     )}

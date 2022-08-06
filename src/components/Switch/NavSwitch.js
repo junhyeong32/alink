@@ -21,7 +21,12 @@ const NavSwitch = styled((props) => (
       {...props}
     />
     <Typography
-      sx={{ position: "absolute", left: "42px", top: "1px", zIndex: 1 }}
+      sx={{
+        position: "absolute",
+        left: props.checked ? "30px" : "42px",
+        top: "1px",
+        zIndex: 1,
+      }}
       color={props.checked ? "primary.white" : "primary.gray"}
       variant="h5"
     >
