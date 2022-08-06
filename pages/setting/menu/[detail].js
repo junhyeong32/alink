@@ -23,6 +23,9 @@ import { getOrgHeadOffice } from "../../../src/utility/organization/getOrgWithUn
 
 export default function MenuDetail() {
   const router = useRouter();
+  const [menu_detail, setMenuDetail] = useState([]);
+  const [area, setArea] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { enqueueSnackbar } = useSnackbar();
   const [menu, setMenu] = useState("popup");
@@ -33,8 +36,9 @@ export default function MenuDetail() {
   const [is_cooperated, setIscooperated] = useState(false);
   const [is_activated, setIsActivated] = useState(false);
   const [cooperation_organization, setCooperationOrganization] = useState("");
+  const [coop_list, setCoopList] = useState([]);
   const [sample, setSample] = useState("");
-  const [db_fields, setDbFields] = useState();
+  const [db_fields, setDbFields] = useState([]);
   const [geomap, setGeoMap] = useState();
 
   const [cooperationMenuList, setCooperationMenuList] = useState("");
@@ -49,10 +53,6 @@ export default function MenuDetail() {
   const { org_pending, sales } = useGetOrganization("sales");
   const { cooperation } = useGetOrganization("cooperation");
 
-  const { menu_detail, area, menuDetailPending, setArea } = useGetMenuDetail(
-    router.query.detail
-  );
-
   const getUser = async (token) => {
     if (router.isReady) {
       const res = (await Axios.Get(`user/db/count?token=${token}`))?.data;
@@ -62,18 +62,17 @@ export default function MenuDetail() {
   };
 
   const handleAddDb = async () => {
-    console.log("test");
     const res = await Axios.Post("db/menu", {
       token: getAccessToken(),
       db_pk: router.query.detail || undefined, //수정 시에만 필요한 값,
       organization_codes: org_list.join(","),
       title: title,
       is_cooperated: is_cooperated,
-      cooperation_organization_codes: cooperation_organization || undefined, //협력사 조직코드 (,)로 구분
+      cooperation_organization_codes: coop_list.join(",") || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
       geomap: area,
-      fields: db_fields || menu_detail?.fields,
+      fields: db_fields,
     });
     if (res?.code === 200) {
       setCookie("db", await getUser(res?.access_token));
@@ -87,43 +86,65 @@ export default function MenuDetail() {
   };
 
   useEffect(() => {
-    setDbFields(() => {
-      const obj = fields.map((field) =>
-        Object.assign(
-          {},
-          {
-            ...field,
-            is_detail_shown: 0,
-            is_filter_shown: 0,
-            is_list_shown: 0,
-          }
-        )
-      );
-      return obj;
-    });
-  }, [isPending]);
+    const getMenuDetail = async () => {
+      if (!router.isReady) return;
+      const res = (
+        await Axios.Get(`db/menu/${router.query.detail}`, {
+          params: {
+            token: getAccessToken(),
+          },
+        })
+      )?.data;
+      console.log(res);
+      if (res?.code === 200) {
+        const {
+          title,
+          organization,
+          is_activated,
+          is_cooperated,
+          sample,
+          organizations,
+          fields,
+          cooperation_organizations,
+        } = res?.data;
+        setTitle(title);
+        setIsActivated(is_activated);
+        setIscooperated(is_cooperated);
+        setCoopList(cooperation_organizations);
+        setCoopList((prev) => {
+          const arr = [];
+          cooperation_organizations?.map((org, key) => arr.push(org.code));
+          return arr;
+        });
+        setDbFields((prev) => {
+          const dbObj = [];
 
-  useEffect(() => {
-    const {
-      title,
-      organization,
-      is_activated,
-      is_cooperated,
-      sample,
-      organizations,
-    } = menu_detail;
-    setTitle(title);
+          // TODO
+          // 수정안되는거 태웅이한테 말하기
+          fields.map((field) => {
+            dbObj.push({
+              pk: field?.property?.pk,
+              is_filter_shown: field?.is_filter_shown,
+              is_list_shown: field?.is_list_shown,
+              is_detail_shown: field?.is_detail_shown,
+            });
+          });
 
-    setIsActivated(is_activated);
-    setIscooperated(is_cooperated);
-    setDbFields(menu_detail?.fields);
-    setSample(sample);
-    setOrgList((prev) => {
-      const arr = [];
-      organizations?.map((org, key) => arr.push(org.code));
-      return arr;
-    });
-  }, [menu_detail]);
+          return dbObj;
+        });
+
+        setSample(sample);
+        setOrgList((prev) => {
+          const arr = [];
+          organizations?.map((org, key) => arr.push(org.code));
+          return arr;
+        });
+        setMenuDetail(res?.data);
+        setLoading(false);
+      }
+    };
+    getMenuDetail();
+  }, [router.isReady]);
 
   useEffect(() => {
     const result = {};
@@ -142,14 +163,17 @@ export default function MenuDetail() {
   }, [organization]);
 
   useEffect(() => {
+    if (cooperation_organization)
+      setCoopList((prev) => [...prev, cooperation_organization]);
+  }, [cooperation_organization]);
+
+  useEffect(() => {
     if (JSON.stringify(area_org) !== "{}")
       setArea((prev) => [...prev, area_org]);
   }, [area_org]);
 
-  if (menu_detail?.length === 0) return <div>loading</div>;
-
   return (
-    <Layout loading={menu_detail?.length === 0 || isPending}>
+    <Layout loading={loading}>
       <Column sx={{ gap: 4.7, width: { xs: "100%", sm: "100%", md: 550 } }}>
         <Column sx={{ gap: 1 }}>
           <Typography variant="h1">DB 추가</Typography>
@@ -227,6 +251,38 @@ export default function MenuDetail() {
               }
             />
           </RowLabel>
+          <Column
+            wrap={"wrap"}
+            sx={{
+              p: 1,
+              gap: 1,
+              width: "100%",
+              height: "85px",
+              border: "3px solid #909090",
+              borderRadius: "5px",
+            }}
+          >
+            {coop_list?.map((org, key) => (
+              <Row key={key} alignItems={"center"} sx={{ gap: 1 }}>
+                <Typography variant="h6">{cooperationMenuList[org]}</Typography>
+                <Image
+                  src="/cancel.png"
+                  width={15}
+                  height={15}
+                  alt="x"
+                  layout="fixed"
+                  style={{ marginTop: "3px", cursor: "pointer" }}
+                  onClick={() =>
+                    setCoopList((prev) => {
+                      const new_arr = [...prev];
+                      new_arr.splice(key, 1);
+                      return new_arr;
+                    })
+                  }
+                />
+              </Row>
+            ))}
+          </Column>
           <RowLabel label="샘플 업로드" label_w={68}>
             <OutLineInput w={231} value={file_name} disabled />
             <label htmlFor="contained-button-file">
@@ -314,9 +370,7 @@ export default function MenuDetail() {
                 control={
                   <RadioInput
                     checked={
-                      menu_detail?.fields[key]?.is_filter_shown === 1
-                        ? true
-                        : false
+                      db_fields[key]?.is_filter_shown === 1 ? true : false
                     }
                     onClick={() =>
                       setDbFields(() => {
@@ -351,7 +405,7 @@ export default function MenuDetail() {
                 control={
                   <RadioInput
                     disabled={field?.is_list_shown === 0}
-                    checked={menu_detail?.fields[key]?.is_list_shown === 1}
+                    checked={db_fields[key]?.is_list_shown === 1 ? true : false}
                     onClick={() =>
                       setDbFields(() => {
                         const arr = [...db_fields];
@@ -376,7 +430,9 @@ export default function MenuDetail() {
                 control={
                   <RadioInput
                     disabled={field?.is_detail_shown === 0}
-                    checked={menu_detail?.fields[key]?.is_detail_shown === 1}
+                    checked={
+                      db_fields[key]?.is_detail_shown === 1 ? true : false
+                    }
                     onClick={() =>
                       setDbFields(() => {
                         const arr = [...db_fields];

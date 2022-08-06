@@ -128,6 +128,8 @@ export default memo(function User() {
     setCoopMenuItems(result);
   }, [sales]);
 
+  
+
   useEffect(() => {
     if (head_office_org_code === "전체") return;
     const org = {};
