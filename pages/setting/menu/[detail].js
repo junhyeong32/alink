@@ -19,6 +19,7 @@ import { OutLineSelectInput } from "../../../src/components/Input/Select";
 import useGetOrganization from "../../../src/hooks/share/useGetOrganization";
 import useGetMenuDetail from "../../../src/hooks/setting/useGetMenuDetail";
 import { setCookie, getCookie } from "../../../src/utility/getCookie";
+import { getOrgHeadOffice } from "../../../src/utility/organization/getOrgWithUnit";
 
 export default function MenuDetail() {
   const router = useRouter();
@@ -79,7 +80,7 @@ export default function MenuDetail() {
         autoHideDuration: 2000,
       });
 
-      router.back();
+      router.push("/setting?menu=menu", "/setting");
     }
   };
 
@@ -124,21 +125,9 @@ export default function MenuDetail() {
 
   useEffect(() => {
     const result = {};
-    const getOrganiztionList = (el) => {
-      if (!el) {
-        sales?.[0]?.children.map((child) => {
-          Object.assign(result, { [child.code]: child.name });
-          return getOrganiztionList((el = child));
-        });
-      } else {
-        el.children.map((child_el) => {
-          Object.assign(result, { [child_el.code]: child_el.name });
 
-          return getOrganiztionList((el = child_el));
-        });
-      }
-    };
-    getOrganiztionList();
+    getOrgHeadOffice(sales, result);
+
     setMenuItems(result);
   }, [org_pending]);
 
