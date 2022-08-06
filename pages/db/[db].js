@@ -25,6 +25,7 @@ import { argument_status } from "../../src/data/share/MenuByTextList";
 
 import { styled } from "@mui/material/styles";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
+import { getOrgWithUnit } from "../../src/utility/organization/getOrgWithUnit";
 
 const Input = styled("input")({
   display: "none",
@@ -36,7 +37,7 @@ export default function DbDetail() {
   const [rank] = useState(getCookie("user_info")?.grade);
 
   const [menu_detail, setMenuDetail] = useState([]);
-  const { sales } = useGetOrganization("sales");
+  const { sales, org_pending } = useGetOrganization("sales");
   const { area } = useGetArea();
   const [db_detail, setDbDetail] = useState([]);
   const [user_info] = useState(getCookie("user_info"));
@@ -56,6 +57,7 @@ export default function DbDetail() {
   const [uploader, setUploader] = useState({});
   const [values, setValues] = useState([]);
   const [organization, setOrganization] = useState({});
+  const [user_code, setUserCode] = useState("");
 
   const [transcript_file, setTranscriptFile] = useState("");
   const [memo, setMemo] = useState("");
@@ -68,6 +70,8 @@ export default function DbDetail() {
     전체: "전체",
   });
   const [areaChildMenuList, setAreaChildMenuList] = useState({ 전체: "전체" });
+  const [coopMenuItems, setCoopMenuItems] = useState({});
+  const [userMenuList, setUserMenuList] = useState({});
 
   const [date_range, setDateRange] = useState(new Date());
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
@@ -142,6 +146,7 @@ export default function DbDetail() {
         setValues(values);
         setOrgCode(organization_code);
         setOrganization(organization);
+        setUserCode(allocated_user?.pk);
       }
     };
 
@@ -168,7 +173,50 @@ export default function DbDetail() {
     });
   }, [parent_area]);
 
-  console.log(values);
+  useEffect(() => {
+    const result = {};
+    getOrgWithUnit(sales, "team", result);
+
+    setCoopMenuItems(result);
+  }, [sales]);
+
+  useEffect(() => {
+    if (!org_code) return;
+    const getUserList = async () => {
+      const res = (
+        await Axios.Get("member", {
+          params: {
+            token: getAccessToken(),
+            org_code: org_code,
+          },
+        })
+      )?.data;
+      if (res?.code === 200) {
+        const userDbCount = [];
+        const listObj = {};
+
+        console.log(res?.data?.result);
+        res?.data?.result?.map((user) =>
+          user?.allocations?.map(
+            (location) =>
+              location?.db?.pk === router.query.menu &&
+              userDbCount.push(location?.count)
+          )
+        );
+
+        res?.data?.result?.map((user, key) =>
+          Object.assign(listObj, {
+            [user?.pk]: user?.name + " " + userDbCount[key],
+          })
+        );
+
+        console.log("userDbCount", userDbCount);
+        setUserMenuList(listObj);
+      }
+    };
+    getUserList();
+  }, [org_code]);
+  // console.log();
 
   return (
     <Layout loading={loading}>
@@ -192,7 +240,11 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="고객명" fs="h5" key={key}>
                         <OutLineInput
-                          disabled={allocated_user?.pk !== user_info?.pk}
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자" &&
+                            rank !== "관리자"
+                          }
                           defaultValue={
                             values.filter((v) => v?.title === "고객명")?.[0]
                               ?.value
@@ -215,7 +267,10 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="연락처" fs="h5" key={key}>
                         <OutLineInput
-                          disabled={allocated_user?.pk !== user_info?.pk}
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자"
+                          }
                           defaultValue={
                             values.filter((v) => v?.title === "연락처")?.[0]
                               ?.value
@@ -238,7 +293,10 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="나이" fs="h5" key={key}>
                         <OutLineInput
-                          disabled={allocated_user?.pk !== user_info?.pk}
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자"
+                          }
                           defaultValue={
                             values.filter((v) => v?.title === "나이")?.[0]
                               ?.value
@@ -264,7 +322,10 @@ export default function DbDetail() {
                           label="남"
                           control={
                             <RadioInput
-                              disabled={allocated_user?.pk !== user_info?.pk}
+                              disabled={
+                                allocated_user?.pk !== user_info?.pk &&
+                                rank !== "관리자"
+                              }
                               checked={
                                 values.filter((v) => v?.title === "성별")?.[0]
                                   ?.value === "남자"
@@ -287,7 +348,10 @@ export default function DbDetail() {
                           label="여"
                           control={
                             <RadioInput
-                              disabled={allocated_user?.pk !== user_info?.pk}
+                              disabled={
+                                allocated_user?.pk !== user_info?.pk &&
+                                rank !== "관리자"
+                              }
                               checked={
                                 values.filter((v) => v?.title === "성별")?.[0]
                                   ?.value === "여자"
@@ -315,7 +379,10 @@ export default function DbDetail() {
                           label="미혼"
                           control={
                             <RadioInput
-                              disabled={allocated_user?.pk !== user_info?.pk}
+                              disabled={
+                                allocated_user?.pk !== user_info?.pk &&
+                                rank !== "관리자"
+                              }
                               checked={
                                 values.filter(
                                   (v) => v?.title === "결혼여부"
@@ -339,7 +406,10 @@ export default function DbDetail() {
                           label="기혼"
                           control={
                             <RadioInput
-                              disabled={allocated_user?.pk !== user_info?.pk}
+                              disabled={
+                                allocated_user?.pk !== user_info?.pk &&
+                                rank !== "관리자"
+                              }
                               checked={
                                 values.filter(
                                   (v) => v?.title === "결혼여부"
@@ -365,7 +435,10 @@ export default function DbDetail() {
                     return (
                       <RowLabel label="특이사항" fs="h5" key={key}>
                         <OutLineInput
-                          disabled={allocated_user?.pk !== user_info?.pk}
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자"
+                          }
                           multiline
                           rows={3}
                           w={"100%"}
@@ -401,7 +474,9 @@ export default function DbDetail() {
                 menuItems={areaParentMenuList}
                 value={parent_area}
                 setValue={setParentArea}
-                disabled={allocated_user?.pk !== user_info?.pk}
+                disabled={
+                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                }
               />
               <OutLineSelectInput
                 w={"50%"}
@@ -409,7 +484,9 @@ export default function DbDetail() {
                 menuItems={areaChildMenuList}
                 value={child_area}
                 setValue={setChildArea}
-                disabled={allocated_user?.pk !== user_info?.pk}
+                disabled={
+                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                }
               />
             </RowLabel>
             <RowLabel label="등록처" fs="h5">
@@ -430,7 +507,10 @@ export default function DbDetail() {
                           key={key}
                           control={
                             <RadioInput
-                              disabled={allocated_user?.pk !== user_info?.pk}
+                              disabled={
+                                allocated_user?.pk !== user_info?.pk &&
+                                rank !== "관리자"
+                              }
                               checked={status === list}
                               onClick={() => setStatus(list)}
                             />
@@ -452,7 +532,9 @@ export default function DbDetail() {
             </RowLabel>
             <RowLabel label="업체승인" fs="h5">
               <OutLineSelectInput
-                disabled={allocated_user?.pk !== user_info?.pk}
+                disabled={
+                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                }
                 w={"50%"}
                 menuItems={{
                   AS승인: "AS승인",
@@ -467,24 +549,22 @@ export default function DbDetail() {
             </RowLabel>
             <RowLabel label="소속/성명" fs="h5">
               <OutLineSelectInput
-                disabled={allocated_user?.pk !== user_info?.pk}
+                disabled={
+                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                }
                 w={"50%"}
-                menuItems={{
-                  AS승인: "AS승인",
-                  AS반려: "AS반려",
-                }}
-                value={org_status}
-                setValue={setOrgStatus}
+                menuItems={coopMenuItems}
+                value={org_code}
+                setValue={setOrgCode}
               />
               <OutLineSelectInput
-                disabled={allocated_user?.pk !== user_info?.pk}
+                disabled={
+                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                }
                 w={"50%"}
-                menuItems={{
-                  AS승인: "AS승인",
-                  AS반려: "AS반려",
-                }}
-                value={org_status}
-                setValue={setOrgStatus}
+                menuItems={userMenuList}
+                value={user_code}
+                setValue={setUserCode}
               />
             </RowLabel>
           </Column>
@@ -638,7 +718,9 @@ export default function DbDetail() {
                   />
                 </Row>
                 <OutLineInput
-                  disabled={allocated_user?.pk !== user_info?.pk}
+                  disabled={
+                    allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                  }
                   placeholder="메모를 입력해주세요."
                   rows={4}
                   multiline
@@ -657,7 +739,7 @@ export default function DbDetail() {
               </Column>
             ))}
 
-        <Row justifyContent={"between"} sx={{ gap: "12px", maxWidth: 1020 }}>
+        <Row justifyContent={"between"} sx={{ gap: "12px", width: "100%" }}>
           <Button
             variant="contained"
             bgColor="print"
@@ -668,7 +750,7 @@ export default function DbDetail() {
           />
 
           <Row sx={{ gap: 1 }}>
-            {allocated_user?.pk === user_info?.pk && (
+            {(allocated_user?.pk === user_info?.pk || rank === "관리자") && (
               <Button
                 variant="contained"
                 bgColor="primary"
@@ -697,7 +779,7 @@ export default function DbDetail() {
                           list_pk: router.query.db,
                           db_pk: router.query.menu,
                           organization_code: org_code,
-                          user_pk: user_info?.pk,
+                          user_pk: user_code || user_info?.pk,
                           status: status,
                           org_status: org_status,
                           geo_parent: parent_area,
@@ -730,7 +812,7 @@ export default function DbDetail() {
               action={() => router.back()}
             />
           </Row>
-          {allocated_user?.pk === user_info?.pk && (
+          {(allocated_user?.pk === user_info?.pk || rank === "관리자") && (
             <Button
               variant="contained"
               bgColor="red"
