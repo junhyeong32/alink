@@ -151,7 +151,9 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                   {user?.allocations.map((location, _key) => (
                     <TableCell key={_key} align="center" sx={{ width: 150 }}>
                       <Row justifyContent={"start"} sx={{ gap: "10px" }}>
-                        {rank === "관리자" ? (
+                        {rank === "관리자" &&
+                        user?.grade !== "협력사" &&
+                        user?.grade !== "부협력사" ? (
                           <CustomSwitch
                             checked={
                               location?.is_activated === 1 ? true : false
@@ -229,17 +231,23 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                             }}
                           />
                         ) : (
-                          <RoundColorBox
-                            background={
-                              location?.is_activated === 1
-                                ? "#0D1D41"
-                                : "#909090"
-                            }
-                          >
-                            {location?.is_activated === 1 ? "ON" : "OFF"}
-                          </RoundColorBox>
+                          rank !== "관리자" &&
+                          user?.grade !== "협력사" &&
+                          user?.grade !== "부협력사" && (
+                            <RoundColorBox
+                              background={
+                                location?.is_activated === 1
+                                  ? "#0D1D41"
+                                  : "#909090"
+                              }
+                            >
+                              {location?.is_activated === 1 ? "ON" : "OFF"}
+                            </RoundColorBox>
+                          )
                         )}
-                        {location?.count} 개
+                        {user?.grade !== "협력사" &&
+                          user?.grade !== "부협력사" &&
+                          location?.count + "개"}
                       </Row>
                     </TableCell>
                   ))}
