@@ -156,17 +156,70 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
                       head?.is_list_shown === 1 &&
                       head?.pk === val?.field_pk
                     ) {
-                      return (
-                        <TableCell
-                          key={val?.field_pk}
-                          align="center"
-                          onClick={() =>
-                            router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
-                          }
-                        >
-                          {val?.value}
-                        </TableCell>
-                      );
+                      if (val?.title === "녹취 파일") {
+                        return (
+                          <Image
+                            src={"/recording.png"}
+                            width={18.75}
+                            height={22.92}
+                            alt=""
+                            onClick={() =>
+                              openModal({
+                                modal: "readFile",
+                                content: {
+                                  contents: <MemoBox />,
+                                },
+                              })
+                            }
+                          />
+                        );
+                      } else if (val?.title === "메모") {
+                        return (
+                          <Image
+                            src={"/memo.png"}
+                            width={25}
+                            height={25}
+                            alt="memo"
+                            onClick={() =>
+                              openModal({
+                                modal: "readFile",
+                                content: {
+                                  contents: <MemoBox />,
+                                },
+                              })
+                            }
+                          />
+                        );
+                      } else if (val?.title === "결과지 파일") {
+                        return (
+                          <Image
+                            src={"/dna.png"}
+                            width={12}
+                            height={25}
+                            alt="result"
+                            onClick={() =>
+                              openModal({
+                                modal: "result",
+                                content: {
+                                  contents: "hi",
+                                },
+                              })
+                            }
+                          />
+                        );
+                      } else {
+                        return (
+                          <TableCell
+                            key={val?.field_pk}
+                            align="center"
+                            onClick={() =>
+                              router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                            }
+                          >
+                            {val?.value}
+                          </TableCell>
+                        );
+                      }
                     }
                   })
                 )}

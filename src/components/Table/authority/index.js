@@ -42,8 +42,6 @@ const Root = styled("div")`
 `;
 
 export default function AuthorityTable({ data, checkList, setCheckList }) {
-  const [checked, setChecked] = useState([]);
-
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -102,7 +100,6 @@ export default function AuthorityTable({ data, checkList, setCheckList }) {
                     }
                   />
                 </TableCell>
-                <TableCell align="center">{list?.status}</TableCell>
                 <TableCell align="center">{list?.id}</TableCell>
                 <TableCell align="center">{list?.name}</TableCell>
                 <TableCell align="center">{list?.rank}</TableCell>

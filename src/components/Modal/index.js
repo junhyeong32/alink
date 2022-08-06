@@ -2,7 +2,7 @@ import Upload from "./share/Upload";
 import NeedConfirm from "./share/NeedConfirm";
 import ReadFile from "./share/ReadFile";
 import Result from "./dna/Result";
-import Area from "./setting/AreaModal";
+// import Area from "./setting/AreaModal";
 import Change from "./bojang/ChangeOrg";
 import Division from "./Division";
 
@@ -22,9 +22,11 @@ export default function Modal() {
       return <ReadFile key={index} index={index} />;
     } else if (data === "result") {
       return <Result key={index} index={index} />;
-    } else if (data === "area") {
-      return <Area key={index} index={index} />;
-    } else if (data === "change") {
+    }
+    //  else if (data === "area") {
+    //   return <Area key={index} index={index} />;
+    // }
+    else if (data === "change") {
       return <Change key={index} index={index} />;
     } else if (data === "division") {
       return <Division key={index} index={index} />;

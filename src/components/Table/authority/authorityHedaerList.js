@@ -1,5 +1,4 @@
 export const authority_header = [
-  "상태",
   "사원번호",
   "사원명",
   "직급",

@@ -136,7 +136,7 @@ export default function OrganizationList({ group_list }) {
           <TreeView
             key={list_key}
             mt={2}
-            sx={{ height: "100%", overflowY: "scroll" }}
+            sx={{ height: "100vh", overflowY: "scroll" }}
             defaultExpanded={getAllCodeOfTree(list)}
             defaultCollapseIcon={
               <Image src="/tree_arrow.png" width={10} height={9} alt="" />
