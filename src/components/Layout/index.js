@@ -24,6 +24,7 @@ import useGetUser from "../../hooks/user/useGetUser";
 import NavSwitch from "../Switch/NavSwitch";
 import { getAccessToken, getCookie } from "../../utility/getCookie";
 import Axios from "../../utility/api";
+import useGetMenus from "../../hooks/setting/useGetMenus";
 export default function Layout({ loading, children }) {
   const router = useRouter();
   const [menu_list, setMenuList] = useState([]);
@@ -31,9 +32,12 @@ export default function Layout({ loading, children }) {
   const [cookies, setCookie, removeCookie] = useCookies();
   const [visible, setVisible] = useState(false);
   const [rank, setRank] = useState(cookies?.user_info?.grade);
+  const [user_info] = useState(cookies?.user_info);
 
+  console.log(user_info);
   const [showChild, setShowChild] = useState(false);
-  const { user, getUser } = useGetUser();
+  const { menus } = useGetMenus();
+  console.log(menus);
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });
@@ -203,52 +207,68 @@ export default function Layout({ loading, children }) {
                   );
                 }
               })}
-              {user?.db?.map((d, key) => {
-                return (
-                  <Row justifyContent={"between"} key={key}>
-                    <MenuBox
-                      textWidth={
-                        rank === "본부장" ||
+              {menus?.map((d, key) => {
+                if (d?.is_activated === 0) return;
+                if (
+                  rank === "관리자" ||
+                  ((rank === "협력사" || rank === "부협력사") &&
+                    d?.cooperation_organizations.findIndex(
+                      (org) => org?.code === d?.head_office
+                    )) ||
+                  ((rank !== "협력사" || rank !== "부협력사") &&
+                    d?.organizations.findIndex(
+                      (org) => org?.code === d?.head_office
+                    ))
+                )
+                  return (
+                    <Row justifyContent={"between"} key={key}>
+                      <MenuBox
+                        textWidth={
+                          rank === "본부장" ||
+                          rank === "지점장" ||
+                          rank === "팀장" ||
+                          rank === "담당자"
+                            ? 85
+                            : "100%"
+                        }
+                        key={key}
+                        text={d?.title}
+                        link={`/db?menu=${d?.pk}`}
+                      />
+                      {(rank === "본부장" ||
                         rank === "지점장" ||
                         rank === "팀장" ||
-                        rank === "담당자"
-                          ? 85
-                          : "100%"
-                      }
-                      key={key}
-                      text={d?.title}
-                      link={`/db?menu=${d?.pk}`}
-                    />
-                    {(rank === "본부장" ||
-                      rank === "지점장" ||
-                      rank === "팀장" ||
-                      rank === "담당자") && (
-                      <>
-                        <Typography variant="h5" color="primary.white">
-                          {d?.allocation?.count}
-                        </Typography>
-                        <NavSwitch
-                          sx={{ ml: 3 }}
-                          checked={
-                            d?.allocation?.is_activated === 1 ? true : false
-                          }
-                          onClick={async () => {
-                            const res = await Axios.Post("user/db/allocation", {
-                              token: getAccessToken(),
-                              allocation_pk: d?.allocation?.pk,
-                              onoff: d?.allocation?.is_activated === 1 ? 0 : 1,
-                              db_pk: d?.pk,
-                            });
-
-                            if (res?.code === 200) {
-                              getUser();
+                        rank === "담당자") && (
+                        <>
+                          <Typography variant="h5" color="primary.white">
+                            {d?.allocation?.count}
+                          </Typography>
+                          <NavSwitch
+                            sx={{ ml: 3 }}
+                            checked={
+                              d?.allocation?.is_activated === 1 ? true : false
                             }
-                          }}
-                        />
-                      </>
-                    )}
-                  </Row>
-                );
+                            onClick={async () => {
+                              const res = await Axios.Post(
+                                "user/db/allocation",
+                                {
+                                  token: getAccessToken(),
+                                  allocation_pk: d?.allocation?.pk,
+                                  onoff:
+                                    d?.allocation?.is_activated === 1 ? 0 : 1,
+                                  db_pk: d?.pk,
+                                }
+                              );
+
+                              if (res?.code === 200) {
+                                getUser();
+                              }
+                            }}
+                          />
+                        </>
+                      )}
+                    </Row>
+                  );
               })}
             </Column>
           </Column>

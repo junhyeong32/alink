@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 export default function MenuBox({ img_src, w, text, link, textWidth }) {
   const router = useRouter();
-  console.log(router.pathname.split("/"));
+
   return (
     <Button
       onClick={() => router.push(link)}
