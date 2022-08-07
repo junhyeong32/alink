@@ -31,6 +31,7 @@ export default function Layout({ loading, children }) {
   const [cookies, setCookie, removeCookie] = useCookies();
   const [visible, setVisible] = useState(false);
   const [rank, setRank] = useState(cookies?.user_info?.grade);
+
   const [showChild, setShowChild] = useState(false);
   const { user, getUser } = useGetUser();
 

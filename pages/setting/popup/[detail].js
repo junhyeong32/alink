@@ -43,6 +43,7 @@ export default function Popup() {
   const [position, setPosition] = useState("");
   const [activate, setActivate] = useState("");
   const [content, setContent] = useState("");
+  const [pk, setPk] = useState("");
 
   const [org_code, setOrgCode] = useState("");
 
@@ -68,8 +69,15 @@ export default function Popup() {
 
     if (res?.code === 200)
       startTransition(() => {
-        const { activate, content, organization_name, position, size, title } =
-          res?.data;
+        const {
+          activate,
+          content,
+          organization_name,
+          position,
+          size,
+          title,
+          pk,
+        } = res?.data;
 
         const resize = size.split("/");
         const rePostion = position.split("/");
@@ -78,14 +86,15 @@ export default function Popup() {
         setActivate(activate);
         setContent(content);
         setOrgCode(orgMenuList[organization_name]);
-        setPosition(rePostion?.length === 0 ? postion : "custom");
-        setSize(resize?.length === 0 ? size : "custom");
-        setWidth(resize?.[0]);
-        setHeight(resize?.[1]);
-        setX(rePostion?.[0]);
-        setY(rePostion?.[1]);
+        setPosition(rePostion?.length === 1 ? position : "custom");
+        setSize(resize?.length === 1 ? size : "custom");
+        setWidth(resize.length === 1 ? "" : resize?.[0]);
+        setHeight(resize.length === 1 ? "" : resize?.[1]);
+        setX(rePostion.length === 1 ? "" : rePostion?.[0]);
+        setY(rePostion.length === 1 ? "" : rePostion?.[1]);
 
         setTitle(title);
+        setPk(pk);
       });
   };
 
@@ -159,7 +168,7 @@ export default function Popup() {
                 }
               />
               <FormControlLabel
-                label="중(가로:600, 세로:800)"
+                label="중(가로:500, 세로:300)"
                 control={
                   <RadioInput
                     checked={size === "중"}
@@ -168,7 +177,7 @@ export default function Popup() {
                 }
               />
               <FormControlLabel
-                label="소(가로:600, 세로:800)"
+                label="소(가로:250, 세로:300)"
                 control={
                   <RadioInput
                     checked={size === "소"}
@@ -247,6 +256,7 @@ export default function Popup() {
               const res = await Axios.Post("popup", {
                 token: getAccessToken(),
                 organization_code: org_code === "전체" ? "all" : org_code,
+                popup_pk: pk,
                 title: title,
                 size: size === "custom" ? width + "/" + height : size,
                 position: position === "custom" ? x + "/" + y : position,

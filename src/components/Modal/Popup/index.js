@@ -9,7 +9,7 @@ import {
   forwardRef,
   createRef,
 } from "react";
-import { Modal, Box, Typography, Grid } from "@mui/material";
+import { Modal, Box, Typography, Grid, Checkbox } from "@mui/material";
 import Column from "../../Box/Column";
 import { useCookies } from "react-cookie";
 import { useSnackbar } from "notistack";
@@ -18,7 +18,7 @@ import Button from "../../Button";
 import UnderLineSelectInput from "../../Input/Select";
 import { ModalContext } from "../../../contexts/ModalContext";
 import Row from "../../Box/Row";
-import { CheckBox } from "@mui/icons-material";
+import { setCookie, getCookie } from "../../../utility/getCookie";
 
 export default function Popup({ index }) {
   const {
@@ -29,12 +29,8 @@ export default function Popup({ index }) {
     modalContent,
   } = useContext(ModalContext);
 
-  const [width, setWidth] = useState();
-  const [height, setHeight] = useState();
-
   const reSize = data[index]?.size?.split("/");
-  const rePosition = data[index]?.size?.split("/");
-  console.log(reSize, rePosition);
+  const rePosition = data[index]?.position?.split("/");
 
   const style = {
     width:
@@ -51,46 +47,51 @@ export default function Popup({ index }) {
         : data[index]?.size === "대"
         ? 800
         : 300,
-    overflowX: "hidden",
+    overflowY: "hidden",
     background: "#FFFFFF",
     position: "absolute",
-    transform: "translate(-50%, -50%)",
     bgcolor: "background.paper",
     borderRadius: "5",
-    boxShadow: 24,
+    border: "none",
+    transform: data[index]?.position === "중앙" && "translate(-50%, -50%)",
     pt: 2,
-    px: 4,
-    pb: 3,
     right: data[index]?.position === "우측상단" && 0,
     left:
       rePosition?.length !== 1
-        ? Number(rePosition?.[0])
+        ? Number(rePosition?.[1])
         : data[index]?.position === "좌측상단"
         ? 0
-        : data[index]?.position === "우측상단"
-        ? "93.5%"
-        : "50%",
+        : data[index]?.position === "중앙" && "50%",
     top:
       rePosition?.length !== 1
         ? Number(rePosition?.[1])
         : data[index]?.position === "좌측상단"
         ? 0
         : data[index]?.position === "우측상단"
-        ? "23%"
+        ? 0
         : "50%",
   };
 
   return (
     <Modal open={modal[index] === "popup"} onClose={() => closeModal(index)}>
-      <Box>
-        <Column alignItems={"center"} justifyContent={"between"} sx={style}>
+      <Box
+        sx={style}
+        tabIndex={"none"}
+        componentsProps={{
+          tabIndex: "none",
+        }}
+      >
+        <Column
+          alignItems={"center"}
+          justifyContent={"between"}
+          sx={{ position: "relative", height: "100%" }}
+        >
           <div dangerouslySetInnerHTML={{ __html: data[index]?.content }}></div>
 
           <Row
             justifyContent={"between"}
             alignItems={"center"}
             sx={{
-              position: "fixed",
               bottom: 0,
               width: "100%",
               height: 27,
@@ -99,7 +100,24 @@ export default function Popup({ index }) {
             }}
           >
             <Row alignItems={"center"} sx={{ gap: 1 }}>
-              <CheckBox color="gray" />
+              <Checkbox
+                color="white"
+                icon={
+                  <Image
+                    src="/checkbox_white.png"
+                    width={22}
+                    height={22}
+                    alt=""
+                  />
+                }
+                onClick={() => {
+                  setCookie(
+                    ["popup"],
+                    [...getCookie(["popup"]), data[index]?.pk],
+                    { maxAge: 43200 }
+                  );
+                }}
+              />
               <Typography variant="h5" color="primary.white">
                 하루동안 열지않기
               </Typography>
