@@ -78,9 +78,13 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                 );
               })}
               {allocation_total?.map((location, key) => (
-                <TableCell key={key} align="center">
+                <TableCell
+                  key={key}
+                  align="center"
+                  sx={{ whiteSpace: "nowrap" }}
+                >
                   {location?.db.title}
-                  <Column>{location?.count}</Column>
+                  <Typography variant="h5">{location?.count}</Typography>
                 </TableCell>
               ))}
             </TableRow>
@@ -89,7 +93,15 @@ export default function UserTable({ data, allocation_total, getUsers }) {
           <TableBody>
             {data?.map((user, key) => {
               return (
-                <TableRow key={key}>
+                <TableRow
+                  key={key}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      background: "#F0EFEF",
+                    },
+                  }}
+                >
                   <TableCell
                     align="center"
                     sx={{ fontWeight: 500 }}

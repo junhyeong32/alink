@@ -1,5 +1,4 @@
 export const dbHeaderList = [
-  "",
   "번호",
   "지역",
   "인수상태",

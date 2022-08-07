@@ -33,7 +33,6 @@ export default function Layout({ loading, children }) {
   const [rank, setRank] = useState(cookies?.user_info?.grade);
   const [showChild, setShowChild] = useState(false);
   const { user, getUser } = useGetUser();
-  console.log(user);
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });

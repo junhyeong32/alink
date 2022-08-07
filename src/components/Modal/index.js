@@ -5,6 +5,7 @@ import Result from "./dna/Result";
 // import Area from "./setting/AreaModal";
 import Change from "./bojang/ChangeOrg";
 import Division from "./Division";
+import Popup from "./Popup";
 
 import { useContext } from "react";
 
@@ -32,6 +33,8 @@ export default function Modal() {
       return <Division key={index} index={index} />;
     } else if (data === "needconfirm") {
       return <NeedConfirm key={index} index={index} />;
+    } else if (data === "popup") {
+      return <Popup key={index} index={index} />;
     } else {
       return;
     }

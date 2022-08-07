@@ -35,65 +35,21 @@ const style = {
   p: 2.7,
 };
 
-export default function ReadFile() {
+export default function ReadFile({ index }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [loading, setLoading] = useState(false);
   const [confirmLoading, setConfrmLoading] = useState(false);
   const [cookies] = useCookies();
 
-  const { visible, closeModal, modalContent } = useContext(ModalContext);
+  const { modal, closeModal, modalContent } = useContext(ModalContext);
   const { contents } = modalContent;
 
-  // useEffect(async () => {
-  //   if (!action) return;
-  //   const res = (
-  //     await Axios.Get(`document`, {
-  //       params: {
-  //         platform: "web",
-  //         token: cookies.access_token,
-  //         document_code: new_data ? new_data?.code : modal_props.code,
-  //         action: action,
-  //         page: modal_props?.params.page,
-  //         count: modal_props?.params.count,
-  //         type:
-  //           modal_props?.params.type === "전체"
-  //             ? undefined
-  //             : modal_props?.params.type,
-  //         contractor_name: modal_props?.params.contractor_name,
-  //         user_name_or_code: modal_props?.params.user_name_or_code,
-  //         stock_number: modal_props?.params.stock_number,
-  //         subscription_number: modal_props?.params.subscription_number,
-  //         created_date_range:
-  //           modal_props?.params.created_date_range[0] === null
-  //             ? undefined
-  //             : modal_props?.params.created_date_range,
-  //         contract_date_range:
-  //           modal_props?.params.contract_date_range[0] === null
-  //             ? undefined
-  //             : modal_props?.params.contract_date_range,
-  //         status:
-  //           modal_props?.params.status === "전체"
-  //             ? undefined
-  //             : modal_props?.params.status,
-  //       },
-  //     })
-  //   )?.data;
-
-  //   if (res?.data) {
-  //     setNewData(res?.data.result[0]);
-  //     setAction();
-  //     // setSlideIndex(2);
-  //   } else {
-  //     enqueueSnackbar(res?.message, {
-  //       variant: "error",
-  //       autoHideDuration: 2000,
-  //     });
-  //   }
-  // }, [document_code, action]);
-
   return (
-    <Modal open={visible} onClose={closeModal}>
+    <Modal
+      open={modal[index] === "readFile" ? true : false}
+      onClose={closeModal}
+    >
       <Box>
         <Column alignItems={"center"} justifyContent={"center"} sx={style}>
           <Row justifyContent={"end"} sx={{ width: "100%", cursor: "pointer" }}>

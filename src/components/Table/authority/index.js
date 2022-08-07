@@ -79,7 +79,15 @@ export default function AuthorityTable({ data, checkList, setCheckList }) {
           {console.log(checkList)}
           <TableBody>
             {data?.map((list, key) => (
-              <TableRow key={key}>
+              <TableRow
+                key={key}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    background: "#F0EFEF",
+                  },
+                }}
+              >
                 <TableCell align="center">
                   <CustomCheckBox
                     checked={checkList.indexOf(list?.pk) !== -1 ? true : false}

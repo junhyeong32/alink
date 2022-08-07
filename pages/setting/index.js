@@ -7,21 +7,47 @@ import Button from "../../src/components/Button";
 import MenuTable from "../../src/components/Table/setting/menu";
 import PopupTable from "../../src/components/Table/setting/popup";
 import useGetMenus from "../../src/hooks/setting/useGetMenus";
+import { Pagination } from "@mui/material";
+import { useEffect } from "react";
+import { useTransition } from "react";
+import Axios from "../../src/utility/api";
+import { getAccessToken } from "../../src/utility/getCookie";
 
-export default function Dna() {
+export default function Setting() {
   const router = useRouter();
-  console.log(router);
   const [menu, setMenu] = useState(router.query.menu || "popup");
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
-  const [excel, setExcel] = useState("");
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(20);
+  const [totalCouunt, setTotalCount] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [list, setList] = useState([]);
 
-  const { menus, getMenus } = useGetMenus();
+  const getMenuByList = async () => {
+    const res = (
+      await Axios.Get(menu === "popup" ? "popup" : "db/menu", {
+        params: {
+          token: getAccessToken(),
+          page: page,
+        },
+      })
+    )?.data;
+    console.log(res);
+    if (res?.code === 200) {
+      setList(res?.data?.result || res?.data);
+      setTotalCount(Math.ceil(res?.data.total_count / 20));
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    getMenuByList();
+  }, [menu]);
+
+  console.log(menu, list);
 
   return (
-    <Layout>
+    <Layout loading={loading}>
       <Column>
         <Row alignItems={"end"} sx={{ gap: "11px" }}>
           <Button
@@ -49,7 +75,7 @@ export default function Dna() {
             color="primary.white"
             fs="h6"
             w={100}
-            h={20}
+            h={28}
             action={() =>
               menu === "popup"
                 ? router.push("setting/popup")
@@ -57,11 +83,26 @@ export default function Dna() {
             }
           />
           {menu === "popup" ? (
-            <PopupTable />
+            <PopupTable data={list} getList={getMenuByList} />
           ) : (
-            <MenuTable data={menus} getMenus={getMenus} />
+            <MenuTable data={list} getMenus={getMenuByList} />
           )}
         </Column>
+        <Row
+          alignItems="center"
+          justifyContent="center"
+          sx={{ width: "100%", mt: "86px", pb: 4 }}
+        >
+          <Pagination
+            component="div"
+            page={page}
+            count={totalCouunt}
+            onChange={(subject, newPage) => {
+              setPage(newPage);
+            }}
+            color="primary"
+          />
+        </Row>
       </Column>
     </Layout>
   );

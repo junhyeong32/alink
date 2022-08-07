@@ -128,8 +128,6 @@ export default memo(function User() {
     setCoopMenuItems(result);
   }, [sales]);
 
-  
-
   useEffect(() => {
     if (head_office_org_code === "전체") return;
     const org = {};
@@ -381,14 +379,27 @@ export default memo(function User() {
             justifyContent={"between"}
             sx={{ mb: "15px" }}
           >
-            <Button
-              text="신규 아이디 생성"
-              bgColor={"skyblue"}
-              fs={"h6"}
-              color="primary.white"
-              h={20}
-              action={() => router.push("user/new-id")}
-            />
+            {rank === "관리자" && (
+              <Button
+                text="신규 아이디 생성"
+                bgColor={"skyblue"}
+                fs={"h6"}
+                color="primary.white"
+                h={28}
+                action={() => router.push("user/new-id")}
+              />
+            )}
+
+            {rank === "부관리자" && (
+              <Button
+                text="DB수량 초기화"
+                bgColor={"skyblue"}
+                fs={"h6"}
+                color="primary.white"
+                h={28}
+                action={() => router.push("user/new-id")}
+              />
+            )}
 
             <ExcelButton action={() => setExcel("1")} />
           </Row>

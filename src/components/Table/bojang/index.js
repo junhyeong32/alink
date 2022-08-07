@@ -17,6 +17,7 @@ import Row from "../../Box/Row";
 import MemoBox from "../../Box/Memo";
 import { useRouter } from "next/router";
 import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
+import { useEffect } from "react";
 
 const Root = styled("div")`
   table {
@@ -45,7 +46,21 @@ const Root = styled("div")`
 
 export default function BojangTable({ openModal, closeModal, header, data }) {
   const router = useRouter();
-  console.log("header, data", header, data);
+  const [tableData, setTableData] = useState([]);
+  const [fileData, setfileData] = useState([]);
+  // useEffect(() => {
+  //   if (data?.length === 0) return;
+
+  //   setTableData((prev) => {
+  //     const newData = [...prev];
+  //     data?.values?.filter((val) => {
+  //       header?fields[0].map((head) => head)
+  //     });
+
+  //     return newData;
+  //   });
+  // }, [data]);
+  console.log("header", header);
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -151,18 +166,15 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
                 </TableCell>
 
                 {d?.values?.map((val) =>
-                  header?.fields?.map((head) => {
+                  header?.fields?.map((head, _key) => {
                     if (
                       head?.is_list_shown === 1 &&
                       head?.pk === val?.field_pk
                     ) {
                       if (val?.title === "녹취 파일") {
                         return (
-                          <Image
-                            src={"/recording.png"}
-                            width={18.75}
-                            height={22.92}
-                            alt=""
+                          <TableCell
+                            align="center"
                             onClick={() =>
                               openModal({
                                 modal: "readFile",
@@ -171,15 +183,19 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
                                 },
                               })
                             }
-                          />
+                          >
+                            <Image
+                              src={"/recording.png"}
+                              width={18.75}
+                              height={22.92}
+                              alt=""
+                            />
+                          </TableCell>
                         );
                       } else if (val?.title === "메모") {
                         return (
-                          <Image
-                            src={"/memo.png"}
-                            width={25}
-                            height={25}
-                            alt="memo"
+                          <TableCell
+                            align="center"
                             onClick={() =>
                               openModal({
                                 modal: "readFile",
@@ -188,24 +204,35 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
                                 },
                               })
                             }
-                          />
+                          >
+                            <Image
+                              src={"/memo.png"}
+                              width={25}
+                              height={25}
+                              alt="memo"
+                            />
+                          </TableCell>
                         );
                       } else if (val?.title === "결과지 파일") {
                         return (
-                          <Image
-                            src={"/dna.png"}
-                            width={12}
-                            height={25}
-                            alt="result"
+                          <TableCell
+                            align="center"
                             onClick={() =>
                               openModal({
-                                modal: "result",
+                                modal: "readFile",
                                 content: {
-                                  contents: "hi",
+                                  contents: <MemoBox />,
                                 },
                               })
                             }
-                          />
+                          >
+                            <Image
+                              src={"/dna.png"}
+                              width={12}
+                              height={25}
+                              alt="result"
+                            />
+                          </TableCell>
                         );
                       } else {
                         return (

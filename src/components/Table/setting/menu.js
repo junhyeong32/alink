@@ -72,14 +72,23 @@ export default function MenuTable({ data, getMenus }) {
           <TableBody>
             {data?.map((list, key) => {
               return (
-                <TableRow align="center" key={key}>
+                <TableRow
+                  align="center"
+                  key={key}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      background: "#F0EFEF",
+                    },
+                  }}
+                >
                   <TableCell align="center">
-                    {list?.organizations.map((org) => org.name).join(", ")}
+                    {list?.organizations?.map((org) => org.name).join(", ")}
                   </TableCell>
                   <TableCell align="center">{list?.title}</TableCell>
                   <TableCell align="center">
                     {list?.cooperation_organizations
-                      .map((cop) => cop.name)
+                      ?.map((cop) => cop.name)
                       .join(", ")}
                   </TableCell>
                   <TableCell align="center">

@@ -36,6 +36,7 @@ export default function Menu() {
   const [db_fields, setDbFields] = useState();
   const [geomap, setGeoMap] = useState();
   const [cooperationMenuList, setCooperationMenuList] = useState("");
+  const [coop_list, setCoopList] = useState([]);
 
   const [file_name, setFileName] = useState("");
 
@@ -56,11 +57,11 @@ export default function Menu() {
       organization_codes: org_list.join(","),
       title: title,
       is_cooperated: is_cooperated,
-      cooperation_organization_codes: cooperation_organization || undefined, //협력사 조직코드 (,)로 구분
+      cooperation_organization_codes: coop_list.join(",") || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
       geomap: area,
-      fields: db_fields || menu_detail?.fields,
+      fields: db_fields,
     });
     if (res?.code === 200) {
       enqueueSnackbar("DB생성이 완료되었습니다.", {
@@ -77,7 +78,7 @@ export default function Menu() {
         Object.assign(
           {},
           {
-            ...field,
+            pk: field?.pk,
             is_detail_shown: 0,
             is_filter_shown: 0,
             is_list_shown: 0,
@@ -101,8 +102,33 @@ export default function Menu() {
   }, [org_pending]);
 
   useEffect(() => {
-    if (organization) setOrgList((prev) => [...prev, organization]);
+    if (organization)
+      setOrgList((prev) => {
+        const newOrg = [...prev];
+
+        const foundIndex = newOrg.indexOf(organization);
+
+        if (foundIndex !== -1) return newOrg;
+        newOrg.push(organization);
+
+        return newOrg;
+      });
   }, [organization]);
+
+  useEffect(() => {
+    if (cooperation_organization) {
+      setCoopList((prev) => {
+        const newCoop = [...prev];
+
+        const foundIndex = newCoop.indexOf(cooperation_organization);
+
+        if (foundIndex !== -1) return newCoop;
+        newCoop.push(cooperation_organization);
+
+        return newCoop;
+      });
+    }
+  }, [cooperation_organization]);
 
   if (isPending) return <div>loading</div>;
 
@@ -122,13 +148,15 @@ export default function Menu() {
               menuItems={menuItems}
             />
           </RowLabel>
-          <Column
+          <Row
+            justifyContent={"start"}
+            alignItems={"start"}
             wrap={"wrap"}
             sx={{
               p: 1,
               gap: 1,
               width: "100%",
-              height: "85px",
+              minHeight: "85px",
               border: "3px solid #909090",
               borderRadius: "5px",
             }}
@@ -155,7 +183,7 @@ export default function Menu() {
                 />
               </Row>
             ))}
-          </Column>
+          </Row>
           <RowLabel label="협력사" label_w={68}>
             <FormControlLabel
               label="유"
@@ -184,6 +212,44 @@ export default function Menu() {
               }
             />
           </RowLabel>
+          {is_cooperated === 1 && (
+            <Row
+              justifyContent={"start"}
+              alignItems={"start"}
+              wrap={"wrap"}
+              sx={{
+                p: 1,
+                gap: 1,
+                width: "100%",
+                minHeight: "85px",
+                border: "3px solid #909090",
+                borderRadius: "5px",
+              }}
+            >
+              {coop_list?.map((org, key) => (
+                <Row key={key} alignItems={"center"} sx={{ gap: 1 }}>
+                  <Typography variant="h6">
+                    {cooperationMenuList[org]}
+                  </Typography>
+                  <Image
+                    src="/cancel.png"
+                    width={15}
+                    height={15}
+                    alt="x"
+                    layout="fixed"
+                    style={{ marginTop: "3px", cursor: "pointer" }}
+                    onClick={() =>
+                      setCoopList((prev) => {
+                        const new_arr = [...prev];
+                        new_arr.splice(key, 1);
+                        return new_arr;
+                      })
+                    }
+                  />
+                </Row>
+              ))}
+            </Row>
+          )}
           <RowLabel label="샘플 업로드" label_w={68}>
             <OutLineInput w={231} value={file_name} disabled />
             <label htmlFor="contained-button-file">
