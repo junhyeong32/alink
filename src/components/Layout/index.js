@@ -233,27 +233,19 @@ export default function Layout({ loading, children }) {
               })}
               {menus?.map((d, key) => {
                 if (d?.is_activated === 0) return;
-                console.log(
-                  rank === "관리자" ||
-                    ((rank === "협력사" || rank === "부협력사") &&
-                      d?.cooperation_organizations.findIndex(
-                        (org) => org?.code === d?.head_office
-                      )) ||
-                    ((rank !== "협력사" || rank !== "부협력사") &&
-                      d?.organizations.findIndex(
-                        (org) => org?.code === user_info?.head_office
-                      ))
+                d?.organizations.findIndex((org) =>
+                  console.log(org?.name, user_info?.head_office)
                 );
                 if (
                   rank === "관리자" ||
                   ((rank === "협력사" || rank === "부협력사") &&
                     d?.cooperation_organizations.findIndex(
-                      (org) => org?.code === d?.head_office
-                    )) !== -1 ||
+                      (org) => org?.name === user_info?.head_office
+                    ) !== -1) ||
                   ((rank !== "협력사" || rank !== "부협력사") &&
                     d?.organizations.findIndex(
-                      (org) => org?.code === user_info?.head_office
-                    )) !== -1
+                      (org) => org?.name === user_info?.head_office
+                    ) !== -1)
                 )
                   return (
                     <Row justifyContent={"between"} key={key}>
