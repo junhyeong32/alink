@@ -22,11 +22,15 @@ import useGetArea from "../../src/hooks/setting/useGetArea";
 import Axios from "../../src/utility/api";
 import { getAccessToken } from "../../src/utility/getCookie";
 import { useSnackbar } from "notistack";
+import { getCookie } from "../../src/utility/getCookie";
+import useGetMenus from "../../src/hooks/setting/useGetMenus";
 
 export default function DBApply() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [org_name, setOrgName] = useState("");
+  const [user_info] = useState(getCookie("user_info"));
+
   const [org_code, setOrgCode] = useState("");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -46,6 +50,20 @@ export default function DBApply() {
   const { user, isUserPending, getUser } = useGetUser();
   const { area } = useGetArea();
   console.log(user);
+
+  useEffect(() => {
+    const a = async () => {
+      const res = await Axios.Get("db/list", {
+        params: {
+          token: getAccessToken(),
+          head_office_org_code: user_info?.head_office,
+        },
+      });
+      console.log(res?.data);
+    };
+
+    a();
+  }, []);
 
   useEffect(() => {
     const { id, status, pk, grade, name, phone, db } = user;
@@ -82,11 +100,11 @@ export default function DBApply() {
     setPk(pk);
   }, [isUserPending]);
 
-  console.log("user", user);
-
   //TODO
   // 모달창
   // 디비 수량 신청 및 지역 설정
+
+  console.log(user);
 
   return (
     <Layout>

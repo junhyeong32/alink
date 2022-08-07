@@ -22,18 +22,18 @@ export default function DbStatus() {
   const [headquarters, setHeadquarters] = useState("");
   const [branch, setBranch] = useState("");
   const [date, setDate] = useState("");
+  const [status_list, setStatusList] = useState([]);
 
   const { user } = getUser();
 
   useEffect(() => {
-    const getDbApplyStatus = async () => {
-      const res = (await Axios.Get(`user/db/count?token=${getAccessToken()}`))
+    const a = async () => {
+      const res = (await Axios.Get(`user/db/history?token=${getAccessToken()}`))
         ?.data;
-
-      console.log(res);
+      if (res?.code === 200) setStatusList(res?.data?.result);
     };
 
-    getDbApplyStatus();
+    a();
   }, []);
 
   return (
@@ -42,7 +42,7 @@ export default function DbStatus() {
         <Typography variant="h1" sx={{ mb: 6 }}>
           DB 신청현황
         </Typography>
-        <DbApplyStatusTable data={user} />
+        <DbApplyStatusTable data={status_list} />
       </Column>
     </Layout>
   );

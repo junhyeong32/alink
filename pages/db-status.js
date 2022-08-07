@@ -28,7 +28,9 @@ export default function DbStatus() {
 
   useEffect(() => {
     const a = async () => {
-      const res = await Axios.Get(`user/db/count?token=${getAccessToken()}`);
+      const res = await Axios.Get(
+        `user/db/history?token=${getAccessToken()}?type=new`
+      );
       console.log(res);
     };
 
