@@ -19,6 +19,8 @@ import UnderLineSelectInput from "../../Input/Select";
 import { ModalContext } from "../../../contexts/ModalContext";
 import Row from "../../Box/Row";
 import { setCookie, getCookie } from "../../../utility/getCookie";
+import "react-quill/dist/quill.snow.css";
+import Editor from "../../Editor";
 
 export default function Popup({ index }) {
   const {
@@ -75,6 +77,8 @@ export default function Popup({ index }) {
         : "50%",
   };
 
+  console.log(data[index]?.content);
+
   return (
     <Modal open={modal[index] === "popup"} onClose={() => closeModal(index)}>
       <Box
@@ -89,7 +93,7 @@ export default function Popup({ index }) {
           justifyContent={"between"}
           sx={{ position: "relative", height: "100%" }}
         >
-          <div dangerouslySetInnerHTML={{ __html: data[index]?.content }}></div>
+          <Editor value={data[index]?.content} readOnly theme={"bubble"} />
 
           <Row
             justifyContent={"between"}

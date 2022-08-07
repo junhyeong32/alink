@@ -45,7 +45,7 @@ export default function Popup() {
   const [content, setContent] = useState("");
   const [pk, setPk] = useState("");
 
-  const [org_code, setOrgCode] = useState("");
+  const [org_code, setOrgCode] = useState("전체");
 
   const [popup_detail, setPopupDeail] = useState([]);
   const [isPending, startTransition] = useTransition();
@@ -81,11 +81,10 @@ export default function Popup() {
 
         const resize = size.split("/");
         const rePostion = position.split("/");
-        console.log(rePostion);
 
         setActivate(activate);
         setContent(content);
-        setOrgCode(orgMenuList[organization_name]);
+        setOrgCode(organization_name);
         setPosition(rePostion?.length === 1 ? position : "custom");
         setSize(resize?.length === 1 ? size : "custom");
         setWidth(resize.length === 1 ? "" : resize?.[0]);
@@ -97,6 +96,16 @@ export default function Popup() {
         setPk(pk);
       });
   };
+
+  useEffect(() => {
+    if (sales.length === 0) return;
+    const findOrg = Object.keys(orgMenuList).find(
+      (key) => orgMenuList[key] === org_code
+    );
+    console.log("findOrgIndex", findOrg);
+
+    setOrgCode(findOrg);
+  }, [orgMenuList]);
 
   useEffect(() => {
     getPopupDetail();
