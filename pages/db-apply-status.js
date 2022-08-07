@@ -2,7 +2,7 @@ import Layout from "../src/components/Layout";
 import Column from "../src/components/Box/Column";
 import Row from "../src/components/Box/Row";
 import { Container, Typography, Select, MenuItem } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReceptionStatusTable from "../src/components/Table/data-status/ReceptionStatusTable";
 import {
   select_title,
@@ -14,6 +14,8 @@ import { OutLineSelectInput } from "../src/components/Input/Select";
 import Button from "../src/components/Button";
 import DbApplyStatusTable from "../src/components/Table/db-apply-status";
 import getUser from "../src/hooks/user/useGetUser";
+import { getAccessToken } from "../src/utility/getCookie";
+import Axios from "../src/utility/api";
 
 export default function DbStatus() {
   const [area, setArea] = useState("");
@@ -22,6 +24,17 @@ export default function DbStatus() {
   const [date, setDate] = useState("");
 
   const { user } = getUser();
+
+  useEffect(() => {
+    const getDbApplyStatus = async () => {
+      const res = (await Axios.Get(`user/db/count?token=${getAccessToken()}`))
+        ?.data;
+
+      console.log(res);
+    };
+
+    getDbApplyStatus();
+  }, []);
 
   return (
     <Layout>

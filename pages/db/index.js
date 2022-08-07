@@ -475,22 +475,24 @@ export default function Db() {
             sx={{ mb: "10px" }}
           >
             <Row sx={{ gap: "5px" }}>
-              <Button
-                text="조직변경"
-                color="primary.white"
-                fs="h6"
-                w={90}
-                h={28}
-                action={() =>
-                  openModal({
-                    modal: "change",
-                    content: {
-                      contents: "자동분배를 진행하시겠습니까?",
-                      data: {},
-                    },
-                  })
-                }
-              />
+              {rank !== "협력사" && (
+                <Button
+                  text="조직변경"
+                  color="primary.white"
+                  fs="h6"
+                  w={90}
+                  h={28}
+                  action={() =>
+                    openModal({
+                      modal: "change",
+                      content: {
+                        contents: "자동분배를 진행하시겠습니까?",
+                        data: {},
+                      },
+                    })
+                  }
+                />
+              )}
               {(rank === "관리자" ||
                 rank === "협력사" ||
                 rank === "부협력사") && (
@@ -515,21 +517,23 @@ export default function Db() {
                     h={28}
                     action={() => router.push("/new-db")}
                   />
-                  <Button
-                    text="DB 자동분배"
-                    color="primary.white"
-                    fs="h6"
-                    w={90}
-                    h={28}
-                    action={() =>
-                      openModal({
-                        modal: "needConfirm",
-                        content: {
-                          contents: "자동분배를 진행하시겠습니까?",
-                        },
-                      })
-                    }
-                  />
+                  {rank !== "협력사" && (
+                    <Button
+                      text="DB 자동분배"
+                      color="primary.white"
+                      fs="h6"
+                      w={90}
+                      h={28}
+                      action={() =>
+                        openModal({
+                          modal: "needConfirm",
+                          content: {
+                            contents: "자동분배를 진행하시겠습니까?",
+                          },
+                        })
+                      }
+                    />
+                  )}
                 </>
               )}
             </Row>

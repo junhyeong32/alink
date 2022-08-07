@@ -21,9 +21,11 @@ import useGetUser from "../../src/hooks/user/useGetUser";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 import Axios from "../../src/utility/api";
 import { getAccessToken } from "../../src/utility/getCookie";
+import { useSnackbar } from "notistack";
 
 export default function DBApply() {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [org_name, setOrgName] = useState("");
   const [org_code, setOrgCode] = useState("");
   const [id, setId] = useState("");
@@ -41,7 +43,7 @@ export default function DBApply() {
   const [head_office_code, setHeadOfficeCode] = useState("");
   const [pk, setPk] = useState("");
 
-  const { user, isUserPending } = useGetUser();
+  const { user, isUserPending, getUser } = useGetUser();
   const { area } = useGetArea();
   console.log(user);
 
@@ -80,6 +82,8 @@ export default function DBApply() {
     setPk(pk);
   }, [isUserPending]);
 
+  console.log("user", user);
+
   //TODO
   // 모달창
   // 디비 수량 신청 및 지역 설정
@@ -87,22 +91,14 @@ export default function DBApply() {
   return (
     <Layout>
       <Column>
-        <Typography variant="h1">인수상태</Typography>
-        <Row justifyContent={"between"}>
-          <Typography variant="h6" sx={{ color: "#3532C7" }}>
-            월 DB 지원 대상자입니다.
-          </Typography>
-          <Button
-            variant="contained"
-            bgColor="primary"
-            text="담당 지역 변경"
-            color="primary.white"
-            fs="h6"
-            h={25}
-          />
-        </Row>
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Typography variant="h1">DB 신청</Typography>
+          <Row justifyContent={"between"} alignItems={"center"} sc={{ mb: 2 }}>
+            <Typography variant="h5" sx={{ color: "#3532C7" }}>
+              {user?.acfp > 300000 && new Date().getMonth() + 1}월 DB 지원
+              대상자입니다.
+            </Typography>
+          </Row>
           {db?.map((d, key) => (
             <Column key={key}>
               <RowLabel label={d?.title} fs="h4" label_w={83} sx={{ gap: 10 }}>
@@ -110,7 +106,7 @@ export default function DBApply() {
                   <OutLineInput
                     disabled={status === "퇴사자"}
                     w={90}
-                    defaultValue={d?.allocation?.count}
+                    defaultValue={0}
                     onBlur={(e) =>
                       setChangeDb((prev) => {
                         const newData = [...prev];
@@ -204,10 +200,17 @@ export default function DBApply() {
             w={160}
             h={30}
             action={async () => {
-              const res = Axios.Post("user/db/count", {
+              const res = await Axios.Post("user/db/count", {
                 token: getAccessToken(),
                 db: changeDb,
               });
+
+              if (res?.code === 200)
+                enqueueSnackbar("db가 신청되었습니다.", {
+                  variant: "success",
+                  autoHideDuration: 2000,
+                });
+              getUser();
             }}
           />
         </Row>

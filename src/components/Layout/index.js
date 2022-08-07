@@ -36,7 +36,7 @@ export default function Layout({ loading, children }) {
 
   console.log(user_info);
   const [showChild, setShowChild] = useState(false);
-  const { menus } = useGetMenus();
+  const { menus, isPending } = useGetMenus();
   console.log(menus);
 
   const logout = () => {
@@ -44,6 +44,17 @@ export default function Layout({ loading, children }) {
     removeCookie("user_info", { path: "/" });
     router.replace("/login");
   };
+
+  // const getDbList = async() => {
+  //   const res = await Axios.Get("db/list",{
+  //     params:{
+  //       token:getAccessToken(),
+  //     }
+
+  //   })
+  // }
+
+  console.log(user_info, rank);
 
   useEffect(() => {
     setShowChild(true);
@@ -56,6 +67,19 @@ export default function Layout({ loading, children }) {
   if (typeof window === "undefined") {
     return <></>;
   }
+
+  if (menus?.length === 0)
+    return (
+      <Row
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+          height: "100vh",
+        }}
+      >
+        <CircularProgress size="60px" thickness={5} color="primary" />
+      </Row>
+    );
 
   return (
     <>
@@ -209,16 +233,27 @@ export default function Layout({ loading, children }) {
               })}
               {menus?.map((d, key) => {
                 if (d?.is_activated === 0) return;
+                console.log(
+                  rank === "관리자" ||
+                    ((rank === "협력사" || rank === "부협력사") &&
+                      d?.cooperation_organizations.findIndex(
+                        (org) => org?.code === d?.head_office
+                      )) ||
+                    ((rank !== "협력사" || rank !== "부협력사") &&
+                      d?.organizations.findIndex(
+                        (org) => org?.code === user_info?.head_office
+                      ))
+                );
                 if (
                   rank === "관리자" ||
                   ((rank === "협력사" || rank === "부협력사") &&
                     d?.cooperation_organizations.findIndex(
                       (org) => org?.code === d?.head_office
-                    )) ||
+                    )) !== -1 ||
                   ((rank !== "협력사" || rank !== "부협력사") &&
                     d?.organizations.findIndex(
-                      (org) => org?.code === d?.head_office
-                    ))
+                      (org) => org?.code === user_info?.head_office
+                    )) !== -1
                 )
                   return (
                     <Row justifyContent={"between"} key={key}>
