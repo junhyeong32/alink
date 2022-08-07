@@ -97,6 +97,10 @@ export default function PopupTable({ data, getList }) {
                         openModal({
                           modal: "popup",
                           data: list,
+                          content: {
+                            action: "preview",
+                            setCookieAction: "preview",
+                          },
                         })
                       }
                     />

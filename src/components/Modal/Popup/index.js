@@ -29,7 +29,7 @@ export default function Popup({ index }) {
     modalContent,
   } = useContext(ModalContext);
 
-  const { action, setCookieAction, key } = modalContent[index];
+  const { action, setCookieAction } = modalContent[index];
   const [_cookieAction, _setCookieAction] = useState(false);
 
   const reSize = data[index]?.size?.split("/");
@@ -114,16 +114,17 @@ export default function Popup({ index }) {
                   />
                 }
                 onClick={() => {
-                  action((prev) => {
-                    const newCookie = [...prev];
-                    console.log(newCookie);
+                  typeof action === "function" &&
+                    action((prev) => {
+                      const newCookie = [...prev];
+                      console.log(newCookie);
 
-                    const foundIndex = newCookie.indexOf(data[index]?.pk);
-                    console.log(foundIndex);
-                    if (foundIndex === -1) newCookie.push(data[index]?.pk);
+                      const foundIndex = newCookie.indexOf(data[index]?.pk);
+                      console.log(foundIndex);
+                      if (foundIndex === -1) newCookie.push(data[index]?.pk);
 
-                    return newCookie;
-                  });
+                      return newCookie;
+                    });
                 }}
               />
               <Typography variant="h5" color="primary.white">
@@ -138,7 +139,9 @@ export default function Popup({ index }) {
               alt=""
               className="cursor"
               onClick={() => {
-                index === 0 && setCookieAction(!_cookieAction);
+                index === 0 &&
+                  typeof setCookieAction === "function" &&
+                  setCookieAction(!_cookieAction);
                 closeModal();
               }}
             />
