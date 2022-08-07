@@ -35,8 +35,10 @@ export default function MenuBox({ img_src, w, text, link, textWidth }) {
         color="primary.white"
         sx={{
           borderBottom:
-            (link === router.asPath ||
-              link === `/${router.pathname.split("/")[1]}`) &&
+            (`/${router.pathname.split("/")[1]}` === "/db"
+              ? link.split("menu=")[1] === router.query.menu
+              : link === router.asPath ||
+                link === `/${router.pathname.split("/")[1]}`) &&
             "2px solid white",
           pb: "2px",
           whiteSpace: "break-spaces",
