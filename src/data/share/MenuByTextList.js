@@ -19,7 +19,7 @@ export const rank_list = {
 export const argument_status = {
   전체: "#909090",
   부재: "#ACC000",
-  "TA 거절": "#6FBC00",
+  TA거절: "#6FBC00",
   상담중: "#00B361",
   "가입불가(AS신청)": "#00B2C7",
   상담완료: "#00A0EB",

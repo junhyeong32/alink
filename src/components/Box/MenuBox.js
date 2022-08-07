@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 export default function MenuBox({ img_src, w, text, link, textWidth }) {
   const router = useRouter();
+  console.log(router.pathname.split("/"));
   return (
     <Button
       onClick={() => router.push(link)}
@@ -33,7 +34,10 @@ export default function MenuBox({ img_src, w, text, link, textWidth }) {
         variant="h4"
         color="primary.white"
         sx={{
-          borderBottom: link === router.asPath && "2px solid white",
+          borderBottom:
+            (link === router.asPath ||
+              link === `/${router.pathname.split("/")[1]}`) &&
+            "2px solid white",
           pb: "2px",
           whiteSpace: "break-spaces",
           textAlign: "start",
