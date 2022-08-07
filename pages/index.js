@@ -1,12 +1,21 @@
 import Layout from "../src/components/Layout";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { ModalContext } from "../src/contexts/ModalContext";
 import Axios from "../src/utility/api";
-import { getAccessToken, getCookie } from "../src/utility/getCookie";
+import {
+  getAccessToken,
+  getCookie,
+  setCookie,
+  rem,
+  removeCookie,
+} from "../src/utility/getCookie";
 
 export default function Home({ getCookies }) {
   const router = useRouter();
+  const [cookie_list, setCookieList] = useState([]);
+  const [cookieAction, setCookieAction] = useState(false);
+  console.log(cookie_list);
   useEffect(() => {
     !getCookies && router.replace("/login");
   }, []);
@@ -26,7 +35,7 @@ export default function Home({ getCookies }) {
       // TODO
       // 팝업 기간 설정
       res?.data?.result?.map(
-        (popup) =>
+        (popup, key) =>
           popup.activate === "활성화(매일)" &&
           (!getCookie(["popup"])
             ? true
@@ -34,6 +43,11 @@ export default function Home({ getCookies }) {
           openModal({
             modal: "popup",
             data: popup,
+            content: {
+              action: setCookieList,
+              setCookieAction: setCookieAction,
+              key: key,
+            },
           })
       );
     }
@@ -42,6 +56,16 @@ export default function Home({ getCookies }) {
   useEffect(() => {
     getPopupList();
   }, []);
+
+  useEffect(() => {
+    console.log("start");
+    if (cookie_list.length === 0) return;
+    setCookie(["popup"], cookie_list, {
+      maxAge: 436000,
+    });
+  }, [cookieAction]);
+
+  console.log(cookie_list, "cookie_list", getCookie(["popup"]));
 
   return <Layout />;
 }

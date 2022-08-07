@@ -29,6 +29,9 @@ export default function Popup({ index }) {
     modalContent,
   } = useContext(ModalContext);
 
+  const { action, setCookieAction, key } = modalContent[index];
+  const [_cookieAction, _setCookieAction] = useState(false);
+
   const reSize = data[index]?.size?.split("/");
   const rePosition = data[index]?.position?.split("/");
 
@@ -111,11 +114,16 @@ export default function Popup({ index }) {
                   />
                 }
                 onClick={() => {
-                  setCookie(
-                    ["popup"],
-                    [...getCookie(["popup"]), data[index]?.pk],
-                    { maxAge: 43200 }
-                  );
+                  action((prev) => {
+                    const newCookie = [...prev];
+                    console.log(newCookie);
+
+                    const foundIndex = newCookie.indexOf(data[index]?.pk);
+                    console.log(foundIndex);
+                    if (foundIndex === -1) newCookie.push(data[index]?.pk);
+
+                    return newCookie;
+                  });
                 }}
               />
               <Typography variant="h5" color="primary.white">
@@ -129,7 +137,10 @@ export default function Popup({ index }) {
               height={20}
               alt=""
               className="cursor"
-              onClick={closeModal}
+              onClick={() => {
+                index === 0 && setCookieAction(!_cookieAction);
+                closeModal();
+              }}
             />
           </Row>
         </Column>
