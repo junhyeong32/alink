@@ -264,6 +264,29 @@ export default function Db() {
     setInit(false);
   }, [init]);
 
+  // console.log(
+  //   "https://alinkapi.afg.kr/api/v1/db/list?" +
+  //     Object.entries({
+  //       token: getAccessToken(),
+  //       page: page,
+  //       count: count,
+  //       head_office_org_code:
+  //         head_office_org_code === "전체" ? undefined : head_office_org_code,
+  //       org_code: org_code === "전체" ? undefined : org_code,
+  //       status: status,
+  //       org_status: org_status,
+  //       allocated_user: allocated_user,
+  //       uploader_organization_code: uploader_organization_code,
+  //       geo_parent_name: parent_area === "전체" ? undefined : parent_area,
+  //       geo_name: child_area === "전체" ? undefined : child_area,
+  //       values: values,
+  //       created_date: date,
+  //     })
+  //       ?.map((e) => e.join("="))
+  //       .join("&")
+  //       .toString()
+  // );
+
   return (
     <Layout loading={loading}>
       <Column>
@@ -477,17 +500,22 @@ export default function Db() {
             <Row sx={{ gap: "5px" }}>
               {rank !== "협력사" && (
                 <Button
-                  text="조직변경"
-                  color="primary.white"
+                  variant={"outlined"}
+                  text="자동분배"
+                  sx={{ border: "2px solid black" }}
                   fs="h6"
+                  color="primary"
                   w={90}
                   h={28}
                   action={() =>
                     openModal({
                       modal: "change",
                       content: {
+                        title: "DB 조직 변경",
                         contents: "자동분배를 진행하시겠습니까?",
-                        data: {},
+                        buttonName: "변경",
+                        // buttonAction:
+                        // data: {},
                       },
                     })
                   }

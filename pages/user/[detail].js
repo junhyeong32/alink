@@ -126,7 +126,7 @@ export default function UserDetail() {
   }, [org_code]);
 
   useEffect(() => {
-    if (grade === "지점장") {
+    if (grade === "지점장" || grade === "본부장") {
       console.log("org_code_by_sales", org_code_by_sales);
       const head_result = {};
 
@@ -211,18 +211,18 @@ export default function UserDetail() {
 
             return newData;
           });
+
           setEmail(email);
           setBirthdate(birthdate);
           setOrgCode(head_office_org_code);
           setHeaderOrg(head_office_org_code);
           setHeadOfficeCode(parent_org_code);
-          setHeadOfficeName(head_office);
+          setHeadOfficeName(headOfficeMenuList[org_code]);
           setBranchName(branch);
           setBranchCode(parent_org_code);
           setTeamCode(org_code);
           setTeamName(team);
           setPk(pk);
-          console.log(orgMenuList, head_office_org_code, parent_org_code);
         }
       };
 
@@ -265,7 +265,7 @@ export default function UserDetail() {
 
   //TODO
   //DB관리 setstate
-
+  
   return (
     <Layout loading={loading}>
       <Column sx={{ p: "40px", gap: "20px" }}>

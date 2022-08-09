@@ -59,6 +59,8 @@ export default function DbDetail() {
   const [organization, setOrganization] = useState({});
   const [user_code, setUserCode] = useState("");
 
+  const [orgHead, setOrgHead] = useState(""); //메뉴 리스트만 바꾸는용
+
   const [transcript_file, setTranscriptFile] = useState("");
   const [memo, setMemo] = useState("");
 
@@ -215,7 +217,7 @@ export default function DbDetail() {
       }
     };
     getUserList();
-  }, [org_code]);
+  }, [org_code, orgHead]);
   // console.log();
 
   return (
@@ -554,8 +556,8 @@ export default function DbDetail() {
                 }
                 w={"50%"}
                 menuItems={coopMenuItems}
-                value={org_code}
-                setValue={setOrgCode}
+                value={orgHead}
+                setValue={setOrgHead}
               />
               <OutLineSelectInput
                 disabled={
