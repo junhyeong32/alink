@@ -87,9 +87,7 @@ export default function UserDetail() {
   const [team_name, setTeamName] = useState("");
   const [team_code, setTeamCode] = useState("");
 
-  const [bojang, setBojang] = useState("");
-  const [finance, setFinance] = useState("");
-  const [dna, setDna] = useState("");
+  const [idCheck, setIdCheck] = useState(false);
 
   //menuList
   const [orgMenuList, setOrgMenuList] = useState({}); //조직
@@ -128,19 +126,20 @@ export default function UserDetail() {
   }, [org_code]);
 
   useEffect(() => {
-    if (org_code && grade === "지점장") {
+    if (grade === "지점장") {
+      console.log("org_code_by_sales", org_code_by_sales);
       const head_result = {};
 
       getOrgWithUnit(org_code_by_sales, "region", head_result);
 
       setHeadOfficeMenuList(head_result);
-    } else if (org_code && grade === "팀장") {
+    } else if (grade === "팀장") {
       const branch_result = {};
 
       getOrgWithUnit(org_code_by_sales, "branch", branch_result);
 
       setBranchMenuList(branch_result);
-    } else if (org_code && grade === "담당자") {
+    } else if (grade === "담당자") {
       const team_result = {};
 
       getOrgWithUnit(org_code_by_sales, "team", team_result);
@@ -149,10 +148,9 @@ export default function UserDetail() {
     } else if (grade === "부협력사") {
       const coop_org = {};
       getOrgHeadOffice(cooperation, coop_org);
-      console.log(coop_org);
       setCooperationMenuList(coop_org);
     }
-  }, [org_code, grade]);
+  }, [org_code, grade, org_code_by_sales]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -181,6 +179,7 @@ export default function UserDetail() {
             head_office_org_code,
             parent_org_code,
             branch,
+            team,
             head_office,
           } = res?.data;
           setId(id);
@@ -219,7 +218,9 @@ export default function UserDetail() {
           setHeadOfficeCode(parent_org_code);
           setHeadOfficeName(head_office);
           setBranchName(branch);
+          setBranchCode(parent_org_code);
           setTeamCode(org_code);
+          setTeamName(team);
           setPk(pk);
           console.log(orgMenuList, head_office_org_code, parent_org_code);
         }
@@ -264,8 +265,6 @@ export default function UserDetail() {
 
   //TODO
   //DB관리 setstate
-
-  console.log("db", router.query.detail);
 
   return (
     <Layout loading={loading}>
@@ -532,11 +531,13 @@ export default function UserDetail() {
                   variant: "success",
                   autoHideDuration: 2000,
                 });
+                setIdCheck(true);
               } else {
                 enqueueSnackbar("아이디를 확인해주세요.", {
                   variant: "error",
                   autoHideDuration: 2000,
                 });
+                setIdCheck(false);
               }
             }}
           />
@@ -625,11 +626,10 @@ export default function UserDetail() {
                           })
                         }
                       />
-                      <Typography variant="h6" pl={1}>
+                      <Typography variant="h6" pl={1} mr={3}>
                         개
                       </Typography>
                       <CustomSwitch
-                        sx={{ ml: 3 }}
                         disabled={
                           router.query.detail !== "new-id" &&
                           (status === "퇴사자" || rank === "부관리자")
@@ -724,6 +724,17 @@ export default function UserDetail() {
                 h={35}
                 fs="h5"
                 action={async () => {
+                  if (!idCheck)
+                    return enqueueSnackbar("아이디를 확인해주세요", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
+                  if (password !== new_password)
+                    return enqueueSnackbar("비밀번호가 틀립니다", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
+
                   // if (grade === "지점장") {
                   //   enqueueSnackbar("항목을 입력해주세요", {
                   //     variant: "error",

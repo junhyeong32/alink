@@ -13,7 +13,7 @@ import Row from "../Box/Row";
 // TODO
 // on off 텍스트 넣기
 
-const CustomSwitch = styled((props) => (
+const CustomSwitch = styled((props, { left, onClick }) => (
   <Row sx={{ position: "relative" }}>
     <Switch
       focusVisibleClassName=".Mui-focusVisible"
@@ -23,7 +23,7 @@ const CustomSwitch = styled((props) => (
     <Typography
       sx={{
         position: "absolute",
-        left: props.checked ? "5px" : "18.5px",
+        left: left ? left : props.checked ? "5px" : "18.5px",
         top: "1px",
         zIndex: 1,
       }}

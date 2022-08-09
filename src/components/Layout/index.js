@@ -15,12 +15,10 @@ import {
 import Row from "../Box/Row";
 import Column from "../Box/Column";
 import MenuBox from "../Box/MenuBox";
-import { menuText, img_src, menu_link } from "../../data/home";
+import { menuText, menu_link, menuText2, menu_link2 } from "../../data/home";
 import checkLogin from "../../hooks/account/useCheckLogin";
 import Button from "../Button";
 import Modal from "../Modal";
-import CustomSwitch from "../Switch";
-import useGetUser from "../../hooks/user/useGetUser";
 import NavSwitch from "../Switch/NavSwitch";
 import { getAccessToken, getCookie } from "../../utility/getCookie";
 import Axios from "../../utility/api";
@@ -231,6 +229,7 @@ export default function Layout({ loading, children }) {
                   );
                 }
               })}
+
               {menus?.map((d, key) => {
                 if (d?.is_activated === 0) return;
                 d?.organizations.findIndex((org) =>
@@ -248,7 +247,7 @@ export default function Layout({ loading, children }) {
                     ) !== -1)
                 )
                   return (
-                    <Row justifyContent={"between"} key={key}>
+                    <Row justifyContent={"between"} key={key} sx={{ ml: 2 }}>
                       <MenuBox
                         textWidth={
                           rank === "본부장" ||
@@ -296,6 +295,13 @@ export default function Layout({ loading, children }) {
                       )}
                     </Row>
                   );
+              })}
+              {menuText2.map((menu, key) => {
+                if (rank === "관리자") {
+                  return (
+                    <MenuBox key={key} text={menu} link={menu_link2[key]} />
+                  );
+                }
               })}
             </Column>
           </Column>
