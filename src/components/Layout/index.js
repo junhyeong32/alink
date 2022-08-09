@@ -68,7 +68,7 @@ export default function Layout({ loading, children }) {
     return <></>;
   }
 
-  if (menus?.length === 0)
+  if (loading)
     return (
       <Row
         justifyContent="center"
