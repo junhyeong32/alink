@@ -265,7 +265,7 @@ export default function UserDetail() {
 
   //TODO
   //DB관리 setstate
-  
+
   return (
     <Layout loading={loading}>
       <Column sx={{ p: "40px", gap: "20px" }}>
@@ -724,12 +724,15 @@ export default function UserDetail() {
                 h={35}
                 fs="h5"
                 action={async () => {
-                  if (!idCheck)
+                  if (router.query.detail === "nenw-id" && !idCheck)
                     return enqueueSnackbar("아이디를 확인해주세요", {
                       variant: "error",
                       autoHideDuration: 2000,
                     });
-                  if (password !== new_password)
+                  if (
+                    router.query.detail === "nenw-id" &&
+                    password !== new_password
+                  )
                     return enqueueSnackbar("비밀번호가 틀립니다", {
                       variant: "error",
                       autoHideDuration: 2000,
