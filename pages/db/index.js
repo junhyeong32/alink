@@ -255,29 +255,6 @@ export default function Db() {
     setInit(false);
   }, [init]);
 
-  // console.log(
-  //   "https://alinkapi.afg.kr/api/v1/db/list?" +
-  //     Object.entries({
-  //       token: getAccessToken(),
-  //       page: page,
-  //       count: count,
-  //       head_office_org_code:
-  //         head_office_org_code === "전체" ? undefined : head_office_org_code,
-  //       org_code: org_code === "전체" ? undefined : org_code,
-  //       status: status,
-  //       org_status: org_status,
-  //       allocated_user: allocated_user,
-  //       uploader_organization_code: uploader_organization_code,
-  //       geo_parent_name: parent_area === "전체" ? undefined : parent_area,
-  //       geo_name: child_area === "전체" ? undefined : child_area,
-  //       values: values,
-  //       created_date: date,
-  //     })
-  //       ?.map((e) => e.join("="))
-  //       .join("&")
-  //       .toString()
-  // );
-
   return (
     <Layout loading={loading}>
       <Column>
@@ -594,7 +571,7 @@ export default function Db() {
               {rank !== "협력사" && (
                 <Button
                   variant={"outlined"}
-                  text="자동분배"
+                  text="조직설정"
                   sx={{ border: "2px solid black" }}
                   fs="h6"
                   color="primary"
@@ -673,6 +650,28 @@ export default function Db() {
                         is_sample: false,
                         fileType: "audio/*",
                         contents: "자동분배를 진행하시겠습니까?",
+                      },
+                    })
+                  }
+                />
+              )}
+              {(rank === "본부장" ||
+                rank === "부협력사" ||
+                rank === "지점장" ||
+                rank === "팀장" ||
+                rank === "담당자") && (
+                <Button
+                  bgColor="primary"
+                  text="DB 선물하기"
+                  color="primary.white"
+                  fs="h6"
+                  w={90}
+                  h={28}
+                  action={() =>
+                    openModal({
+                      modal: "gift",
+                      content: {
+                        data: db_list,
                       },
                     })
                   }

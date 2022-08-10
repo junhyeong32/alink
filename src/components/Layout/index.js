@@ -32,10 +32,8 @@ export default function Layout({ loading, children }) {
   const [rank, setRank] = useState(cookies?.user_info?.grade);
   const [user_info] = useState(cookies?.user_info);
 
-  console.log(user_info);
   const [showChild, setShowChild] = useState(false);
   const { menus, isPending } = useGetMenus();
-  console.log(menus);
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });
@@ -187,6 +185,7 @@ export default function Layout({ loading, children }) {
               스위치 스타일 바구기
               */}
               {menuText.map((menu, key) => {
+                console.log(menu);
                 if (menu === "DB 현황") {
                   if (rank !== "협력사" && rank !== "부협력사") {
                     return (

@@ -87,10 +87,10 @@ export default function Sms() {
           />
         </Row>
         <Row
-          justifyContent={"between"}
+          justifyContent={"start"}
           alignItems={"end"}
           wrap={"wrap"}
-          sx={styles.filter_row}
+          sx={{ gap: 2 }}
         >
           <SelectInput title="발송일" menuItems={{}} w={styles.input} />
           <LabelUnderLineInput
@@ -99,13 +99,6 @@ export default function Sms() {
             w={styles.input}
             value={user_name}
             setValue={setuserName}
-          />
-          <LabelUnderLineInput
-            title="연락처"
-            placeholder={"연락처로 검색하실 수 있습니다"}
-            w={styles.input}
-            // value={phone}
-            // setValue={setPhone}
           />
 
           {/* <Typography variant="h6">보유 포인트 : </Typography> */}

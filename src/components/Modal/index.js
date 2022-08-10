@@ -6,6 +6,7 @@ import Result from "./dna/Result";
 import Change from "./bojang/ChangeOrg";
 import Division from "./Division";
 import Popup from "./Popup";
+import Gift from "./db/gift";
 
 import { useContext } from "react";
 
@@ -35,6 +36,8 @@ export default function Modal() {
       return <NeedConfirm key={index} index={index} />;
     } else if (data === "popup") {
       return <Popup key={index} index={index} />;
+    } else if (data === "gift") {
+      return <Gift key={index} index={index} />;
     } else {
       return;
     }
