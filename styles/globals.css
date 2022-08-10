@@ -61,6 +61,10 @@ aside {
   position: absolute;
 }
 
+.cursor {
+  cursor: pointer;
+}
+
 .text_line1 {
   overflow: hidden;
   text-overflow: ellipsis;

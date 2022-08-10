@@ -45,6 +45,7 @@ export default function DbStatus() {
     new Date().toISOString().substring(0, 8).replace(/-/g, "")
   );
   const [rank] = useState(getCookie("user_info")?.grade);
+  const [reset, setReset] = useState(false);
 
   const [orgMenuList, setOrgMenuList] = useState({ 전체: "전체" }); //조직
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({
@@ -127,7 +128,14 @@ export default function DbStatus() {
           params: {
             token: getAccessToken(),
             type: "sales",
-            head_office_org_code: org_code === "전체" ? undefined : org_code,
+            head_office_org_code:
+              team !== "전체"
+                ? team
+                : branch !== "전체"
+                ? branch
+                : head_office_org_code !== "전체"
+                ? head_office_org_code
+                : undefined,
           },
         })
       )?.data;
@@ -146,6 +154,7 @@ export default function DbStatus() {
   }, [org_code]);
 
   useEffect(() => {
+    console.log("실행", branch);
     console.log("org_code_by_sales", branch);
     const head_result = {};
 
@@ -166,7 +175,7 @@ export default function DbStatus() {
 
       setTeamMenuList(team_result);
     }
-  }, [org_code, branch, org_code_by_sales]);
+  }, [org_code, reset]);
 
   useEffect(() => {
     getDbDashBoard();
@@ -197,17 +206,30 @@ export default function DbStatus() {
                   fs="h6"
                   color="primary.white"
                   text="초기화"
+                  action={() => setReset(!reset)}
                 />
               </Row>
 
               <Row
                 justifyContent={"between"}
                 alignItems={"center"}
-                sx={{ borderBottom: "1px solid black", pb: 1 }}
+                sx={{
+                  borderBottom: "1px solid black",
+                  pb: 1,
+                  gap: 2,
+                  flexDirection: {
+                    lg: "row",
+                    md: "row",
+                    sm: "column",
+                    xs: "column",
+                  },
+                }}
               >
-                <Typography sx={{ fontSize: "30px" }}>분배 가능 DB</Typography>
+                <Typography sx={{ fontSize: "30px", whiteSpace: "nowrap" }}>
+                  분배 가능 DB
+                </Typography>
 
-                <Row sx={{ gap: "21px", mt: 1 }}>
+                <Row wrap="wrap" sx={{ columnGap: "21px", rowGap: 1, mt: 1 }}>
                   <LabelOutLineSelectInput
                     title={"지역"}
                     menuItems={areaMenuItems}
@@ -243,7 +265,7 @@ export default function DbStatus() {
 
               <Row
                 alignItems={"center"}
-                justifyContent={"around"}
+                justifyContent={"center"}
                 sx={{ mt: 2, width: "100%" }}
               >
                 {dashboard_list?.length > 3 ? (
@@ -260,46 +282,100 @@ export default function DbStatus() {
                       previousSlide,
                       goToSlide,
                     }) => (
-                      <Image
-                        src="/left_arrow.png"
-                        width={31}
-                        height={35}
-                        layout="fixed"
-                        alt="left"
-                        className="prev_button"
-                        style={{
-                          top: "50%",
-                          // left: "-610px",
+                      <Row
+                        sx={{
+                          width: {
+                            lg: 31,
+                            md: 31,
+                            sm: 18,
+                            xs: 18,
+                          },
+                          height: {
+                            lg: 35,
+                            md: 35,
+                            sm: 25,
+                            xs: 25,
+                          },
                         }}
-                        onClick={(e) => {
-                          previousSlide();
-                        }}
-                      />
+                      >
+                        <Image
+                          src="/left_arrow.png"
+                          width={31}
+                          height={35}
+                          // layout="fixed"
+                          alt="left"
+                          className="prev_button cursor"
+                          style={{
+                            top: "50%",
+                            // left: "-610px",
+                          }}
+                          onClick={(e) => {
+                            previousSlide();
+                          }}
+                        />
+                      </Row>
                     )}
                     renderCenterRightControls={({ nextSlide, goToSlide }) => (
-                      <Image
-                        src="/right_arrow.png"
-                        width={31}
-                        height={35}
-                        layout="fixed"
-                        alt="right"
-                        className="next_button"
-                        style={{
-                          top: "50%",
-                          // right: "-105px",
+                      <Row
+                        sx={{
+                          width: {
+                            lg: 31,
+                            md: 31,
+                            sm: 18,
+                            xs: 18,
+                          },
+                          height: {
+                            lg: 35,
+                            md: 35,
+                            sm: 25,
+                            xs: 25,
+                          },
                         }}
-                        onClick={() => {
-                          nextSlide();
-                        }}
-                      />
+                      >
+                        <Image
+                          src="/right_arrow.png"
+                          width={31}
+                          height={35}
+                          // layout="intrinsic"
+                          alt="right"
+                          className="next_button cursor"
+                          style={{
+                            top: "50%",
+                            // right: "-105px",
+                          }}
+                          onClick={() => {
+                            nextSlide();
+                          }}
+                        />
+                      </Row>
                     )}
                   >
                     {dashboard_list?.map((dashboard, key) => (
                       <Column alignItems={"center"} key={key}>
-                        <Typography sx={{ fontSize: 25, fontWeight: 350 }}>
+                        <Typography
+                          sx={{
+                            fontSize: {
+                              lg: 25,
+                              md: 25,
+                              sm: 18,
+                              xs: 12,
+                            },
+                            fontWeight: 350,
+                          }}
+                        >
                           {dashboard?.title}
                         </Typography>
-                        <Typography sx={{ fontSize: 30, fontWeight: 350 }}>
+                        <Typography
+                          sx={{
+                            fontSize: {
+                              lg: 25,
+                              md: 18,
+                              sm: 18,
+                              xs: 12,
+                            },
+                            fontWeight: 350,
+                          }}
+                        >
                           {dashboard?.allocation_available}
                         </Typography>
                       </Column>

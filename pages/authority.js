@@ -15,6 +15,7 @@ import OrganizationList from "../src/components/OrganizationList/List";
 import { useContext } from "react";
 import { OrganizationContext } from "../src/contexts/OrganizationListContext";
 import UnderLineInput from "../src/components/Input";
+import UnderLineSelectInput from "../src/components/Input/Select";
 
 export default function Authority() {
   const router = useRouter();
@@ -27,6 +28,8 @@ export default function Authority() {
   const [isUsersPending, setIsUsersPending] = useState(true);
   const [totalCouunt, setTotalCount] = useState();
   const [search, setSearch] = useState("");
+  const [deposit_status, setDepositStatus] = useState("전체");
+  const [pay_amount, setPayAmount] = useState("전체");
 
   const { sales, getOrganization } = useGetOrganization("sales");
 
@@ -48,6 +51,14 @@ export default function Authority() {
               page: page,
               count: count,
               org_code: organization,
+              deposit_status:
+                deposit_status === "전체" ? undefined : deposit_status,
+              pay_amount:
+                pay_amount === "전체"
+                  ? undefined
+                  : pay_amount === "+1"
+                  ? 1
+                  : pay_amount,
             },
           })
         )?.data;
@@ -61,7 +72,7 @@ export default function Authority() {
 
   useEffect(() => {
     getUsers();
-  }, [page, organization]);
+  }, [page, organization, deposit_status, pay_amount]);
 
   return (
     <Layout loading={isUsersPending}>
@@ -88,7 +99,31 @@ export default function Authority() {
           />
           <OrganizationList group_list={sales} />
         </Column>
-        <Column sx={{ width: "80%" }}>
+        <Column sx={{ width: "80%", pl: 2 }}>
+          <Row sx={{ widht: "100%", gap: 2 }}>
+            <UnderLineSelectInput
+              title={"전월 급여액"}
+              w={"25%"}
+              menuItems={{
+                전체: "전체",
+                "+1": "+",
+                "-1": "-",
+              }}
+              value={pay_amount}
+              setValue={setPayAmount}
+            />
+            <UnderLineSelectInput
+              title={"입금내역"}
+              w={"25%"}
+              menuItems={{
+                전체: "전체",
+                "입금 완료": "입금 완료",
+                "입금 미완료": "입금 미완료",
+              }}
+              value={deposit_status}
+              setValue={setDepositStatus}
+            />
+          </Row>
           <Row justifyContent={"end"} sx={{ width: "100%", gap: 1, mb: 1 }}>
             <Button
               text="입금 완료"
