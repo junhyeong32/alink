@@ -118,10 +118,6 @@ body
   text-align: center !important;
 }
 
-.slider-container {
-  width: 460px;
-}
-
 .ql-editor {
   min-height: 465px !important;
   overflow: hidden;

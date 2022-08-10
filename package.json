@@ -26,6 +26,7 @@
     "moment-range": "^4.0.2",
     "next": "12.1.6",
     "notistack": "^2.0.4",
+    "nuka-carousel": "^5.2.0",
     "react": "18.1.0",
     "react-cookie": "^4.1.1",
     "react-date-picker": "^8.4.0",

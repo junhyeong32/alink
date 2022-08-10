@@ -24,6 +24,7 @@ import {
   getOrgWithUnit,
 } from "../src/utility/organization/getOrgWithUnit";
 import useGetArea from "../src/hooks/setting/useGetArea";
+import Carousel from "nuka-carousel";
 
 export default function DbStatus() {
   //data
@@ -243,33 +244,79 @@ export default function DbStatus() {
               <Row
                 alignItems={"center"}
                 justifyContent={"around"}
-                sx={{ mt: 2 }}
+                sx={{ mt: 2, width: "100%" }}
               >
-                <Image
-                  src="/left_arrow.png"
-                  width={31}
-                  height={35}
-                  layout="fixed"
-                  alt="left"
-                />
-                {dashboard_list?.map((dashboard, key) => (
-                  <Column alignItems={"center"} key={key}>
-                    <Typography sx={{ fontSize: 25, fontWeight: 350 }}>
-                      {dashboard?.title}
-                    </Typography>
-                    <Typography sx={{ fontSize: 30, fontWeight: 350 }}>
-                      {dashboard?.allocation_available}
-                    </Typography>
-                  </Column>
-                ))}
-
-                <Image
-                  src="/right_arrow.png"
-                  width={31}
-                  height={35}
-                  layout="fixed"
-                  alt="right"
-                />
+                {dashboard_list?.length > 3 ? (
+                  <Carousel
+                    cellAlign="center"
+                    wrapAround
+                    defaultControlsConfig={{
+                      pagingDotsStyle: {
+                        display: "none",
+                      },
+                    }}
+                    slidesToShow={3}
+                    renderCenterLeftControls={({
+                      previousSlide,
+                      goToSlide,
+                    }) => (
+                      <Image
+                        src="/left_arrow.png"
+                        width={31}
+                        height={35}
+                        layout="fixed"
+                        alt="left"
+                        className="prev_button"
+                        style={{
+                          top: "50%",
+                          // left: "-610px",
+                        }}
+                        onClick={(e) => {
+                          previousSlide();
+                        }}
+                      />
+                    )}
+                    renderCenterRightControls={({ nextSlide, goToSlide }) => (
+                      <Image
+                        src="/right_arrow.png"
+                        width={31}
+                        height={35}
+                        layout="fixed"
+                        alt="right"
+                        className="next_button"
+                        style={{
+                          top: "50%",
+                          // right: "-105px",
+                        }}
+                        onClick={() => {
+                          nextSlide();
+                        }}
+                      />
+                    )}
+                  >
+                    {dashboard_list?.map((dashboard, key) => (
+                      <Column alignItems={"center"} key={key}>
+                        <Typography sx={{ fontSize: 25, fontWeight: 350 }}>
+                          {dashboard?.title}
+                        </Typography>
+                        <Typography sx={{ fontSize: 30, fontWeight: 350 }}>
+                          {dashboard?.allocation_available}
+                        </Typography>
+                      </Column>
+                    ))}
+                  </Carousel>
+                ) : (
+                  dashboard_list?.map((dashboard, key) => (
+                    <Column alignItems={"center"} key={key}>
+                      <Typography sx={{ fontSize: 25, fontWeight: 350 }}>
+                        {dashboard?.title}
+                      </Typography>
+                      <Typography sx={{ fontSize: 30, fontWeight: 350 }}>
+                        {dashboard?.allocation_available}
+                      </Typography>
+                    </Column>
+                  ))
+                )}
               </Row>
             </>
           )}
