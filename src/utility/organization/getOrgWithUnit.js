@@ -25,3 +25,15 @@ export function getOrgHeadOffice(orgs, result) {
     })
   );
 }
+
+export function getOrgWithSearch(orgs, search, result) {
+  for (let org of orgs) {
+    getOrgWithSearch(org.children, search, result);
+    console.log("org", org);
+    if (org.name.includes(search)) {
+      Object.assign(result, {
+        [org.code]: getTitleOfOrg_name(org),
+      });
+    }
+  }
+}

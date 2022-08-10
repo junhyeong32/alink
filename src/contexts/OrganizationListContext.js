@@ -5,11 +5,14 @@ export const OrganizationContext = createContext({
   setOpenVisible: () => {},
   organization: "",
   setOrganization: () => {},
+  org_search: "",
+  setOrgSearch: () => {},
 });
 
 export function OrganizationProvider({ children }) {
   const [open, setOpen] = useState(false);
   const [organization, setOrganization] = useState();
+  const [org_search, setOrgSearch] = useState("");
 
   const setOpenVisible = (visible) => {
     setOpen(visible);
@@ -19,6 +22,10 @@ export function OrganizationProvider({ children }) {
     setOrganization(data);
   };
 
+  const addOrganizationSearch = (data) => {
+    setOrgSearch(data);
+  };
+
   return (
     <OrganizationContext.Provider
       value={{
@@ -26,6 +33,8 @@ export function OrganizationProvider({ children }) {
         setOpenVisible,
         organization,
         addOrganizationData,
+        org_search,
+        addOrganizationSearch,
       }}
     >
       {children}

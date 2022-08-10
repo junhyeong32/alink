@@ -40,7 +40,7 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
   } = useTreeItem(nodeId);
 
   const { addModalData, modal_data, modal_list } = useContext(ModalContext);
-  const { addOrganizationData } = useContext(OrganizationContext);
+  const { addOrganizationData, org_search } = useContext(OrganizationContext);
 
   const icon = iconProp || expansionIcon || displayIcon;
 
@@ -55,31 +55,31 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
     addOrganizationData(nodeId);
   };
 
-  return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      className={clsx(className, classes.root, {
-        [classes.expanded]: expanded,
-        [classes.selected]: selected,
-        [classes.focused]: focused,
-        [classes.disabled]: disabled,
-      })}
-      //   onMouseDown={handleMouseDown}
-      ref={ref}
-    >
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-      <div onClick={handleExpansionClick} className={classes.iconContainer}>
-        {icon}
-      </div>
-      <Typography
-        onClick={handleSelectionClick}
-        component="div"
-        className={classes.label}
+    return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+      <div
+        className={clsx(className, classes.root, {
+          [classes.expanded]: expanded,
+          [classes.selected]: selected,
+          [classes.focused]: focused,
+          [classes.disabled]: disabled,
+        })}
+        //   onMouseDown={handleMouseDown}
+        ref={ref}
       >
-        {label}
-      </Typography>
-    </div>
-  );
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+        <div onClick={handleExpansionClick} className={classes.iconContainer}>
+          {icon}
+        </div>
+        <Typography
+          onClick={handleSelectionClick}
+          component="div"
+          className={classes.label}
+        >
+          {label}
+        </Typography>
+      </div>
+    );
 });
 
 const CustomTreeItem = (props) => {

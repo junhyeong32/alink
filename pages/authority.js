@@ -6,7 +6,7 @@ import Row from "../src/components/Box/Row";
 import Button from "../src/components/Button";
 import AuthorityTable from "../src/components/Table/authority";
 import useGetUsers from "../src/hooks/user/useGetUsers";
-import { Pagination } from "@mui/material";
+import { Pagination, Typography, CircularProgress } from "@mui/material";
 import Axios from "../src/utility/api";
 import { getAccessToken } from "../src/utility/getCookie";
 import { useSnackbar } from "notistack";
@@ -16,6 +16,7 @@ import { useContext } from "react";
 import { OrganizationContext } from "../src/contexts/OrganizationListContext";
 import UnderLineInput from "../src/components/Input";
 import UnderLineSelectInput from "../src/components/Input/Select";
+import { getOrgWithSearch } from "../src/utility/organization/getOrgWithUnit";
 
 export default function Authority() {
   const router = useRouter();
@@ -32,8 +33,9 @@ export default function Authority() {
   const [pay_amount, setPayAmount] = useState("전체");
 
   const { sales, getOrganization } = useGetOrganization("sales");
+  const [search_list, setSearchList] = useState(1);
 
-  const { organization } = useContext(OrganizationContext);
+  const { organization, addOrganizationData } = useContext(OrganizationContext);
 
   const getUsers = async (is_init) => {
     const res = is_init
@@ -71,8 +73,21 @@ export default function Authority() {
   };
 
   useEffect(() => {
+    if (!search) return;
     getUsers();
   }, [page, organization, deposit_status, pay_amount]);
+
+  useEffect(() => {
+    console.log("search_list", search);
+    const searchObj = {};
+    if (search) {
+      getOrgWithSearch(sales, search, searchObj);
+      if (JSON.stringify(searchObj) !== "{}") return setSearchList(searchObj);
+      setSearchList("검색결과가 없습니다.");
+    } else {
+      getUsers();
+    }
+  }, [search]);
 
   return (
     <Layout loading={isUsersPending}>
@@ -85,19 +100,70 @@ export default function Authority() {
             overflowY: "scroll",
             gap: 2,
             border: "1px solid #EFEFEF",
+            pb: 5,
           }}
         >
-          검색어는 상의 후 적용
-          <UnderLineInput
-            w={"80%"}
-            placeholder="검색어를 입력해주세요"
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
+          <Row alignItems={"center"} sx={{ gap: 1 }}>
+            <UnderLineInput
+              w={"80%"}
+              id="search"
+              placeholder="검색어를 입력 후 엔터를 눌러주세요"
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  setSearch(ev.target.value);
+                }
+              }}
+            />
+            <Button
+              w={40}
+              h={20}
+              variant="contained"
+              bgColor={"gray"}
+              fs="h7"
+              color="primary.white"
+              text="초기화"
+              action={() => {
+                document.querySelector("#search").value = "";
+                setSearch("");
+                setSearchList({});
                 getOrganization();
-              }
-            }}
-          />
-          <OrganizationList group_list={sales} />
+              }}
+            />
+          </Row>
+          {search && search_list === 1 ? (
+            <Row
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                width: "100%",
+                height: "100px",
+              }}
+            >
+              <CircularProgress size="40px" thickness={5} color="primary" />
+            </Row>
+          ) : typeof search_list === "string" ? (
+            <Typography variant="h6">{search_list}</Typography>
+          ) : search && search_list !== 1 ? (
+            <Column
+              justifyContent={"start"}
+              sx={{ gap: 1, width: "100%", p: 2 }}
+            >
+              {Object.values(search_list)?.map((result, key) => (
+                <Typography
+                  variant="h6"
+                  className="cursor"
+                  onClick={() => {
+                    addOrganizationData(Object.keys(search_list)[0]);
+                  }}
+                  key={key}
+                >
+                  - {result}
+                </Typography>
+              ))}
+            </Column>
+          ) : (
+            <OrganizationList group_list={sales} />
+          )}
         </Column>
         <Column sx={{ width: "80%", pl: 2 }}>
           <Row sx={{ widht: "100%", gap: 2 }}>
@@ -132,6 +198,11 @@ export default function Authority() {
               bgColor={"primary"}
               fs={"h6"}
               action={async () => {
+                if (checkList.length === 0)
+                  return enqueueSnackbar("사원이 선택되지 않았습니다", {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
                 const res = await Axios.Post("member/deposit_status", {
                   token: getAccessToken(),
                   user_pks: checkList.join(","),
@@ -153,6 +224,11 @@ export default function Authority() {
               bgColor={"orange"}
               fs={"h6"}
               action={async () => {
+                if (checkList.length === 0)
+                  return enqueueSnackbar("사원이 선택되지 않았습니다", {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
                 const res = await Axios.Post("member/deposit_status", {
                   token: getAccessToken(),
                   user_pks: checkList.join(","),
@@ -174,6 +250,11 @@ export default function Authority() {
               bgColor={"primary"}
               fs={"h6"}
               action={async () => {
+                if (checkList.length === 0)
+                  return enqueueSnackbar("사원이 선택되지 않았습니다", {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
                 const res = await Axios.Post("member/status", {
                   token: getAccessToken(),
                   user_pks: checkList.join(","),
@@ -196,6 +277,11 @@ export default function Authority() {
               bgColor={"orange"}
               fs={"h6"}
               action={async () => {
+                if (checkList.length === 0)
+                  return enqueueSnackbar("사원이 선택되지 않았습니다", {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
                 const res = await Axios.Post("member/status", {
                   token: getAccessToken(),
                   user_pks: checkList.join(","),
