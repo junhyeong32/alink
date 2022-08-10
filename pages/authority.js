@@ -29,6 +29,7 @@ export default function Authority() {
   const [isUsersPending, setIsUsersPending] = useState(true);
   const [totalCouunt, setTotalCount] = useState();
   const [search, setSearch] = useState("");
+  const [searchNum, setSearchNum] = useState("");
   const [deposit_status, setDepositStatus] = useState("전체");
   const [pay_amount, setPayAmount] = useState("전체");
 
@@ -87,7 +88,7 @@ export default function Authority() {
     } else {
       getUsers();
     }
-  }, [search]);
+  }, [search, searchNum]);
 
   return (
     <Layout loading={isUsersPending}>
@@ -95,7 +96,7 @@ export default function Authority() {
         <Column
           alignItems={"center"}
           sx={{
-            width: 246,
+            width: 550,
             height: "100%",
             overflowY: "scroll",
             gap: 2,
@@ -103,33 +104,66 @@ export default function Authority() {
             pb: 5,
           }}
         >
-          <Row alignItems={"center"} sx={{ gap: 1 }}>
-            <UnderLineInput
-              w={"80%"}
-              id="search"
-              placeholder="검색어를 입력 후 엔터를 눌러주세요"
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  setSearch(ev.target.value);
-                }
-              }}
-            />
-            <Button
-              w={40}
-              h={20}
-              variant="contained"
-              bgColor={"gray"}
-              fs="h7"
-              color="primary.white"
-              text="초기화"
-              action={() => {
-                document.querySelector("#search").value = "";
-                setSearch("");
-                setSearchList({});
-                getOrganization();
-              }}
-            />
-          </Row>
+          <Column sx={{ p: 1 }}>
+            <Row justifyContent={"end"} sx={{ gap: 1, width: "100%" }}>
+              <Button
+                w={40}
+                h={20}
+                variant="contained"
+                bgColor={"gray"}
+                fs="h7"
+                color="primary.white"
+                text="초기화"
+                action={() => {
+                  document.querySelector("#search").value = "";
+                  document.querySelector("#searchNum").value = "";
+                  setSearch("");
+                  setSearchNum("");
+                  setSearchList({});
+                  getOrganization();
+                }}
+              />
+              <Button
+                w={40}
+                h={20}
+                variant="contained"
+                bgColor={"primary"}
+                fs="h7"
+                color="primary.white"
+                text="검색"
+                action={() => {
+                  if (document.querySelector("#search").value) {
+                    return setSearch(document.querySelector("#search").value);
+                  }
+
+                  setSearchNum(document.querySelector("#search").value);
+                }}
+              />
+            </Row>
+            <Row alignItems={"center"} sx={{ gap: 1, mt: 1 }}>
+              <UnderLineInput
+                w={"80%"}
+                id="search"
+                placeholder="사원명으로 검색"
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    setSearch(ev.target.value);
+                  }
+                }}
+              />
+
+              <UnderLineInput
+                w={"80%"}
+                id="searchNum"
+                placeholder="사번으로 검색"
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    setSearchNum(ev.target.value);
+                  }
+                }}
+              />
+            </Row>
+          </Column>
           {search && search_list === 1 ? (
             <Row
               justifyContent="center"
@@ -162,7 +196,7 @@ export default function Authority() {
               ))}
             </Column>
           ) : (
-            <OrganizationList group_list={sales} />
+            <OrganizationList group_list={sales} open />
           )}
         </Column>
         <Column sx={{ width: "80%", pl: 2 }}>

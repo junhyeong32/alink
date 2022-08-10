@@ -55,31 +55,32 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
     addOrganizationData(nodeId);
   };
 
-    return (
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-      <div
-        className={clsx(className, classes.root, {
-          [classes.expanded]: expanded,
-          [classes.selected]: selected,
-          [classes.focused]: focused,
-          [classes.disabled]: disabled,
-        })}
-        //   onMouseDown={handleMouseDown}
-        ref={ref}
-      >
-        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-        <div onClick={handleExpansionClick} className={classes.iconContainer}>
-          {icon}
-        </div>
-        <Typography
-          onClick={handleSelectionClick}
-          component="div"
-          className={classes.label}
-        >
-          {label}
-        </Typography>
+  return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      className={clsx(className, classes.root, {
+        [classes.expanded]: expanded,
+        [classes.selected]: selected,
+        [classes.focused]: focused,
+        [classes.disabled]: disabled,
+      })}
+      //   onMouseDown={handleMouseDown}
+      ref={ref}
+    >
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+      <div onClick={handleExpansionClick} className={classes.iconContainer}>
+        {icon}
       </div>
-    );
+      <Typography
+        onClick={handleSelectionClick}
+        component="div"
+        className={classes.label}
+        sx={{ zIndex: 1 }}
+      >
+        {label}
+      </Typography>
+    </div>
+  );
 });
 
 const CustomTreeItem = (props) => {
@@ -128,7 +129,7 @@ const TreeViewRecursive = ({ el, depth }) => {
   );
 };
 
-export default function OrganizationList({ group_list }) {
+export default function OrganizationList({ group_list, open, absolute }) {
   return (
     <>
       {group_list?.map((list, list_key) => {
@@ -136,7 +137,14 @@ export default function OrganizationList({ group_list }) {
           <TreeView
             key={list_key}
             mt={2}
-            sx={{ height: "100vh", overflowY: "scroll" }}
+            sx={{
+              height: "100vh",
+              overflowY: "scroll",
+              display: open ? "flex" : "none",
+              position: absolute && "absolute",
+              zIndex: absolute && 1,
+              background: "#FFFFFF",
+            }}
             defaultExpanded={getAllCodeOfTree(list)}
             defaultCollapseIcon={
               <Image src="/tree_arrow.png" width={10} height={9} alt="" />

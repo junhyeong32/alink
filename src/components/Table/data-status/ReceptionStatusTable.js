@@ -93,7 +93,7 @@ export default function ReceptionStatus({ data, date }) {
                 </TableRow>
                 <TableRow>
                   <TableCell rowSpan={1} align="center">
-                    {date.slice(4, 6)}월
+                    {/* {date.slice(4, 6)}월 */}
                   </TableCell>
                   {dashboard?.status.map((status, _key) => (
                     <TableCell rowSpan={1} align="center" key={_key}>

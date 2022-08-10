@@ -27,35 +27,65 @@ export default function Sms() {
   const [created_date_end, setCreatedDateEnd] = useState("");
 
   const [notification_list, setNotificationList] = useState([]);
-
-  useEffect(() => {
-    const getNotification = async () => {
-      const res = (
-        await Axios.Get("notification", {
+  const getNotification = async (is_init) => {
+    const res = is_init
+      ? await Axios.Get("notification", {
           params: {
             token: getAccessToken(),
-            page: page,
-            count: count,
-            user_name: user_name,
-            created_date_start: created_date_start,
-            created_date_end: created_date_end,
           },
         })
-      )?.data;
+      : (
+          await Axios.Get("notification", {
+            params: {
+              token: getAccessToken(),
+              page: page,
+              count: count,
+              user_name: user_name,
+              created_date_start: created_date_start,
+              created_date_end: created_date_end,
+            },
+          })
+        )?.data;
 
-      console.log("res", res);
+    console.log("res", res);
 
-      if (res?.code === 200) {
-        // setCoopMenuItems(org);
-      }
-    };
+    if (res?.code === 200) {
+      setNotificationList(res?.data);
+    }
+  };
 
+  useEffect(() => {
     getNotification();
   }, []);
 
   return (
     <Layout>
       <Column sx={{ gap: "25px" }}>
+        <Row justifyContent={"end"} sx={{ width: "100%", gap: 1 }}>
+          <Button
+            text="초기화"
+            bgColor={"gray"}
+            variant={"contained"}
+            color="primary.white"
+            w={60}
+            h={28}
+            fs="h6"
+            action={() => {
+              getNotification(true);
+              setuserName("");
+            }}
+          />
+          <Button
+            text="검색"
+            bgColor={"primary"}
+            variant={"contained"}
+            color="primary.white"
+            w={60}
+            h={28}
+            fs="h6"
+            action={getNotification}
+          />
+        </Row>
         <Row
           justifyContent={"between"}
           alignItems={"end"}
@@ -77,15 +107,7 @@ export default function Sms() {
             // value={phone}
             // setValue={setPhone}
           />
-          <Button
-            text="초기화"
-            bgColor={"gray"}
-            variant={"contained"}
-            color="primary.white"
-            w={60}
-            h={20}
-            fs="h6"
-          />
+
           {/* <Typography variant="h6">보유 포인트 : </Typography> */}
         </Row>
         <SmsTable data={notification_list} />

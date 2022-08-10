@@ -12,30 +12,16 @@ import {
   Box,
   FormControlLabel,
   Radio,
+  CircularProgress,
 } from "@mui/material";
 
 import BojangTable from "../../src/components/Table/bojang";
-import {
-  select_title,
-  area_input,
-  headquarters_input,
-  branch_input,
-} from "../../src/components/Table/data-status/ReceptionStatusList";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
-import {
-  status_list,
-  status_bgcolor,
-  rank_list,
-  rank_bgcolor,
-} from "../../src/data/user";
+
 import { argument_status } from "../../src/data/share/MenuByTextList";
 import ExcelButton from "../../src/components/Button/Excel";
-import {
-  LabelUnderLineInput,
-  DateInput,
-  Date1,
-} from "../../src/components/Input";
+import { LabelUnderLineInput, DateInput } from "../../src/components/Input";
 import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
@@ -54,6 +40,8 @@ import {
   getOrgWithUnit,
   getOrgHeadOffice,
 } from "../../src/utility/organization/getOrgWithUnit";
+import UnderLineInput from "../../src/components/Input";
+import OrganizationList from "../../src/components/OrganizationList/List";
 
 const moment = extendMoment(originalMoment);
 
@@ -88,6 +76,9 @@ export default function Db() {
   const [values, setValues] = useState([]);
 
   const [init, setInit] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState();
+  const [searchNum, setSearchNum] = useState();
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
@@ -290,7 +281,109 @@ export default function Db() {
   return (
     <Layout loading={loading}>
       <Column>
-        {/* <Button variant="outlined" text="신청권한" fs="h6" w={80} h={20} /> */}
+        <Button
+          w={80}
+          h={28}
+          variant={"outlined"}
+          color="primary"
+          fs="h5"
+          text="신칭권한"
+          action={() => {
+            setOpen(true);
+          }}
+        />
+        <Column sx={{ p: 1, display: open ? "flex" : "none" }}>
+          <Row justifyContent={"end"} sx={{ gap: 1, width: "100%" }}>
+            <Button
+              w={40}
+              h={20}
+              variant="contained"
+              bgColor={"gray"}
+              fs="h7"
+              color="primary.white"
+              text="초기화"
+              action={() => {
+                document.querySelector("#search").value = "";
+                document.querySelector("#searchNum").value = "";
+                setSearch("");
+                setSearchNum("");
+                setSearchList({});
+                getOrganization();
+              }}
+            />
+            <Button
+              w={40}
+              h={20}
+              variant="contained"
+              bgColor={"primary"}
+              fs="h7"
+              color="primary.white"
+              text="검색"
+              action={() => {
+                if (document.querySelector("#search").value) {
+                  return setSearch(document.querySelector("#search").value);
+                }
+
+                setSearchNum(document.querySelector("#search").value);
+              }}
+            />
+          </Row>
+          <Row alignItems={"center"} sx={{ gap: 1, mt: 1 }}>
+            <UnderLineInput
+              w={"80%"}
+              id="search"
+              placeholder="사원명으로 검색"
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  setSearch(ev.target.value);
+                }
+              }}
+            />
+
+            <UnderLineInput
+              w={"80%"}
+              id="searchNum"
+              placeholder="사번으로 검색"
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  setSearchNum(ev.target.value);
+                }
+              }}
+            />
+          </Row>
+        </Column>
+        {search && search_list === 1 ? (
+          <Row
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              width: "100%",
+              height: "100px",
+            }}
+          >
+            <CircularProgress size="40px" thickness={5} color="primary" />
+          </Row>
+        ) : typeof search_list === "string" ? (
+          <Typography variant="h6">{search_list}</Typography>
+        ) : search && search_list !== 1 ? (
+          <Column justifyContent={"start"} sx={{ gap: 1, width: "100%", p: 2 }}>
+            {Object.values(search_list)?.map((result, key) => (
+              <Typography
+                variant="h6"
+                className="cursor"
+                onClick={() => {
+                  addOrganizationData(Object.keys(search_list)[0]);
+                }}
+                key={key}
+              >
+                - {result}
+              </Typography>
+            ))}
+          </Column>
+        ) : (
+          <OrganizationList group_list={sales} open={open} absolute />
+        )}
+
         <Column sx={{ rowGap: "15px", p: "40px 40px 0 40px" }}>
           <TopLabelContents
             title="인수상태"
@@ -563,6 +656,27 @@ export default function Db() {
                     />
                   )}
                 </>
+              )}
+              {(rank === "협력사" || rank === "부협력사") && (
+                <Button
+                  bgColor="primary"
+                  text="녹취 파일 업로드"
+                  color="primary.white"
+                  fs="h6"
+                  w={90}
+                  h={28}
+                  action={() =>
+                    openModal({
+                      modal: "upload",
+                      content: {
+                        title: "녹음 파일 업로드",
+                        is_sample: false,
+                        fileType: "audio/*",
+                        contents: "자동분배를 진행하시겠습니까?",
+                      },
+                    })
+                  }
+                />
               )}
             </Row>
             <ExcelButton

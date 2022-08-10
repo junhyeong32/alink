@@ -41,9 +41,8 @@ export default function DbStatus() {
   const [branch, setBranch] = useState("전체");
   const [team, setTeam] = useState("전체");
   const [geo_name, setGeoName] = useState("전체");
-  const [date, setDate] = useState(
-    new Date().toISOString().substring(0, 8).replace(/-/g, "")
-  );
+  const [date, setDate] = useState(0);
+  const [send_date, setSendDate] = useState(new Date().getMonth + 1);
   const [rank] = useState(getCookie("user_info")?.grade);
   const [reset, setReset] = useState(false);
 
@@ -72,7 +71,7 @@ export default function DbStatus() {
               ? head_office_org_code
               : undefined,
           geo_name: geo_name === "전체" ? undefined : geo_name,
-          date: date,
+          date: send_date,
         },
       })
     )?.data;
@@ -83,6 +82,10 @@ export default function DbStatus() {
   };
 
   useEffect(() => {
+    getDbDashBoard();
+  }, [send_date]);
+
+  useEffect(() => {
     setAreaMenuItems(() => {
       const obj = {};
       area?.map((d, key) => {
@@ -91,34 +94,6 @@ export default function DbStatus() {
       });
       return obj;
     });
-
-    // const newArr = Array(12)
-    //   .fill(0)
-    //   .map((_, n) => {
-    //     let d = new Date();
-    //     d.setMonth(new Date().getMonth() - n);
-    //     return `${d
-    //       .toISOString()
-    //       .substring(0, 8)
-    //       .replace(/-/g, "")
-    //       .slice(0, 4)}년 ${d
-    //       .toISOString()
-    //       .substring(0, 8)
-    //       .replace(/-/g, "")
-    //       .slice(4)}월`;
-    //   });
-
-    // const dateObj = newArr.map((arr) =>
-    //   Object.assign({}, { [arr.slice(0, 4) + arr.slice(6, 8)]: arr })
-    // );
-    // let a = {}
-    // const dateObj2 = dateObj.map((d) => )
-    // setDateMenuItems(dateObj[0]);
-    // console.log(
-    //   "newArr",
-    //   typeof newArr,
-    //   Object.assign({}, JSON.stringify(dateObj))
-    // );
   }, [area]);
 
   useEffect(() => {
@@ -154,8 +129,6 @@ export default function DbStatus() {
   }, [org_code]);
 
   useEffect(() => {
-    console.log("실행", branch);
-    console.log("org_code_by_sales", branch);
     const head_result = {};
 
     getOrgWithUnit(org_code_by_sales, "region", head_result);
@@ -178,7 +151,9 @@ export default function DbStatus() {
   }, [org_code, reset]);
 
   useEffect(() => {
-    getDbDashBoard();
+    let d = new Date();
+    d.setMonth(d.getMonth() - date);
+    setSendDate(d.toISOString().substring(0, 8).replace(/-/g, ""));
   }, [date]);
 
   return (

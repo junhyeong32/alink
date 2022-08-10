@@ -23,7 +23,6 @@ import Row from "../../Box/Row";
 import { ModalContext } from "../../../contexts/ModalContext";
 import { styled } from "@mui/material/styles";
 
-
 const style = {
   width: { lg: "715px", md: "715px", sm: "715px", xs: "90%" },
   height: "322px",
@@ -44,60 +43,68 @@ const Input = styled("input")({
   display: "none",
 });
 
-export default function Upload() {
+export default function Upload({ index }) {
   const [cookies, setCookie, removeCookie] = useCookies();
   const { enqueueSnackbar } = useSnackbar();
   const [file, setFile] = useState("");
   const [loading, setLoading] = useState(false);
-  const { visible, closeModal, modalContent } = useContext(ModalContext);
-  const { title, download, choiceFile, uploadFIle } = modalContent;
+  const { modal, closeModal, modalContent } = useContext(ModalContext);
+  const { title, download, choiceFile, uploadFIle, is_sample, fileType } =
+    modalContent[index];
+
+  console.log(file?.name);
   return (
-    <Modal open={visible} onClose={closeModal}>
+    <Modal open={modal[index] === "upload"} onClose={closeModal}>
       <Box>
         <Column alignItems={"start"} justifyContent={"center"} sx={style}>
-          <Typography variant="h1">파일 업로드</Typography>
-          <Row
-            alignItems={"center"}
-            w={430}
-            sx={{
-              width: "100%",
-              pl: 3,
-              position: "relative",
-              borderTop: "2px solid black",
-              borderBottom: "2px solid black",
-              height: 58,
-              mb: "-12px",
-            }}
-          >
-            <Typography
-              variant="h4"
-              align="left"
-              sx={{ minWidth: "45px", mr: 5.2 }}
-            >
-              Sample
-            </Typography>
-            <Divider
-              vertical
+          <Typography variant="h3" mb={1}>
+            {title}
+          </Typography>
+          {is_sample && (
+            <Row
+              alignItems={"center"}
+              w={430}
               sx={{
-                height: "100%",
-                mr: 2.8,
-                border: "1px solid black",
+                width: "100%",
+                pl: 3,
+                position: "relative",
+                borderTop: "2px solid black",
+                borderBottom: "2px solid black",
+                height: 58,
+                mb: "-12px",
               }}
-            />
-            <a href="/file/관리자_엑셀_업로드_양식.xlsx">
-              <Button
-                variant="contained"
-                component="span"
-                text="다운로드"
-                fs="h6"
+            >
+              <Typography
+                variant="h4"
+                align="left"
+                sx={{ minWidth: "45px", mr: 5.2 }}
+              >
+                Sample
+              </Typography>
+              <Divider
+                vertical
+                sx={{
+                  height: "100%",
+                  mr: 2.8,
+                  borderLeft: "1px solid black",
+                }}
               />
-            </a>
-          </Row>
+              <a href="/file/관리자_엑셀_업로드_양식.xlsx">
+                <Button
+                  variant="contained"
+                  component="span"
+                  text="다운로드"
+                  fs="h6"
+                />
+              </a>
+            </Row>
+          )}
           <Row
             alignItems={"center"}
             sx={{
               pl: 3,
               borderBottom: "2px solid black",
+              borderTop: !is_sample && "2px solid black",
               width: "100%",
               height: 70,
             }}
@@ -113,7 +120,7 @@ export default function Upload() {
               sx={{
                 height: "100%",
                 mr: 2.8,
-                border: "1px solid black",
+                borderLeft: "1px solid black",
               }}
             />
 
@@ -129,14 +136,21 @@ export default function Upload() {
               }}
             >
               <Typography variant="small">
-                {file ? file.name : "엑셀(.xlsx, .xls) 파일만 등록가능"}
+                {file
+                  ? file.name
+                  : fileType
+                  ? `오디오 ${fileType} 파일만 등록가능`
+                  : "엑셀(.xlsx, .xls) 파일만 등록가능"}
               </Typography>
             </Row>
             <label htmlFor="contained-button-file">
               <Input
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                accept={
+                  fileType
+                    ? fileType
+                    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                }
                 id="contained-button-file"
-                // multiple
                 type="file"
                 onChange={(e) => setFile(e.target.files[0])}
               />
@@ -198,7 +212,7 @@ export default function Upload() {
               fs="h4"
               w={166}
               h={50}
-              onClick={() => deleteModalList(index)}
+              action={closeModal}
             ></Button>
           </Row>
         </Column>

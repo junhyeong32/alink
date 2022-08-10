@@ -116,6 +116,9 @@ export default function DBApply() {
               {user?.acfp > 300000 && new Date().getMonth() + 1}월 DB 지원
               대상자입니다.
             </Typography>
+            <Typography variant="normal" sx={{ color: "#909090" }}>
+              지원여부는 계약상태값에 따라 변경될 수 있습니다.
+            </Typography>
           </Row>
           {db?.map((d, key) => (
             <Column key={key}>
