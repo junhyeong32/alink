@@ -24,58 +24,28 @@ import { getAccessToken } from "../../src/utility/getCookie";
 import { useSnackbar } from "notistack";
 import { getCookie } from "../../src/utility/getCookie";
 import useGetMenus from "../../src/hooks/setting/useGetMenus";
+import { LensTwoTone } from "@mui/icons-material";
 
 export default function DBApply() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [org_name, setOrgName] = useState("");
   const [user_info] = useState(getCookie("user_info"));
-
-  const [org_code, setOrgCode] = useState("");
   const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const [new_password, setNewPassword] = useState("");
   const [status, setStatus] = useState("");
-  const [grade, setGrade] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [birthdate, setBirthdate] = useState("");
   const [db, setDb] = useState([]); //화면에 뿌려주는 state
   const [changeDb, setChangeDb] = useState([]); //전송 state
-  const [head_office_name, setHeadOfficeName] = useState("");
-  const [head_office_code, setHeadOfficeCode] = useState("");
   const [pk, setPk] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const { user, isUserPending, getUser } = useGetUser();
+  const { menus } = useGetMenus();
   const { area } = useGetArea();
-  console.log(user);
+  const { user, isUserPending, getUser } = useGetUser();
 
   useEffect(() => {
-    const a = async () => {
-      const res = await Axios.Get("db/list", {
-        params: {
-          token: getAccessToken(),
-          head_office_org_code: user_info?.head_office,
-        },
-      });
-      console.log(res?.data);
-    };
+    const { db } = user;
 
-    a();
-  }, []);
-
-  useEffect(() => {
-    const { id, status, pk, grade, name, phone, db } = user;
-
-    setId(id);
-    setPassword();
-    setStatus(status);
-    setGrade(grade || "");
-    setName(name);
-    setPhone(phone);
-    setBirthdate(birthdate);
-    setDb(db);
     setChangeDb((prev) => {
       const newData = [...prev];
       db?.map((d) =>
@@ -97,21 +67,19 @@ export default function DBApply() {
 
       return newData;
     });
-    setPk(pk);
+    setLoading(false);
   }, [isUserPending]);
 
   //TODO
   // 모달창
   // 디비 수량 신청 및 지역 설정
 
-  console.log(user);
-
   return (
-    <Layout>
+    <Layout loading={loading}>
       <Column>
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Typography variant="h1">DB 신청</Typography>
-          <Row justifyContent={"between"} alignItems={"center"} sc={{ mb: 2 }}>
+          <Column justifyContent={"start"} alignItems={"start"} sc={{ mb: 2 }}>
             <Typography variant="h5" sx={{ color: "#3532C7" }}>
               {user?.acfp > 300000 && new Date().getMonth() + 1}월 DB 지원
               대상자입니다.
@@ -119,10 +87,15 @@ export default function DBApply() {
             <Typography variant="normal" sx={{ color: "#909090" }}>
               지원여부는 계약상태값에 따라 변경될 수 있습니다.
             </Typography>
-          </Row>
-          {db?.map((d, key) => (
+          </Column>
+          {menus?.map((menu, key) => (
             <Column key={key}>
-              <RowLabel label={d?.title} fs="h4" label_w={83} sx={{ gap: 10 }}>
+              <RowLabel
+                label={menu?.title}
+                fs="h4"
+                label_w={83}
+                sx={{ gap: 10 }}
+              >
                 <Row alignItems={"center"}>
                   <OutLineInput
                     disabled={status === "퇴사자"}
@@ -164,6 +137,38 @@ export default function DBApply() {
                   <Typography variant="h4" mr={3}>
                     담당 지역
                   </Typography>
+                  <RoundColorBox
+                    background={
+                      changeDb[key]?.geomap.length === area.length
+                        ? "#0D1D41"
+                        : "#E6E6E6"
+                    }
+                    fc={
+                      changeDb[key]?.geomap.length === area.length
+                        ? "#FFFFFF"
+                        : "#000000"
+                    }
+                    fs={12}
+                    sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
+                    onClick={() =>
+                      setChangeDb((prev) => {
+                        const newData = [...prev];
+                        let newDataGeo = newData[key].geomap;
+                        console.log(newDataGeo.length, area.length);
+                        if (newDataGeo.length === area.length) {
+                          newDataGeo.splice(0, newDataGeo.length);
+                        } else {
+                          area.map((map) =>
+                            newDataGeo.push({ name: map?.name })
+                          );
+                        }
+
+                        return newData;
+                      })
+                    }
+                  >
+                    전국
+                  </RoundColorBox>
 
                   {area?.map((map, area_key) => (
                     <RoundColorBox

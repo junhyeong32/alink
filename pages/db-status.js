@@ -37,7 +37,7 @@ export default function DbStatus() {
   //TODO
   //이거 기본값 안넣어주면 오류남
   // 물어보기
-  const [org_code, setOrgCode] = useState("T0000");
+  const [org_code, setOrgCode] = useState("전체");
   const [branch, setBranch] = useState("전체");
   const [team, setTeam] = useState("전체");
   const [geo_name, setGeoName] = useState("전체");

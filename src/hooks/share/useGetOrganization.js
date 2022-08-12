@@ -2,7 +2,7 @@ import { useState, useTransition, useEffect } from "react";
 import Axios from "../../utility/api";
 import { getAccessToken } from "../../utility/getCookie";
 
-export default function useGetOrganization(type, head_office) {
+export default function useGetOrganization(type, head_office, name, id) {
   const [sales, setSales] = useState([]);
   const [cooperation, setCooperation] = useState([]);
   const [office_by_org, setOfficeByOrg] = useState([]);

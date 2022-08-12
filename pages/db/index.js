@@ -42,12 +42,13 @@ import {
 } from "../../src/utility/organization/getOrgWithUnit";
 import UnderLineInput from "../../src/components/Input";
 import OrganizationList from "../../src/components/OrganizationList/List";
+import { useSnackbar } from "notistack";
 
 const moment = extendMoment(originalMoment);
 
 export default function Db() {
   const router = useRouter();
-
+  const { enqueueSnackbar } = useSnackbar();
   //data
   const [menu_detail, setMenuDetail] = useState([]);
   const [db_list, setDbList] = useState([]);
@@ -80,6 +81,8 @@ export default function Db() {
   const [search, setSearch] = useState();
   const [searchNum, setSearchNum] = useState();
 
+  const [checkData, setCheckData] = useState([]);
+
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
   const [orgMenuList, setOrgMenuList] = useState({ 전체: "전체" });
@@ -101,6 +104,7 @@ export default function Db() {
         ? await Axios.Get(`db/list`, {
             params: {
               token: getAccessToken(),
+              db_pk: router.query.menu,
             },
           })
         : await Axios.Get(`db/list`, {
@@ -108,6 +112,7 @@ export default function Db() {
               token: getAccessToken(),
               page: page,
               count: count,
+              db_pk: router.query.menu,
               head_office_org_code:
                 head_office_org_code === "전체"
                   ? undefined
@@ -254,6 +259,8 @@ export default function Db() {
 
     setInit(false);
   }, [init]);
+
+  console.log("checkData", checkData);
 
   return (
     <Layout loading={loading}>
@@ -577,18 +584,24 @@ export default function Db() {
                   color="primary"
                   w={90}
                   h={28}
-                  action={() =>
+                  action={() => {
+                    if (checkData.length === 0)
+                      return enqueueSnackbar("변경할 DB를 선택해주세요", {
+                        variant: "error",
+                        autoHideDuration: 2000,
+                      });
+
                     openModal({
                       modal: "change",
                       content: {
                         title: "DB 조직 변경",
                         contents: "자동분배를 진행하시겠습니까?",
                         buttonName: "변경",
-                        // buttonAction:
-                        // data: {},
+                        list: checkData,
                       },
-                    })
-                  }
+                      data: headOfficeMenuList,
+                    });
+                  }}
                 />
               )}
               {(rank === "관리자" ||
@@ -622,14 +635,23 @@ export default function Db() {
                       fs="h6"
                       w={90}
                       h={28}
-                      action={() =>
+                      action={() => {
+                        if (checkData.length === 0)
+                          return enqueueSnackbar("변경할 DB를 선택해주세요", {
+                            variant: "error",
+                            autoHideDuration: 2000,
+                          });
                         openModal({
-                          modal: "needConfirm",
+                          modal: "change",
                           content: {
+                            title: "DB 조직 변경",
                             contents: "자동분배를 진행하시겠습니까?",
+                            buttonName: "변경",
+                            list: checkData,
                           },
-                        })
-                      }
+                          data: headOfficeMenuList,
+                        });
+                      }}
                     />
                   )}
                 </>
@@ -712,7 +734,9 @@ export default function Db() {
             openModal={openModal}
             closeModal={closeModal}
             header={menu_detail}
-            data={db_list?.filter((db) => db?.db_pk === router.query.menu)}
+            data={db_list}
+            checkData={checkData}
+            setCheckData={setCheckData}
           />
         </Column>
       </Column>

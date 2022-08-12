@@ -13,17 +13,17 @@ import {
 import { Box, styled } from "@mui/system";
 import { useContext, useState } from "react";
 import { headerList } from "./headerList";
-import Button from "../../Button";
 import Row from "../../Box/Row";
-import MemoBox from "../../Box/Memo";
-import CustomSwitch from "../../Switch";
 import RoundColorBox from "../../Box/RoundColorBox";
-import { status_list, rank_list } from "../../../data/share/MenuByTextList";
+import { rank_list } from "../../../data/share/MenuByTextList";
 import Column from "../../Box/Column";
 import { useRouter } from "next/router";
 import { ModalContext } from "../../../contexts/ModalContext";
 import api from "../../../utility/api";
 import { getAccessToken, getCookie } from "../../../utility/getCookie";
+import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
+import Button from "../../Button";
+import { useSnackbar } from "notistack";
 
 const Root = styled("div")`
   table {
@@ -52,6 +52,7 @@ const Root = styled("div")`
 
 export default function DbGiftTable({ data, allocation_total, getUsers }) {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [bojang, setBojang] = useState(false);
   const [db, setDb] = useState(false);
   const [dna, setDna] = useState(false);
@@ -73,20 +74,9 @@ export default function DbGiftTable({ data, allocation_total, getUsers }) {
                 return (
                   <TableCell key={key} align="center">
                     {data}
-                    <Column>{allocation_total[key - 8]?.count}</Column>
                   </TableCell>
                 );
               })}
-              {allocation_total?.map((location, key) => (
-                <TableCell
-                  key={key}
-                  align="center"
-                  sx={{ whiteSpace: "nowrap" }}
-                >
-                  {location?.db.title}
-                  <Typography variant="h5">{location?.count}</Typography>
-                </TableCell>
-              ))}
             </TableRow>
           </TableHead>
 
@@ -104,165 +94,55 @@ export default function DbGiftTable({ data, allocation_total, getUsers }) {
                 >
                   <TableCell
                     align="center"
-                    sx={{ fontWeight: 500 }}
-                    onClick={() => router.push(`/user/${user?.code}`)}
+                    sx={{ color: user?.acfp < 300000 ? "#FD0202" : "#000000" }}
                   >
-                    {user?.pk}
+                    {user?.acfp < 300000 ? "미지원" : "지원"}
                   </TableCell>
-                  <TableCell onClick={() => router.push(`/user/${user?.code}`)}>
+                  <TableCell>
                     <Row justifyContent={"center"}>
-                      <RoundColorBox
-                        w={61}
-                        background={status_list[user?.status]}
-                      >
-                        {user?.status}
-                      </RoundColorBox>
-                    </Row>
-                  </TableCell>
-                  <TableCell onClick={() => router.push(`/user/${user?.code}`)}>
-                    <Row justifyContent={"center"}>
-                      <RoundColorBox
-                        w={61}
-                        background={rank_list[user?.grade] || "#000000"}
-                      >
+                      <RoundColorBox w={61} background={rank_list[user?.grade]}>
                         {user?.grade}
                       </RoundColorBox>
                     </Row>
                   </TableCell>
-                  <TableCell
-                    align="center"
-                    onClick={() => router.push(`/user/${user?.code}`)}
-                  >
-                    {user?.head_office}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    onClick={() => router.push(`/user/${user?.code}`)}
-                  >
-                    {user?.region + user?.branch + user?.team}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    onClick={() => router.push(`/user/${user?.code}`)}
-                  >
-                    {user?.id}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    onClick={() => router.push(`/user/${user?.code}`)}
-                  >
-                    {user?.name}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    onClick={() => router.push(`/user/${user?.code}`)}
-                  >
-                    {user?.phone}
-                  </TableCell>
-
-                  {user?.allocations.map((location, _key) => (
-                    <TableCell key={_key} align="center" sx={{ width: 150 }}>
-                      <Row justifyContent={"start"} sx={{ gap: "10px" }}>
-                        {rank === "관리자" &&
-                        user?.grade !== "협력사" &&
-                        user?.grade !== "부협력사" ? (
-                          <CustomSwitch
-                            checked={
-                              location?.is_activated === 1 ? true : false
-                            }
-                            onClick={(e) => {
-                              openModal({
-                                modal: "needconfirm",
-                                content: {
-                                  contents: (
-                                    <Column
-                                      alignItems={"center"}
-                                      justifyContent={"center"}
-                                      sx={{ gap: 1 }}
-                                    >
-                                      <Row
-                                        alignItems={"center"}
-                                        justifyContent={"center"}
-                                        sx={{ gap: 1 }}
-                                      >
-                                        <Typography
-                                          variant="small"
-                                          component={"span"}
-                                        >
-                                          {user?.region +
-                                            user?.branch +
-                                            user?.team}
-                                        </Typography>
-                                        <RoundColorBox
-                                          w={61}
-                                          background={
-                                            rank_list[user?.grade] || "#000000"
-                                          }
-                                          fs={12}
-                                        >
-                                          {user?.grade}
-                                        </RoundColorBox>
-                                        <Typography
-                                          variant="small"
-                                          component={"span"}
-                                        >
-                                          {user?.name}
-                                        </Typography>
-                                      </Row>
-                                      <Typography variant="h6">
-                                        {console.log(
-                                          "location",
-                                          location?.is_activated
-                                        )}
-                                        {location?.is_activated === 1
-                                          ? "보장DB를 OFF으로 설정하시겠습니까?"
-                                          : "보장DB를 ON으로 설정하시겠습니까?"}
-                                      </Typography>
-                                    </Column>
-                                  ),
-                                  action: async () => {
-                                    const res = await api.Post(
-                                      "member/allocation",
-                                      {
-                                        token: getAccessToken(),
-                                        allocation_pk: location?.pk,
-                                        onoff:
-                                          location?.is_activated === 1 ? 0 : 1,
-                                        db_pk: location?.db?.pk,
-                                        user_pk: user?.pk,
-                                      }
-                                    );
-                                    if (res?.code === 200) {
-                                      getUsers();
-                                      closeModal();
-                                    }
-                                  },
-                                  buttonText: "확인",
-                                },
+                  <TableCell align="center">{getTitleOfOrg(user)}</TableCell>
+                  <TableCell align="center">{user?.name}</TableCell>
+                  <TableCell align="center">
+                    <Button
+                      variant={"outlined"}
+                      color="primary"
+                      text="선물하기"
+                      w={80}
+                      h={21}
+                      fs="h6"
+                      action={() => {
+                        openModal({
+                          modal: "needconfirm",
+                          content: {
+                            contents: "DB 선물하기를 진행하시겠습니끼?",
+                            buttonText: "승인",
+                            action: async () => {
+                              const res = await api.Post("db/list/present", {
+                                token: getAccessToken(),
+                                list_pks: router.query.menu,
+                                target_user_pk: user?.pk,
                               });
-                            }}
-                          />
-                        ) : (
-                          rank !== "관리자" &&
-                          user?.grade !== "협력사" &&
-                          user?.grade !== "부협력사" && (
-                            <RoundColorBox
-                              background={
-                                location?.is_activated === 1
-                                  ? "#0D1D41"
-                                  : "#909090"
+                              if (res?.code === 200) {
+                                closeModal(1);
+                                enqueueSnackbar(
+                                  "DB 선물하기가 완료되었습니다",
+                                  {
+                                    variant: "success",
+                                    autoHideDuration: 2000,
+                                  }
+                                );
                               }
-                            >
-                              {location?.is_activated === 1 ? "ON" : "OFF"}
-                            </RoundColorBox>
-                          )
-                        )}
-                        {user?.grade !== "협력사" &&
-                          user?.grade !== "부협력사" &&
-                          location?.count + "개"}
-                      </Row>
-                    </TableCell>
-                  ))}
+                            },
+                          },
+                        });
+                      }}
+                    />
+                  </TableCell>
                 </TableRow>
               );
             })}

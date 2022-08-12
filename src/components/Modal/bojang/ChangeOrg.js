@@ -18,6 +18,9 @@ import Button from "../../Button";
 import UnderLineSelectInput from "../../Input/Select";
 import { ModalContext } from "../../../contexts/ModalContext";
 import Row from "../../Box/Row";
+import Axios from "../../../utility/api";
+import { getAccessToken } from "../../../utility/getCookie";
+import { useRouter } from "next/router";
 
 const style = {
   width: { lg: 411, md: 411, sm: 411, xs: "90%" },
@@ -48,7 +51,11 @@ export default function Change({ index }) {
 
   const { title, buttonName, buttonAction } = modalContent[index];
 
-  const [select, setSelect] = useState("");
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+  const [select, setSelect] = useState("전체");
+
+  console.log(data);
 
   return (
     <Modal open={modal[index] === "change"} onClose={() => closeModal(index)}>
@@ -71,8 +78,28 @@ export default function Change({ index }) {
               w={97}
               h={30}
               action={() => {
-                buttonAction();
-                closeModal(index);
+                openModal({
+                  modal: "needconfirm",
+
+                  content: {
+                    contents: `${data[index][select]}(으)로 소속변경을 진행하시겠습니까? `,
+                    action: async () => {
+                      const res = await Axios.Post("db/list/head_office", {
+                        token: getAccessToken(),
+                        list_pks: router.query.menu,
+                        head_office_org_code: select,
+                      });
+
+                      if (res?.code === 200) {
+                        closeModal(0, 2);
+                        enqueueSnackbar("소속이 변경되었습니다", {
+                          variant: "success",
+                          autoHideDuration: 2000,
+                        });
+                      }
+                    },
+                  },
+                });
               }}
             />
             <Button

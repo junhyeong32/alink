@@ -44,23 +44,15 @@ const Root = styled("div")`
   }
 `;
 
-export default function BojangTable({ openModal, closeModal, header, data }) {
+export default function BojangTable({
+  openModal,
+  closeModal,
+  header,
+  data,
+  checkData,
+  setCheckData,
+}) {
   const router = useRouter();
-  const [tableData, setTableData] = useState([]);
-  const [fileData, setfileData] = useState([]);
-  // useEffect(() => {
-  //   if (data?.length === 0) return;
-
-  //   setTableData((prev) => {
-  //     const newData = [...prev];
-  //     data?.values?.filter((val) => {
-  //       header?fields[0].map((head) => head)
-  //     });
-
-  //     return newData;
-  //   });
-  // }, [data]);
-  console.log("header", header);
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -72,7 +64,22 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
           <TableHead>
             <TableRow key="head">
               <TableCell align="center">
-                <Checkbox />
+                <Checkbox
+                  checked={checkData.length === data?.length}
+                  onClick={() => {
+                    setCheckData((prev) => {
+                      const newData = [...prev];
+
+                      if (newData.length === data?.length) {
+                        return [];
+                      } else {
+                        data?.map((d) => newData.push(d?.pk));
+                      }
+
+                      return newData;
+                    });
+                  }}
+                />
               </TableCell>
               {dbHeaderList?.map((header, key) => (
                 <TableCell align="center" key={key}>
@@ -103,10 +110,24 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
                 }}
               >
                 <TableCell key={d?.pk + 1} align="center" sx={{ width: 40 }}>
-                  <Checkbox />
+                  <Checkbox
+                    checked={checkData.indexOf(d?.pk) !== -1}
+                    onClick={() => {
+                      setCheckData((prev) => {
+                        const newData = [...prev];
+
+                        const foundIndex = newData.indexOf(d?.pk);
+
+                        if (foundIndex === -1) newData.push(d?.pk);
+                        else newData.splice(foundIndex, 1);
+
+                        return newData;
+                      });
+                    }}
+                  />
                 </TableCell>
                 <TableCell
-                  key={d?.pk + 8}
+                  key={"hi" + key}
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
@@ -169,87 +190,104 @@ export default function BojangTable({ openModal, closeModal, header, data }) {
                   header?.fields?.map((head, _key) => {
                     if (
                       head?.is_list_shown === 1 &&
-                      head?.pk === val?.field_pk
+                      head?.pk === val?.field_pk &&
+                      val?.title !== "녹취 파일" &&
+                      val?.title !== "메모" &&
+                      val?.title !== "결과지 파일"
                     ) {
-                      if (val?.title === "녹취 파일") {
-                        return (
-                          <TableCell
-                            align="center"
-                            onClick={() =>
-                              openModal({
-                                modal: "readFile",
-                                content: {
-                                  contents: <MemoBox />,
-                                },
-                              })
-                            }
-                          >
-                            <Image
-                              src={"/recording.png"}
-                              width={18.75}
-                              height={22.92}
-                              alt=""
-                            />
-                          </TableCell>
-                        );
-                      } else if (val?.title === "메모") {
-                        return (
-                          <TableCell
-                            align="center"
-                            onClick={() =>
-                              openModal({
-                                modal: "readFile",
-                                content: {
-                                  contents: <MemoBox />,
-                                },
-                              })
-                            }
-                          >
-                            <Image
-                              src={"/memo.png"}
-                              width={25}
-                              height={25}
-                              alt="memo"
-                            />
-                          </TableCell>
-                        );
-                      } else if (val?.title === "결과지 파일") {
-                        return (
-                          <TableCell
-                            align="center"
-                            onClick={() =>
-                              openModal({
-                                modal: "readFile",
-                                content: {
-                                  contents: <MemoBox />,
-                                },
-                              })
-                            }
-                          >
-                            <Image
-                              src={"/dna.png"}
-                              width={12}
-                              height={25}
-                              alt="result"
-                            />
-                          </TableCell>
-                        );
-                      } else {
-                        return (
-                          <TableCell
-                            key={val?.field_pk}
-                            align="center"
-                            onClick={() =>
-                              router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
-                            }
-                          >
-                            {val?.value}
-                          </TableCell>
-                        );
-                      }
+                      return (
+                        <TableCell
+                          key={val?.field_pk}
+                          align="center"
+                          onClick={() =>
+                            router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                          }
+                        >
+                          {val?.value}
+                        </TableCell>
+                      );
                     }
                   })
                 )}
+
+                {header?.fields?.map((head, _key) => {
+                  if (
+                    head?.is_list_shown === 1 &&
+                    head?.property?.name === "녹취 파일"
+                  ) {
+                    return (
+                      <TableCell
+                        align="center"
+                        key={_key}
+                        onClick={() =>
+                          openModal({
+                            modal: "readFile",
+                            content: {
+                              contents: <MemoBox />,
+                            },
+                          })
+                        }
+                      >
+                        <Image
+                          src={"/recording.png"}
+                          width={18.75}
+                          height={22.92}
+                          alt=""
+                        />
+                      </TableCell>
+                    );
+                  } else if (
+                    head?.is_list_shown === 1 &&
+                    head?.property?.name === "메모"
+                  ) {
+                    return (
+                      <TableCell
+                        align="center"
+                        key={_key}
+                        onClick={() =>
+                          openModal({
+                            modal: "readFile",
+                            content: {
+                              contents: <MemoBox />,
+                            },
+                          })
+                        }
+                      >
+                        <Image
+                          src={"/memo.png"}
+                          width={25}
+                          height={25}
+                          alt="memo"
+                        />
+                      </TableCell>
+                    );
+                  } else if (
+                    head?.is_list_shown === 1 &&
+                    head?.property?.name === "결과지 파일"
+                  ) {
+                    return (
+                      <TableCell
+                        align="center"
+                        key={_key}
+                        onClick={() =>
+                          openModal({
+                            modal: "readFile",
+                            content: {
+                              contents: <MemoBox />,
+                            },
+                          })
+                        }
+                      >
+                        <Image
+                          src={"/dna.png"}
+                          width={12}
+                          height={25}
+                          alt="result"
+                        />
+                      </TableCell>
+                    );
+                  }
+                })}
               </TableRow>
             ))}
           </TableBody>

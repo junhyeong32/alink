@@ -51,12 +51,12 @@ export default function NeedConfirm({ index }) {
     actionButtonColor,
   } = modalContent[index];
 
-  console.log(modalContent);
+  console.log(modalContent[index]);
 
   return (
     <Modal
       open={modal[index] === "needconfirm" ? true : false}
-      onClose={closeModal}
+      onClose={() => closeModal[index]}
     >
       <Box>
         <Column alignItems={"center"} justifyContent={"center"} sx={style}>
@@ -86,7 +86,7 @@ export default function NeedConfirm({ index }) {
                 bgColor={"gray"}
                 color={"primary.white"}
                 fs={"h4"}
-                action={closeModal}
+                action={() => closeModal(1, index)}
               />
             </Row>
           </Column>

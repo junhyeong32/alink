@@ -16,7 +16,10 @@ import { useContext } from "react";
 import { OrganizationContext } from "../src/contexts/OrganizationListContext";
 import UnderLineInput from "../src/components/Input";
 import UnderLineSelectInput from "../src/components/Input/Select";
-import { getOrgWithSearch } from "../src/utility/organization/getOrgWithUnit";
+import {
+  getOrgWithName,
+  getOrgWithId,
+} from "../src/utility/organization/getOrgWithUnit";
 
 export default function Authority() {
   const router = useRouter();
@@ -74,15 +77,17 @@ export default function Authority() {
   };
 
   useEffect(() => {
-    if (!search) return;
     getUsers();
   }, [page, organization, deposit_status, pay_amount]);
 
   useEffect(() => {
-    console.log("search_list", search);
     const searchObj = {};
     if (search) {
-      getOrgWithSearch(sales, search, searchObj);
+      getOrgWithName(sales, search, searchObj);
+      if (JSON.stringify(searchObj) !== "{}") return setSearchList(searchObj);
+      setSearchList("검색결과가 없습니다.");
+    } else if (searchNum) {
+      getOrgWithId(sales, search, searchObj);
       if (JSON.stringify(searchObj) !== "{}") return setSearchList(searchObj);
       setSearchList("검색결과가 없습니다.");
     } else {
@@ -132,11 +137,11 @@ export default function Authority() {
                 color="primary.white"
                 text="검색"
                 action={() => {
-                  if (document.querySelector("#search").value) {
-                    return setSearch(document.querySelector("#search").value);
+                  if (document.querySelector("#search").value !== "") {
+                    setSearch(document.querySelector("#search").value);
+                  } else {
+                    setSearchNum(document.querySelector("#searchNum").value);
                   }
-
-                  setSearchNum(document.querySelector("#search").value);
                 }}
               />
             </Row>
@@ -155,7 +160,7 @@ export default function Authority() {
               <UnderLineInput
                 w={"80%"}
                 id="searchNum"
-                placeholder="사번으로 검색"
+                placeholder="Id로 검색"
                 onKeyPress={(ev) => {
                   if (ev.key === "Enter") {
                     setSearchNum(ev.target.value);
@@ -224,7 +229,10 @@ export default function Authority() {
               setValue={setDepositStatus}
             />
           </Row>
-          <Row justifyContent={"end"} sx={{ width: "100%", gap: 1, mb: 1 }}>
+          <Row
+            justifyContent={"end"}
+            sx={{ width: "100%", gap: 1, mb: 1, mt: 2 }}
+          >
             <Button
               text="입금 완료"
               variant={"contained"}
