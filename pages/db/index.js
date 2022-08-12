@@ -754,11 +754,18 @@ export default function Db() {
                   w={90}
                   h={28}
                   action={() => {
-                    if (checkData.length === 0)
-                      return enqueueSnackbar("선물할 DB를 선택해주세요", {
-                        variant: "error",
-                        autoHideDuration: 2000,
-                      });
+                    //TODO
+                    // 태웅이 형, [Aug 12, 2022 2:43:45 PM]:
+                    // 그래서 애초에 담당자가 내가 아닌경우에
+
+                    // 선물하기 버튼 누르면 가냥 안된다
+
+                    // 띄워달라는가
+                    // if (checkData.length === 0)
+                    //   return enqueueSnackbar("선물할 DB를 선택해주세요", {
+                    //     variant: "error",
+                    //     autoHideDuration: 2000,
+                    //   });
                     openModal({
                       modal: "gift",
                       data: checkData,

@@ -652,6 +652,38 @@ export default function UserDetail() {
                       />
                     </Row>
                     <Row wrap={"wrap"} sx={{ gap: 1 }}>
+                      <RoundColorBox
+                        background={
+                          changeDb[key]?.geomap.length === area.length
+                            ? "#0D1D41"
+                            : "#E6E6E6"
+                        }
+                        fc={
+                          changeDb[key]?.geomap.length === area.length
+                            ? "#FFFFFF"
+                            : "#000000"
+                        }
+                        fs={12}
+                        sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
+                        onClick={() =>
+                          setChangeDb((prev) => {
+                            const newData = [...prev];
+                            let newDataGeo = newData[key].geomap;
+                            console.log(newDataGeo.length, area.length);
+                            if (newDataGeo.length === area.length) {
+                              newDataGeo.splice(0, newDataGeo.length);
+                            } else {
+                              area.map((map) =>
+                                newDataGeo.push({ name: map?.name })
+                              );
+                            }
+
+                            return newData;
+                          })
+                        }
+                      >
+                        전국
+                      </RoundColorBox>
                       {area?.map((map, area_key) => (
                         <RoundColorBox
                           key={area_key}
