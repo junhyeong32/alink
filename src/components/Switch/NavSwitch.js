@@ -40,10 +40,10 @@ const NavSwitch = styled((props) => (
   borderRadius: "15px",
   position: "relative",
   "& .MuiSwitch-switchBase": {
-    width: 10,
-    height: 7,
-    padding: 0,
-    margin: 6,
+    width: checked ? 40 : 14,
+    // height: 6,
+    padding: 1,
+    margin: 4,
     color: checked ? "#FFFFFF" : "#909090",
     transitionDuration: "300ms",
     "&.Mui-checked": {
@@ -72,8 +72,8 @@ const NavSwitch = styled((props) => (
   },
   "& .MuiSwitch-thumb": {
     boxSizing: "border-box",
-    width: 15,
-    height: 15,
+    width: 10,
+    height: 10,
   },
   "& .MuiSwitch-track": {
     borderRadius: 15,

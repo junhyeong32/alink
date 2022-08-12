@@ -61,7 +61,6 @@ export default function Login() {
         maxAge: 86400,
       });
 
-      setCookie("db", await getUser(res?.access_token));
 
       setLoading(false);
       enqueueSnackbar("로그인 되었습니다.", {

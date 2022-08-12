@@ -166,7 +166,7 @@ export function DateInput({
         }}
       >
         {/* value={value?.startDate} value={value?.endDate}  */}
-        <Box
+      <Box
           sx={{
             width: w,
             borderBottom: "1px solid #0D1D41",
@@ -231,7 +231,6 @@ export function DateInput({
           showDateDisplay={false}
           editableDateInputs={false}
           onChange={(item) => {
-            console.log("item", item);
             setValue([item.selection]);
           }}
           moveRangeOnFirstSelection={true}

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
 import { useEffect, useState, useContext } from "react";
+import { useSnackbar } from "notistack";
 import {
   Input,
   Box,
@@ -23,34 +24,26 @@ import NavSwitch from "../Switch/NavSwitch";
 import { getAccessToken, getCookie } from "../../utility/getCookie";
 import Axios from "../../utility/api";
 import useGetMenus from "../../hooks/setting/useGetMenus";
+import useGetUser from "../../hooks/user/useGetUser";
 export default function Layout({ loading, children }) {
   const router = useRouter();
-  const [menu_list, setMenuList] = useState([]);
-  const [current_menu, setCurrentMenu] = useState();
+  const { enqueueSnackbar } = useSnackbar();
   const [cookies, setCookie, removeCookie] = useCookies();
   const [visible, setVisible] = useState(false);
   const [rank, setRank] = useState(cookies?.user_info?.grade);
   const [user_info] = useState(cookies?.user_info);
+  const { user, getUser } = useGetUser();
+
+  console.log("user,", user);
 
   const [showChild, setShowChild] = useState(false);
-  const { menus, isPending } = useGetMenus();
+  const { menus, isPending, getMenus } = useGetMenus();
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });
     removeCookie("user_info", { path: "/" });
     router.replace("/login");
   };
-
-  // const getDbList = async() => {
-  //   const res = await Axios.Get("db/list",{
-  //     params:{
-  //       token:getAccessToken(),
-  //     }
-
-  //   })
-  // }
-
-  console.log(user_info, rank);
 
   useEffect(() => {
     setShowChild(true);
@@ -230,6 +223,7 @@ export default function Layout({ loading, children }) {
               })}
 
               {menus?.map((d, key) => {
+                console.log("d", d);
                 if (d?.is_activated === 0) return;
                 if (
                   rank === "관리자" ||
@@ -243,7 +237,12 @@ export default function Layout({ loading, children }) {
                     ) !== -1)
                 )
                   return (
-                    <Row justifyContent={"between"} key={key} sx={{ ml: 2 }}>
+                    <Row
+                      justifyContent={"between"}
+                      alignItems="center"
+                      key={key}
+                      sx={{ ml: 2 }}
+                    >
                       <MenuBox
                         textWidth={
                           rank === "본부장" ||
@@ -263,26 +262,41 @@ export default function Layout({ loading, children }) {
                         rank === "담당자") && (
                         <>
                           <Typography variant="h5" color="primary.white">
-                            {d?.allocation?.count}
+                            {
+                              user?.db?.find((u) => u?.pk === d?.pk)?.allocation
+                                ?.count
+                            }
                           </Typography>
                           <NavSwitch
                             sx={{ ml: 3 }}
                             checked={
-                              d?.allocation?.is_activated === 1 ? true : false
+                              user?.db?.find((u) => u?.pk === d?.pk)?.allocation
+                                ?.is_activated === 1
+                                ? true
+                                : false
                             }
                             onClick={async () => {
                               const res = await Axios.Post(
                                 "user/db/allocation",
                                 {
                                   token: getAccessToken(),
-                                  allocation_pk: d?.allocation?.pk,
+                                  allocation_pk: user?.db?.find(
+                                    (u) => u?.pk === d?.pk
+                                  )?.allocation?.pk,
                                   onoff:
-                                    d?.allocation?.is_activated === 1 ? 0 : 1,
+                                    user?.db?.find((u) => u?.pk === d?.pk)
+                                      ?.allocation?.is_activated === 1
+                                      ? 0
+                                      : 1,
                                   db_pk: d?.pk,
                                 }
                               );
 
                               if (res?.code === 200) {
+                                enqueueSnackbar("변경되었습니다", {
+                                  variant: "success",
+                                  autoHideDuration: 2000,
+                                });
                                 getUser();
                               }
                             }}

@@ -93,7 +93,12 @@ export default function Popup({ index }) {
           justifyContent={"between"}
           sx={{ position: "relative", height: "100%" }}
         >
-          <Editor value={data[index]?.content} readOnly theme={"bubble"} />
+          <Editor
+            value={data[index]?.content}
+            readOnly
+            theme={"bubble"}
+            style={{ height: "95%" }}
+          />
 
           <Row
             justifyContent={"between"}

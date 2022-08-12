@@ -155,7 +155,8 @@ export default function Db() {
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
               geo_name: child_area === "전체" ? undefined : child_area,
               values: newValues,
-              created_date: date,
+              created_date_start: date[0].startDate.getTime(),
+              created_date_end: date[0].endDate.getTime(),
             },
           })
     )?.data;
@@ -283,14 +284,20 @@ export default function Db() {
     setAllocatedUser("");
     setParentArea("전체");
     setChildArea("전체");
+    setStartDate("");
+    setEndDate("");
+    setDate([
+      {
+        ...date.key,
+        startDate: new Date(),
+        endDate: null,
+      },
+    ]);
 
     setInit(false);
   }, [init]);
 
-  console.log(
-    "checkData",
-    new Date(new Date().setMonth(new Date().getMonth() - 1))
-  );
+  console.log("checkData", start_date);
 
   return (
     <Layout loading={loading}>
@@ -652,7 +659,7 @@ export default function Db() {
                       modal: "change",
                       content: {
                         title: "DB 조직 변경",
-                        contents: "자동분배를 진행하시겠습니까?",
+                        contents: "DB를 변경하시겠습니까?",
                         buttonName: "변경",
                         list: checkData,
                       },
@@ -746,14 +753,17 @@ export default function Db() {
                   fs="h6"
                   w={90}
                   h={28}
-                  action={() =>
+                  action={() => {
+                    if (checkData.length === 0)
+                      return enqueueSnackbar("선물할 DB를 선택해주세요", {
+                        variant: "error",
+                        autoHideDuration: 2000,
+                      });
                     openModal({
                       modal: "gift",
-                      content: {
-                        data: db_list,
-                      },
-                    })
-                  }
+                      data: checkData,
+                    });
+                  }}
                 />
               )}
             </Row>
