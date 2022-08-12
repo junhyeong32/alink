@@ -50,7 +50,13 @@ const Root = styled("div")`
   }
 `;
 
-export default function DbGiftTable({ data, allocation_total, getUsers }) {
+export default function DbGiftTable({
+  data,
+  allocation_total,
+  getUsers,
+  checkData,
+  setCheckData,
+}) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [bojang, setBojang] = useState(false);
@@ -70,6 +76,29 @@ export default function DbGiftTable({ data, allocation_total, getUsers }) {
         >
           <TableHead>
             <TableRow key="head">
+              <TableCell align="center">
+                <Checkbox
+                  checked={
+                    data?.length !== 0 && checkData.length === data?.length
+                  }
+                  onClick={() => {
+                    setCheckData((prev) => {
+                      let newData = [...prev];
+
+                      if (newData.length === data?.length) {
+                        return [];
+                      } else {
+                        newData = [];
+                        data?.map((d) => newData.push(d?.pk));
+                      }
+
+                      console.log(newData, newData.length, data?.length);
+
+                      return newData;
+                    });
+                  }}
+                />
+              </TableCell>
               {headerList?.map((data, key) => {
                 return (
                   <TableCell key={key} align="center">
@@ -92,6 +121,23 @@ export default function DbGiftTable({ data, allocation_total, getUsers }) {
                     },
                   }}
                 >
+                  <TableCell align="center">
+                    <Checkbox
+                      checked={checkData.indexOf(user?.pk) !== -1}
+                      onClick={() => {
+                        setCheckData((prev) => {
+                          const newData = [...prev];
+
+                          const foundIndex = newData.indexOf(user?.pk);
+
+                          if (foundIndex === -1) newData.push(user?.pk);
+                          else newData.splice(foundIndex, 1);
+
+                          return newData;
+                        });
+                      }}
+                    />
+                  </TableCell>
                   <TableCell
                     align="center"
                     sx={{ color: user?.acfp < 300000 ? "#FD0202" : "#000000" }}
@@ -107,42 +153,6 @@ export default function DbGiftTable({ data, allocation_total, getUsers }) {
                   </TableCell>
                   <TableCell align="center">{getTitleOfOrg(user)}</TableCell>
                   <TableCell align="center">{user?.name}</TableCell>
-                  <TableCell align="center">
-                    <Button
-                      variant={"outlined"}
-                      color="primary"
-                      text="선물하기"
-                      w={80}
-                      h={21}
-                      fs="h6"
-                      action={() => {
-                        openModal({
-                          modal: "needconfirm",
-                          content: {
-                            contents: "DB 선물하기를 진행하시겠습니끼?",
-                            buttonText: "승인",
-                            action: async () => {
-                              const res = await api.Post("db/list/present", {
-                                token: getAccessToken(),
-                                list_pks: router.query.menu,
-                                target_user_pk: user?.pk,
-                              });
-                              if (res?.code === 200) {
-                                closeModal(1);
-                                enqueueSnackbar(
-                                  "DB 선물하기가 완료되었습니다",
-                                  {
-                                    variant: "success",
-                                    autoHideDuration: 2000,
-                                  }
-                                );
-                              }
-                            },
-                          },
-                        });
-                      }}
-                    />
-                  </TableCell>
                 </TableRow>
               );
             })}

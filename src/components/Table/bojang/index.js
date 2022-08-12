@@ -65,14 +65,17 @@ export default function BojangTable({
             <TableRow key="head">
               <TableCell align="center">
                 <Checkbox
-                  checked={checkData.length === data?.length}
+                  checked={
+                    data?.length !== 0 && checkData.length === data?.length
+                  }
                   onClick={() => {
                     setCheckData((prev) => {
-                      const newData = [...prev];
+                      let newData = [...prev];
 
                       if (newData.length === data?.length) {
                         return [];
                       } else {
+                        newData = [];
                         data?.map((d) => newData.push(d?.pk));
                       }
 

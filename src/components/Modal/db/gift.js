@@ -37,11 +37,14 @@ import { getAccessToken } from "../../../utility/getCookie";
 import useGetGroupList from "../../../hooks/share/useGetGroupList";
 import useGetOrganization from "../../../hooks/share/useGetOrganization";
 import { getOrgWithUnit } from "../../../utility/organization/getOrgWithUnit";
+import { Router } from "@mui/icons-material";
+import { useRouter } from "next/router";
 
 const style = {
   width: { lg: 900, md: 900, sm: "90%", xs: "90%" },
   height: 880,
   overflowX: "hidden",
+  overflowY: "scroll",
   background: "#FFFFFF",
   position: "absolute",
   top: "50%",
@@ -55,6 +58,7 @@ const style = {
 
 export default function Gift({ index }) {
   const [select, setSelect] = useState("");
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [user_list, setUserList] = useState([]);
   const [org_code, setOrgCode] = useState("전체");
@@ -63,6 +67,7 @@ export default function Gift({ index }) {
   const [totalCount, setTotalCount] = useState();
 
   const [orgMenuItems, setOrgMenuItems] = useState({});
+  const [checkData, setCheckData] = useState([]);
 
   const { sales } = useGetOrganization("sales");
 
@@ -169,14 +174,49 @@ export default function Gift({ index }) {
                     setName("");
                   }}
                 />
+                <Button
+                  variant={"outlined"}
+                  color="primary"
+                  text="선물하기"
+                  w={80}
+                  h={21}
+                  fs="h6"
+                  action={() => {
+                    openModal({
+                      modal: "needconfirm",
+                      content: {
+                        contents: "DB 선물하기를 진행하시겠습니끼?",
+                        buttonText: "승인",
+                        action: async () => {
+                          const res = await Axios.Post("db/list/present", {
+                            token: getAccessToken(),
+                            list_pks: router.query.menu,
+                            target_user_pk: checkData.join(","),
+                          });
+                          if (res?.code === 200) {
+                            closeModal(1);
+                            enqueueSnackbar("DB 선물하기가 완료되었습니다", {
+                              variant: "success",
+                              autoHideDuration: 2000,
+                            });
+                          }
+                        },
+                      },
+                    });
+                  }}
+                />
               </Row>
             </Row>
-            <DbGiftTable data={user_list} />
+            <DbGiftTable
+              data={user_list}
+              checkData={checkData}
+              setCheckData={setCheckData}
+            />
           </Column>
           <Row
             alignItems="center"
             justifyContent="center"
-            sx={{ width: "100%", mt: "86px", pb: 4 }}
+            sx={{ width: "100%", mt: "86px" }}
           >
             <Pagination
               component="div"

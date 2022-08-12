@@ -85,6 +85,8 @@ export default function Change({ index }) {
                     contents: `${data[index][select]}(으)로 소속변경을 진행하시겠습니까? `,
                     action: async () => {
                       const res = await Axios.Post("db/list/head_office", {
+                        // TODO
+                        // 재차 확인
                         token: getAccessToken(),
                         list_pks: router.query.menu,
                         head_office_org_code: select,
