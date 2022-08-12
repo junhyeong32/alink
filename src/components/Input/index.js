@@ -19,6 +19,7 @@ import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { useEffect } from "react";
 import moment from "moment";
+import { useRef } from "react";
 
 export default function UnderLineInput({
   title,
@@ -146,12 +147,15 @@ export function DateInput({
   setValue,
   w,
   textValue,
+  ref,
+  forwardRef,
   ...props
 }) {
   return (
     <Column
       justifyContent="start"
       alignItems="start"
+      forwardRef={ref}
       sx={{
         width: w || "100%",
         position: "relative",
@@ -165,8 +169,7 @@ export function DateInput({
           borderBottom: "1px solid #0D1D41",
         }}
       >
-        {/* value={value?.startDate} value={value?.endDate}  */}
-      <Box
+        <Box
           sx={{
             width: w,
             borderBottom: "1px solid #0D1D41",

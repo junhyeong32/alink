@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -52,6 +52,9 @@ const moment = extendMoment(originalMoment);
 export default function Db() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+
+  const el = useRef(null);
+
   //data
   const [menu_detail, setMenuDetail] = useState([]);
   const [db_list, setDbList] = useState([]);
@@ -105,6 +108,19 @@ export default function Db() {
   const [areaChildMenuList, setAreaChildMenuList] = useState({ 전체: "전체" });
 
   const { openModal, closeModal } = useContext(ModalContext);
+
+  const handleClose = (e) => {
+    if (el.current && !el.current.contains(e.target)) {
+      document.querySelector(".rdrCalendarWrapper").style.display = "none";
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleClose);
+    return () => {
+      window.removeEventListener("click", handleClose);
+    };
+  }, [el]);
 
   useEffect(() => {
     if (date[0].startDate && !date[0].endDate) return;
@@ -239,10 +255,7 @@ export default function Db() {
         })
       )?.data;
 
-      console.log("res", res);
-
       if (res?.code === 200) {
-        console.log("res?.", res);
         getOrgWithUnit(res?.data, "region", org);
 
         setOrgMenuList(org);
@@ -296,8 +309,6 @@ export default function Db() {
 
     setInit(false);
   }, [init]);
-
-  console.log("checkData", start_date);
 
   return (
     <Layout loading={loading}>
@@ -541,97 +552,100 @@ export default function Db() {
                   />
                 );
               })}
-            <DateInput
-              value={date}
-              setValue={setDate}
-              textValue={date}
-              startValue={start_date}
-              endValue={end_date}
-              w="100%"
-              title={
-                <>
-                  <Row
-                    alignItems={"center"}
-                    wrap={"wrap"}
-                    sx={{ gap: 1, whiteSpace: "nowrap" }}
-                  >
-                    등록일
-                    <Button
-                      text="금일"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: new Date(),
-                            endDate: new Date(),
-                          },
-                        ])
-                      }
-                    />
-                    <Button
-                      text="어제"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: new Date(
-                              new Date().setDate(new Date().getDate() - 1)
-                            ),
-                            endDate: new Date(),
-                          },
-                        ])
-                      }
-                    />
-                    <Button
-                      text="이번주"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: new Date(
-                              new Date().setDate(new Date().getDate() - 7)
-                            ),
-                            endDate: new Date(),
-                          },
-                        ])
-                      }
-                    />
-                    <Button
-                      text="지난달"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: new Date(
-                              new Date().setMonth(new Date().getMonth() - 1)
-                            ),
-                            endDate: new Date(),
-                          },
-                        ])
-                      }
-                    />
-                  </Row>
-                </>
-              }
-            />
+            <div ref={el}>
+              <DateInput
+                value={date}
+                setValue={setDate}
+                textValue={date}
+                startValue={start_date}
+                endValue={end_date}
+                w="100%"
+                title={
+                  <>
+                    <Row
+                      alignItems={"center"}
+                      wrap={"wrap"}
+                      sx={{ gap: 1, whiteSpace: "nowrap" }}
+                    >
+                      등록일
+                      <Button
+                        text="금일"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(),
+                              endDate: new Date(),
+                            },
+                          ])
+                        }
+                      />
+                      <Button
+                        text="어제"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(
+                                new Date().setDate(new Date().getDate() - 1)
+                              ),
+                              endDate: new Date(),
+                            },
+                          ])
+                        }
+                      />
+                      <Button
+                        text="이번주"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(
+                                new Date().setDate(new Date().getDate() - 7)
+                              ),
+                              endDate: new Date(),
+                            },
+                          ])
+                        }
+                      />
+                      <Button
+                        text="지난달"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(
+                                new Date().setMonth(new Date().getMonth() - 1)
+                              ),
+                              endDate: new Date(),
+                            },
+                          ])
+                        }
+                      />
+                    </Row>
+                  </>
+                }
+              />
+            </div>
           </GridBox>
         </Column>
+
         <Column sx={{ mt: "15px" }}>
           <Row
             alignItems={"center"}

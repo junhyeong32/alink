@@ -33,6 +33,7 @@ export default function Column({
   return (
     <Box
       component={componentType}
+      {...props}
       sx={{
         display: "flex",
         flexDirection: flexDirection || "column",
@@ -41,7 +42,6 @@ export default function Column({
         flexWrap: _wrap[wrap],
         ...sx,
       }}
-      props
     >
       {children}
     </Box>
