@@ -466,7 +466,7 @@ export default function DbDetail() {
               }
             })}
             <RowLabel label="등록일시" fs="h5">
-              <Typography variant="h5"></Typography>
+              <Typography variant="h5">{db_detail?.created_date}</Typography>
             </RowLabel>
             <RowLabel label="지역" fs="h5">
               <OutLineSelectInput

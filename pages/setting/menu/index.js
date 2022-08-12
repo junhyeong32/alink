@@ -250,7 +250,7 @@ export default function Menu() {
               ))}
             </Row>
           )}
-          <RowLabel label="샘플 업로드" label_w={68}>
+          {/* <RowLabel label="샘플 업로드" label_w={68}>
             <OutLineInput w={231} value={file_name} disabled />
             <label htmlFor="contained-button-file">
               <Input
@@ -277,7 +277,7 @@ export default function Menu() {
                 fs="h6"
               />
             </label>
-          </RowLabel>
+          </RowLabel> */}
           <RowLabel label="활성화" label_w={68}>
             <FormControlLabel
               label="활성화"

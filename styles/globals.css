@@ -136,3 +136,7 @@ body
 .DateRangePicker__CalendarSelection--is-pending {
   background-color: #0d1d41 !important;
 }
+
+#date-input > div.rdrCalendarWrapper.rdrDateRangeWrapper {
+  display: none;
+}

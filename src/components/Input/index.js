@@ -13,12 +13,12 @@ import Image from "next/image";
 import Column from "../Box/Column";
 import { forwardRef } from "react";
 import Row from "../Box/Row";
-import "react-daterange-picker/dist/css/react-calendar.css";
-
-const DateRangePicker = dynamic(() => import("react-daterange-picker"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import { DateRange } from "react-date-range";
+import { addDays } from "date-fns";
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { useEffect } from "react";
+import moment from "moment";
 
 export default function UnderLineInput({
   title,
@@ -141,12 +141,13 @@ export function DateInput({
   title,
   placeholder,
   value,
+  startValue,
+  endValue,
   setValue,
   w,
   textValue,
   ...props
 }) {
-  const [hide, setHide] = useState(true);
   return (
     <Column
       justifyContent="start"
@@ -157,52 +158,84 @@ export function DateInput({
       }}
     >
       <Typography variant="h6">{title}</Typography>
-      <Box
+      <Row
+        id="date-input"
         sx={{
           width: "100%",
           borderBottom: "1px solid #0D1D41",
         }}
       >
-        <Input
+        {/* value={value?.startDate} value={value?.endDate}  */}
+        <Box
           sx={{
-            "& input::placeholder": {
-              fontSize: "10px",
-              color: "#909090 !important",
-              fontWeight: "bold",
-              textAlign: "center",
-            },
+            width: w,
+            borderBottom: "1px solid #0D1D41",
           }}
-          inputProps={{
-            style: {
-              textAlign: "center",
-            },
+        >
+          <Input
+            sx={{
+              "& input::placeholder": {
+                fontSize: "10px",
+                color: "#909090 !important",
+                fontWeight: "bold",
+              },
+            }}
+            inputProps={{ style: { textAlign: "center" } }}
+            fullWidth
+            placeholder={"YYYY-DD-MM"}
+            value={startValue}
+            onClick={() => {
+              document.querySelector(".rdrCalendarWrapper").style.position =
+                "absolute";
+              document.querySelector(".rdrCalendarWrapper").style.display =
+                "inline-flex";
+              document.querySelector(".rdrCalendarWrapper").style.zIndex = 1;
+              document.querySelector(".rdrCalendarWrapper").style.top = "75px";
+              document.querySelector(".rdrCalendarWrapper").style.left =
+                "-27px";
+            }}
+          />
+        </Box>
+        <Box
+          sx={{
+            width: w,
           }}
-          disabled
-          fullWidth
-          placeholder={"YYYY-MM-DD  ~  YYYY-MM-DD"}
-          value={textValue}
-          onClick={() => setHide(!hide)}
-        />
-      </Box>
-
-      <Row
-        alignItems={"center"}
-        justifyContent={"center"}
-        sx={{
-          width: "100%",
-          top: "52px",
-          display: hide ? "none" : "flex",
-          position: "absolute",
-          background: "#FFFFFF",
-          boxShadow:
-            "rgb(0 0 0 / 20%) 0px 5px 5px -3px, rgb(0 0 0 / 14%) 0px 8px 10px 1px, rgb(0 0 0 / 12%) 0px 3px 14px 2px;",
-        }}
-      >
-        <DateRangePicker
-          singleDateRange
-          onSelect={(e) => setValue(e)}
-          // value={value}
-          locale={"ko"}
+        >
+          <Input
+            sx={{
+              "& input::placeholder": {
+                fontSize: "10px",
+                color: "#909090 !important",
+                fontWeight: "bold",
+              },
+            }}
+            value={endValue}
+            inputProps={{ style: { textAlign: "center" } }}
+            fullWidth
+            placeholder={"YYYY-DD-MM"}
+            onClick={() => {
+              document.querySelector(".rdrCalendarWrapper").style.position =
+                "absolute";
+              document.querySelector(".rdrCalendarWrapper").style.display =
+                "inline-flex";
+              document.querySelector(".rdrCalendarWrapper").style.zIndex = 1;
+              document.querySelector(".rdrCalendarWrapper").style.top = "75px";
+              document.querySelector(".rdrCalendarWrapper").style.left =
+                "-27px";
+            }}
+          />
+        </Box>
+        <DateRange
+          rangeColors={["#0D1D41"]}
+          showSelectionPreview={false}
+          showDateDisplay={false}
+          editableDateInputs={false}
+          onChange={(item) => {
+            console.log("item", item);
+            setValue([item.selection]);
+          }}
+          moveRangeOnFirstSelection={true}
+          ranges={value}
         />
       </Row>
     </Column>

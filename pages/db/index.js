@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   Radio,
   CircularProgress,
+  Input,
 } from "@mui/material";
 
 import BojangTable from "../../src/components/Table/bojang";
@@ -43,6 +44,8 @@ import {
 import UnderLineInput from "../../src/components/Input";
 import OrganizationList from "../../src/components/OrganizationList/List";
 import { useSnackbar } from "notistack";
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
 
 const moment = extendMoment(originalMoment);
 
@@ -60,7 +63,16 @@ export default function Db() {
   const [date_range, setDateRange] = useState(
     moment.range(moment().clone().subtract(7, "days"), moment().clone())
   );
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState([
+    {
+      startDate: new Date(),
+      endDate: null,
+      key: "selection",
+    },
+  ]);
+
+  const [start_date, setStartDate] = useState("");
+  const [end_date, setEndDate] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -93,6 +105,21 @@ export default function Db() {
   const [areaChildMenuList, setAreaChildMenuList] = useState({ 전체: "전체" });
 
   const { openModal, closeModal } = useContext(ModalContext);
+
+  useEffect(() => {
+    if (date[0].startDate && !date[0].endDate) return;
+    if (date[0].startDate)
+      setStartDate(moment(date[0].startDate).format("YYYY-MM-DD"));
+    if (date[0].endDate && String(date[0].endDate) !== "Invalid date")
+      setEndDate(moment(date[0].endDate).format("YYYY-MM-DD"));
+  }, [date]);
+  console.log(
+    "date",
+    date,
+    date[0].endDate,
+    date[0].endDate && String(date[0].endDate) !== "Invalid date",
+    !date[0].startDate && !date[0].endDate
+  );
 
   const getDbDetail = async (is_init) => {
     const newValues = values?.map(
@@ -260,7 +287,10 @@ export default function Db() {
     setInit(false);
   }, [init]);
 
-  console.log("checkData", checkData);
+  console.log(
+    "checkData",
+    new Date(new Date().setMonth(new Date().getMonth() - 1))
+  );
 
   return (
     <Layout loading={loading}>
@@ -276,6 +306,7 @@ export default function Db() {
             setOpen(true);
           }}
         />
+
         <Column sx={{ p: 1, display: open ? "flex" : "none" }}>
           <Row justifyContent={"end"} sx={{ gap: 1, width: "100%" }}>
             <Button
@@ -367,7 +398,6 @@ export default function Db() {
         ) : (
           <OrganizationList group_list={sales} open={open} absolute />
         )}
-
         <Column sx={{ rowGap: "15px", p: "40px 40px 0 40px" }}>
           <TopLabelContents
             title="인수상태"
@@ -505,9 +535,11 @@ export default function Db() {
                 );
               })}
             <DateInput
-              value={date_range}
-              setValue={setDateRange}
+              value={date}
+              setValue={setDate}
               textValue={date}
+              startValue={start_date}
+              endValue={end_date}
               w="100%"
               title={
                 <>
@@ -523,7 +555,15 @@ export default function Db() {
                       fs={"h6"}
                       color={"primary.white"}
                       h={14}
-                      action={() => setDate(moment().format("YYYY-MM-DD"))}
+                      action={() =>
+                        setDate([
+                          {
+                            ...date.key,
+                            startDate: new Date(),
+                            endDate: new Date(),
+                          },
+                        ])
+                      }
                     />
                     <Button
                       text="어제"
@@ -532,9 +572,15 @@ export default function Db() {
                       color={"primary.white"}
                       h={14}
                       action={() =>
-                        setDate(
-                          moment().subtract(1, "days").format("YYYY-MM-DD")
-                        )
+                        setDate([
+                          {
+                            ...date.key,
+                            startDate: new Date(
+                              new Date().setDate(new Date().getDate() - 1)
+                            ),
+                            endDate: new Date(),
+                          },
+                        ])
                       }
                     />
                     <Button
@@ -544,9 +590,15 @@ export default function Db() {
                       color={"primary.white"}
                       h={14}
                       action={() =>
-                        setDate(
-                          moment().subtract(7, "days").format("YYYY-MM-DD")
-                        )
+                        setDate([
+                          {
+                            ...date.key,
+                            startDate: new Date(
+                              new Date().setDate(new Date().getDate() - 7)
+                            ),
+                            endDate: new Date(),
+                          },
+                        ])
                       }
                     />
                     <Button
@@ -555,11 +607,17 @@ export default function Db() {
                       fs={"h6"}
                       color={"primary.white"}
                       h={14}
-                      // action={() =>
-                      //   setDate(
-                      //     moment().subtract(7, "days").format("YYYY-MM-DD")
-                      //   )
-                      // }
+                      action={() =>
+                        setDate([
+                          {
+                            ...date.key,
+                            startDate: new Date(
+                              new Date().setMonth(new Date().getMonth() - 1)
+                            ),
+                            endDate: new Date(),
+                          },
+                        ])
+                      }
                     />
                   </Row>
                 </>
@@ -567,7 +625,6 @@ export default function Db() {
             />
           </GridBox>
         </Column>
-
         <Column sx={{ mt: "15px" }}>
           <Row
             alignItems={"center"}
