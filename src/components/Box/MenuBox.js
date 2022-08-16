@@ -19,7 +19,7 @@ export default function MenuBox({ img_src, w, text, link, textWidth }) {
         "&.MuiButtonBase-root:active": {
           bgcolor: "transparent",
         },
-        padding: "0 0 15px 0",
+        // padding: "0 0 15px 0",
         "&:hover": {
           backgroundColor: "none",
           color: "primary",
