@@ -116,7 +116,7 @@ export default function Db() {
   const [areaChildMenuList, setAreaChildMenuList] = useState({ 전체: "전체" });
 
   const { openModal, closeModal } = useContext(ModalContext);
-  const { organization, addOrganizationData, org_info } =
+  const { organization, addOrganizationData, org_info, addOrganizationInfo } =
     useContext(OrganizationContext);
 
   const handleClose = (e) => {
@@ -436,20 +436,10 @@ export default function Db() {
                       variant="h6"
                       className="cursor"
                       onClick={() => {
-                        setDeniedListEl((prev) => {
-                          const newData = [...prev];
-                          newData.push(
-                            result.split("/")[1] + result.split("/")[2]
-                          );
-
-                          return newData;
-                        });
-                        setDeniedList((prev) => {
-                          const newData = [...prev];
-                          newData.push(Object.keys(search_list)[0]);
-
-                          return newData;
-                        });
+                        addOrganizationData(Object.keys(search_list)[0]);
+                        addOrganizationInfo(
+                          result.split("/")[1] + result.split("/")[2]
+                        );
                       }}
                       key={key}
                     >
@@ -527,7 +517,7 @@ export default function Db() {
                     <Row>
                       <Typography variant="h6">{list.split(" ")[0]}</Typography>
                       <Typography variant="h6" sx={{ color: "#909090" }}>
-                        ({list.split(" ")[1]})
+                        ({list.split(" ")[list.split(" ").length - 1]})
                       </Typography>
                     </Row>
                   ) : (
