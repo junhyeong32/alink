@@ -23,7 +23,6 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
     label,
     onClick,
     nodeId,
-    test,
     icon: iconProp,
     expansionIcon,
     displayIcon,
@@ -40,7 +39,8 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
   } = useTreeItem(nodeId);
 
   const { addModalData, modal_data, modal_list } = useContext(ModalContext);
-  const { addOrganizationData, org_search } = useContext(OrganizationContext);
+  const { addOrganizationData, org_search, addOrganizationInfo } =
+    useContext(OrganizationContext);
 
   const icon = iconProp || expansionIcon || displayIcon;
 
@@ -53,6 +53,7 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
     handleSelection(event);
 
     addOrganizationData(nodeId);
+    addOrganizationInfo(label);
   };
 
   return (
@@ -108,7 +109,7 @@ const TreeViewRecursive = ({ el, depth }) => {
       nodeId={el.code}
       test={el?.name}
       label={
-        <Row>
+        <Row sx={{ zIndex: 1 }}>
           <Typography variant="h6">{el?.name}</Typography>
           <Typography ml={0.4} variant="h6" color="primary.gray">
             ({el?.user_count})
@@ -140,10 +141,10 @@ export default function OrganizationList({ group_list, open, absolute }) {
             sx={{
               height: "100vh",
               overflowY: "scroll",
-              display: open ? "flex" : "none",
-              position: absolute && "absolute",
-              zIndex: absolute && 1,
-              background: "#FFFFFF",
+              // display: open ? "flex" : "none",
+              // position: absolute && "absolute",
+              // zIndex: absolute && 2,
+              // background: "#FFFFFF",
             }}
             defaultExpanded={getAllCodeOfTree(list)}
             defaultCollapseIcon={

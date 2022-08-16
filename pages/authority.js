@@ -14,7 +14,7 @@ import useGetOrganization from "../src/hooks/share/useGetOrganization";
 import OrganizationList from "../src/components/OrganizationList/List";
 import { useContext } from "react";
 import { OrganizationContext } from "../src/contexts/OrganizationListContext";
-import UnderLineInput from "../src/components/Input";
+import UnderLineInput, { LabelUnderLineInput } from "../src/components/Input";
 import UnderLineSelectInput from "../src/components/Input/Select";
 import {
   getOrgWithName,
@@ -86,10 +86,6 @@ export default function Authority() {
       getOrgWithName(sales, search, searchObj);
       if (JSON.stringify(searchObj) !== "{}") return setSearchList(searchObj);
       setSearchList("검색결과가 없습니다.");
-    } else if (searchNum) {
-      getOrgWithId(sales, search, searchObj);
-      if (JSON.stringify(searchObj) !== "{}") return setSearchList(searchObj);
-      setSearchList("검색결과가 없습니다.");
     } else {
       getUsers();
     }
@@ -101,7 +97,7 @@ export default function Authority() {
         <Column
           alignItems={"center"}
           sx={{
-            width: 550,
+            width: 246,
             height: "100%",
             overflowY: "scroll",
             gap: 2,
@@ -139,31 +135,18 @@ export default function Authority() {
                 action={() => {
                   if (document.querySelector("#search").value !== "") {
                     setSearch(document.querySelector("#search").value);
-                  } else {
-                    setSearchNum(document.querySelector("#searchNum").value);
                   }
                 }}
               />
             </Row>
             <Row alignItems={"center"} sx={{ gap: 1, mt: 1 }}>
               <UnderLineInput
-                w={"80%"}
+                w={"100%"}
                 id="search"
                 placeholder="사원명으로 검색"
                 onKeyPress={(ev) => {
                   if (ev.key === "Enter") {
                     setSearch(ev.target.value);
-                  }
-                }}
-              />
-
-              <UnderLineInput
-                w={"80%"}
-                id="searchNum"
-                placeholder="Id로 검색"
-                onKeyPress={(ev) => {
-                  if (ev.key === "Enter") {
-                    setSearchNum(ev.target.value);
                   }
                 }}
               />
@@ -205,7 +188,7 @@ export default function Authority() {
           )}
         </Column>
         <Column sx={{ width: "80%", pl: 2 }}>
-          <Row sx={{ widht: "100%", gap: 2 }}>
+          <Row alignItems={"end"} sx={{ widht: "100%", gap: 2 }}>
             <UnderLineSelectInput
               title={"전월 급여액"}
               w={"25%"}
@@ -227,6 +210,17 @@ export default function Authority() {
               }}
               value={deposit_status}
               setValue={setDepositStatus}
+            />
+            <LabelUnderLineInput
+              title={"ID"}
+              w={"25%"}
+              id="searchNum"
+              placeholder="Id로 검색"
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  setSearchNum(ev.target.value);
+                }
+              }}
             />
           </Row>
           <Row

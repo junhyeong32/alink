@@ -1,5 +1,6 @@
 import { useState, useContext, useRef } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
 import Row from "../../src/components/Box/Row";
@@ -44,6 +45,7 @@ import {
 import UnderLineInput from "../../src/components/Input";
 import OrganizationList from "../../src/components/OrganizationList/List";
 import { useSnackbar } from "notistack";
+import { OrganizationContext } from "../../src/contexts/OrganizationListContext";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 
@@ -94,7 +96,9 @@ export default function Db() {
   const [init, setInit] = useState(false);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState();
-  const [searchNum, setSearchNum] = useState();
+
+  const [denied_list_el, setDeniedListEl] = useState([]);
+  const [denied_list, setDeniedList] = useState([]);
 
   const [checkData, setCheckData] = useState([]);
 
@@ -108,6 +112,8 @@ export default function Db() {
   const [areaChildMenuList, setAreaChildMenuList] = useState({ 전체: "전체" });
 
   const { openModal, closeModal } = useContext(ModalContext);
+  const { organization, addOrganizationData, org_info } =
+    useContext(OrganizationContext);
 
   const handleClose = (e) => {
     if (el.current && !el.current.contains(e.target)) {
@@ -310,6 +316,21 @@ export default function Db() {
     setInit(false);
   }, [init]);
 
+  useEffect(() => {
+    setDeniedListEl((prev) => {
+      const newData = [...prev];
+      newData.push(org_info);
+
+      return newData;
+    });
+    setDeniedList((prev) => {
+      const newData = [...prev];
+      newData.push(organization);
+
+      return newData;
+    });
+  }, [org_info]);
+
   return (
     <Layout loading={loading}>
       <Column>
@@ -324,98 +345,108 @@ export default function Db() {
             setOpen(true);
           }}
         />
+        <Row
+          sx={{
+            display: open ? "flex" : "none",
+            position: "absolute",
+            background: "#FFFFFF",
+            zIndex: 1,
+          }}
+        >
+          <Column sx={{ p: 1 }}>
 
-        <Column sx={{ p: 1, display: open ? "flex" : "none" }}>
-          <Row justifyContent={"end"} sx={{ gap: 1, width: "100%" }}>
-            <Button
-              w={40}
-              h={20}
-              variant="contained"
-              bgColor={"gray"}
-              fs="h7"
-              color="primary.white"
-              text="초기화"
-              action={() => {
-                document.querySelector("#search").value = "";
-                document.querySelector("#searchNum").value = "";
-                setSearch("");
-                setSearchNum("");
-                setSearchList({});
-                getOrganization();
-              }}
-            />
-            <Button
-              w={40}
-              h={20}
-              variant="contained"
-              bgColor={"primary"}
-              fs="h7"
-              color="primary.white"
-              text="검색"
-              action={() => {
-                if (document.querySelector("#search").value) {
-                  return setSearch(document.querySelector("#search").value);
-                }
+             
 
-                setSearchNum(document.querySelector("#search").value);
-              }}
-            />
-          </Row>
-          <Row alignItems={"center"} sx={{ gap: 1, mt: 1 }}>
-            <UnderLineInput
-              w={"80%"}
-              id="search"
-              placeholder="사원명으로 검색"
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  setSearch(ev.target.value);
-                }
-              }}
-            />
-
-            <UnderLineInput
-              w={"80%"}
-              id="searchNum"
-              placeholder="사번으로 검색"
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  setSearchNum(ev.target.value);
-                }
-              }}
-            />
-          </Row>
-        </Column>
-        {search && search_list === 1 ? (
-          <Row
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-              width: "100%",
-              height: "100px",
-            }}
-          >
-            <CircularProgress size="40px" thickness={5} color="primary" />
-          </Row>
-        ) : typeof search_list === "string" ? (
-          <Typography variant="h6">{search_list}</Typography>
-        ) : search && search_list !== 1 ? (
-          <Column justifyContent={"start"} sx={{ gap: 1, width: "100%", p: 2 }}>
-            {Object.values(search_list)?.map((result, key) => (
-              <Typography
-                variant="h6"
-                className="cursor"
-                onClick={() => {
-                  addOrganizationData(Object.keys(search_list)[0]);
+              <Button text="추가" />
+              <UnderLineInput
+                w={"80%"}
+                id="search"
+                placeholder="사원명으로 검색"
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    setSearch(ev.target.value);
+                  }
                 }}
-                key={key}
-              >
-                - {result}
-              </Typography>
-            ))}
+              />
+
+
+{search && search_list === 1 ? (
+            <Row
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                width: "100%",
+                height: "100px",
+              }}
+            >
+              <CircularProgress size="40px" thickness={5} color="primary" />
+            </Row>
+          ) : typeof search_list === "string" ? (
+            <Typography variant="h6">{search_list}</Typography>
+          ) : search && search_list !== 1 ? (
+            <Column
+              justifyContent={"start"}
+              sx={{ gap: 1, width: "100%", p: 2 }}
+            >
+              {Object.values(search_list)?.map((result, key) => (
+                <Typography
+                  variant="h6"
+                  className="cursor"
+                  onClick={() => {
+                    addOrganizationData(Object.keys(search_list)[0]);
+                  }}
+                  key={key}
+                >
+                  - {result}
+                </Typography>
+              ))}
+            </Column>
+          ) : (
+            <OrganizationList group_list={sales} open={open} absolute />
+          )}
+              
+
           </Column>
-        ) : (
-          <OrganizationList group_list={sales} open={open} absolute />
-        )}
+     
+          <Column>
+            <Typography>DB 제한</Typography>
+            <Column
+              sx={{
+                // width: 275px;
+                height: "90%",
+                border: "3px solid #E2E2E2",
+                borderㄲadius: "5px",
+              }}
+            >
+              {denied_list_el?.map((list, key) => (
+                <Row key={key} alignItems={"center"} sx={{ gap: 1 }}>
+                  <Typography variant="h6">{list}</Typography>
+                  <Image
+                    src="/cancel.png"
+                    width={15}
+                    height={15}
+                    alt="x"
+                    layout="fixed"
+                    style={{ marginTop: "3px", cursor: "pointer" }}
+                    onClick={() => {
+                      setDeniedListEl((prev) => {
+                        const new_arr = [...prev];
+                        new_arr.splice(key, 1);
+                        return new_arr;
+                      });
+
+                      setDeniedList((prev) => {
+                        const new_arr = [...prev];
+                        new_arr.splice(key, 1);
+                        return new_arr;
+                      });
+                    }}
+                  />
+                </Row>
+              ))}
+            </Column>
+          </Column>
+        </Row>
         <Column sx={{ rowGap: "15px", p: "40px 40px 0 40px" }}>
           <TopLabelContents
             title="인수상태"
@@ -645,7 +676,6 @@ export default function Db() {
             </div>
           </GridBox>
         </Column>
-
         <Column sx={{ mt: "15px" }}>
           <Row
             alignItems={"center"}

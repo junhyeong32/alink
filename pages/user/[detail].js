@@ -803,7 +803,7 @@ export default function UserDetail() {
                       grade === "지점장"
                         ? head_office_code
                         : grade === "팀장"
-                        ? "지점코드"
+                        ? branch_code
                         : undefined,
                     org_code:
                       grade === "본부장"
@@ -814,6 +814,8 @@ export default function UserDetail() {
                         ? team_name
                         : grade === "담당자"
                         ? team_code
+                        : grade === "부협력사"
+                        ? name
                         : undefined,
                   });
                   if (res?.code === 200) {
