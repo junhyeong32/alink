@@ -35,6 +35,8 @@ export default function Authority() {
   const [searchNum, setSearchNum] = useState("");
   const [deposit_status, setDepositStatus] = useState("전체");
   const [pay_amount, setPayAmount] = useState("전체");
+  const [name, setName] = useState("");
+  const [id, setId] = useState("");
 
   const { sales, getOrganization } = useGetOrganization("sales");
   const [search_list, setSearchList] = useState(1);
@@ -56,6 +58,8 @@ export default function Authority() {
               token: getAccessToken(),
               page: page,
               count: count,
+              id: id,
+              name: name,
               org_code: organization,
               deposit_status:
                 deposit_status === "전체" ? undefined : deposit_status,
@@ -78,18 +82,7 @@ export default function Authority() {
 
   useEffect(() => {
     getUsers();
-  }, [page, organization, deposit_status, pay_amount]);
-
-  useEffect(() => {
-    const searchObj = {};
-    if (search) {
-      getOrgWithName(sales, search, searchObj);
-      if (JSON.stringify(searchObj) !== "{}") return setSearchList(searchObj);
-      setSearchList("검색결과가 없습니다.");
-    } else {
-      getUsers();
-    }
-  }, [search, searchNum]);
+  }, [page, organization]);
 
   return (
     <Layout loading={isUsersPending}>
@@ -105,90 +98,49 @@ export default function Authority() {
             pb: 5,
           }}
         >
-          <Column sx={{ p: 1 }}>
-            <Row justifyContent={"end"} sx={{ gap: 1, width: "100%" }}>
-              <Button
-                w={40}
-                h={20}
-                variant="contained"
-                bgColor={"gray"}
-                fs="h7"
-                color="primary.white"
-                text="초기화"
-                action={() => {
-                  document.querySelector("#search").value = "";
-                  document.querySelector("#searchNum").value = "";
-                  setSearch("");
-                  setSearchNum("");
-                  setSearchList({});
-                  getOrganization();
-                }}
-              />
-              <Button
-                w={40}
-                h={20}
-                variant="contained"
-                bgColor={"primary"}
-                fs="h7"
-                color="primary.white"
-                text="검색"
-                action={() => {
-                  if (document.querySelector("#search").value !== "") {
-                    setSearch(document.querySelector("#search").value);
-                  }
-                }}
-              />
-            </Row>
-            <Row alignItems={"center"} sx={{ gap: 1, mt: 1 }}>
-              <UnderLineInput
-                w={"100%"}
-                id="search"
-                placeholder="사원명으로 검색"
-                onKeyPress={(ev) => {
-                  if (ev.key === "Enter") {
-                    setSearch(ev.target.value);
-                  }
-                }}
-              />
-            </Row>
+          <Column sx={{ width: "100%", p: 1, mt: 1 }}>
+            <UnderLineSelectInput w={"100%"} title="조직명" menuItems={{}} />
           </Column>
-          {search && search_list === 1 ? (
-            <Row
-              justifyContent="center"
-              alignItems="center"
-              sx={{
-                width: "100%",
-                height: "100px",
-              }}
-            >
-              <CircularProgress size="40px" thickness={5} color="primary" />
-            </Row>
-          ) : typeof search_list === "string" ? (
-            <Typography variant="h6">{search_list}</Typography>
-          ) : search && search_list !== 1 ? (
-            <Column
-              justifyContent={"start"}
-              sx={{ gap: 1, width: "100%", p: 2 }}
-            >
-              {Object.values(search_list)?.map((result, key) => (
-                <Typography
-                  variant="h6"
-                  className="cursor"
-                  onClick={() => {
-                    addOrganizationData(Object.keys(search_list)[0]);
-                  }}
-                  key={key}
-                >
-                  - {result}
-                </Typography>
-              ))}
-            </Column>
-          ) : (
-            <OrganizationList group_list={sales} open />
-          )}
+          <OrganizationList group_list={sales} open />
         </Column>
-        <Column sx={{ width: "80%", pl: 2 }}>
+        <Column sx={{ width: "100%", pl: 2 }}>
+          <Row justifyContent={"end"} sx={{ width: "100%", mb: 2, gap: 1 }}>
+            <Button
+              text={"검색"}
+              w={56}
+              h={28}
+              fs={"h5"}
+              action={() => getUsers()}
+            />
+            <Button
+              text={"초기화"}
+              bgColor="gray"
+              w={56}
+              h={28}
+              fs={"h5"}
+              action={() => {
+                setPayAmount("전체");
+                setDepositStatus("전체");
+                document.querySelector("id").value = "";
+                document.querySelector("name").value = "";
+              }}
+            />
+          </Row>
           <Row alignItems={"end"} sx={{ widht: "100%", gap: 2 }}>
+            <LabelUnderLineInput
+              id="name"
+              title={"사원명"}
+              w={"25%"}
+              placeholder="사원명으로 검색"
+              onBlur={(e) => setName(e.target.value)}
+            />
+            <LabelUnderLineInput
+              id="id"
+              title={"아이디"}
+              w={"25%"}
+              placeholder="아이디로 검색"
+              onBlur={(e) => setId(e.target.value)}
+            />
             <UnderLineSelectInput
               title={"전월 급여액"}
               w={"25%"}
@@ -210,17 +162,6 @@ export default function Authority() {
               }}
               value={deposit_status}
               setValue={setDepositStatus}
-            />
-            <LabelUnderLineInput
-              title={"ID"}
-              w={"25%"}
-              id="searchNum"
-              placeholder="Id로 검색"
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  setSearchNum(ev.target.value);
-                }
-              }}
             />
           </Row>
           <Row
