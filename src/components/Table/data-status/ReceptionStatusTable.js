@@ -58,6 +58,7 @@ export default function ReceptionStatus({ data, date }) {
                   key={key}
                   align="center"
                   rowSpan={data === "" ? 2 : undefined}
+                  sx={{ whiteSpace: "nowrap" }}
                 >
                   <Box
                     sx={{
