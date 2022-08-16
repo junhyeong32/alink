@@ -217,7 +217,7 @@ export default function UserDetail() {
           setOrgCode(head_office_org_code);
           setHeaderOrg(head_office_org_code);
           setHeadOfficeCode(parent_org_code);
-          setHeadOfficeName(headOfficeMenuList[org_code]);
+          setHeadOfficeName(head_office);
           setBranchName(branch);
           setBranchCode(parent_org_code);
           setTeamCode(org_code);

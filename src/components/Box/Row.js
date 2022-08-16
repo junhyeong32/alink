@@ -29,11 +29,12 @@ export default function Row({
   children,
   onClick,
   flexDirection,
+  component,
   ...props
 }) {
   return (
     <Box
-      component="div"
+      component={component || "div"}
       onClick={onClick}
       sx={{
         display: "flex",

@@ -48,6 +48,8 @@ import { useSnackbar } from "notistack";
 import { OrganizationContext } from "../../src/contexts/OrganizationListContext";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
+import UnderLineSelectInput from "../../src/components/Input/Select";
+import { getOrgWithNameGetCount } from "../../src/utility/organization/getOrgWithUnit";
 
 const moment = extendMoment(originalMoment);
 
@@ -99,8 +101,10 @@ export default function Db() {
 
   const [denied_list_el, setDeniedListEl] = useState([]);
   const [denied_list, setDeniedList] = useState([]);
+  const [denied_org_code, setDeniedOrgCode] = useState("");
 
   const [checkData, setCheckData] = useState([]);
+  const [search_list, setSearchList] = useState(1);
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
@@ -317,22 +321,34 @@ export default function Db() {
   }, [init]);
 
   useEffect(() => {
-    setDeniedListEl((prev) => {
-      const newData = [...prev];
-      newData.push(org_info);
+    const searchObj = {};
+    if (search) {
+      getOrgWithNameGetCount(sales, search, searchObj);
+      if (JSON.stringify(searchObj) !== "{}") return setSearchList(searchObj);
+      setSearchList("검색결과가 없습니다.");
+    }
+  }, [search]);
 
-      return newData;
-    });
-    setDeniedList((prev) => {
-      const newData = [...prev];
-      newData.push(organization);
+  useEffect(() => {
+    const getDbDeniedList = async () => {
+      const res = await Axios.Get("db/denied", {
+        params: {
+          token: getAccessToken(),
+          db_pk: router.query.menu,
+          head_office_org_code: denied_org_code,
+        },
+      });
+    };
 
-      return newData;
-    });
-  }, [org_info]);
+    getDbDeniedList();
+  }, [denied_org_code]);
+  console.log(search_list);
 
   return (
-    <Layout loading={loading}>
+    <Layout
+      loading={loading}
+      sx={{ background: open ? "rgba(0, 0, 0, 0.5)" : "none" }}
+    >
       <Column>
         <Button
           w={80}
@@ -340,7 +356,7 @@ export default function Db() {
           variant={"outlined"}
           color="primary"
           fs="h5"
-          text="신칭권한"
+          text="DB제한"
           action={() => {
             setOpen(true);
           }}
@@ -351,76 +367,173 @@ export default function Db() {
             position: "absolute",
             background: "#FFFFFF",
             zIndex: 1,
+            ml: "-13px",
+            // height: "100vh",
           }}
         >
-          <Column sx={{ p: 1 }}>
+          <Column alignItems={"end"} sx={{ p: 1, gap: 2, minWidth: 201 }}>
+            <UnderLineSelectInput
+              w={"100%"}
+              title="조직명"
+              menuItems={headOfficeMenuList}
+              value={denied_org_code}
+              setValue={setDeniedOrgCode}
+            />
+            <Button
+              text="추가"
+              w={52}
+              h={28}
+              fs="h5"
+              action={() => {
+                setDeniedListEl((prev) => {
+                  const newData = [...prev];
+                  newData.push(org_info);
 
-             
+                  return newData;
+                });
+                setDeniedList((prev) => {
+                  const newData = [...prev];
+                  newData.push(organization);
 
-              <Button text="추가" />
-              <UnderLineInput
-                w={"80%"}
-                id="search"
-                placeholder="사원명으로 검색"
-                onKeyPress={(ev) => {
-                  if (ev.key === "Enter") {
-                    setSearch(ev.target.value);
-                  }
+                  return newData;
+                });
+              }}
+            />
+            <UnderLineInput
+              w={"100%"}
+              id="search"
+              placeholder="검색"
+              value={search}
+              setValue={setSearch}
+            />
+
+            {search && search_list === 1 ? (
+              <Row
+                justifyContent="center"
+                alignItems="center"
+                sx={{
+                  width: "100%",
+                  height: "100px",
                 }}
+              >
+                <CircularProgress size="40px" thickness={5} color="primary" />
+              </Row>
+            ) : typeof search_list === "string" ? (
+              <Row justifyContent={"center"} sx={{ width: "100%" }}>
+                <Typography variant="h6" align="center">
+                  {search_list}
+                </Typography>
+              </Row>
+            ) : search && search_list !== 1 ? (
+              <Column
+                justifyContent={"start"}
+                sx={{ gap: 1, width: "100%", p: 2 }}
+              >
+                {Object.values(search_list)?.map((result, key) => (
+                  <>
+                    <Typography
+                      component={"span"}
+                      variant="h6"
+                      className="cursor"
+                      onClick={() => {
+                        setDeniedListEl((prev) => {
+                          const newData = [...prev];
+                          newData.push(
+                            result.split("/")[1] + result.split("/")[2]
+                          );
+
+                          return newData;
+                        });
+                        setDeniedList((prev) => {
+                          const newData = [...prev];
+                          newData.push(Object.keys(search_list)[0]);
+
+                          return newData;
+                        });
+                      }}
+                      key={key}
+                    >
+                      - {result.split("/")[0]}
+                      <Typography
+                        component={"span"}
+                        variant="h6"
+                        className="cursor"
+                        onClick={() => {
+                          setDeniedListEl((prev) => {
+                            const newData = [...prev];
+                            newData.push(
+                              result.split("/")[0] + result.split("/")[2]
+                            );
+
+                            return newData;
+                          });
+                          setDeniedList((prev) => {
+                            const newData = [...prev];
+                            newData.push(Object.keys(search_list)[0]);
+
+                            return newData;
+                          });
+                        }}
+                        key={key}
+                        sx={{ color: "#909090" }}
+                      >
+                        ({result.split("/")[2]})
+                      </Typography>
+                    </Typography>
+                  </>
+                ))}
+              </Column>
+            ) : (
+              <OrganizationList group_list={sales} open={open} absolute />
+            )}
+          </Column>
+
+          <Column
+            alignItems={"center"}
+            sx={{ width: "300px", height: 900, p: "0 20px 77px 20px" }}
+          >
+            <Row justifyContent={"end"} sx={{ width: "100%", mt: 1 }}>
+              <Image
+                src="/black_x.png"
+                width={15}
+                height={15}
+                alt="x"
+                layout="fixed"
+                className="cursor"
+                onClick={() => setOpen(false)}
               />
+            </Row>
 
-
-{search && search_list === 1 ? (
-            <Row
-              justifyContent="center"
-              alignItems="center"
+            <Typography variant="h4" mb={2} mt={11.5}>
+              {menu_detail?.title} 제한
+            </Typography>
+            <Column
               sx={{
                 width: "100%",
-                height: "100px",
-              }}
-            >
-              <CircularProgress size="40px" thickness={5} color="primary" />
-            </Row>
-          ) : typeof search_list === "string" ? (
-            <Typography variant="h6">{search_list}</Typography>
-          ) : search && search_list !== 1 ? (
-            <Column
-              justifyContent={"start"}
-              sx={{ gap: 1, width: "100%", p: 2 }}
-            >
-              {Object.values(search_list)?.map((result, key) => (
-                <Typography
-                  variant="h6"
-                  className="cursor"
-                  onClick={() => {
-                    addOrganizationData(Object.keys(search_list)[0]);
-                  }}
-                  key={key}
-                >
-                  - {result}
-                </Typography>
-              ))}
-            </Column>
-          ) : (
-            <OrganizationList group_list={sales} open={open} absolute />
-          )}
-              
-
-          </Column>
-     
-          <Column>
-            <Typography>DB 제한</Typography>
-            <Column
-              sx={{
-                // width: 275px;
                 height: "90%",
                 border: "3px solid #E2E2E2",
                 borderㄲadius: "5px",
+                p: 2,
               }}
             >
               {denied_list_el?.map((list, key) => (
-                <Row key={key} alignItems={"center"} sx={{ gap: 1 }}>
-                  <Typography variant="h6">{list}</Typography>
+                <Row
+                  key={key}
+                  alignItems={"center"}
+                  justifyContent={"between"}
+                  sx={{ gap: 1 }}
+                >
+                  {typeof list === "string" ? (
+                    <Row>
+                      <Typography variant="h6">{list.split(" ")[0]}</Typography>
+                      <Typography variant="h6" sx={{ color: "#909090" }}>
+                        ({list.split(" ")[1]})
+                      </Typography>
+                    </Row>
+                  ) : (
+                    <Typography variant="h6">{list}</Typography>
+                  )}
+
                   <Image
                     src="/cancel.png"
                     width={15}
@@ -430,21 +543,45 @@ export default function Db() {
                     style={{ marginTop: "3px", cursor: "pointer" }}
                     onClick={() => {
                       setDeniedListEl((prev) => {
-                        const new_arr = [...prev];
-                        new_arr.splice(key, 1);
-                        return new_arr;
-                      });
+                        const newData = [...prev];
+                        newData.splice(key, 1);
 
+                        return newData;
+                      });
                       setDeniedList((prev) => {
-                        const new_arr = [...prev];
-                        new_arr.splice(key, 1);
-                        return new_arr;
+                        const newData = [...prev];
+                        newData.splice(key, 1);
+
+                        return newData;
                       });
                     }}
                   />
                 </Row>
               ))}
             </Column>
+            <Button
+              text="저장"
+              w={52}
+              h={28}
+              sx={{ mt: 2 }}
+              fs="h5"
+              action={async () => {
+                const res = await Axios.Post("db/denied", {
+                  token: getAccessToken(),
+                  db_pk: router.query.menu,
+                  head_office_org_code: denied_org_code,
+                  denied_organization_codes: denied_list.join(","),
+                });
+
+                if (res?.code === 200) {
+                  enqueueSnackbar("저장되었습니다", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+                  setOpen(false);
+                }
+              }}
+            />
           </Column>
         </Row>
         <Column sx={{ rowGap: "15px", p: "40px 40px 0 40px" }}>

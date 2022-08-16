@@ -25,7 +25,7 @@ import { getAccessToken, getCookie } from "../../utility/getCookie";
 import Axios from "../../utility/api";
 import useGetMenus from "../../hooks/setting/useGetMenus";
 import useGetUser from "../../hooks/user/useGetUser";
-export default function Layout({ loading, children }) {
+export default function Layout({ loading, children, sx }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [cookies, setCookie, removeCookie] = useCookies();
@@ -327,6 +327,7 @@ export default function Layout({ loading, children }) {
             maxWidth: "none !important",
             position: "relative",
             overflowY: "scroll",
+            ...sx,
           }}
         >
           {loading ? (

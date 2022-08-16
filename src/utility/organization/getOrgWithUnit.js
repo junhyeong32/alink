@@ -37,12 +37,15 @@ export function getOrgWithName(orgs, search, result) {
   }
 }
 
-export function getOrgWithId(orgs, search, result) {
+export function getOrgWithNameGetCount(orgs, search, result) {
   for (let org of orgs) {
-    getOrgWithId(org.children, search, result);
-    if (org.id?.includes(search)) {
+    getOrgWithNameGetCount(org.children, search, result);
+    if (org.name?.includes(search)) {
+      console.log("org", org);
       Object.assign(result, {
-        [org.code]: getTitleOfOrg_name(org),
+        [org.code]: `${getTitleOfOrg_name(org)}/${org?.name} /${
+          org?.user_count
+        }`,
       });
     }
   }
