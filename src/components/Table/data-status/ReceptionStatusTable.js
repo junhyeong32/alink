@@ -40,6 +40,9 @@ const Root = styled("div")`
 `;
 
 export default function ReceptionStatus({ data, date }) {
+  console.log(
+    new Date(new Date().setMonth(new Date().getMonth() - date)).getMonth() + 1
+  );
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -93,7 +96,10 @@ export default function ReceptionStatus({ data, date }) {
                 </TableRow>
                 <TableRow>
                   <TableCell rowSpan={1} align="center">
-                    {/* {date.slice(4, 6)}월 */}
+                    {new Date(
+                      new Date().setMonth(new Date().getMonth() - date)
+                    ).getMonth() + 1}
+                    월
                   </TableCell>
                   {dashboard?.status.map((status, _key) => (
                     <TableCell rowSpan={1} align="center" key={_key}>
