@@ -72,6 +72,11 @@ export default function DbGiftTable({ data, checkData }) {
           <TableHead>
             <TableRow key="head">
               {headerList?.map((data, key) => {
+                if (
+                  (rank === "담당자" || rank === "팀장") &&
+                  data === "DB 지원 대상"
+                )
+                  return;
                 return (
                   <TableCell key={key} align="center">
                     {data}
@@ -93,12 +98,17 @@ export default function DbGiftTable({ data, checkData }) {
                     },
                   }}
                 >
-                  <TableCell
-                    align="center"
-                    sx={{ color: user?.acfp < 300000 ? "#FD0202" : "#000000" }}
-                  >
-                    {user?.acfp < 300000 ? "미지원" : "지원"}
-                  </TableCell>
+                  {rank !== "담당자" && rank !== "팀장" && (
+                    <TableCell
+                      align="center"
+                      sx={{
+                        color: user?.acfp < 300000 ? "#FD0202" : "#000000",
+                      }}
+                    >
+                      {user?.acfp < 300000 ? "미지원" : "지원"}
+                    </TableCell>
+                  )}
+
                   <TableCell>
                     <Row justifyContent={"center"}>
                       <RoundColorBox w={61} background={rank_list[user?.grade]}>

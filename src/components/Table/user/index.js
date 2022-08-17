@@ -41,7 +41,7 @@ const Root = styled("div")`
     font-weight: bold;
     font-size: 12px;
     padding: 0;
-    min-width: 100px;
+    min-width: 80px;
   }
   td {
     padding: 8px;
@@ -131,24 +131,28 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                   </TableCell>
                   <TableCell
                     align="center"
+                    sx={{ whiteSpace: "nowrap" }}
                     onClick={() => router.push(`/user/${user?.code}`)}
                   >
                     {user?.head_office}
                   </TableCell>
                   <TableCell
                     align="center"
+                    sx={{ whiteSpace: "nowrap" }}
                     onClick={() => router.push(`/user/${user?.code}`)}
                   >
                     {user?.region + user?.branch + user?.team}
                   </TableCell>
                   <TableCell
                     align="center"
+                    sx={{ whiteSpace: "nowrap" }}
                     onClick={() => router.push(`/user/${user?.code}`)}
                   >
                     {user?.id}
                   </TableCell>
                   <TableCell
                     align="center"
+                    sx={{ whiteSpace: "nowrap" }}
                     onClick={() => router.push(`/user/${user?.code}`)}
                   >
                     {user?.name}

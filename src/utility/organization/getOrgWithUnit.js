@@ -26,12 +26,43 @@ export function getOrgHeadOffice(orgs, result) {
   );
 }
 
-export function getOrgByRank(orgs, unit, rank, result) {
+export function getOrgByParentRank(orgs, unit, rank, result) {
   for (let org of orgs) {
     getOrgByRank(org.children, unit, rank, result);
     console.log("rank", rank, org.parent_code);
 
     if (org.unit === unit && rank === org.parent_code) {
+      Object.assign(result, {
+        [org.code]: getTitleOfOrg_name(org),
+      });
+    }
+  }
+}
+
+// export function getOrgByParentRank(orgs, unit, rank, result) {
+//   for (let org of orgs) {
+//     getOrgByRank(org.children, unit, rank, result);
+//     console.log("rank", rank, org.parent_code);
+
+//     if (org.unit === unit && rank === org.parent_code) {
+//       Object.assign(result, {
+//         [org.code]: getTitleOfOrg_name(org),
+//       });
+//     }
+//   }
+// }
+
+export function getOrgWithOfficeName(orgs, user_info, result) {
+  for (let org of orgs) {
+    getOrgWithOfficeName(org.children, user_info, result);
+
+    if (
+      user_info?.grade === "담당자" ||
+      user_info?.grade === "지점장" ||
+      user_info?.grade === "팀장"
+        ? user_info?.branch === org?.branch_name
+        : user_info?.head_office === org?.head_office_name
+    ) {
       Object.assign(result, {
         [org.code]: getTitleOfOrg_name(org),
       });
