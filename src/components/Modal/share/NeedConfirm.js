@@ -86,7 +86,7 @@ export default function NeedConfirm({ index }) {
                 bgColor={"gray"}
                 color={"primary.white"}
                 fs={"h4"}
-                action={() => closeModal(1, index)}
+                action={() => closeModal(index)}
               />
             </Row>
           </Column>

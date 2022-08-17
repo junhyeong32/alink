@@ -49,7 +49,7 @@ export default function Change({ index }) {
     modalContent,
   } = useContext(ModalContext);
 
-  const { title, buttonName, buttonAction } = modalContent[index];
+  const { title, buttonName, buttonAction, list } = modalContent[index];
 
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
@@ -88,13 +88,13 @@ export default function Change({ index }) {
                         // TODO
                         // 재차 확인
                         token: getAccessToken(),
-                        list_pks: router.query.menu,
+                        list_pks: list,
                         head_office_org_code: select,
                       });
 
                       if (res?.code === 200) {
                         closeModal(0, 2);
-                        enqueueSnackbar("소속이 변경되었습니다", {
+                        enqueueSnackbar("조직이 변경되었습니다", {
                           variant: "success",
                           autoHideDuration: 2000,
                         });

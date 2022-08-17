@@ -41,11 +41,10 @@ export function getOrgWithNameGetCount(orgs, search, result) {
   for (let org of orgs) {
     getOrgWithNameGetCount(org.children, search, result);
     if (org.name?.includes(search)) {
-      console.log("org", org);
       Object.assign(result, {
-        [org.code]: `${getTitleOfOrg_name(org)}/${org?.name} /${
-          org?.user_count
-        }`,
+        code: org.code,
+        title: getTitleOfOrg_name(org),
+        name: org.name,
       });
     }
   }

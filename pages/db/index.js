@@ -20,7 +20,6 @@ import {
 import BojangTable from "../../src/components/Table/bojang";
 import TopLabelContents from "../../src/components/Box/TopLableContents";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
-
 import { argument_status } from "../../src/data/share/MenuByTextList";
 import ExcelButton from "../../src/components/Button/Excel";
 import { LabelUnderLineInput, DateInput } from "../../src/components/Input";
@@ -50,6 +49,7 @@ import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import UnderLineSelectInput from "../../src/components/Input/Select";
 import { getOrgWithNameGetCount } from "../../src/utility/organization/getOrgWithUnit";
+import { useTransition } from "react";
 
 const moment = extendMoment(originalMoment);
 
@@ -101,10 +101,14 @@ export default function Db() {
 
   const [denied_list_el, setDeniedListEl] = useState([]);
   const [denied_list, setDeniedList] = useState([]);
+  const [init_denied_list, setInitDeniedList] = useState([]);
   const [denied_org_code, setDeniedOrgCode] = useState("");
 
   const [checkData, setCheckData] = useState([]);
   const [search_list, setSearchList] = useState(1);
+
+  const [denined_sales, setDeninedSales] = useState([]);
+  const [deninedLoading, setDeniedLoading] = useState(false);
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
@@ -113,6 +117,9 @@ export default function Db() {
   const [areaParentMenuList, setAreaParentMenuList] = useState({
     전체: "전체",
   });
+  const [deninedHeadOfficeMenuList, setDeninedHeadOfficeMenuList] = useState(
+    {}
+  );
   const [areaChildMenuList, setAreaChildMenuList] = useState({ 전체: "전체" });
 
   const { openModal, closeModal } = useContext(ModalContext);
@@ -247,6 +254,7 @@ export default function Db() {
     getOrgWithUnit(sales, "team", org);
 
     setHeadOfficeMenuList(head_org);
+    setDeninedHeadOfficeMenuList(head_org);
     setOrgMenuList(org);
   }, [sales]);
 
@@ -324,25 +332,68 @@ export default function Db() {
     const searchObj = {};
     if (search) {
       getOrgWithNameGetCount(sales, search, searchObj);
-      if (JSON.stringify(searchObj) !== "{}") return setSearchList(searchObj);
+      if (JSON.stringify(searchObj) !== "{}") return setSearchList([searchObj]);
       setSearchList("검색결과가 없습니다.");
     }
   }, [search]);
 
   useEffect(() => {
+    setDeniedLoading(true);
+    setDeniedList([]);
+    setInitDeniedList([]);
+    const headOfficeBySales = async () => {
+      const res = (
+        await Axios.Get("organization", {
+          params: {
+            token: getAccessToken(),
+            type: "sales",
+            head_office_org_code: denied_org_code,
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        setDeninedSales(res?.data);
+      }
+    };
+
+    headOfficeBySales();
+
+    setDeniedLoading(false);
+  }, [denied_org_code]);
+
+  useEffect(() => {
     const getDbDeniedList = async () => {
-      const res = await Axios.Get("db/denied", {
-        params: {
-          token: getAccessToken(),
-          db_pk: router.query.menu,
-          head_office_org_code: denied_org_code,
-        },
-      });
+      const res = (
+        await Axios.Get("db/denied", {
+          params: {
+            token: getAccessToken(),
+            db_pk: router.query.menu,
+            head_office_org_code: denied_org_code,
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        setDeniedListEl((prev) => {
+          const newData = [];
+          res?.data.map((d) => newData.push(d?.name));
+
+          return newData;
+        });
+        setDeniedList((prev) => {
+          const newData = [];
+          res?.data.map((d) => newData.push(d?.code));
+
+          return newData;
+        });
+      }
     };
 
     getDbDeniedList();
   }, [denied_org_code]);
-  console.log(search_list);
+
+  console.log("search_list", denied_list, denied_list_el);
 
   return (
     <Layout
@@ -375,7 +426,7 @@ export default function Db() {
             <UnderLineSelectInput
               w={"100%"}
               title="조직명"
-              menuItems={headOfficeMenuList}
+              menuItems={deninedHeadOfficeMenuList}
               value={denied_org_code}
               setValue={setDeniedOrgCode}
             />
@@ -385,6 +436,12 @@ export default function Db() {
               h={28}
               fs="h5"
               action={() => {
+                if (!org_info || !organization) {
+                  return enqueueSnackbar("선택된 리스트가 없습니다", {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
+                }
                 setDeniedListEl((prev) => {
                   const newData = [...prev];
                   newData.push(org_info);
@@ -407,7 +464,7 @@ export default function Db() {
               setValue={setSearch}
             />
 
-            {search && search_list === 1 ? (
+            {deninedLoading || (search && search_list === 1) ? (
               <Row
                 justifyContent="center"
                 alignItems="center"
@@ -429,52 +486,34 @@ export default function Db() {
                 justifyContent={"start"}
                 sx={{ gap: 1, width: "100%", p: 2 }}
               >
-                {Object.values(search_list)?.map((result, key) => (
+                {search_list?.map((result, key) => (
                   <>
                     <Typography
                       component={"span"}
                       variant="h6"
                       className="cursor"
+                      sx={{
+                        "&:hover": {
+                          background: "#F0EFEF",
+                        },
+                      }}
                       onClick={() => {
-                        addOrganizationData(Object.keys(search_list)[0]);
-                        addOrganizationInfo(
-                          result.split("/")[1] + result.split("/")[2]
-                        );
+                        addOrganizationData(result?.code);
+                        addOrganizationInfo(result?.name);
                       }}
                       key={key}
                     >
-                      - {result.split("/")[0]}
-                      <Typography
-                        component={"span"}
-                        variant="h6"
-                        className="cursor"
-                        onClick={() => {
-                          setDeniedListEl((prev) => {
-                            const newData = [...prev];
-                            newData.push(
-                              result.split("/")[0] + result.split("/")[2]
-                            );
-
-                            return newData;
-                          });
-                          setDeniedList((prev) => {
-                            const newData = [...prev];
-                            newData.push(Object.keys(search_list)[0]);
-
-                            return newData;
-                          });
-                        }}
-                        key={key}
-                        sx={{ color: "#909090" }}
-                      >
-                        ({result.split("/")[2]})
-                      </Typography>
+                      - {result?.title}
                     </Typography>
                   </>
                 ))}
               </Column>
             ) : (
-              <OrganizationList group_list={sales} open={open} absolute />
+              <OrganizationList
+                group_list={denined_sales}
+                open={open}
+                absolute
+              />
             )}
           </Column>
 
@@ -513,16 +552,7 @@ export default function Db() {
                   justifyContent={"between"}
                   sx={{ gap: 1 }}
                 >
-                  {typeof list === "string" ? (
-                    <Row>
-                      <Typography variant="h6">{list.split(" ")[0]}</Typography>
-                      <Typography variant="h6" sx={{ color: "#909090" }}>
-                        ({list.split(" ")[list.split(" ").length - 1]})
-                      </Typography>
-                    </Row>
-                  ) : (
-                    <Typography variant="h6">{list}</Typography>
-                  )}
+                  <Typography variant="h6">{list}</Typography>
 
                   <Image
                     src="/cancel.png"
@@ -556,6 +586,11 @@ export default function Db() {
               sx={{ mt: 2 }}
               fs="h5"
               action={async () => {
+                if (!denied_org_code)
+                  return enqueueSnackbar("조직을 선택해주세요", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
                 const res = await Axios.Post("db/denied", {
                   token: getAccessToken(),
                   db_pk: router.query.menu,
@@ -832,7 +867,7 @@ export default function Db() {
                         title: "DB 조직 변경",
                         contents: "DB를 변경하시겠습니까?",
                         buttonName: "변경",
-                        list: checkData,
+                        list: checkData.join(","),
                       },
                       data: headOfficeMenuList,
                     });
@@ -871,20 +906,30 @@ export default function Db() {
                       w={90}
                       h={28}
                       action={() => {
-                        if (checkData.length === 0)
-                          return enqueueSnackbar("변경할 DB를 선택해주세요", {
-                            variant: "error",
-                            autoHideDuration: 2000,
-                          });
                         openModal({
-                          modal: "change",
+                          modal: "needconfirm",
                           content: {
-                            title: "DB 조직 변경",
+                            title: "DB 자동 분배",
                             contents: "자동분배를 진행하시겠습니까?",
                             buttonName: "변경",
-                            list: checkData,
+                            action: async () => {
+                              const res = await Axios.Post(
+                                "db/menu/distribute",
+                                {
+                                  token: getAccessToken(),
+                                  db_pk: router.query.menu,
+                                }
+                              );
+
+                              if (res?.code === 200) {
+                                closeModal(0, 2);
+                                enqueueSnackbar("조직이 변경되었습니다", {
+                                  variant: "success",
+                                  autoHideDuration: 2000,
+                                });
+                              }
+                            },
                           },
-                          data: headOfficeMenuList,
                         });
                       }}
                     />

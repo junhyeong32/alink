@@ -16,7 +16,10 @@ import Button from "../../Button";
 import Row from "../../Box/Row";
 import MemoBox from "../../Box/Memo";
 import { useRouter } from "next/router";
-import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
+import {
+  getTitleOfOrg,
+  getTitleOfOrg_name,
+} from "../../../utility/organization/getTitleOfOrg";
 import { useEffect } from "react";
 
 const Root = styled("div")`
@@ -172,14 +175,14 @@ export default function BojangTable({
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
-                  {d?.allocated_user?.head_office}
+                  {d?.organization?.head_office_name}
                 </TableCell>
                 <TableCell
                   key={d?.pk + 6}
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
-                  {getTitleOfOrg(d?.allocated_user)}
+                  {getTitleOfOrg_name(d?.organization)}
                 </TableCell>
                 <TableCell
                   key={d?.pk + 7}
