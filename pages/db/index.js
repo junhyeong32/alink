@@ -361,7 +361,7 @@ export default function Db() {
 
     headOfficeBySales();
 
-    setDeniedLoading(false);
+    setTimeout(() => setDeniedLoading(false), 1000);
   }, [denied_org_code]);
 
   useEffect(() => {

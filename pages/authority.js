@@ -16,18 +16,17 @@ import { useContext } from "react";
 import { OrganizationContext } from "../src/contexts/OrganizationListContext";
 import UnderLineInput, { LabelUnderLineInput } from "../src/components/Input";
 import UnderLineSelectInput from "../src/components/Input/Select";
-import {
-  getOrgWithName,
-  getOrgWithId,
-} from "../src/utility/organization/getOrgWithUnit";
+import { getOrgHeadOffice } from "../src/utility/organization/getOrgWithUnit";
 
 export default function Authority() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+
+  const { sales } = useGetOrganization("sales");
+
   const [checkList, setCheckList] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
-  const [org_code, setOrgCode] = useState("");
   const [users, setUsers] = useState([]);
   const [isUsersPending, setIsUsersPending] = useState(true);
   const [totalCouunt, setTotalCount] = useState();
@@ -37,11 +36,45 @@ export default function Authority() {
   const [pay_amount, setPayAmount] = useState("전체");
   const [name, setName] = useState("");
   const [id, setId] = useState("");
-
-  const { sales, getOrganization } = useGetOrganization("sales");
+  const [org_code, setOrgCode] = useState("전체");
+  const [org_sales, setOrgSales] = useState([]);
   const [search_list, setSearchList] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const [orgMenuList, setOrgMenuList] = useState({});
 
   const { organization, addOrganizationData } = useContext(OrganizationContext);
+
+  useEffect(() => {
+    if (org_code === "전체") return;
+    setLoading(true);
+
+    const getOrganization = async (_type, _head_office) => {
+      const res = (
+        await Axios.Get("organization", {
+          params: {
+            token: getAccessToken(),
+            type: "sales",
+            head_office_org_code: org_code === "전체" ? undefined : org_code,
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) setOrgSales(res?.data);
+    };
+
+    getOrganization();
+    setTimeout(() => setLoading(false), 1000);
+  }, [org_code]);
+
+  useEffect(() => {
+    if (sales?.length === 0) return;
+    const head_org = {};
+
+    getOrgHeadOffice(sales, head_org);
+
+    setOrgMenuList(head_org);
+  }, [sales]);
 
   const getUsers = async (is_init) => {
     const res = is_init
@@ -99,9 +132,31 @@ export default function Authority() {
           }}
         >
           <Column sx={{ width: "100%", p: 1, mt: 1 }}>
-            <UnderLineSelectInput w={"100%"} title="조직명" menuItems={{}} />
+            <UnderLineSelectInput
+              w={"100%"}
+              title="조직명"
+              menuItems={orgMenuList}
+              value={org_code}
+              setValue={setOrgCode}
+            />
           </Column>
-          <OrganizationList group_list={sales} open />
+          {loading ? (
+            <Row
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                width: "100%",
+                height: "100px",
+              }}
+            >
+              <CircularProgress size="40px" thickness={5} color="primary" />
+            </Row>
+          ) : (
+            <OrganizationList
+              group_list={org_code === "전체" ? sales : org_sales}
+              open
+            />
+          )}
         </Column>
         <Column sx={{ width: "100%", pl: 2 }}>
           <Row justifyContent={"end"} sx={{ width: "100%", mb: 2, gap: 1 }}>
