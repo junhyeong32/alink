@@ -81,7 +81,11 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                 <TableCell
                   key={key}
                   align="center"
-                  sx={{ whiteSpace: "nowrap" }}
+                  sx={{
+                    whiteSpace: "nowrap",
+                    pl: "10px !important",
+                    pr: "10px !important",
+                  }}
                 >
                   {location?.db.title}
                   <Typography variant="h5">{location?.count}</Typography>

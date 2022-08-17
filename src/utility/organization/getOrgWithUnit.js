@@ -61,7 +61,7 @@ export function getOrgWithOfficeName(orgs, user_info, result) {
       user_info?.grade === "지점장" ||
       user_info?.grade === "팀장"
         ? user_info?.branch === org?.branch_name
-        : user_info?.head_office === org?.head_office_name
+        : user_info?.region === org?.region_name
     ) {
       Object.assign(result, {
         [org.code]: getTitleOfOrg_name(org),
