@@ -8,14 +8,14 @@ export default function useGetOrganization(type, head_office, name, id) {
   const [office_by_org, setOfficeByOrg] = useState([]);
   const [org_pending, setOrgPending] = useState(true);
 
-  const getOrganization = async () => {
+  const getOrganization = async (_type, _head_office) => {
     const res = (
       await Axios.Get("organization", {
         params: {
           token: getAccessToken(),
-          type: type,
+          type: type || _type,
           head_office_org_code:
-            head_office === "전체" ? undefined : head_office,
+            _head_office || head_office === "전체" ? undefined : head_office,
         },
       })
     )?.data;

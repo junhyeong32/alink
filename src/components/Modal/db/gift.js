@@ -36,7 +36,10 @@ import Axios from "../../../utility/api";
 import { getAccessToken } from "../../../utility/getCookie";
 import useGetGroupList from "../../../hooks/share/useGetGroupList";
 import useGetOrganization from "../../../hooks/share/useGetOrganization";
-import { getOrgWithUnit } from "../../../utility/organization/getOrgWithUnit";
+import {
+  getOrgWithUnit,
+  getOrgByRank,
+} from "../../../utility/organization/getOrgWithUnit";
 import { Router } from "@mui/icons-material";
 import { useRouter } from "next/router";
 
@@ -64,10 +67,14 @@ export default function Gift({ index }) {
   const [name, setName] = useState("");
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState();
+  const [branch, setBranch] = useState("전체");
+  const [team, setTeam] = useState("전체");
+  const [orgBranchMenuItems, setOrgBranchMenuItems] = useState({});
+  const [orgTeamMenuItems, setOrgTeamMenuItems] = useState({ 전체: "전체" });
 
   const [orgMenuItems, setOrgMenuItems] = useState({});
 
-  const { sales } = useGetOrganization("sales");
+  const { sales, getOrganization } = useGetOrganization("sales");
 
   const { modal, data, openModal, closeModal, modalContent } =
     useContext(ModalContext);
@@ -87,7 +94,8 @@ export default function Gift({ index }) {
             params: {
               token: getAccessToken(),
               page: page,
-              org_code: org_code === "전체" ? undefined : org_code,
+              org_code:
+                team !== "전체" ? team : branch !== "전체" ? branch : undefined,
               name: name,
               for_gift: 1,
             },
@@ -104,16 +112,24 @@ export default function Gift({ index }) {
   useEffect(() => {
     if (sales?.length === 0) return;
     const org = {};
-    getOrgWithUnit(sales, "team", org);
+    getOrgWithUnit(sales, "branch", org);
 
-    setOrgMenuItems(org);
+    setOrgBranchMenuItems(org);
   }, [sales]);
+
+  useEffect(() => {
+    if (!branch || branch === "전체") return;
+    const org = {};
+    getOrgByRank(sales, "team", branch, org);
+
+    setOrgTeamMenuItems(org);
+  }, [branch]);
 
   useEffect(() => {
     getUserList();
   }, [page]);
 
-  console.log(data);
+  console.log(branch);
 
   return (
     <Modal open={modal[index] === "gift" ? true : false} onClose={closeModal}>
@@ -142,10 +158,17 @@ export default function Gift({ index }) {
             <Row alignItems={"end"} sx={{ width: "100%", gap: 2 }}>
               <UnderLineSelectInput
                 w={"25%"}
-                title={"소속명"}
-                menuItems={orgMenuItems}
-                value={org_code}
-                onChange={(e) => setOrgCode(e.target.value)}
+                title={"지점명"}
+                menuItems={orgBranchMenuItems}
+                value={branch}
+                onChange={(e) => setBranch(e.target.value)}
+              />
+              <UnderLineSelectInput
+                w={"25%"}
+                title={"팀명"}
+                menuItems={orgTeamMenuItems}
+                value={team}
+                onChange={(e) => setTeam(e.target.value)}
               />
               <LabelUnderLineInput
                 w={"25%"}

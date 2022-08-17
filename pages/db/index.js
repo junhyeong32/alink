@@ -14,7 +14,7 @@ import {
   FormControlLabel,
   Radio,
   CircularProgress,
-  Input,
+  Pagination,
 } from "@mui/material";
 
 import BojangTable from "../../src/components/Table/bojang";
@@ -84,6 +84,7 @@ export default function Db() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
+  const [totalCount, setTotalCount] = useState();
   const [head_office_org_code, setHeadOfficeOrgCode] = useState("전체");
   const [org_code, setOrgCode] = useState("전체");
   const [status, setStatus] = useState("전체");
@@ -146,13 +147,6 @@ export default function Db() {
     if (date[0].endDate && String(date[0].endDate) !== "Invalid date")
       setEndDate(moment(date[0].endDate).format("YYYY-MM-DD"));
   }, [date]);
-  console.log(
-    "date",
-    date,
-    date[0].endDate,
-    date[0].endDate && String(date[0].endDate) !== "Invalid date",
-    !date[0].startDate && !date[0].endDate
-  );
 
   const getDbDetail = async (is_init) => {
     const newValues = values?.map(
@@ -187,16 +181,24 @@ export default function Db() {
                   : uploader_organization_code,
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
               geo_name: child_area === "전체" ? undefined : child_area,
-              values: newValues,
-              created_date_start: date[0].startDate.getTime(),
-              created_date_end: date[0].endDate.getTime(),
+              // values: newValues,
+              created_date_start: start_date,
+              created_date_end: end_date,
             },
           })
     )?.data;
 
-    if (res?.code === 200) setDbList(res?.data?.result);
+    if (res?.code === 200) {
+      setTotalCount(Math.ceil(res?.data.total_count / 20));
+      setDbList(res?.data?.result);
+    }
+
     setLoading(false);
   };
+
+  useEffect(() => {
+    getDbDetail();
+  }, [page]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -393,7 +395,12 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code]);
 
-  console.log("search_list", denied_list, denied_list_el);
+  const ab = values?.map(
+    (v) =>
+      v.value && Object.assign({}, { field_pk: v.field_pk, value: v.value })
+  );
+
+  console.log("search_list", ab, values);
 
   return (
     <Layout
@@ -977,6 +984,7 @@ export default function Db() {
                     // 선물하기 버튼 누르면 가냥 안된다
 
                     // 띄워달라는가
+
                     // if (checkData.length === 0)
                     //   return enqueueSnackbar("선물할 DB를 선택해주세요", {
                     //     variant: "error",
@@ -1029,6 +1037,23 @@ export default function Db() {
             setCheckData={setCheckData}
           />
         </Column>
+        <Row
+          alignItems="center"
+          justifyContent="center"
+          sx={{ width: "100%", mt: 2, mb: 2 }}
+        >
+          <Pagination
+            component="div"
+            page={page}
+            count={totalCount}
+            onChange={(subject, newPage) => {
+              setPage(newPage);
+            }}
+            color="primary"
+            // hidePrevButton
+            // hideNextButton
+          />
+        </Row>
       </Column>
     </Layout>
   );

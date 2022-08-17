@@ -210,10 +210,6 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                                         </Typography>
                                       </Row>
                                       <Typography variant="h6">
-                                        {console.log(
-                                          "location",
-                                          location?.is_activated
-                                        )}
                                         {location?.is_activated === 1
                                           ? "보장DB를 OFF으로 설정하시겠습니까?"
                                           : "보장DB를 ON으로 설정하시겠습니까?"}

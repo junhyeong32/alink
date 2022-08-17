@@ -26,6 +26,19 @@ export function getOrgHeadOffice(orgs, result) {
   );
 }
 
+export function getOrgByRank(orgs, unit, rank, result) {
+  for (let org of orgs) {
+    getOrgByRank(org.children, unit, rank, result);
+    console.log("rank", rank, org.parent_code);
+
+    if (org.unit === unit && rank === org.parent_code) {
+      Object.assign(result, {
+        [org.code]: getTitleOfOrg_name(org),
+      });
+    }
+  }
+}
+
 export function getOrgWithName(orgs, search, result) {
   for (let org of orgs) {
     getOrgWithName(org.children, search, result);
