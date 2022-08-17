@@ -103,7 +103,7 @@ export default function Db() {
   const [denied_list_el, setDeniedListEl] = useState([]);
   const [denied_list, setDeniedList] = useState([]);
   const [init_denied_list, setInitDeniedList] = useState([]);
-  const [denied_org_code, setDeniedOrgCode] = useState("");
+  const [denied_org_code, setDeniedOrgCode] = useState("T0000");
 
   const [checkData, setCheckData] = useState([]);
   const [search_list, setSearchList] = useState(1);
@@ -249,14 +249,16 @@ export default function Db() {
   //소속
   useEffect(() => {
     if (sales?.length === 0) return;
-    const head_org = {};
+    const head_org = { 전체: "전체" };
+    const denined_head_org = {};
     const org = {};
 
     getOrgHeadOffice(sales, head_org);
+    getOrgHeadOffice(sales, denined_head_org);
     getOrgWithUnit(sales, "team", org);
 
     setHeadOfficeMenuList(head_org);
-    setDeninedHeadOfficeMenuList(head_org);
+    setDeninedHeadOfficeMenuList(denined_head_org);
     setOrgMenuList(org);
   }, [sales]);
 
