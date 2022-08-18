@@ -857,7 +857,7 @@ export default function Db() {
               {rank !== "협력사" && (
                 <Button
                   variant={"outlined"}
-                  text="조직설정"
+                  text="조직변경"
                   sx={{ border: "2px solid black" }}
                   fs="h6"
                   color="primary"

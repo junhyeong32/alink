@@ -169,7 +169,11 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                   </TableCell>
 
                   {user?.allocations.map((location, _key) => (
-                    <TableCell key={_key} align="center" sx={{ width: 150 }}>
+                    <TableCell
+                      key={_key}
+                      align="center"
+                      sx={{ width: 150, whiteSpace: "nowrap" }}
+                    >
                       <Row justifyContent={"start"} sx={{ gap: "10px" }}>
                         {rank === "관리자" &&
                         user?.grade !== "협력사" &&

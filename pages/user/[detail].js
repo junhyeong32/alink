@@ -255,7 +255,7 @@ export default function UserDetail() {
         return newData;
       });
     }
-  }, [router.isReady, menus]);
+  }, [router.isReady]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -265,6 +265,8 @@ export default function UserDetail() {
 
   //TODO
   //DB관리 setstate
+
+  console.log("changeDb", changeDb);
 
   return (
     <Layout loading={loading}>

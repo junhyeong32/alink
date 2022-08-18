@@ -41,7 +41,7 @@ export default function Authority() {
   const [search_list, setSearchList] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const [orgMenuList, setOrgMenuList] = useState({});
+  const [orgMenuList, setOrgMenuList] = useState();
 
   const { organization, addOrganizationData } = useContext(OrganizationContext);
 
@@ -69,7 +69,7 @@ export default function Authority() {
 
   useEffect(() => {
     if (sales?.length === 0) return;
-    const head_org = {};
+    const head_org = { 전체: "전체" };
 
     getOrgHeadOffice(sales, head_org);
 
