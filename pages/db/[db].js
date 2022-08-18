@@ -73,7 +73,6 @@ export default function DbDetail() {
     전체: "전체",
   });
   const [areaChildMenuList, setAreaChildMenuList] = useState({ 전체: "전체" });
-  const [coopMenuItems, setCoopMenuItems] = useState({});
   const [userMenuList, setUserMenuList] = useState({});
 
   const [date_range, setDateRange] = useState(new Date());
@@ -178,9 +177,9 @@ export default function DbDetail() {
 
   useEffect(() => {
     const result = {};
-    getOrgWithUnit(sales, "team", result);
-
-    setCoopMenuItems(result);
+    getOrgWith(sales, "team", result);
+ 
+    setOrgMenuList(result);
   }, [sales]);
 
   useEffect(() => {
@@ -218,7 +217,6 @@ export default function DbDetail() {
     };
     getUserList();
   }, [org_code, orgHead]);
-  console.log("transcript_file", transcript_file);
 
   return (
     <Layout loading={loading}>
@@ -576,7 +574,7 @@ export default function DbDetail() {
                   allocated_user?.pk !== user_info?.pk && rank !== "관리자"
                 }
                 w={"50%"}
-                menuItems={coopMenuItems}
+                menuItems={orgMenuList}
                 value={orgHead}
                 setValue={setOrgHead}
               />

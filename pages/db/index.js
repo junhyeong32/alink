@@ -181,7 +181,9 @@ export default function Db() {
                   : uploader_organization_code,
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
               geo_name: child_area === "전체" ? undefined : child_area,
-              // values: newValues,
+              values: JSON.stringify(
+                [...values].filter((v) => v?.value !== "")
+              ),
               created_date_start: start_date,
               created_date_end: end_date,
             },
@@ -226,7 +228,7 @@ export default function Db() {
 
       menu_detail?.fields?.map((menu) =>
         newData.push({
-          field_pk: menu?.property?.pk,
+          field_pk: menu?.pk,
           value: "",
         })
       );
@@ -398,12 +400,11 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code]);
 
-  const ab = values?.map(
-    (v) =>
-      v.value && Object.assign({}, { field_pk: v.field_pk, value: v.value })
+  console.log(
+    "search_list",
+    new Date(start_date).getTime(),
+    new Date(end_date).getTime()
   );
-
-  console.log("search_list", ab, values);
 
   return (
     <Layout
@@ -726,7 +727,7 @@ export default function Db() {
             <LabelUnderLineInput
               w={"100%"}
               title={"담당자"}
-              placeholder={"담당자명(으)로 검색하실 수 있습니다."}
+              placeholder={"담당자명으로 검색하실 수 있습니다."}
               value={allocated_user}
               onChange={(e) => setAllocatedUser(e.target.value)}
             />
@@ -746,7 +747,7 @@ export default function Db() {
                       setValues((prev) => {
                         const newData = [...prev];
                         const fieldObj = newData.filter(
-                          (field) => field.field_pk === filter?.property?.pk
+                          (field) => field.field_pk === filter?.pk
                         );
                         fieldObj[0].value = e.target.value;
                         return newData;
@@ -1014,15 +1015,25 @@ export default function Db() {
                           ? undefined
                           : head_office_org_code,
                       org_code: org_code === "전체" ? undefined : org_code,
-                      status: status,
-                      org_status: org_status,
+                      status: status === "전체" ? undefined : status,
+                      org_status:
+                        org_status === "전체" ? undefined : org_status,
                       allocated_user: allocated_user,
-                      uploader_organization_code: uploader_organization_code,
+                      uploader_organization_code:
+                        uploader_organization_code === "전체"
+                          ? undefined
+                          : uploader_organization_code,
                       geo_parent_name:
                         parent_area === "전체" ? undefined : parent_area,
                       geo_name: child_area === "전체" ? undefined : child_area,
-                      values: values,
-                      created_date: date,
+                      values: JSON.stringify(
+                        [...values].filter((v) => v?.value !== "")
+                      ),
+                      created_date_start:
+                        new Date(start_date).getTime() || undefined,
+                      created_date_end:
+                        new Date(end_date).getTime() || undefined,
+                      excel: 1,
                     })
                       ?.map((e) => e.join("="))
                       .join("&"),

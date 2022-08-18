@@ -25,6 +25,7 @@ const style = {
   width: { lg: "411px", md: "411px", sm: "411px", xs: "90%" },
   height: "auto",
   minHeight: 185,
+  maxHeight: 500,
   overflowX: "hidden",
   background: "#FFFFFF",
   position: "absolute",
@@ -75,10 +76,27 @@ export default function ReadFile({ index }) {
             {data?.map((d, key) => {
               if (title === "녹취 파일" && d?.value !== "") {
                 return (
-                  <audio controls src={d?.value} key={key}>
-                    Your browser does not support the
-                    <code>audio</code> element.
-                  </audio>
+                  <Column
+                    sx={{
+                      width: "100%",
+                      p: 1,
+                      border: "1px solid black",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <Typography variant="h6" ml={3} mb={1}>
+                      {d?.created_date}
+                    </Typography>
+                    <audio
+                      controls
+                      src={d?.value}
+                      key={key}
+                      style={{ width: "100%" }}
+                    >
+                      Your browser does not support the
+                      <code>audio</code> element.
+                    </audio>
+                  </Column>
                 );
               } else if (title === "메모" && d?.value !== "") {
                 return (

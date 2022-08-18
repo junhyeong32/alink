@@ -19,8 +19,8 @@ export default function MemoBox({ w, time, text }) {
       }}
     >
       <Typography variant="h6">{time}</Typography>
-      <Box sx={{ background: "#E6E6E6", p: 0.5, mt: 0.5 }}>
-        <Typography variant="small" color="primary.gray">
+      <Box sx={{ background: "#E6E6E6", p: 0.5, mt: 0.5, minHeight: 80 }}>
+        <Typography variant="h5" color="primary.gray">
           {text}
         </Typography>
       </Box>
