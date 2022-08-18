@@ -148,7 +148,7 @@ export default function Db() {
       setEndDate(moment(date[0].endDate).format("YYYY-MM-DD"));
   }, [date]);
 
-  const getDbDetail = async (is_init) => {
+  const getDbDetail = async (is_init, _page) => {
     const newValues = values?.map(
       (v) =>
         v.value && Object.assign({}, { field_pk: v.field_pk, value: v.value })
@@ -164,7 +164,7 @@ export default function Db() {
         : await Axios.Get(`db/list`, {
             params: {
               token: getAccessToken(),
-              page: page,
+              page: _page ? _page : page,
               count: count,
               db_pk: router.query.menu,
               head_office_org_code:
@@ -197,8 +197,9 @@ export default function Db() {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
     getDbDetail();
-  }, [page]);
+  }, [router.isReady]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -1049,6 +1050,7 @@ export default function Db() {
             page={page}
             count={totalCount}
             onChange={(subject, newPage) => {
+              getDbDetail(false, newPage);
               setPage(newPage);
             }}
             color="primary"
