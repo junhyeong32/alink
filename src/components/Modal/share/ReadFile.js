@@ -19,10 +19,12 @@ import { useSnackbar } from "notistack";
 import { ModalContext } from "../../../contexts/ModalContext";
 import TopLabelContents from "../../Box/TopLableContents";
 import Button from "../../Button";
+import MemoBox from "../../Box/Memo";
 
 const style = {
   width: { lg: "411px", md: "411px", sm: "411px", xs: "90%" },
-  height: "185px",
+  height: "auto",
+  minHeight: 185,
   overflowX: "hidden",
   background: "#FFFFFF",
   position: "absolute",
@@ -43,7 +45,7 @@ export default function ReadFile({ index }) {
   const [cookies] = useCookies();
 
   const { modal, closeModal, modalContent } = useContext(ModalContext);
-  const { contents } = modalContent;
+  const { contents, title, data } = modalContent[index];
 
   return (
     <Modal
@@ -51,8 +53,11 @@ export default function ReadFile({ index }) {
       onClose={closeModal}
     >
       <Box>
-        <Column alignItems={"center"} justifyContent={"center"} sx={style}>
-          <Row justifyContent={"end"} sx={{ width: "100%", cursor: "pointer" }}>
+        <Column alignItems={"center"} justifyContent={"start"} sx={style}>
+          <Row
+            justifyContent={"end"}
+            sx={{ width: "100%", cursor: "pointer", mb: 2 }}
+          >
             <Image
               src="/black_x.png"
               width={19}
@@ -67,7 +72,26 @@ export default function ReadFile({ index }) {
             justifyContent={"center"}
             sx={{ width: "100%", height: "100%", gap: "25px" }}
           >
-            {contents}
+            {data?.map((d, key) => {
+              if (title === "녹취 파일" && d?.value !== "") {
+                return (
+                  <audio controls src={d?.value} key={key}>
+                    Your browser does not support the
+                    <code>audio</code> element.
+                  </audio>
+                );
+              } else if (title === "메모" && d?.value !== "") {
+                return (
+                  <MemoBox
+                    w={"100%"}
+                    time={d?.created_date}
+                    text={d?.value}
+                    key={key}
+                  />
+                );
+              } else if (title === "결과지 파일" && d?.value !== "") {
+              }
+            })}
           </Column>
         </Column>
       </Box>

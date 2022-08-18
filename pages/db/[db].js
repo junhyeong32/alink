@@ -9,6 +9,7 @@ import SelectInput, {
   OutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
+import GridBox from "../../src/components/Box/Grid";
 import RowLabel from "../../src/components/Box/RowLabel";
 import UnderLineInput, { OutLineInput } from "../../src/components/Input";
 import MemoBox from "../../src/components/Box/Memo";
@@ -212,13 +213,12 @@ export default function DbDetail() {
           })
         );
 
-        console.log("userDbCount", userDbCount);
         setUserMenuList(listObj);
       }
     };
     getUserList();
   }, [org_code, orgHead]);
-  // console.log();
+  console.log("transcript_file", transcript_file);
 
   return (
     <Layout loading={loading}>
@@ -315,6 +315,27 @@ export default function DbDetail() {
                             })
                           }
                         />
+                        {/* <OutLineInput
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자"
+                          }
+                          defaultValue={
+                            values.filter((v) => v?.title === "나이")?.[0]
+                              ?.value
+                          }
+                          onBlur={(e) =>
+                            setValues((prev) => {
+                              const newData = [...prev];
+                              const dataObj = newData.filter(
+                                (data) => data.title === "나이"
+                              );
+                              dataObj[0].value = e.target.value;
+
+                              return newData;
+                            })
+                          }
+                        /> */}
                       </RowLabel>
                     );
                   case "성별":
@@ -619,6 +640,11 @@ export default function DbDetail() {
                         h={25}
                         sx={{ mt: 0.1 }}
                         action={async () => {
+                          if (!transcript_file)
+                            return enqueueSnackbar("파일을 선택해주세요", {
+                              variant: "error",
+                              autoHideDuration: 2000,
+                            });
                           const _uploadFile = await uploadFile(transcript_file);
 
                           if (_uploadFile) {
@@ -632,12 +658,13 @@ export default function DbDetail() {
                               );
 
                               newObj.value = _uploadFile;
+                              newObj.pk = undefined;
 
                               newData.push(newObj);
 
                               return newData;
                             });
-                            setTranscriptFile();
+
                             enqueueSnackbar(
                               "파일이 정상적으로 등록 되었습니다.",
                               {
@@ -645,19 +672,25 @@ export default function DbDetail() {
                                 autoHideDuration: 2000,
                               }
                             );
+                            setTranscriptFile("");
                           }
                         }}
                       />
                     </Row>
                   </Row>
-                  <Row sx={{ width: "100%", gap: 3, maxWidth: 1020 }}>
+
+                  <GridBox
+                    itemCount={4}
+                    alignItems={"end"}
+                    sx={{ width: "100%", gap: 1, mt: 1, maxWidth: 1024 }}
+                  >
                     {values?.map(
                       (v, _key) =>
                         v?.title === "녹취 파일" &&
                         v?.value && (
                           <Column
                             sx={{
-                              width: "auto",
+                              width: "100%",
                               p: 1,
                               border: "1px solid black",
                               borderRadius: "5px",
@@ -666,14 +699,18 @@ export default function DbDetail() {
                             <Typography variant="h6" ml={3} mb={1}>
                               {v?.created_date}{" "}
                             </Typography>
-                            <audio controls src={v?.value}>
+                            <audio
+                              controls
+                              src={v?.value}
+                              style={{ width: "100%" }}
+                            >
                               Your browser does not support the
                               <code>audio</code> element.
                             </audio>
                           </Column>
                         )
                     )}
-                  </Row>
+                  </GridBox>
                 </Column>
               </>
             ))}
@@ -693,30 +730,34 @@ export default function DbDetail() {
                     text="메모추가"
                     color="primary.white"
                     fs="h5"
-                    h={20}
-                    action={() =>
-                      setValues((prev) => {
-                        setValues((prev) => {
-                          const newData = [...prev];
-                          const newObj = Object.assign(
-                            {},
-                            newData?.filter((data) => data?.title === "메모")[0]
-                          );
-                          newObj.created_date = new Date(
-                            +new Date() + 3240 * 10000
-                          )
-                            .toISOString()
-                            .replace("T", " ")
-                            .replace(/\..*/, "");
-                          newObj.value = memo;
-
-                          newData.push(newObj);
-
-                          return newData;
+                    h={25}
+                    action={() => {
+                      if (!memo)
+                        return enqueueSnackbar("텍스트를 입력해주세요", {
+                          variant: "error",
+                          autoHideDuration: 2000,
                         });
-                        setMemo("");
-                      })
-                    }
+                      setMemo("");
+                      setValues((prev) => {
+                        const newData = [...prev];
+                        const newObj = Object.assign(
+                          {},
+                          newData?.filter((data) => data?.title === "메모")[0]
+                        );
+                        newObj.created_date = new Date(
+                          +new Date() + 3240 * 10000
+                        )
+                          .toISOString()
+                          .replace("T", " ")
+                          .replace(/\..*/, "");
+                        newObj.value = memo;
+                        newObj.pk = undefined;
+
+                        newData.push(newObj);
+
+                        return newData;
+                      });
+                    }}
                   />
                 </Row>
                 <OutLineInput
@@ -729,15 +770,23 @@ export default function DbDetail() {
                   value={memo}
                   setValue={setMemo}
                 />
-                <Row sx={{ width: "100%", gap: 3, maxWidth: 1020 }}>
+                <GridBox
+                  itemCount={4}
+                  alignItems={"end"}
+                  sx={{ width: "100%", gap: 1, mt: 1, maxWidth: 1024 }}
+                >
                   {values?.map(
                     (v, _key) =>
                       v?.title === "메모" &&
                       v?.value && (
-                        <MemoBox time={v?.created_date} text={v?.value} />
+                        <MemoBox
+                          w={"100%"}
+                          time={v?.created_date}
+                          text={v?.value}
+                        />
                       )
                   )}
-                </Row>
+                </GridBox>
               </Column>
             ))}
 
@@ -766,6 +815,13 @@ export default function DbDetail() {
                     content: {
                       contents: "수정을 진행하시겠습니까? ",
                       action: async () => {
+                        if (transcript_file) {
+                          enqueueSnackbar("업로드 하지 않은 파일이있습니다", {
+                            variant: "error",
+                            autoHideDuration: 2000,
+                          });
+                          return closeModal();
+                        }
                         const newValue = values?.map((v) =>
                           Object.assign(
                             {},

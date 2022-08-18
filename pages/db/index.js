@@ -857,11 +857,11 @@ export default function Db() {
               {rank !== "협력사" && (
                 <Button
                   variant={"outlined"}
-                  text="조직변경"
+                  text="DB 조직변경"
                   sx={{ border: "2px solid black" }}
                   fs="h6"
                   color="primary"
-                  w={90}
+                  // w={90}
                   h={28}
                   action={() => {
                     if (checkData.length === 0)

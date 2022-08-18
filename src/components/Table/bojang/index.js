@@ -56,6 +56,7 @@ export default function BojangTable({
   setCheckData,
 }) {
   const router = useRouter();
+
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -229,7 +230,10 @@ export default function BojangTable({
                           openModal({
                             modal: "readFile",
                             content: {
-                              contents: <MemoBox />,
+                              title: "녹취 파일",
+                              data: data[key]?.values.filter(
+                                (v) => v?.title === "녹취 파일"
+                              ),
                             },
                           })
                         }
@@ -254,7 +258,10 @@ export default function BojangTable({
                           openModal({
                             modal: "readFile",
                             content: {
-                              contents: <MemoBox />,
+                              title: "메모",
+                              data: data[key]?.values.filter(
+                                (v) => v?.title === "메모"
+                              ),
                             },
                           })
                         }
@@ -279,7 +286,10 @@ export default function BojangTable({
                           openModal({
                             modal: "readFile",
                             content: {
-                              contents: <MemoBox />,
+                              title: "결과지 파일",
+                              data: data[key]?.values.filter(
+                                (v) => v?.title === "결과지 파일"
+                              ),
                             },
                           })
                         }
