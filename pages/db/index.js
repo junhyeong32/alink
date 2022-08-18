@@ -149,10 +149,6 @@ export default function Db() {
   }, [date]);
 
   const getDbDetail = async (is_init, _page) => {
-    const newValues = values?.map(
-      (v) =>
-        v.value && Object.assign({}, { field_pk: v.field_pk, value: v.value })
-    );
     const res = (
       is_init
         ? await Axios.Get(`db/list`, {
@@ -200,11 +196,6 @@ export default function Db() {
 
   useEffect(() => {
     if (!router.isReady) return;
-    getDbDetail();
-  }, [router.isReady]);
-
-  useEffect(() => {
-    if (!router.isReady) return;
 
     const getDbMenu = async () => {
       const res = (
@@ -216,6 +207,9 @@ export default function Db() {
       if (res?.code === 200) setMenuDetail(res?.data);
     };
 
+    //필터 초기화
+    [...document.querySelectorAll("#dynamic_input")].map((d) => (d.value = ""));
+
     getDbDetail(true);
     getDbMenu();
   }, [router.isReady, router.query.menu]);
@@ -224,7 +218,7 @@ export default function Db() {
     if (menu_detail?.length === 0) return;
 
     setValues((prev) => {
-      const newData = [...prev];
+      const newData = [];
 
       menu_detail?.fields?.map((menu) =>
         newData.push({
@@ -399,12 +393,6 @@ export default function Db() {
 
     getDbDeniedList();
   }, [denied_org_code]);
-
-  console.log(
-    "search_list",
-    new Date(start_date).getTime(),
-    new Date(end_date).getTime()
-  );
 
   return (
     <Layout
@@ -742,7 +730,6 @@ export default function Db() {
                     w={"100%"}
                     title={filter?.property?.name}
                     placeholder={`${filter?.property?.name}(으)로 검색하실 수 있습니다.`}
-                    // value={values?.[0]?.[key]?.value}
                     onBlur={(e) =>
                       setValues((prev) => {
                         const newData = [...prev];
