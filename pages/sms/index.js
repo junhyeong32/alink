@@ -7,16 +7,13 @@ import Input, {
   DateInput,
   LabelUnderLineInput,
 } from "../../src/components/Input";
-import SelectInput, {
-  OutLineSelectInput,
-} from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
-import Image from "next/image";
 import SmsTable from "../../src/components/Table/sms";
 import { styles } from "../../src/styles/sms";
 import Axios from "../../src/utility/api";
 import { getAccessToken } from "../../src/utility/getCookie";
 import moment from "moment";
+import { Pagination } from "@mui/material";
 
 export default function Sms() {
   const router = useRouter();
@@ -35,12 +32,13 @@ export default function Sms() {
   const [end_date, setEndDate] = useState("");
 
   const [menu, setMenu] = useState("popup");
-  const [page, setPage] = useState("");
-  const [count, setCount] = useState("");
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(20);
   const [user_name, setuserName] = useState("");
   const [created_date_start, setcreatedDateStart] = useState("");
   const [created_date_end, setCreatedDateEnd] = useState("");
   const [notification_list, setNotificationList] = useState([]);
+  const [totalCount, setTotalCount] = useState();
 
   const handleClose = (e) => {
     if (el.current && !el.current.contains(e.target)) {
@@ -77,15 +75,14 @@ export default function Sms() {
               page: page,
               count: count,
               user_name: user_name,
-              created_date_start: created_date_start,
-              created_date_end: created_date_end,
+              created_date_start: start_date,
+              created_date_end: end_date,
             },
           })
         )?.data;
 
-    console.log("res", res);
-
     if (res?.code === 200) {
+      setTotalCount(Math.ceil(res?.data.total_count / 20));
       setNotificationList(res?.data?.result);
     }
   };
@@ -119,7 +116,7 @@ export default function Sms() {
             w={60}
             h={28}
             fs="h6"
-            action={getNotification}
+            action={() => getNotification(false)}
           />
         </Row>
         <Row
@@ -229,8 +226,22 @@ export default function Sms() {
 
           {/* <Typography variant="h6">보유 포인트 : </Typography> */}
         </Row>
-        <SmsTable data={notification_list} />
+        <SmsTable data={notification_list} page={page} />
       </Column>
+      <Row justifyContent={"center"} sx={{ width: "100%", mt: 5 }}>
+        <Pagination
+          component="div"
+          page={page}
+          count={totalCount}
+          onChange={(subject, newPage) => {
+            getDbDetail(false, newPage);
+            setPage(newPage);
+          }}
+          color="primary"
+          // hidePrevButton
+          // hideNextButton
+        />
+      </Row>
     </Layout>
   );
 }

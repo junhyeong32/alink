@@ -57,6 +57,8 @@ export default function BojangTable({
 }) {
   const router = useRouter();
 
+  console.log("data", header, data);
+
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -193,29 +195,27 @@ export default function BojangTable({
                   {d?.allocated_user?.name}
                 </TableCell>
 
-                {d?.values?.map((val) =>
-                  header?.fields?.map((head, _key) => {
-                    if (
-                      head?.is_list_shown === 1 &&
-                      head?.pk === val?.field_pk &&
-                      val?.title !== "녹취 파일" &&
-                      val?.title !== "메모" &&
-                      val?.title !== "결과지 파일"
-                    ) {
-                      return (
-                        <TableCell
-                          key={val?.field_pk}
-                          align="center"
-                          onClick={() =>
-                            router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
-                          }
-                        >
-                          {val?.value}
-                        </TableCell>
-                      );
-                    }
-                  })
-                )}
+                {header?.fields?.map((head, _key) => {
+                  if (
+                    head?.is_list_shown === 1 &&
+                    head?.property.name !== "녹취 파일" &&
+                    head?.property.name !== "메모" &&
+                    head?.property.name !== "결과지 파일"
+                  ) {
+                    return (
+                      <TableCell
+                        key={_key}
+                        align="center"
+                        onClick={() =>
+                          router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                        }
+                      >
+                        {data[key]?.values.find((v) => v?.field_pk === head?.pk)
+                          ?.value || "-"}
+                      </TableCell>
+                    );
+                  }
+                })}
 
                 {header?.fields?.map((head, _key) => {
                   if (

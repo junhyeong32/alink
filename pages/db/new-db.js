@@ -30,8 +30,10 @@ export default function NewDb() {
   const { enqueueSnackbar } = useSnackbar();
 
   //data
+  const [rank] = useState(getCookie("user_info")?.grade);
   const [user_info] = useState(getCookie("user_info"));
   const { sales } = useGetOrganization("sales");
+  const { cooperation } = useGetOrganization("cooperation");
   const { area } = useGetArea();
   const [menu_detail, setMenuDetail] = useState([]);
 
@@ -51,6 +53,8 @@ export default function NewDb() {
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
+  const [headOfficeRankisCoopMenuList, setHeadOfficeRankisCoopMenuList] =
+    useState({});
   const [orgMenuList, setOrgMenuList] = useState({});
   const [uploaderMenuList, setUploaderMenuList] = useState({});
   const [areaParentMenuList, setAreaParentMenuList] = useState({});
@@ -87,7 +91,16 @@ export default function NewDb() {
         )
       )?.data;
 
-      if (res?.code === 200)
+      if (res?.code === 200) {
+        setHeadOfficeRankisCoopMenuList((prev) => {
+          const newData = { ...prev };
+
+          res?.data?.organizations?.map((org, key) =>
+            Object.assign(newData, { [org.code]: org.name })
+          );
+
+          return newData;
+        });
         setValues((prev) => {
           const newData = [...prev];
 
@@ -101,10 +114,13 @@ export default function NewDb() {
 
           return newData;
         });
+      }
     };
 
     getDbMenu();
   }, [router.isReady]);
+
+  console.log("headOfficeRankisCoopMenuList", headOfficeRankisCoopMenuList);
 
   //상세지역구분
   useEffect(() => {
@@ -124,8 +140,6 @@ export default function NewDb() {
       return child;
     });
   }, [parent_area]);
-
-  console.log(values);
 
   return (
     <Layout>
@@ -147,7 +161,11 @@ export default function NewDb() {
         <RowLabel label="조직" fs="h6">
           <OutLineSelectInput
             w={"100%"}
-            menuItems={headOfficeMenuList}
+            menuItems={
+              rank === "협력사" || rank === "부협력사"
+                ? headOfficeRankisCoopMenuList
+                : headOfficeMenuList
+            }
             value={head_office_org_code}
             setValue={setHeadOfficeOrgCode}
           />

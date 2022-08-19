@@ -27,6 +27,8 @@ import useGetArea from "../src/hooks/setting/useGetArea";
 import Carousel from "nuka-carousel";
 
 export default function DbStatus() {
+  const [user_info] = useState(getCookie("user_info"));
+
   //data
   const [dashboard_list, setDashBoardList] = useState([]);
   const { area } = useGetArea();
@@ -55,6 +57,8 @@ export default function DbStatus() {
   const [areaMenuItems, setAreaMenuItems] = useState({ 전체: "전체" });
   const [dateMenuItems, setDateMenuItems] = useState({});
 
+  console.log("user_info", user_info);
+
   const getDbDashBoard = async () => {
     console.log("date", date.length);
     const res = (
@@ -63,7 +67,12 @@ export default function DbStatus() {
           token: getAccessToken(),
           head_office_org_code: org_code === "전체" ? undefined : org_code,
           org_code:
-            team !== "전체"
+            rank === "본부장" ||
+            rank === "지점장" ||
+            rank === "팀장" ||
+            rank === "담당자"
+              ? user_info?.org_code
+              : team !== "전체"
               ? team
               : branch !== "전체"
               ? branch
@@ -211,18 +220,21 @@ export default function DbStatus() {
                     value={geo_name}
                     setValue={setGeoName}
                   />
-                  <LabelOutLineSelectInput
-                    title={"조직"}
-                    menuItems={orgMenuList}
-                    value={org_code}
-                    setValue={setOrgCode}
-                  />
+                  {rank !== "부관리자" && (
+                    <LabelOutLineSelectInput
+                      title={"조직"}
+                      menuItems={orgMenuList}
+                      value={org_code}
+                      setValue={setOrgCode}
+                    />
+                  )}
                   <LabelOutLineSelectInput
                     title={"본부"}
                     menuItems={headOfficeMenuList}
                     value={head_office_org_code}
                     setValue={setHeadOfficeOrgCode}
                   />
+
                   <LabelOutLineSelectInput
                     title={"지점"}
                     menuItems={branchMenuList}

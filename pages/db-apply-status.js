@@ -1,7 +1,7 @@
 import Layout from "../src/components/Layout";
 import Column from "../src/components/Box/Column";
 import Row from "../src/components/Box/Row";
-import { Container, Typography, Select, MenuItem } from "@mui/material";
+import { Container, Typography, Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import ReceptionStatusTable from "../src/components/Table/data-status/ReceptionStatusTable";
 import {
@@ -18,31 +18,46 @@ import { getAccessToken } from "../src/utility/getCookie";
 import Axios from "../src/utility/api";
 
 export default function DbStatus() {
-  const [area, setArea] = useState("");
-  const [headquarters, setHeadquarters] = useState("");
-  const [branch, setBranch] = useState("");
-  const [date, setDate] = useState("");
   const [status_list, setStatusList] = useState([]);
-
-  const { user } = getUser();
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const a = async () => {
+    setLoading(true);
+    const getDbHistory = async () => {
       const res = (await Axios.Get(`user/db/history?token=${getAccessToken()}`))
         ?.data;
-      if (res?.code === 200) setStatusList(res?.data?.result);
+      if (res?.code === 200) {
+        setTotalCount(Math.ceil(res?.data.total_count / 20));
+        setStatusList(res?.data?.result);
+      }
     };
 
-    a();
-  }, []);
+    getDbHistory();
+    setLoading(false);
+  }, [page]);
 
   return (
-    <Layout>
+    <Layout loading={loading}>
       <Column>
         <Typography variant="h1" sx={{ mb: 6 }}>
           DB 신청현황
         </Typography>
-        <DbApplyStatusTable data={status_list} />
+        <DbApplyStatusTable data={status_list} page={page} />
+        <Row justifyContent={"center"} sx={{ width: "100%", mt: 5 }}>
+          <Pagination
+            component="div"
+            page={page}
+            count={totalCount}
+            onChange={(subject, newPage) => {
+              setPage(newPage);
+            }}
+            color="primary"
+            // hidePrevButton
+            // hideNextButton
+          />
+        </Row>
       </Column>
     </Layout>
   );

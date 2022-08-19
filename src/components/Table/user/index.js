@@ -59,6 +59,8 @@ export default function UserTable({ data, allocation_total, getUsers }) {
 
   const { openModal, closeModal } = useContext(ModalContext);
 
+  console.log("data", data);
+
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -183,7 +185,6 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                               location?.is_activated === 1 ? true : false
                             }
                             onClick={(e) => {
-                              if (location?.is_activated === 0) return;
                               openModal({
                                 modal: "needconfirm",
                                 content: {

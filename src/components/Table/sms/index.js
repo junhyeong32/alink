@@ -38,7 +38,7 @@ const Root = styled("div")`
   }
 `;
 
-export default function SmsTable({ data }) {
+export default function SmsTable({ data, page }) {
   console.log("data", data);
 
   return (
@@ -70,11 +70,10 @@ export default function SmsTable({ data }) {
                   },
                 }}
               >
-                <TableCell align="center">{sms?.pk}</TableCell>
                 <TableCell align="center">
-                  {/* {sms?.pk} */}
-                  담당자
+                  {page === 1 ? key + 1 : page * 20 + key + 1}
                 </TableCell>
+                <TableCell align="center">{sms?.name}</TableCell>
                 <TableCell align="center">{sms?.message}</TableCell>
                 <TableCell align="center">{sms?.created_date}</TableCell>
               </TableRow>

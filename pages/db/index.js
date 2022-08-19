@@ -441,7 +441,7 @@ export default function Db() {
               fs="h5"
               action={() => {
                 if (!org_info || !organization) {
-                  return enqueueSnackbar("선택된 리스트가 없습니다", {
+                  return enqueueSnackbar("DB를 선택해주세요", {
                     variant: "error",
                     autoHideDuration: 2000,
                   });
@@ -915,7 +915,6 @@ export default function Db() {
                       });
                     }}
                   />
-                  )}
                 </>
               )}
               {(rank === "관리자" || rank === "부관리자") && (
@@ -957,7 +956,7 @@ export default function Db() {
                   text="녹취 파일 업로드"
                   color="primary.white"
                   fs="h6"
-                  w={90}
+                  w={110}
                   h={28}
                   action={() =>
                     openModal({
@@ -973,7 +972,6 @@ export default function Db() {
                 />
               )}
               {(rank === "본부장" ||
-                rank === "부협력사" ||
                 rank === "지점장" ||
                 rank === "팀장" ||
                 rank === "담당자") && (
@@ -998,6 +996,12 @@ export default function Db() {
                     //     variant: "error",
                     //     autoHideDuration: 2000,
                     //   });
+                    if (checkData?.length === 0)
+                      return enqueueSnackbar("DB를 선택해주세요", {
+                        variant: "error",
+                        autoHideDuration: 2000,
+                      });
+
                     openModal({
                       modal: "gift",
                       data: checkData,
@@ -1014,6 +1018,7 @@ export default function Db() {
                       token: getAccessToken(),
                       page: page,
                       count: count,
+                      db_pk: router.query.menu,
                       head_office_org_code:
                         head_office_org_code === "전체"
                           ? undefined
@@ -1043,41 +1048,6 @@ export default function Db() {
                       .join("&"),
                   "_blank"
                 );
-                console.log(
-                  "https://alinkapi.afg.kr/api/v1/db/list?" +
-                    Object.entries({
-                      token: getAccessToken(),
-                      page: page,
-                      count: count,
-                      head_office_org_code:
-                        head_office_org_code === "전체"
-                          ? undefined
-                          : head_office_org_code,
-                      org_code: org_code === "전체" ? undefined : org_code,
-                      status: status === "전체" ? undefined : status,
-                      org_status:
-                        org_status === "전체" ? undefined : org_status,
-                      allocated_user: allocated_user,
-                      uploader_organization_code:
-                        uploader_organization_code === "전체"
-                          ? undefined
-                          : uploader_organization_code,
-                      geo_parent_name:
-                        parent_area === "전체" ? undefined : parent_area,
-                      geo_name: child_area === "전체" ? undefined : child_area,
-                      values: JSON.stringify(
-                        [...values].filter((v) => v?.value !== "")
-                      ),
-                      created_date_start:
-                        new Date(start_date).getTime() || undefined,
-                      created_date_end:
-                        new Date(end_date).getTime() || undefined,
-                      excel: 1,
-                    })
-                      ?.map((e) => e.join("="))
-                      .join("&")
-                      .toString()
-                );
               }}
             />
           </Row>
@@ -1093,7 +1063,7 @@ export default function Db() {
         <Row
           alignItems="center"
           justifyContent="center"
-          sx={{ width: "100%", mt: 2, mb: 2 }}
+          sx={{ width: "100%", mt: 5, mb: 2 }}
         >
           <Pagination
             component="div"

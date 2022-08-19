@@ -87,18 +87,6 @@ export default function DbDetail() {
       });
       return parent;
     });
-
-    setAreaChildMenuList((prev) => {
-      const child = { ...prev };
-
-      area?.map((filter_area) => {
-        filter_area?.children?.map((d) => {
-          Object.assign(child, { [d]: d });
-        });
-      });
-
-      return child;
-    });
   }, [area]);
 
   useEffect(() => {
@@ -158,10 +146,11 @@ export default function DbDetail() {
 
   //상세지역구분
   useEffect(() => {
-    if (!parent_area) return;
+    if (!parent_area || parent_area === "전체") return;
+    console.log("parent_area2 몇번?");
 
     setAreaChildMenuList((prev) => {
-      const child = { ...prev };
+      const child = {};
 
       area
         ?.filter((geomap) => geomap.parent === parent_area && geomap.name)
@@ -173,7 +162,7 @@ export default function DbDetail() {
 
       return child;
     });
-  }, [parent_area]);
+  }, [area, parent_area]);
 
   useEffect(() => {
     const result = {};
@@ -217,6 +206,8 @@ export default function DbDetail() {
     };
     getUserList();
   }, [org_code, orgHead]);
+
+  console.log("parent_area2", parent_area);
 
   return (
     <Layout loading={loading}>

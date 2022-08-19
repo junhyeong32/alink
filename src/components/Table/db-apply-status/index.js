@@ -39,7 +39,7 @@ const Root = styled("div")`
   }
 `;
 
-export default function DbApplyStatusTable({ data }) {
+export default function DbApplyStatusTable({ data, page }) {
   const [all_checked, setAllChecked] = useState(false);
   const [checked, setChecked] = useState([]);
   console.log(data);
@@ -73,7 +73,9 @@ export default function DbApplyStatusTable({ data }) {
                   },
                 }}
               >
-                <TableCell align="center">{list?.pk}</TableCell>
+                <TableCell align="center">
+                  {page === 1 ? key + 1 : page * 20 + key + 1}
+                </TableCell>
                 <TableCell align="center">{list?.db_name}</TableCell>
                 <TableCell align="center">{list?.count}</TableCell>
                 <TableCell

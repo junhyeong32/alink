@@ -16,6 +16,6 @@ export const menu_link = [
   "/user",
 ];
 
-export const menuText2 = ["푸쉬 알림 내역", "설정"];
+export const menuText2 = ["푸시 알림 내역", "설정"];
 
 export const menu_link2 = ["/sms", "/setting"];

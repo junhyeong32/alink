@@ -614,9 +614,8 @@ export default function UserDetail() {
                     <Row alignItems={"center"}>
                       <OutLineInput
                         disabled={
-                          (router.query.detail !== "new-id" &&
-                            (status === "퇴사자" || rank === "부관리자")) ||
-                          d?.allocation?.is_activated === 0
+                          router.query.detail !== "new-id" &&
+                          (status === "퇴사자" || rank === "부관리자")
                         }
                         w={90}
                         defaultValue={d?.allocation?.count}
@@ -634,9 +633,8 @@ export default function UserDetail() {
                       </Typography>
                       <CustomSwitch
                         disabled={
-                          (router.query.detail !== "new-id" &&
-                            (status === "퇴사자" || rank === "부관리자")) ||
-                          d?.allocation?.is_activated === 0
+                          router.query.detail !== "new-id" &&
+                          (status === "퇴사자" || rank === "부관리자")
                         }
                         checked={
                           changeDb[key]?.allocation[0].is_activated === 1
@@ -670,7 +668,6 @@ export default function UserDetail() {
                         fs={12}
                         sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
                         onClick={() => {
-                          if (d?.allocation?.is_activated === 0) return;
                           setChangeDb((prev) => {
                             const newData = [...prev];
 
@@ -711,11 +708,7 @@ export default function UserDetail() {
                           fs={12}
                           sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
                           onClick={() => {
-                            if (
-                              status === "퇴사자" ||
-                              rank === "부관리자" ||
-                              d?.allocation?.is_activated === 0
-                            )
+                            if (status === "퇴사자" || rank === "부관리자")
                               return;
                             setChangeDb((prev) => {
                               const newData = [...prev];
@@ -767,11 +760,26 @@ export default function UserDetail() {
                 h={35}
                 fs="h5"
                 action={async () => {
+                  if (!status || !grade || !name)
+                    return enqueueSnackbar("항목들을 입력해주세요", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
                   if (router.query.detail === "new-id" && !idCheck)
                     return enqueueSnackbar("아이디를 확인해주세요", {
                       variant: "error",
                       autoHideDuration: 2000,
                     });
+
+                  if (
+                    router.query.detail === "new-id" &&
+                    (!password || !new_password)
+                  )
+                    return enqueueSnackbar("비밀번호를 입력해주세요", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
+
                   if (
                     router.query.detail === "new-id" &&
                     password !== new_password

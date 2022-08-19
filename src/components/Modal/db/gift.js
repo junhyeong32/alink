@@ -117,7 +117,7 @@ export default function Gift({ index }) {
     getUserList();
   }, [page]);
 
-  console.log("rank", user_info);
+  console.log("rank", data[index]);
 
   return (
     <Modal open={modal[index] === "gift" ? true : false} onClose={closeModal}>

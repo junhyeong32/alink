@@ -135,7 +135,7 @@ export default function DbGiftTable({ data, checkData }) {
                             action: async () => {
                               const res = await api.Post("db/list/present", {
                                 token: getAccessToken(),
-                                list_pks: checkData.join(","),
+                                list_pks: checkData?.join(","),
                                 target_user_pk: user?.pk,
                               });
                               if (res?.code === 200) {
