@@ -62,9 +62,9 @@ export default function Upload({ index }) {
     is_sample,
     fileType,
     data,
+    reload,
   } = modalContent[index];
 
-  console.log(file?.name);
   return (
     <Modal open={modal[index] === "upload"} onClose={closeModal}>
       <Box>
@@ -110,6 +110,12 @@ export default function Upload({ index }) {
                     `https://alinkapi.afg.kr/api/v1/db/menu/sample/${
                       router.query.menu
                     }?token=${getAccessToken()}`
+                  );
+
+                  console.log(
+                    `https://alinkapi.afg.kr/api/v1/db/menu/sample/${
+                      router.query.menu
+                    }?token=${getAccessToken()}`.toString()
                   );
                 }}
               />
@@ -223,6 +229,8 @@ export default function Upload({ index }) {
                   });
                   setLoading(true);
                 }
+
+                reload && reload();
 
                 closeModal(index);
               }}

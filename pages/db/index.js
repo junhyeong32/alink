@@ -907,6 +907,7 @@ export default function Db() {
                           contents: "DB를 선택하시겠습니까?",
                           buttonName: "선택",
                           type: "dbUpload",
+                          reload: getDbDetail,
                         },
                         data: headOfficeMenuList,
                       });

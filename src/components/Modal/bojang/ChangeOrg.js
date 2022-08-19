@@ -49,7 +49,8 @@ export default function Change({ index }) {
     modalContent,
   } = useContext(ModalContext);
 
-  const { title, buttonName, buttonAction, list, type } = modalContent[index];
+  const { title, buttonName, buttonAction, list, type, reload } =
+    modalContent[index];
 
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
@@ -87,6 +88,7 @@ export default function Change({ index }) {
                       is_sample: true,
                       uploadUrl: `db/menu/excelupload/${router.query.menu}`,
                       data: select,
+                      reload: reload,
                     },
                   });
                 } else
