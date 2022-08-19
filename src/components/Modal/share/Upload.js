@@ -111,12 +111,6 @@ export default function Upload({ index }) {
                       router.query.menu
                     }?token=${getAccessToken()}`
                   );
-
-                  console.log(
-                    `https://alinkapi.afg.kr/api/v1/db/menu/sample/${
-                      router.query.menu
-                    }?token=${getAccessToken()}`.toString()
-                  );
                 }}
               />
             </Row>

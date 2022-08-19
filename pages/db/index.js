@@ -1007,7 +1007,7 @@ export default function Db() {
               )}
             </Row>
             <ExcelButton
-              action={async () =>
+              action={async () => {
                 window.open(
                   "https://alinkapi.afg.kr/api/v1/db/list?" +
                     Object.entries({
@@ -1042,8 +1042,43 @@ export default function Db() {
                       ?.map((e) => e.join("="))
                       .join("&"),
                   "_blank"
-                )
-              }
+                );
+                console.log(
+                  "https://alinkapi.afg.kr/api/v1/db/list?" +
+                    Object.entries({
+                      token: getAccessToken(),
+                      page: page,
+                      count: count,
+                      head_office_org_code:
+                        head_office_org_code === "전체"
+                          ? undefined
+                          : head_office_org_code,
+                      org_code: org_code === "전체" ? undefined : org_code,
+                      status: status === "전체" ? undefined : status,
+                      org_status:
+                        org_status === "전체" ? undefined : org_status,
+                      allocated_user: allocated_user,
+                      uploader_organization_code:
+                        uploader_organization_code === "전체"
+                          ? undefined
+                          : uploader_organization_code,
+                      geo_parent_name:
+                        parent_area === "전체" ? undefined : parent_area,
+                      geo_name: child_area === "전체" ? undefined : child_area,
+                      values: JSON.stringify(
+                        [...values].filter((v) => v?.value !== "")
+                      ),
+                      created_date_start:
+                        new Date(start_date).getTime() || undefined,
+                      created_date_end:
+                        new Date(end_date).getTime() || undefined,
+                      excel: 1,
+                    })
+                      ?.map((e) => e.join("="))
+                      .join("&")
+                      .toString()
+                );
+              }}
             />
           </Row>
           <BojangTable
