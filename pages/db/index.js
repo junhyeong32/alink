@@ -403,17 +403,19 @@ export default function Db() {
       sx={{ background: open ? "rgba(0, 0, 0, 0.5)" : "none" }}
     >
       <Column>
-        <Button
-          w={80}
-          h={28}
-          variant={"outlined"}
-          color="primary"
-          fs="h5"
-          text="DB제한"
-          action={() => {
-            setOpen(true);
-          }}
-        />
+        {rank === "관리자" && (
+          <Button
+            w={80}
+            h={28}
+            variant={"outlined"}
+            color="primary"
+            fs="h5"
+            text="DB제한"
+            action={() => {
+              setOpen(true);
+            }}
+          />
+        )}
         <Row
           sx={{
             display: open ? "flex" : "none",
@@ -848,7 +850,7 @@ export default function Db() {
             sx={{ mb: "10px" }}
           >
             <Row sx={{ gap: "5px" }}>
-              {rank !== "협력사" && (
+              {rank === "관리자" && (
                 <Button
                   variant={"outlined"}
                   text="DB 조직변경"
@@ -913,43 +915,41 @@ export default function Db() {
                       });
                     }}
                   />
-                  {rank !== "협력사" && (
-                    <Button
-                      text="DB 자동분배"
-                      color="primary.white"
-                      fs="h6"
-                      w={90}
-                      h={28}
-                      action={() => {
-                        openModal({
-                          modal: "needconfirm",
-                          content: {
-                            title: "DB 자동 분배",
-                            contents: "자동분배를 진행하시겠습니까?",
-                            buttonName: "변경",
-                            action: async () => {
-                              const res = await Axios.Post(
-                                "db/menu/distribute",
-                                {
-                                  token: getAccessToken(),
-                                  db_pk: router.query.menu,
-                                }
-                              );
-
-                              if (res?.code === 200) {
-                                closeModal(0, 2);
-                                enqueueSnackbar("조직이 변경되었습니다", {
-                                  variant: "success",
-                                  autoHideDuration: 2000,
-                                });
-                              }
-                            },
-                          },
-                        });
-                      }}
-                    />
                   )}
                 </>
+              )}
+              {(rank === "관리자" || rank === "부관리자") && (
+                <Button
+                  text="DB 자동분배"
+                  color="primary.white"
+                  fs="h6"
+                  w={90}
+                  h={28}
+                  action={() => {
+                    openModal({
+                      modal: "needconfirm",
+                      content: {
+                        title: "DB 자동 분배",
+                        contents: "자동분배를 진행하시겠습니까?",
+                        buttonName: "변경",
+                        action: async () => {
+                          const res = await Axios.Post("db/menu/distribute", {
+                            token: getAccessToken(),
+                            db_pk: router.query.menu,
+                          });
+
+                          if (res?.code === 200) {
+                            closeModal(0, 2);
+                            enqueueSnackbar("조직이 변경되었습니다", {
+                              variant: "success",
+                              autoHideDuration: 2000,
+                            });
+                          }
+                        },
+                      },
+                    });
+                  }}
+                />
               )}
               {(rank === "협력사" || rank === "부협력사") && (
                 <Button
