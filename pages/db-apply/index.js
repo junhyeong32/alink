@@ -44,35 +44,38 @@ export default function DBApply() {
   const { user, isUserPending, getUser } = useGetUser();
 
   useEffect(() => {
+    if (menus?.length === 0 || user?.length === 0) return;
     const { db } = user;
 
-    setChangeDb((prev) => {
-      const newData = [...prev];
-      db?.map((d) =>
-        newData.push({
-          db_pk: d.pk,
+    setChangeDb(() => {
+      return menus?.map((menu, key) => {
+        return {
+          db_pk: menu.pk,
           allocation: [
             {
-              is_activated: d.allocation.is_activated,
-              count: d.allocation.count,
+              is_activated: menu?.is_activated,
+              count: db?.find((d) => d?.pk === menu.pk)?.allocation?.count,
             },
           ],
           geomap: (() => {
             const geoData = [];
-            d.geomap?.map((geo) => geoData.push({ name: geo?.name }));
+            db?.find((d) => d?.pk === menu.pk).geomap?.map((geo) =>
+              geoData.push({ name: geo?.name })
+            );
             return geoData;
           })(),
-        })
-      );
-
-      return newData;
+        };
+      });
     });
+    console.log("db", db);
     setLoading(false);
-  }, [isUserPending]);
+  }, [menus, user]);
 
   //TODO
   // 모달창
   // 디비 수량 신청 및 지역 설정
+
+  console.log("menus", changeDb);
 
   return (
     <Layout loading={loading}>

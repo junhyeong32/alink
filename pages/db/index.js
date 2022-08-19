@@ -111,6 +111,9 @@ export default function Db() {
   const [denined_sales, setDeninedSales] = useState([]);
   const [deninedLoading, setDeniedLoading] = useState(false);
 
+  //db 대량 등록 select org_code
+  const [dbUploadOrgCode, setDbUploadOrgCode] = useState("");
+
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
   const [orgMenuList, setOrgMenuList] = useState({ 전체: "전체" });
@@ -418,7 +421,7 @@ export default function Db() {
             background: "#FFFFFF",
             zIndex: 1,
             ml: "-13px",
-            // height: "100vh",
+            top: 0,
           }}
         >
           <Column alignItems={"end"} sx={{ p: 1, gap: 2, minWidth: 201 }}>
@@ -642,6 +645,7 @@ export default function Db() {
               fs="h6"
               w={60}
               h={25}
+              sx={{ zIndex: -1 }}
               action={() => getDbDetail()}
             />
             <Button
@@ -652,6 +656,7 @@ export default function Db() {
               fs="h6"
               w={60}
               h={25}
+              sx={{ zIndex: -1 }}
               action={() => {
                 setInit(true);
                 getDbDetail(true);
@@ -894,7 +899,18 @@ export default function Db() {
                     fs="h6"
                     w={90}
                     h={28}
-                    action={() => router.push("/new-db")}
+                    action={() => {
+                      openModal({
+                        modal: "change",
+                        content: {
+                          title: "DB 조직 선택",
+                          contents: "DB를 선택하시겠습니까?",
+                          buttonName: "선택",
+                          type: "dbUpload",
+                        },
+                        data: headOfficeMenuList,
+                      });
+                    }}
                   />
                   {rank !== "협력사" && (
                     <Button

@@ -49,7 +49,7 @@ export default function Change({ index }) {
     modalContent,
   } = useContext(ModalContext);
 
-  const { title, buttonName, buttonAction, list } = modalContent[index];
+  const { title, buttonName, buttonAction, list, type } = modalContent[index];
 
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
@@ -78,30 +78,41 @@ export default function Change({ index }) {
               w={97}
               h={30}
               action={() => {
-                openModal({
-                  modal: "needconfirm",
-
-                  content: {
-                    contents: `${data[index][select]}(으)로 소속변경을 진행하시겠습니까? `,
-                    action: async () => {
-                      const res = await Axios.Post("db/list/head_office", {
-                        // TODO
-                        // 재차 확인
-                        token: getAccessToken(),
-                        list_pks: list,
-                        head_office_org_code: select,
-                      });
-
-                      if (res?.code === 200) {
-                        closeModal(0, 2);
-                        enqueueSnackbar("조직이 변경되었습니다", {
-                          variant: "success",
-                          autoHideDuration: 2000,
-                        });
-                      }
+                if (type === "dbUpload") {
+                  closeModal(index);
+                  openModal({
+                    modal: "upload",
+                    content: {
+                      title: "DB 대량 등록",
+                      is_sample: true,
+                      uploadUrl: `db/menu/excelupload/${router.query.menu}`,
+                      data: select,
                     },
-                  },
-                });
+                  });
+                } else
+                  openModal({
+                    modal: "needconfirm",
+                    content: {
+                      contents: `${data[index][select]}(으)로 소속변경을 진행하시겠습니까? `,
+                      action: async () => {
+                        const res = await Axios.Post("db/list/head_office", {
+                          // TODO
+                          // 재차 확인
+                          token: getAccessToken(),
+                          list_pks: list,
+                          head_office_org_code: select,
+                        });
+
+                        if (res?.code === 200) {
+                          closeModal(0, 2);
+                          enqueueSnackbar("조직이 변경되었습니다", {
+                            variant: "success",
+                            autoHideDuration: 2000,
+                          });
+                        }
+                      },
+                    },
+                  });
               }}
             />
             <Button

@@ -22,6 +22,9 @@ import { OutLineInput } from "../../Input";
 import Row from "../../Box/Row";
 import { ModalContext } from "../../../contexts/ModalContext";
 import { styled } from "@mui/material/styles";
+import Axios from "../../../utility/api";
+import { getAccessToken } from "../../../utility/getCookie";
+import { useRouter } from "next/router";
 
 const style = {
   width: { lg: "715px", md: "715px", sm: "715px", xs: "90%" },
@@ -45,12 +48,21 @@ const Input = styled("input")({
 
 export default function Upload({ index }) {
   const [cookies, setCookie, removeCookie] = useCookies();
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [file, setFile] = useState("");
   const [loading, setLoading] = useState(false);
   const { modal, closeModal, modalContent } = useContext(ModalContext);
-  const { title, download, choiceFile, uploadFIle, is_sample, fileType } =
-    modalContent[index];
+  const {
+    title,
+    download,
+    choiceFile,
+    uploadFIle,
+    uploadUrl,
+    is_sample,
+    fileType,
+    data,
+  } = modalContent[index];
 
   console.log(file?.name);
   return (
@@ -89,14 +101,18 @@ export default function Upload({ index }) {
                   borderLeft: "1px solid black",
                 }}
               />
-              <a href="/file/관리자_엑셀_업로드_양식.xlsx">
-                <Button
-                  variant="contained"
-                  component="span"
-                  text="다운로드"
-                  fs="h6"
-                />
-              </a>
+              <Button
+                variant="contained"
+                text="다운로드"
+                fs="h6"
+                action={async () => {
+                  window.open(
+                    `https://alinkapi.afg.kr/api/v1/db/menu/sample/${
+                      router.query.menu
+                    }?token=${getAccessToken()}`
+                  );
+                }}
+              />
             </Row>
           )}
           <Row
@@ -178,20 +194,28 @@ export default function Upload({ index }) {
                     autoHideDuration: 2000,
                   });
                 setLoading(true);
+
                 const formData = new FormData();
 
-                formData.append("platform", "web");
-                formData.append("token", cookies.access_token);
+                formData.append("token", getAccessToken());
                 formData.append("file", file);
+                data && formData.append("organization_code", data);
                 const config = {
                   headers: {
                     "content-type": "multipart/form-data",
                   },
                 };
 
-                const upload = (
-                  await Axios.Post(`document/upload-excel`, formData, config)
-                )?.code;
+                const upload = uploadUrl
+                  ? (await Axios.Post(uploadUrl, formData, config))?.code
+                  : (
+                      await Axios.Post(
+                        `document/upload-excel`,
+                        formData,
+                        config
+                      )
+                    )?.code;
+
                 if (upload === 200) {
                   enqueueSnackbar("파일이 업로드 되었습니다.", {
                     variant: "success",
@@ -200,7 +224,7 @@ export default function Upload({ index }) {
                   setLoading(true);
                 }
 
-                deleteModalList(index);
+                closeModal(index);
               }}
             >
               {!loading && <Typography variant="h4">파일 업로드</Typography>}

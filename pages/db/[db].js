@@ -177,8 +177,8 @@ export default function DbDetail() {
 
   useEffect(() => {
     const result = {};
-    getOrgWith(sales, "team", result);
- 
+    getOrgWithUnit(sales, "team", result);
+
     setOrgMenuList(result);
   }, [sales]);
 
