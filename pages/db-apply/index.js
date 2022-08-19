@@ -74,8 +74,9 @@ export default function DBApply() {
   //TODO
   // 모달창
   // 디비 수량 신청 및 지역 설정
+  console.log(area?.length);
 
-  console.log("menus", changeDb);
+  console.log("menus", changeDb, area?.length);
 
   return (
     <Layout loading={loading}>
@@ -156,16 +157,18 @@ export default function DBApply() {
                     onClick={() =>
                       setChangeDb((prev) => {
                         const newData = [...prev];
-                        let newDataGeo = newData[key].geomap;
-                        console.log(newDataGeo.length, area.length);
-                        if (newDataGeo.length === area.length) {
-                          newDataGeo.splice(0, newDataGeo.length);
-                        } else {
+
+                        if (newData[key].geomap.length < area.length) {
+                          newData[key].geomap = [];
+
                           area.map((map) =>
-                            newDataGeo.push({ name: map?.name })
+                            newData[key].geomap?.push({ name: map?.name })
                           );
+                        } else {
+                          newData[key].geomap = [];
                         }
 
+                        console.log("menus", newData[key].geomap);
                         return newData;
                       })
                     }

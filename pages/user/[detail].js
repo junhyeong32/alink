@@ -614,8 +614,9 @@ export default function UserDetail() {
                     <Row alignItems={"center"}>
                       <OutLineInput
                         disabled={
-                          router.query.detail !== "new-id" &&
-                          (status === "퇴사자" || rank === "부관리자")
+                          (router.query.detail !== "new-id" &&
+                            (status === "퇴사자" || rank === "부관리자")) ||
+                          d?.allocation?.is_activated === 0
                         }
                         w={90}
                         defaultValue={d?.allocation?.count}
@@ -633,8 +634,9 @@ export default function UserDetail() {
                       </Typography>
                       <CustomSwitch
                         disabled={
-                          router.query.detail !== "new-id" &&
-                          (status === "퇴사자" || rank === "부관리자")
+                          (router.query.detail !== "new-id" &&
+                            (status === "퇴사자" || rank === "부관리자")) ||
+                          d?.allocation?.is_activated === 0
                         }
                         checked={
                           changeDb[key]?.allocation[0].is_activated === 1
@@ -667,22 +669,25 @@ export default function UserDetail() {
                         }
                         fs={12}
                         sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
-                        onClick={() =>
+                        onClick={() => {
+                          if (d?.allocation?.is_activated === 0) return;
                           setChangeDb((prev) => {
                             const newData = [...prev];
-                            let newDataGeo = newData[key].geomap;
-                            console.log(newDataGeo.length, area.length);
-                            if (newDataGeo.length === area.length) {
-                              newDataGeo.splice(0, newDataGeo.length);
-                            } else {
+
+                            if (newData[key].geomap.length < area.length) {
+                              newData[key].geomap = [];
+
                               area.map((map) =>
-                                newDataGeo.push({ name: map?.name })
+                                newData[key].geomap?.push({ name: map?.name })
                               );
+                            } else {
+                              newData[key].geomap = [];
                             }
 
+                            console.log("menus", newData[key].geomap);
                             return newData;
-                          })
-                        }
+                          });
+                        }}
                       >
                         전국
                       </RoundColorBox>
@@ -706,7 +711,11 @@ export default function UserDetail() {
                           fs={12}
                           sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
                           onClick={() => {
-                            if (status === "퇴사자" || rank === "부관리자")
+                            if (
+                              status === "퇴사자" ||
+                              rank === "부관리자" ||
+                              d?.allocation?.is_activated === 0
+                            )
                               return;
                             setChangeDb((prev) => {
                               const newData = [...prev];
@@ -758,13 +767,13 @@ export default function UserDetail() {
                 h={35}
                 fs="h5"
                 action={async () => {
-                  if (router.query.detail === "nenw-id" && !idCheck)
+                  if (router.query.detail === "new-id" && !idCheck)
                     return enqueueSnackbar("아이디를 확인해주세요", {
                       variant: "error",
                       autoHideDuration: 2000,
                     });
                   if (
-                    router.query.detail === "nenw-id" &&
+                    router.query.detail === "new-id" &&
                     password !== new_password
                   )
                     return enqueueSnackbar("비밀번호가 틀립니다", {
