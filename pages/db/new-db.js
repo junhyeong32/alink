@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { Typography, FormControlLabel } from "@mui/material";
-import UnderLineInput, { OutLineInput } from "../../src/components/Input";
+import UnderLineInput, {
+  DateInput,
+  DatePicker,
+  OutLineInput,
+} from "../../src/components/Input";
 import { getAccessToken, getCookie } from "../../src/utility/getCookie";
 import { getOrgHeadOffice } from "../../src/utility/organization/getOrgWithUnit";
 import { useSnackbar } from "notistack";
@@ -20,6 +24,7 @@ import useGetOrganization from "../../src/hooks/share/useGetOrganization";
 import Axios from "../../src/utility/api";
 import RadioInput from "../../src/components/Radio";
 import uploadFile from "../../src/utility/uploadFile";
+import moment from "moment";
 
 const Input = styled("input")({
   display: "none",
@@ -28,6 +33,8 @@ const Input = styled("input")({
 export default function NewDb() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+
+  const el = useRef(null);
 
   //data
   const [rank] = useState(getCookie("user_info")?.grade);
@@ -48,6 +55,9 @@ export default function NewDb() {
   const [parent_area, setParentArea] = useState("");
   const [child_area, setChildArea] = useState("");
   const [values, setValues] = useState([]);
+  const [date, setDate] = useState(null);
+  const [dateAge, setDateAge] = useState(null);
+  const [age, setAge] = useState("");
 
   const [transcript_file, setTranscriptFile] = useState("");
 
@@ -59,6 +69,46 @@ export default function NewDb() {
   const [uploaderMenuList, setUploaderMenuList] = useState({});
   const [areaParentMenuList, setAreaParentMenuList] = useState({});
   const [areaChildMenuList, setAreaChildMenuList] = useState({});
+
+  const handleClose = (e) => {
+    if (el.current && !el.current.contains(e.target)) {
+      document.querySelector(".rdrCalendarWrapper").style.display = "none";
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleClose);
+    return () => {
+      window.removeEventListener("click", handleClose);
+    };
+  }, [el]);
+
+  useEffect(() => {
+    if (!date) return;
+
+    document.querySelector(".rdrCalendarWrapper").style.display = "none";
+    setDateAge(moment(date).format("YYYY-MM-DD"));
+    document.querySelector("#age").value =
+      new Date().getFullYear() - date.getFullYear() + 1;
+    setValues((prev) => {
+      const newData = [...prev];
+      const dataObj = newData.filter((data) => data.name === "나이");
+      dataObj[0].value = moment(date).format("YYYY-MM-DD");
+
+      return newData;
+    });
+  }, [date]);
+
+  useEffect(() => {
+    if (!date && age)
+      setValues((prev) => {
+        const newData = [...prev];
+        const dataObj = newData.filter((data) => data.name === "나이");
+        dataObj[0].value = moment(date).format("YYYY-MM-DD");
+
+        return newData;
+      });
+  }, [age]);
 
   //지역구분
   useEffect(() => {
@@ -218,16 +268,18 @@ export default function NewDb() {
           />
         </RowLabel>
         <RowLabel label="나이" fs="h6">
+          <div ref={el} style={{ width: "50%" }}>
+            <DatePicker
+              date={dateAge}
+              value={date}
+              setValue={setDate}
+              w={"100%"}
+            />
+          </div>
           <OutLineInput
-            onBlur={(e) =>
-              setValues((prev) => {
-                const newData = [...prev];
-                const dataObj = newData.filter((data) => data.name === "나이");
-                dataObj[0].value = e.target.value;
-
-                return newData;
-              })
-            }
+            id="age"
+            w={"50%"}
+            onBlur={(e) => setAge(e.target.value)}
           />
         </RowLabel>
         <RowLabel label="성별" fs="h6">

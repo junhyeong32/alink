@@ -140,3 +140,6 @@ body
 #date-input > div.rdrCalendarWrapper.rdrDateRangeWrapper {
   display: none;
 }
+#date-input > div.rdrCalendarWrapper {
+  display: none;
+}

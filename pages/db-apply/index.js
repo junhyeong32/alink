@@ -25,6 +25,9 @@ import { useSnackbar } from "notistack";
 import { getCookie } from "../../src/utility/getCookie";
 import useGetMenus from "../../src/hooks/setting/useGetMenus";
 import { LensTwoTone } from "@mui/icons-material";
+import { useContext } from "react";
+import { ModalContext } from "../../src/contexts/ModalContext";
+import { numberFormat } from "../../src/utility/math";
 
 export default function DBApply() {
   const router = useRouter();
@@ -42,6 +45,7 @@ export default function DBApply() {
   const { menus } = useGetMenus();
   const { area } = useGetArea();
   const { user, isUserPending, getUser } = useGetUser();
+  const { openModal } = useContext(ModalContext);
 
   useEffect(() => {
     if (menus?.length === 0 || user?.length === 0) return;
@@ -67,31 +71,82 @@ export default function DBApply() {
         };
       });
     });
-    console.log("db", db);
+
+    // if()
+    console.log("hi", user);
+
+    if (
+      user?.status === "미승인" &&
+      user?.pay_amount < 0 &&
+      user?.deposit_status === "입금 미완료"
+    ) {
+      console.log("hi", user);
+      openModal({
+        modal: "deposit",
+        data: numberFormat(user?.pay_amount * -1),
+        content: {
+          buttonAction: () =>
+            openModal({
+              modal: "needconfirm",
+              content: {
+                buttonText: "예",
+
+                action: async () => {
+                  const res = Axios.Post("user/deposit", {
+                    token: getAccessToken(),
+                  });
+
+                  router.back();
+                  closeModal();
+                },
+                closeAction: () => router.back(),
+                contents: (
+                  <Column>
+                    <Typography variant="h5" color="primary.red" align="center">
+                      입금을 완료하셨습니까?
+                    </Typography>
+                    <Typography variant="h5" color="red" align="center" mt={1}>
+                      관리자 확인 후 승인처리가 진행됩니다
+                    </Typography>
+                  </Column>
+                ),
+              },
+            }),
+        },
+      });
+    } else if (user?.deposit_status === "입금 완료") {
+      openModal({
+        modal: "depositconfirm",
+      });
+    }
+
     setLoading(false);
   }, [menus, user]);
 
   //TODO
   // 모달창
   // 디비 수량 신청 및 지역 설정
-  console.log(area?.length);
-
-  console.log("menus", changeDb, area?.length);
 
   return (
     <Layout loading={loading}>
       <Column>
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Typography variant="h1">DB 신청</Typography>
-          <Column justifyContent={"start"} alignItems={"start"} sc={{ mb: 2 }}>
-            <Typography variant="h5" sx={{ color: "#3532C7" }}>
-              {user?.acfp > 300000 && new Date().getMonth() + 1}월 DB 지원
-              대상자입니다.
-            </Typography>
-            <Typography variant="normal" sx={{ color: "#909090" }}>
-              지원여부는 계약상태값에 따라 변경될 수 있습니다.
-            </Typography>
-          </Column>
+          {user?.acfp > 300000 && (
+            <Column
+              justifyContent={"start"}
+              alignItems={"start"}
+              sc={{ mb: 2 }}
+            >
+              <Typography variant="h5" sx={{ color: "#3532C7" }}>
+                {new Date().getMonth() + 1}월 DB 지원 대상자입니다.
+              </Typography>
+
+              <Typography variant="normal" sx={{ color: "#909090" }}>
+                지원여부는 계약상태값에 따라 변경될 수 있습니다.
+              </Typography>
+            </Column>
+          )}
           {menus?.map((menu, key) => (
             <Column key={key}>
               <RowLabel
@@ -168,7 +223,6 @@ export default function DBApply() {
                           newData[key].geomap = [];
                         }
 
-                        console.log("menus", newData[key].geomap);
                         return newData;
                       })
                     }

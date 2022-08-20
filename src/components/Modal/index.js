@@ -7,6 +7,8 @@ import Change from "./bojang/ChangeOrg";
 import Division from "./Division";
 import Popup from "./Popup";
 import Gift from "./db/gift";
+import Deposit from "./db/deposit";
+import DepositConfirm from "./share/DepositConfirm";
 
 import { useContext } from "react";
 
@@ -38,6 +40,10 @@ export default function Modal() {
       return <Popup key={index} index={index} />;
     } else if (data === "gift") {
       return <Gift key={index} index={index} />;
+    } else if (data === "deposit") {
+      return <Deposit key={index} index={index} />;
+    } else if (data === "depositconfirm") {
+      return <DepositConfirm key={index} index={index} />;
     } else {
       return;
     }

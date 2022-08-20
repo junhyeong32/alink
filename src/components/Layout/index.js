@@ -213,7 +213,7 @@ export default function Layout({ loading, children, sx }) {
                     );
                   }
                 } else if (
-                  (menu === "푸쉬 알림 내역" || menu === "설정") &&
+                  (menu === "푸시 알림 내역" || menu === "설정") &&
                   rank === "관리자"
                 ) {
                   return (

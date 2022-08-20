@@ -13,14 +13,10 @@ import Image from "next/image";
 import Column from "../Box/Column";
 import { forwardRef } from "react";
 import Row from "../Box/Row";
-import { DateRange } from "react-date-range";
-import { addDays } from "date-fns";
+import { DateRange, Calendar } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { useEffect } from "react";
-import moment from "moment";
-import { useRef } from "react";
-
+import * as locales from "react-date-range/dist/locale";
 export default function UnderLineInput({
   title,
   placeholder,
@@ -172,7 +168,6 @@ export function DateInput({
         <Box
           sx={{
             width: w,
-            borderBottom: "1px solid #0D1D41",
           }}
         >
           <Input
@@ -238,6 +233,90 @@ export function DateInput({
           }}
           moveRangeOnFirstSelection={true}
           ranges={value}
+        />
+      </Row>
+    </Column>
+  );
+}
+
+export function DatePicker({
+  title,
+  placeholder,
+  date,
+  value,
+  setValue,
+  w,
+  textValue,
+  ref,
+  forwardRef,
+  locale,
+  ...props
+}) {
+  return (
+    <Column
+      justifyContent="start"
+      alignItems="start"
+      forwardRef={ref}
+      sx={{
+        width: w || "100%",
+        position: "relative",
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+      <Row
+        id="date-input"
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Box
+          sx={{
+            width: w,
+          }}
+        >
+          <TextField
+            sx={{
+              "& input::placeholder": {
+                // fontSize: "10px",
+                color: "#909090 !important",
+                fontWeight: "bold",
+              },
+            }}
+            inputProps={{
+              autoComplete: "off",
+              style: {
+                textAlign: "center",
+                // border: "1px solid black",
+                borderRadius: "5px",
+                height: "30px",
+                padding: 0,
+              },
+            }}
+            fullWidth
+            placeholder={"YYYY-DD-MM"}
+            value={date}
+            onClick={() => {
+              document.querySelector(".rdrCalendarWrapper").style.position =
+                "absolute";
+              document.querySelector(".rdrCalendarWrapper").style.display =
+                "inline-flex";
+              document.querySelector(".rdrCalendarWrapper").style.zIndex = 1;
+              document.querySelector(".rdrCalendarWrapper").style.top = "32px";
+              document.querySelector(".rdrCalendarWrapper").style.left =
+                "-77px";
+            }}
+          />
+        </Box>
+        <Calendar
+          onChange={(item) => setValue(item)}
+          locale={locales["ko"]}
+          date={value}
+          color="#0D1D41"
+          rangeColors={["#0D1D41"]}
+          showSelectionPreview={false}
+          showDateDisplay={false}
+          editableDateInputs={false}
+          moveRangeOnFirstSelection={true}
         />
       </Row>
     </Column>

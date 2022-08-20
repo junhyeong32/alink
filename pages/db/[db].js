@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -11,7 +11,10 @@ import SelectInput, {
 import Button from "../../src/components/Button";
 import GridBox from "../../src/components/Box/Grid";
 import RowLabel from "../../src/components/Box/RowLabel";
-import UnderLineInput, { OutLineInput } from "../../src/components/Input";
+import UnderLineInput, {
+  OutLineInput,
+  DatePicker,
+} from "../../src/components/Input";
 import MemoBox from "../../src/components/Box/Memo";
 import DisableBox from "../../src/components/Box/DisableBox";
 import { ModalContext } from "../../src/contexts/ModalContext";
@@ -27,6 +30,7 @@ import { argument_status } from "../../src/data/share/MenuByTextList";
 import { styled } from "@mui/material/styles";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import { getOrgWithUnit } from "../../src/utility/organization/getOrgWithUnit";
+import moment from "moment";
 
 const Input = styled("input")({
   display: "none",
@@ -35,6 +39,9 @@ const Input = styled("input")({
 export default function DbDetail() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+
+  const el = useRef(null);
+
   const [rank] = useState(getCookie("user_info")?.grade);
 
   const [menu_detail, setMenuDetail] = useState([]);
@@ -59,6 +66,9 @@ export default function DbDetail() {
   const [values, setValues] = useState([]);
   const [organization, setOrganization] = useState({});
   const [user_code, setUserCode] = useState("");
+  const [date, setDate] = useState(null);
+  const [dateAge, setDateAge] = useState(null);
+  const [age, setAge] = useState("");
 
   const [orgHead, setOrgHead] = useState(""); //메뉴 리스트만 바꾸는용
 
@@ -77,6 +87,46 @@ export default function DbDetail() {
 
   const [date_range, setDateRange] = useState(new Date());
   const { openModal, closeModal, modalContent } = useContext(ModalContext);
+
+  const handleClose = (e) => {
+    if (el.current && !el.current.contains(e.target)) {
+      document.querySelector(".rdrCalendarWrapper").style.display = "none";
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleClose);
+    return () => {
+      window.removeEventListener("click", handleClose);
+    };
+  }, [el]);
+
+  useEffect(() => {
+    if (!date) return;
+
+    document.querySelector(".rdrCalendarWrapper").style.display = "none";
+    setDateAge(moment(date).format("YYYY-MM-DD"));
+    document.querySelector("#age").value =
+      new Date().getFullYear() - date.getFullYear() + 1;
+    setValues((prev) => {
+      const newData = [...prev];
+      const dataObj = newData.filter((data) => data.title === "나이");
+      dataObj[0].value = moment(date).format("YYYY-MM-DD");
+
+      return newData;
+    });
+  }, [date]);
+
+  useEffect(() => {
+    if (!date && age)
+      setValues((prev) => {
+        const newData = [...prev];
+        const dataObj = newData.filter((data) => data.title === "나이");
+        dataObj[0].value = moment(date).format("YYYY-MM-DD");
+
+        return newData;
+      });
+  }, [age]);
 
   //지역구분
   useEffect(() => {
@@ -137,6 +187,15 @@ export default function DbDetail() {
         setOrgCode(organization_code);
         setOrganization(organization);
         setUserCode(allocated_user?.pk);
+        console.log(
+          "par",
+          values.filter((v) => v?.title === "나이")?.[0]?.value.length < 5
+        );
+        setDateAge(
+          values.filter((v) => v?.title === "나이")?.[0]?.value.length > 5
+            ? values.filter((v) => v?.title === "나이")?.[0]?.value
+            : null
+        );
       }
     };
 
@@ -207,7 +266,7 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log("parent_area2", parent_area);
+  console.log("parent_area2", dateAge);
 
   return (
     <Layout loading={loading}>
@@ -283,26 +342,35 @@ export default function DbDetail() {
                   case "나이":
                     return (
                       <RowLabel label="나이" fs="h5" key={key}>
+                        <div ref={el} style={{ width: "50%" }}>
+                          <DatePicker
+                            date={dateAge}
+                            value={date}
+                            setValue={setDate}
+                            w={"100%"}
+                          />
+                        </div>
+
                         <OutLineInput
+                          id="age"
                           disabled={
                             allocated_user?.pk !== user_info?.pk &&
                             rank !== "관리자"
                           }
                           defaultValue={
                             values.filter((v) => v?.title === "나이")?.[0]
-                              ?.value
+                              ?.value.length < 5
+                              ? values.filter((v) => v?.title === "나이")?.[0]
+                                  ?.value
+                              : new Date().getFullYear() -
+                                new Date(
+                                  values.filter(
+                                    (v) => v?.title === "나이"
+                                  )?.[0]?.value
+                                ).getFullYear() +
+                                1
                           }
-                          onBlur={(e) =>
-                            setValues((prev) => {
-                              const newData = [...prev];
-                              const dataObj = newData.filter(
-                                (data) => data.title === "나이"
-                              );
-                              dataObj[0].value = e.target.value;
-
-                              return newData;
-                            })
-                          }
+                          onBlur={(e) => setAge(e.target.value)}
                         />
                         {/* <OutLineInput
                           disabled={

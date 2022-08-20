@@ -19,6 +19,7 @@ import { useSnackbar } from "notistack";
 import { ModalContext } from "../../../contexts/ModalContext";
 import TopLabelContents from "../../Box/TopLableContents";
 import Button from "../../Button";
+import { useRouter } from "next/router";
 
 const style = {
   width: { lg: "411px", md: "411px", sm: "411px", xs: "90%" },
@@ -35,28 +36,21 @@ const style = {
   p: 2.7,
 };
 
-export default function NeedConfirm({ index }) {
+export default function DepositConfirm({ index }) {
   const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [confirmLoading, setConfrmLoading] = useState(false);
   const [cookies] = useCookies();
 
   const { modal, closeModal, modalContent } = useContext(ModalContext);
-  const {
-    contents,
-    text,
-    action,
-    buttonText = "승인",
-    actionButtonColor,
-    closeAction,
-  } = modalContent[index];
 
   console.log(modalContent[index]);
 
   return (
     <Modal
-      open={modal[index] === "needconfirm" ? true : false}
+      open={modal[index] === "depositconfirm" ? true : false}
       onClose={() => closeModal[index]}
     >
       <Box>
@@ -66,33 +60,26 @@ export default function NeedConfirm({ index }) {
             justifyContent={"center"}
             sx={{ width: "100%", height: "100%", gap: "25px" }}
           >
-            <TopLabelContents title="확인 필요" sx={{ pb: 1 }} />
-            {contents || <Typography variant="h5">{text}</Typography>}
-            <Row sx={{ gap: 2.5 }}>
+            <Row sx={{ width: "100%", pb: 1, borderBottom: "1px solid black" }}>
+              <Typography variant="h4" color="primary.red">
+                입금확인중
+              </Typography>
+            </Row>
+            <Column alignItems={"center"} sx={{ gap: 2.5 }}>
+              <Typography>관리자가 입금을 확인중입니다.</Typography>
               <Button
-                text={buttonText}
-                bgColor={buttonText === "삭제" ? "red" : "primary"}
+                text={"확인"}
+                bgColor={"primary"}
                 color="primary.white"
                 w={97}
                 h={30}
                 fs={"h4"}
                 action={() => {
-                  action();
+                  closeModal();
+                  router.back();
                 }}
               />
-              <Button
-                text="취소"
-                w={97}
-                h={30}
-                bgColor={"gray"}
-                color={"primary.white"}
-                fs={"h4"}
-                action={() => {
-                  closeAction && closeAction();
-                  closeModal(index);
-                }}
-              />
-            </Row>
+            </Column>
           </Column>
         </Column>
       </Box>
