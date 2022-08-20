@@ -622,6 +622,7 @@ export default function Db() {
               ([list, color], key) =>
                 key !== 6 && (
                   <FormControlLabel
+                    sx={{ zIndex: -1 }}
                     key={key}
                     control={
                       <Checkbox

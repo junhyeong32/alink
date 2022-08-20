@@ -3,10 +3,17 @@ import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
 import Row from "../../src/components/Box/Row";
-import { Typography, FormControlLabel } from "@mui/material";
+import {
+  Typography,
+  FormControlLabel,
+  TextField,
+  MenuItem,
+} from "@mui/material";
 
 import SelectInput, {
   OutLineSelectInput,
+  LabelOutLineGroupingSelectInput,
+  LabelOutLineSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
 import GridBox from "../../src/components/Box/Grid";
@@ -29,7 +36,10 @@ import { argument_status } from "../../src/data/share/MenuByTextList";
 
 import { styled } from "@mui/material/styles";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
-import { getOrgWithUnit } from "../../src/utility/organization/getOrgWithUnit";
+import {
+  getOrgWithUnit,
+  getOrgByOfficeNameWithUnit,
+} from "../../src/utility/organization/getOrgWithUnit";
 import moment from "moment";
 
 const Input = styled("input")({
@@ -225,10 +235,20 @@ export default function DbDetail() {
 
   useEffect(() => {
     const result = {};
-    getOrgWithUnit(sales, "team", result);
+    getOrgWithUnit(sales, "region", result);
 
     setOrgMenuList(result);
   }, [sales]);
+
+  useEffect(() => {
+    if (!orgHead) return;
+    const result = {};
+    getOrgByOfficeNameWithUnit(sales, orgHead, "team", result);
+    // getOrgWithUnit(sales, "branch", result);
+    console.log("result", result);
+
+    // setOrgMenuList(result);
+  }, [orgHead]);
 
   useEffect(() => {
     if (!org_code) return;
@@ -628,7 +648,8 @@ export default function DbDetail() {
               <Typography variant="h6">{organization?.name}</Typography>
             </RowLabel>
             <RowLabel label="소속/성명" fs="h5">
-              <OutLineSelectInput
+              <LabelOutLineSelectInput
+                title="소속"
                 disabled={
                   allocated_user?.pk !== user_info?.pk && rank !== "관리자"
                 }
@@ -637,7 +658,9 @@ export default function DbDetail() {
                 value={orgHead}
                 setValue={setOrgHead}
               />
-              <OutLineSelectInput
+              <LabelOutLineGroupingSelectInput />
+              <LabelOutLineSelectInput
+                title="담당자명"
                 disabled={
                   allocated_user?.pk !== user_info?.pk && rank !== "관리자"
                 }

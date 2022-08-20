@@ -21,6 +21,7 @@ export default function ExcelButton({ action }) {
         position: "relative",
         transitionProperty: "min-width,width,max-width",
         transitionDuration: ".5s",
+        zIndex: -1,
         "&:hover": {
           minWidth: "96px",
           maxWidth: "96px",

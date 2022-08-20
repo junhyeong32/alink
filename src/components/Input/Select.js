@@ -6,6 +6,8 @@ import {
   Input,
   MenuItem,
   TextField,
+  FormControl,
+  ListSubheader,
 } from "@mui/material";
 import React from "react";
 import Column from "../Box/Column";
@@ -128,6 +130,52 @@ export function LabelOutLineSelectInput({
           </MenuItem>
         ))}
       </Select>
+    </Column>
+  );
+}
+
+export function LabelOutLineGroupingSelectInput({
+  alignItems,
+  title,
+  placeholder,
+  value,
+  setValue,
+  menuItems,
+  w,
+  sx,
+  ...props
+}) {
+  return (
+    <Column
+      justifyContent="start"
+      alignItems={alignItems || "center"}
+      sx={{
+        width: w,
+        gap: 1,
+        ...sx,
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+
+      <FormControl>
+        <Select
+          id="grouped-select"
+          variant="outlined"
+          fullWidth
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
+          sx={{ height: "28px" }}
+        >
+          <ListSubheader>Category 1</ListSubheader>
+          <MenuItem value={1}>Option 1</MenuItem>
+          <MenuItem value={2}>Option 2</MenuItem>
+          <ListSubheader>Category 2</ListSubheader>
+          <MenuItem value={3}>Option 3</MenuItem>
+          <MenuItem value={4}>Option 4</MenuItem>
+        </Select>
+      </FormControl>
     </Column>
   );
 }

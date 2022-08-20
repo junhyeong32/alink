@@ -67,6 +67,27 @@ export function getOrgWithOfficeName(orgs, user_info, result) {
   }
 }
 
+//상위 소속 관련 하위 조직
+export function getOrgByOfficeNameWithUnit(orgs, select, unit, result) {
+  for (let org of orgs) {
+    getOrgByOfficeNameWithUnit(org.children, select, unit, result);
+    console.log(
+      "result",
+      select,
+      org?.parent_code,
+      unit,
+      org?.unit,
+      select === org?.parent_code,
+      unit === org?.unit
+    );
+    if (select === org?.parent_code && unit === org?.unit) {
+      Object.assign(result, {
+        [org.code]: getTitleOfOrg_name(org),
+      });
+    }
+  }
+}
+
 export function getOrgWithName(orgs, search, result) {
   for (let org of orgs) {
     getOrgWithName(org.children, search, result);
