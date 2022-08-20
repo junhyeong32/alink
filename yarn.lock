@@ -2880,6 +2880,11 @@
   dependencies:
     "punycode" "^2.1.0"
 
+"use-async-effect@^2.2.6":
+  "integrity" "sha512-wKUpaHkuF4rzBHawP87o1KzoK2IxJ6De8fUyQ3GN2114zb4zqT87+SEbCHS+F+0inZ2Y+k6Tm1LOCQgYTSD9ww=="
+  "resolved" "https://registry.npmjs.org/use-async-effect/-/use-async-effect-2.2.6.tgz"
+  "version" "2.2.6"
+
 "util-deprecate@~1.0.1":
   "integrity" "sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8="
   "resolved" "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
