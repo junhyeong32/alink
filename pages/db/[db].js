@@ -203,10 +203,11 @@ export default function DbDetail() {
             : null
         );
       }
+
+      setLoading(false);
     };
 
     getDbDetail();
-    setLoading(false);
   }, [router.isReady, router.query.db]);
 
   //상세지역구분
@@ -300,7 +301,16 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log("parent_area2", dateAge);
+  console.log(
+    "parent_area2",
+    values.filter((v) => v?.title === "나이")?.[0]?.value.length < 5
+      ? values.filter((v) => v?.title === "나이")?.[0]?.value
+      : new Date().getFullYear() -
+          new Date(
+            values.filter((v) => v?.title === "나이")?.[0]?.value
+          ).getFullYear() +
+          1
+  );
 
   return (
     <Layout loading={loading}>
