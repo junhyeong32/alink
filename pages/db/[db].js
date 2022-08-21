@@ -55,7 +55,6 @@ export default function DbDetail() {
   const [rank] = useState(getCookie("user_info")?.grade);
 
   const [menu_detail, setMenuDetail] = useState([]);
-  const { sales, org_pending } = useGetOrganization("sales");
   const [db_detail, setDbDetail] = useState([]);
   const [user_info] = useState(getCookie("user_info"));
 
@@ -79,6 +78,7 @@ export default function DbDetail() {
   const [dateAge, setDateAge] = useState(null);
   const [age, setAge] = useState("");
   const [area, setArea] = useState([]);
+  const [sales, setSales] = useState([]);
 
   const [orgHead, setOrgHead] = useState(""); //메뉴 리스트만 바꾸는용
 
@@ -88,6 +88,7 @@ export default function DbDetail() {
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
   const [orgMenuList, setOrgMenuList] = useState({});
+  const [teamMenuList, setTeamMenuList] = useState({});
   const [uploaderMenuList, setUploaderMenuList] = useState({});
   const [areaParentMenuList, setAreaParentMenuList] = useState({
     전체: "전체",
@@ -229,21 +230,39 @@ export default function DbDetail() {
   console.log("area", area);
 
   useEffect(() => {
-    const result = {};
-    getOrgWithUnit(sales, "region", result);
+    if (!org_code) return;
+    const getSalesByHeadOffice = async () => {
+      const res = (
+        await Axios.Get("organization", {
+          params: {
+            token: getAccessToken(),
+            type: "sales",
+            head_office_org_code: org_code,
+          },
+        })
+      )?.data;
 
-    setOrgMenuList(result);
-  }, [sales]);
+      if (res?.code === 200) {
+        setSales(res?.data);
+        const result = {};
+
+        getOrgWithUnit(res?.data, "region", result);
+
+        setOrgMenuList(result);
+      }
+    };
+    getSalesByHeadOffice();
+  }, [org_code]);
 
   useEffect(() => {
     if (!orgHead) return;
     const result = {};
     getOrgByOfficeNameWithUnit(sales, orgHead, "team", result);
-    // getOrgWithUnit(sales, "branch", result);
-    console.log("result", result);
 
-    // setOrgMenuList(result);
+    setTeamMenuList(result);
   }, [orgHead]);
+
+  console.log("teamMenuList", orgHead);
 
   useEffect(() => {
     if (!org_code) return;

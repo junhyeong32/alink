@@ -249,7 +249,7 @@ export default function Db() {
     if (sales?.length === 0) return;
     const head_org = { 전체: "전체" };
     const denined_head_org = {};
-    const org = {};
+    const org = { 전체: "전체" };
 
     getOrgHeadOffice(sales, head_org);
     getOrgHeadOffice(sales, denined_head_org);
@@ -620,7 +620,7 @@ export default function Db() {
               ([list, color], key) =>
                 key !== 6 && (
                   <FormControlLabel
-                    sx={{ zIndex: -1 }}
+                    sx={{ zIndex: open ? -1 : 0 }}
                     key={key}
                     control={
                       <Checkbox
@@ -646,7 +646,7 @@ export default function Db() {
               fs="h6"
               w={60}
               h={25}
-              sx={{ zIndex: -1 }}
+              sx={{ zIndex: open ? -1 : 0 }}
               action={() => getDbDetail()}
             />
             <Button
@@ -657,7 +657,7 @@ export default function Db() {
               fs="h6"
               w={60}
               h={25}
-              sx={{ zIndex: -1 }}
+              sx={{ zIndex: open ? -1 : 0 }}
               action={() => {
                 setInit(true);
                 getDbDetail(true);
