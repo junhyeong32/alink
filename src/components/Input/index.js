@@ -250,6 +250,7 @@ export function DatePicker({
   ref,
   forwardRef,
   locale,
+  disabled,
   ...props
 }) {
   return (
@@ -282,6 +283,7 @@ export function DatePicker({
                 fontWeight: "bold",
               },
             }}
+            disabled={disabled}
             inputProps={{
               autoComplete: "off",
               style: {
