@@ -41,7 +41,6 @@ export default function NewDb() {
   const [user_info] = useState(getCookie("user_info"));
   const { sales } = useGetOrganization("sales");
   const { cooperation } = useGetOrganization("cooperation");
-  const { area } = useGetArea();
   const [menu_detail, setMenuDetail] = useState([]);
 
   //change state
@@ -58,6 +57,7 @@ export default function NewDb() {
   const [date, setDate] = useState(null);
   const [dateAge, setDateAge] = useState(null);
   const [age, setAge] = useState("");
+  const [area, setArea] = useState([]);
 
   const [transcript_file, setTranscriptFile] = useState("");
 
@@ -111,15 +111,7 @@ export default function NewDb() {
   }, [age]);
 
   //지역구분
-  useEffect(() => {
-    setAreaParentMenuList(() => {
-      const parent = {};
-      area?.map((d, key) => {
-        Object.assign(parent, { [d.name]: d.name });
-      });
-      return parent;
-    });
-  }, [area]);
+  useEffect(() => {}, [area]);
 
   //소속
   useEffect(() => {
@@ -164,6 +156,16 @@ export default function NewDb() {
 
           return newData;
         });
+
+        setArea(res?.data?.geomap);
+
+        setAreaParentMenuList(() => {
+          const parent = {};
+          res?.data?.geomap?.map((d, key) => {
+            Object.assign(parent, { [d.name]: d.name });
+          });
+          return parent;
+        });
       }
     };
 
@@ -180,7 +182,7 @@ export default function NewDb() {
       const child = {};
 
       area
-        ?.filter((geomap) => geomap.parent === parent_area && geomap.name)
+        ?.filter((geomap) => geomap.name === parent_area)
         ?.map((filter_area) => {
           filter_area?.children?.map((d) => {
             Object.assign(child, { [d]: d });

@@ -38,9 +38,11 @@ import {
 } from "../../src/utility/organization/getOrgWithUnit";
 import Axios from "../../src/utility/api";
 import { getAccessToken, getCookie } from "../../src/utility/getCookie";
+import { useSnackbar } from "notistack";
 
 export default memo(function User() {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   //menuItems
   const [areaMenuItems, setAreaMenuItems] = useState({});
   const [salesMenuItems, setSalesMenuItems] = useState({});
@@ -397,7 +399,19 @@ export default memo(function User() {
                 fs={"h6"}
                 color="primary.white"
                 h={28}
-                action={() => router.push("user/new-id")}
+                action={async () => {
+                  const res = await Axios.Post("member/reset", {
+                    token: getAccessToken(),
+                  });
+
+                  if (res?.code === 200) {
+                    getUsers();
+                    enqueueSnackbar("삭제되었습니다.", {
+                      variant: "success",
+                      autoHideDuration: 2000,
+                    });
+                  }
+                }}
               />
             )}
 

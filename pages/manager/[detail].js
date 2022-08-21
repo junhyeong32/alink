@@ -141,6 +141,7 @@ export default function Detail() {
             fs={"h6"}
             w={65}
             h={25}
+            action={() => router.back()}
           />
         </Row>
       </Column>

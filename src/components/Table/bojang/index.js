@@ -232,7 +232,9 @@ export default function BojangTable({
                             content: {
                               title: "녹취 파일",
                               data: data[key]?.values.filter(
-                                (v) => v?.title === "녹취 파일"
+                                (v) =>
+                                  v?.title === "녹취 파일" &&
+                                  v?.value.includes("https")
                               ),
                             },
                           })

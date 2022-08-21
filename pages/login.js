@@ -20,7 +20,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
 
-
   const getUser = async (token) => {
     if (router.isReady) {
       const res = (await Axios.Get(`user/db/count?token=${token}`))?.data;
@@ -37,7 +36,7 @@ export default function Login() {
       });
     }
     setLoading(true);
-    const res = (ㄴ
+    const res = (
       await Axios.Post("user/signin", {
         id: id,
         password: password,
@@ -60,7 +59,6 @@ export default function Login() {
         path: "/",
         maxAge: 86400,
       });
-
 
       setLoading(false);
       enqueueSnackbar("로그인 되었습니다.", {

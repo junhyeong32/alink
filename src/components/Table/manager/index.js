@@ -71,7 +71,15 @@ export default function ManagerTable({ data, allocation_total }) {
           <TableBody>
             {data?.map((user, key) => {
               return (
-                <TableRow key={key}>
+                <TableRow
+                  key={key}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      background: "#F0EFEF",
+                    },
+                  }}
+                >
                   <TableCell
                     align="center"
                     sx={{ fontWeight: 500 }}

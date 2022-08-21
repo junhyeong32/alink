@@ -9,6 +9,7 @@ import Popup from "./Popup";
 import Gift from "./db/gift";
 import Deposit from "./db/deposit";
 import DepositConfirm from "./share/DepositConfirm";
+import MultipleUpload from "./share/MultipleUpload";
 
 import { useContext } from "react";
 
@@ -42,6 +43,8 @@ export default function Modal() {
       return <Deposit key={index} index={index} />;
     } else if (data === "depositconfirm") {
       return <DepositConfirm key={index} index={index} />;
+    } else if (data === "multipleupload") {
+      return <MultipleUpload key={index} index={index} />;
     } else {
       return;
     }

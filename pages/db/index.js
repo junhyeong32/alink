@@ -62,9 +62,9 @@ export default function Db() {
   //data
   const [menu_detail, setMenuDetail] = useState([]);
   const [db_list, setDbList] = useState([]);
-  const { area } = useGetArea();
   const { sales } = useGetOrganization("sales");
   const [rank] = useState(getCookie("user_info")?.grade);
+  const [area, setArea] = useState([]);
 
   //change state
   const [date_range, setDateRange] = useState(
@@ -207,7 +207,17 @@ export default function Db() {
         )
       )?.data;
 
-      if (res?.code === 200) setMenuDetail(res?.data);
+      if (res?.code === 200) {
+        setMenuDetail(res?.data);
+        setArea(res?.data?.geomap);
+        setAreaParentMenuList(() => {
+          const parent = { 전체: "전체" };
+          res?.data?.geomap?.map((d, key) => {
+            Object.assign(parent, { [d.name]: d.name });
+          });
+          return parent;
+        });
+      }
     };
 
     //필터 초기화
@@ -233,18 +243,6 @@ export default function Db() {
       return newData;
     });
   }, [menu_detail]);
-
-  //지역구분
-  useEffect(() => {
-    setAreaParentMenuList((prev) => {
-      const parent = { ...prev };
-
-      area?.map((d, key) => {
-        Object.assign(parent, { [d.parent]: d.parent });
-      });
-      return parent;
-    });
-  }, [area]);
 
   //소속
   useEffect(() => {
@@ -291,11 +289,11 @@ export default function Db() {
   useEffect(() => {
     if (!parent_area) return;
 
-    setAreaChildMenuList((prev) => {
-      const child = { ...prev };
+    setAreaChildMenuList(() => {
+      const child = { 전체: "전체" };
 
       area
-        ?.filter((geomap) => geomap.parent === parent_area && geomap.name)
+        ?.filter((geomap) => geomap.name === parent_area)
         ?.map((filter_area) => {
           filter_area?.children?.map((d) => {
             Object.assign(child, { [d]: d });
@@ -671,13 +669,18 @@ export default function Db() {
             alignItems={"end"}
             sx={{ width: "100%", gap: 1 }}
           >
-            <SelectInput
-              w="100%"
-              title="조직명"
-              menuItems={headOfficeMenuList}
-              value={head_office_org_code}
-              setValue={setHeadOfficeOrgCode}
-            />
+            {rank !== "담당자" &&
+              rank !== "팀장" &&
+              rank !== "지점장" &&
+              rank !== "본부장" && (
+                <SelectInput
+                  w="100%"
+                  title="조직명"
+                  menuItems={headOfficeMenuList}
+                  value={head_office_org_code}
+                  setValue={setHeadOfficeOrgCode}
+                />
+              )}
             <SelectInput
               w="100%"
               title="소속명"
@@ -951,33 +954,35 @@ export default function Db() {
                   }}
                 />
               )}
-              {/* {(rank === "협력사" || rank === "부협력사") && ( */}
               {/* TODO
                 1. 파일을 multiple로 등록되게
                 2. 파일 업로드 버튼을 눌렀을때 upload api를 각 파일마다 호출
                 3. 프로그레스바로 현 상황 보여주기
                 4. 예외처리로 가져올때 https가 없으면 안보여주면 됨
               */}
-              <Button
-                bgColor="primary"
-                text="녹취 파일 대량 업로드"
-                color="primary.white"
-                fs="h6"
-                w={110}
-                h={28}
-                action={() =>
-                  openModal({
-                    modal: "upload",
-                    content: {
-                      title: "녹음 파일 업로드",
-                      is_sample: false,
-                      fileType: "audio/*",
-                      contents: "자동분배를 진행하시겠습니까?",
-                    },
-                  })
-                }
-              />
-              {/* )} */}
+              {(rank === "관리자" ||
+                rank === "협력사" ||
+                rank === "부협력사") && (
+                <Button
+                  bgColor="primary"
+                  text="녹취 파일 대량 업로드"
+                  color="primary.white"
+                  fs="h6"
+                  // w={110}
+                  h={28}
+                  action={() =>
+                    openModal({
+                      modal: "multipleupload",
+                      content: {
+                        title: "녹음 파일 대량 업로드",
+                        is_sample: false,
+                        fileType: "audio/*",
+                        contents: "자동분배를 진행하시겠습니까?",
+                      },
+                    })
+                  }
+                />
+              )}
               {(rank === "본부장" ||
                 rank === "지점장" ||
                 rank === "팀장" ||

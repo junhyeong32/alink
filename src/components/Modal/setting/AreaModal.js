@@ -156,7 +156,7 @@ export default function AreaModal({ index }) {
     });
   }, [splitedGeos]);
 
-  console.log("geomap", geomaps, setGeomaps);
+  console.log("geomap", area_list);
 
   return (
     <Modal open={modal[index] === "area" ? true : false} onClose={closeModal}>
@@ -357,17 +357,27 @@ export default function AreaModal({ index }) {
                               return (
                                 <TableCell key={key} align="center">
                                   <RadioInput
-                                  // checked={
+                                    checked={
+                                      area_list.length !== 0 &&
+                                      area_list.length ===
+                                        selectedSplitedDetailGeo?.length
+                                        ? true
+                                        : false
+                                    }
+                                    onClick={(e) => {
+                                      setAreaList((prev) => {
+                                        let newData = [...prev];
 
-                                  // }
-                                  // onClick={() =>
-                                  //   setAreaList((prev) => {
-                                  //     const new_data = [...prev];
-
-                                  //     if (new_data.length < data.length) return [data];
-                                  //     return [];
-                                  //   })
-                                  // }
+                                        if (
+                                          newData.length <=
+                                          selectedSplitedDetailGeo.length
+                                        ) {
+                                          return selectedSplitedDetailGeo;
+                                        } else {
+                                          return [];
+                                        }
+                                      });
+                                    }}
                                   />
                                 </TableCell>
                               );

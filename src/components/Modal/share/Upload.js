@@ -65,6 +65,8 @@ export default function Upload({ index }) {
     reload,
   } = modalContent[index];
 
+  console.log(file)
+
   return (
     <Modal open={modal[index] === "upload"} onClose={closeModal}>
       <Box>
@@ -166,6 +168,7 @@ export default function Upload({ index }) {
                     ? fileType
                     : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 }
+                multiple={fileType ? true : false}
                 id="contained-button-file"
                 type="file"
                 onChange={(e) => setFile(e.target.files[0])}

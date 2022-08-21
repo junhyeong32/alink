@@ -56,7 +56,6 @@ export default function DbDetail() {
 
   const [menu_detail, setMenuDetail] = useState([]);
   const { sales, org_pending } = useGetOrganization("sales");
-  const { area } = useGetArea();
   const [db_detail, setDbDetail] = useState([]);
   const [user_info] = useState(getCookie("user_info"));
 
@@ -79,6 +78,7 @@ export default function DbDetail() {
   const [date, setDate] = useState(null);
   const [dateAge, setDateAge] = useState(null);
   const [age, setAge] = useState("");
+  const [area, setArea] = useState([]);
 
   const [orgHead, setOrgHead] = useState(""); //메뉴 리스트만 바꾸는용
 
@@ -138,17 +138,6 @@ export default function DbDetail() {
       });
   }, [age]);
 
-  //지역구분
-  useEffect(() => {
-    setAreaParentMenuList((prev) => {
-      const parent = { ...prev };
-      area?.map((d, key) => {
-        Object.assign(parent, { [d.parent]: d.parent });
-      });
-      return parent;
-    });
-  }, [area]);
-
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -159,7 +148,17 @@ export default function DbDetail() {
         )
       )?.data;
 
-      if (res?.code === 200) setMenuDetail(res?.data);
+      if (res?.code === 200) {
+        setMenuDetail(res?.data);
+        setArea(res?.data?.geomap);
+        setAreaParentMenuList(() => {
+          const parent = {};
+          res?.data?.geomap?.map((d, key) => {
+            Object.assign(parent, { [d.name]: d.name });
+          });
+          return parent;
+        });
+      }
     };
 
     getDbMenu();
@@ -197,10 +196,6 @@ export default function DbDetail() {
         setOrgCode(organization_code);
         setOrganization(organization);
         setUserCode(allocated_user?.pk);
-        console.log(
-          "par",
-          values.filter((v) => v?.title === "나이")?.[0]?.value.length < 5
-        );
         setDateAge(
           values.filter((v) => v?.title === "나이")?.[0]?.value.length > 5
             ? values.filter((v) => v?.title === "나이")?.[0]?.value
@@ -215,14 +210,13 @@ export default function DbDetail() {
 
   //상세지역구분
   useEffect(() => {
-    if (!parent_area || parent_area === "전체") return;
-    console.log("parent_area2 몇번?");
+    if (!parent_area || parent_area === "전체" || area?.length === 0) return;
 
     setAreaChildMenuList((prev) => {
       const child = {};
 
       area
-        ?.filter((geomap) => geomap.parent === parent_area && geomap.name)
+        ?.filter((geomap) => geomap.parent === parent_area)
         ?.map((filter_area) => {
           filter_area?.children?.map((d) => {
             Object.assign(child, { [d]: d });
@@ -232,6 +226,7 @@ export default function DbDetail() {
       return child;
     });
   }, [area, parent_area]);
+  console.log("area", area);
 
   useEffect(() => {
     const result = {};
@@ -364,6 +359,10 @@ export default function DbDetail() {
                       <RowLabel label="나이" fs="h5" key={key}>
                         <div ref={el} style={{ width: "50%" }}>
                           <DatePicker
+                            disabled={
+                              allocated_user?.pk !== user_info?.pk &&
+                              rank !== "관리자"
+                            }
                             date={dateAge}
                             value={date}
                             setValue={setDate}
@@ -658,7 +657,11 @@ export default function DbDetail() {
                 value={orgHead}
                 setValue={setOrgHead}
               />
-              <LabelOutLineGroupingSelectInput />
+              <LabelOutLineGroupingSelectInput
+                disabled={
+                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                }
+              />
               <LabelOutLineSelectInput
                 title="담당자명"
                 disabled={

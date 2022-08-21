@@ -28,7 +28,7 @@ export default function Menu() {
   const [title, setTitle] = useState("");
   const [organization, setOrganization] = useState("");
   const [org_list, setOrgList] = useState([]);
-  const [area_org, setAreaOrg] = useState({});
+  const [area_org, setAreaOrg] = useState([]);
   const [is_cooperated, setIscooperated] = useState(false);
   const [is_activated, setIsActivated] = useState(false);
   const [cooperation_organization, setCooperationOrganization] = useState("");
@@ -65,7 +65,16 @@ export default function Menu() {
   }, []);
 
   const handleAddDb = async () => {
-    console.log("test");
+    if (!title)
+      return enqueueSnackbar("제목을 입력해주세요.", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    if (org_list.length === 0)
+      return enqueueSnackbar("조직을 선택해주세요.", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
     const res = await Axios.Post("db/menu", {
       token: getAccessToken(),
       db_pk: undefined, //수정 시에만 필요한 값,
@@ -75,7 +84,7 @@ export default function Menu() {
       cooperation_organization_codes: coop_list.join(",") || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
-      geomap: area_org,
+      geomap: area_org.length === 0 ? area : area_org,
       fields: db_fields,
     });
     if (res?.code === 200) {
