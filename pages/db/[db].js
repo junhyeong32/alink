@@ -652,12 +652,14 @@ export default function DbDetail() {
                 disabled={
                   allocated_user?.pk !== user_info?.pk && rank !== "관리자"
                 }
-                w={"50%"}
+                w={"33%"}
                 menuItems={orgMenuList}
                 value={orgHead}
                 setValue={setOrgHead}
               />
               <LabelOutLineGroupingSelectInput
+                title="팀"
+                w={"33%"}
                 disabled={
                   allocated_user?.pk !== user_info?.pk && rank !== "관리자"
                 }
@@ -667,7 +669,7 @@ export default function DbDetail() {
                 disabled={
                   allocated_user?.pk !== user_info?.pk && rank !== "관리자"
                 }
-                w={"50%"}
+                w={"33%"}
                 menuItems={userMenuList}
                 value={user_code}
                 setValue={setUserCode}

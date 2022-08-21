@@ -17,7 +17,7 @@ import { ModalContext } from "../../contexts/ModalContext";
 
 export default function Modal() {
   const { modal } = useContext(ModalContext);
-  console.log("data", modal);
+
   return modal.map((data, index) => {
     if (data === "upload") {
       return <Upload key={index} index={index} />;

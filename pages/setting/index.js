@@ -31,7 +31,7 @@ export default function Setting() {
         },
       })
     )?.data;
-    console.log(res);
+
     if (res?.code === 200) {
       setList(res?.data?.result || res?.data);
       setTotalCount(Math.ceil(res?.data.total_count / 20));
@@ -42,9 +42,8 @@ export default function Setting() {
   useEffect(() => {
     setLoading(true);
     getMenuByList();
-  }, [menu]);
-
-  console.log(menu, list);
+  }, [menu, page]);
+  console.log(page, totalCouunt);
 
   return (
     <Layout loading={loading}>

@@ -415,7 +415,7 @@ export default memo(function User() {
               />
             )}
 
-            <ExcelButton action={() => setExcel("1")} />
+            <ExcelButton sx={{ zIndex: 0 }} action={() => setExcel("1")} />
           </Row>
         </Column>
 

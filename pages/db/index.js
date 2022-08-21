@@ -1023,6 +1023,7 @@ export default function Db() {
               )}
             </Row>
             <ExcelButton
+              sx={{ zIndex: open ? -1 : 0 }}
               action={async () => {
                 window.open(
                   "https://alinkapi.afg.kr/api/v1/db/list?" +

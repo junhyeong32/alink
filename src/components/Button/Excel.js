@@ -6,7 +6,7 @@ import { useEffect, useState, useContext } from "react";
 import { Button, Typography } from "@mui/material";
 import Row from "../Box/Row";
 
-export default function ExcelButton({ action }) {
+export default function ExcelButton({ action, sx }) {
   return (
     <Button
       variant="contained"
@@ -21,7 +21,8 @@ export default function ExcelButton({ action }) {
         position: "relative",
         transitionProperty: "min-width,width,max-width",
         transitionDuration: ".5s",
-        zIndex: -1,
+        // zIndex: -1,
+        ...sx,
         "&:hover": {
           minWidth: "96px",
           maxWidth: "96px",
