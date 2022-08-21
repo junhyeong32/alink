@@ -767,7 +767,10 @@ export default function Db() {
                     <Row
                       alignItems={"center"}
                       wrap={"wrap"}
-                      sx={{ gap: 1, whiteSpace: "nowrap" }}
+                      sx={{
+                        gap: 1,
+                        whiteSpace: "nowrap",
+                      }}
                     >
                       등록일
                       <Button
@@ -776,6 +779,7 @@ export default function Db() {
                         fs={"h6"}
                         color={"primary.white"}
                         h={14}
+                        sx={{ zIndex: open ? -1 : 0 }}
                         action={() =>
                           setDate([
                             {
@@ -792,6 +796,7 @@ export default function Db() {
                         fs={"h6"}
                         color={"primary.white"}
                         h={14}
+                        sx={{ zIndex: open ? -1 : 0 }}
                         action={() =>
                           setDate([
                             {
@@ -810,6 +815,7 @@ export default function Db() {
                         fs={"h6"}
                         color={"primary.white"}
                         h={14}
+                        sx={{ zIndex: open ? -1 : 0 }}
                         action={() =>
                           setDate([
                             {
@@ -828,6 +834,7 @@ export default function Db() {
                         fs={"h6"}
                         color={"primary.white"}
                         h={14}
+                        sx={{ zIndex: open ? -1 : 0 }}
                         action={() =>
                           setDate([
                             {

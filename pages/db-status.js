@@ -126,7 +126,7 @@ export default function DbStatus() {
 
       if (res?.code === 200) {
         setOrgCodeBySales(res?.data);
-        const head_org = {};
+        const head_org = { 전체: "전체" };
 
         getOrgHeadOffice(res?.data, head_org);
 
