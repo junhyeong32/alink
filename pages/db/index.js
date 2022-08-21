@@ -116,6 +116,7 @@ export default function Db() {
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
+  const [modalOrgMenuList, setModalOrgMenuList] = useState({});
   const [orgMenuList, setOrgMenuList] = useState({ 전체: "전체" });
   const [uploaderMenuList, setUploaderMenuList] = useState({ 전체: "전체" });
   const [areaParentMenuList, setAreaParentMenuList] = useState({
@@ -256,6 +257,7 @@ export default function Db() {
     getOrgWithUnit(sales, "team", org);
 
     setHeadOfficeMenuList(head_org);
+    setModalOrgMenuList(denined_head_org);
     setDeninedHeadOfficeMenuList(denined_head_org);
     setOrgMenuList(org);
   }, [sales]);
@@ -885,7 +887,7 @@ export default function Db() {
                         buttonName: "변경",
                         list: checkData.join(","),
                       },
-                      data: headOfficeMenuList,
+                      data: modalOrgMenuList,
                     });
                   }}
                 />
@@ -961,7 +963,7 @@ export default function Db() {
                         },
                         reload: getDbDetail,
                       },
-                      data: headOfficeMenuList,
+                      data: modalOrgMenuList,
                     });
                   }}
                 />

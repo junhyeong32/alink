@@ -122,7 +122,7 @@ export default function MenuTable({ data, getMenus }) {
                             modal: "needconfirm",
                             content: {
                               buttonText: "삭제",
-                              text: "팝업을 삭제하시겠습니까?",
+                              text: "메뉴를 삭제하시겠습니까?",
                               action: async () => {
                                 const res = await api.Post("db/menu/delete", {
                                   token: getAccessToken(),

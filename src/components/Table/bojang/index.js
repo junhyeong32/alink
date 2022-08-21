@@ -178,14 +178,14 @@ export default function BojangTable({
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
-                  {d?.organization?.head_office_name}
+                  {d?.allocated_user?.organization?.head_office_name}
                 </TableCell>
                 <TableCell
                   key={d?.pk + 6}
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
-                  {getTitleOfOrg_name(d?.organization)}
+                  {getTitleOfOrg_name(d?.allocated_user?.organization)}
                 </TableCell>
                 <TableCell
                   key={d?.pk + 7}
