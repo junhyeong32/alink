@@ -7,7 +7,7 @@ import Change from "./bojang/ChangeOrg";
 import Division from "./Division";
 import Popup from "./Popup";
 import Gift from "./db/gift";
-import Deposit from "./db/deposit";
+import Deposit from "./db/Deposit";
 import DepositConfirm from "./share/DepositConfirm";
 import MultipleUpload from "./share/MultipleUpload";
 
