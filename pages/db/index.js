@@ -951,7 +951,7 @@ export default function Db() {
                           });
 
                           if (res?.code === 200) {
-                            enqueueSnackbar("조직변경이 완료되었습니다.", {
+                            enqueueSnackbar("DB 자동분배가 완료되었습니다.", {
                               variant: "success",
                               autoHideDuration: 2000,
                             });
