@@ -277,6 +277,7 @@ export default function DbDetail() {
           params: {
             token: getAccessToken(),
             org_code: orgHead ? orgHead : org_code,
+            count: 10000,
           },
         })
       )?.data;
