@@ -14,6 +14,7 @@ import SelectInput, {
   OutLineSelectInput,
   LabelOutLineGroupingSelectInput,
   LabelOutLineSelectInput,
+  LabelOutLineSearchSelectInput,
 } from "../../src/components/Input/Select";
 import Button from "../../src/components/Button";
 import GridBox from "../../src/components/Box/Grid";
@@ -305,8 +306,6 @@ export default function DbDetail() {
     };
     getUserList();
   }, [org_code, orgHead]);
-
-  console.log(orgHead, user_code);
 
   return (
     <Layout loading={loading}>
@@ -721,7 +720,7 @@ export default function DbDetail() {
             </RowLabel>
           </Column>
         </Row>
-        {allocated_user?.pk === user_info?.pk &&
+        {(allocated_user?.pk === user_info?.pk || rank === "관리자") &&
           menu_detail?.fields
             ?.filter(
               (field) =>
@@ -816,7 +815,8 @@ export default function DbDetail() {
                     {values?.map(
                       (v, _key) =>
                         v?.title === "녹취 파일" &&
-                        v?.value && (
+                        v?.value &&
+                        v?.value.includes("https") && (
                           <Column
                             sx={{
                               width: "100%",
@@ -843,7 +843,7 @@ export default function DbDetail() {
                 </Column>
               </>
             ))}
-        {allocated_user?.pk === user_info?.pk &&
+        {(allocated_user?.pk === user_info?.pk || rank === "관리자") &&
           menu_detail?.fields
             ?.filter(
               (field) =>

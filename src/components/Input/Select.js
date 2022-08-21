@@ -8,6 +8,7 @@ import {
   TextField,
   FormControl,
   ListSubheader,
+  Autocomplete,
 } from "@mui/material";
 import React from "react";
 import Column from "../Box/Column";
@@ -130,6 +131,46 @@ export function LabelOutLineSelectInput({
           </MenuItem>
         ))}
       </Select>
+    </Column>
+  );
+}
+
+export function LabelOutLineSearchSelectInput({
+  alignItems,
+  title,
+  placeholder,
+  value,
+  setValue,
+  menuItems,
+  w,
+  sx,
+  ...props
+}) {
+  return (
+    <Column
+      justifyContent="start"
+      alignItems={alignItems || "center"}
+      sx={{
+        width: w,
+        gap: 1,
+        ...sx,
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+      <Autocomplete
+        disablePortal
+        id="combo-box-demo"
+        options={[menuItems]}
+        sx={{ width: 300 }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            label="Movie"
+          />
+        )}
+      />
     </Column>
   );
 }

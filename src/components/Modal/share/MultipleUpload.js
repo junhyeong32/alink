@@ -113,8 +113,8 @@ export default function MultipleUpload({ index }) {
             </Row>
             <Row
               wrap={"wrap"}
-              justifyContent={"between"}
-              sx={{ mt: 2, gap: 1, overflowY: "scroll" }}
+              justifyContent={"start"}
+              sx={{ mt: 2, gap: 1, overflowY: "scroll", gap: 1 }}
             >
               {file.map((d, k) =>
                 d?.map((f, key) => {

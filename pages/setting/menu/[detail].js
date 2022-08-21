@@ -71,7 +71,7 @@ export default function MenuDetail() {
       cooperation_organization_codes: coop_list.join(",") || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
-      geomap: area,
+      geomap: geomap,
       fields: db_fields,
     });
     if (res?.code === 200) {
@@ -193,6 +193,8 @@ export default function MenuDetail() {
     if (JSON.stringify(area_org) !== "{}")
       setArea((prev) => [...prev, area_org]);
   }, [area_org]);
+
+  console.log("hi", area_org, geomap);
 
   return (
     <Layout loading={loading}>
