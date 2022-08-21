@@ -37,7 +37,7 @@ export default function Login() {
       });
     }
     setLoading(true);
-    const res = (
+    const res = (ㄴ
       await Axios.Post("user/signin", {
         id: id,
         password: password,

@@ -951,27 +951,33 @@ export default function Db() {
                   }}
                 />
               )}
-              {(rank === "협력사" || rank === "부협력사") && (
-                <Button
-                  bgColor="primary"
-                  text="녹취 파일 업로드"
-                  color="primary.white"
-                  fs="h6"
-                  w={110}
-                  h={28}
-                  action={() =>
-                    openModal({
-                      modal: "upload",
-                      content: {
-                        title: "녹음 파일 업로드",
-                        is_sample: false,
-                        fileType: "audio/*",
-                        contents: "자동분배를 진행하시겠습니까?",
-                      },
-                    })
-                  }
-                />
-              )}
+              {/* {(rank === "협력사" || rank === "부협력사") && ( */}
+              {/* TODO
+                1. 파일을 multiple로 등록되게
+                2. 파일 업로드 버튼을 눌렀을때 upload api를 각 파일마다 호출
+                3. 프로그레스바로 현 상황 보여주기
+                4. 예외처리로 가져올때 https가 없으면 안보여주면 됨
+              */}
+              <Button
+                bgColor="primary"
+                text="녹취 파일 대량 업로드"
+                color="primary.white"
+                fs="h6"
+                w={110}
+                h={28}
+                action={() =>
+                  openModal({
+                    modal: "upload",
+                    content: {
+                      title: "녹음 파일 업로드",
+                      is_sample: false,
+                      fileType: "audio/*",
+                      contents: "자동분배를 진행하시겠습니까?",
+                    },
+                  })
+                }
+              />
+              {/* )} */}
               {(rank === "본부장" ||
                 rank === "지점장" ||
                 rank === "팀장" ||

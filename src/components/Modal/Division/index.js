@@ -44,13 +44,13 @@ export default function Division({ index }) {
   const { modal, data, openModal, closeModal, modalContent } =
     useContext(ModalContext);
 
-  const { value, setValue, selectedParent } = data[index];
-  console.log(value, data);
+  const { value, setValue, selectedParent, geomaps } = data[index];
+  
 
   return (
     <Modal
       open={modal[index] === "division" ? true : false}
-      onClose={closeModal}
+      onClose={() => closeModal(index)}
     >
       <Box>
         <Column alignItems={"center"} justifyContent={"center"} sx={style}>
@@ -70,22 +70,22 @@ export default function Division({ index }) {
                 h={30}
                 fs={"h4"}
                 action={() => {
+                  const addedSplitedGeo = "";
                   setValue((prevState) => {
                     if (
-                      prevState.filter((geo) => geo.name === select).length > 0
+                      prevState.filter((geo) => geo.name === addedSplitedGeo)
+                        .length > 0
                     )
                       return prevState; // 중복됨
 
-                    const newState = [
+                    return [
                       ...prevState,
                       {
-                        parent: selectedParent,
+                        parent: geomaps[selectedParent].name,
                         name: select,
                         children: [],
                       },
                     ];
-
-                    return newState;
                   });
                   closeModal(index);
                 }}

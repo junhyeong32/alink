@@ -106,11 +106,13 @@ export default function MenuDetail() {
           organizations,
           fields,
           cooperation_organizations,
+          geomap,
         } = res?.data;
         setTitle(title);
         setIsActivated(is_activated);
         setIscooperated(is_cooperated);
         setCoopList(cooperation_organizations);
+        setGeoMap(geomap);
         setCoopList((prev) => {
           const arr = [];
           cooperation_organizations?.map((org, key) => arr.push(org.code));
@@ -370,11 +372,11 @@ export default function MenuDetail() {
             action={() =>
               openModal({
                 modal: "area",
-                content: { buttonAction: setAreaOrg },
                 data: {
-                  geomaps: area,
-                  setGeomaps: setArea,
+                  area: geomap,
+                  setArea: setGeoMap,
                 },
+                content: { buttonAction: setAreaOrg },
               })
             }
           />

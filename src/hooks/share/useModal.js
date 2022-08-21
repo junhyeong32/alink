@@ -11,11 +11,16 @@ export default function useModal() {
       new_modal_list.splice(index, count || 1);
       return new_modal_list;
     });
-    setModalContent(() => {
-      const new_modal_list = [...modalContent];
+    setModalContent((prev) => {
+      const new_modal_list = [...prev];
       new_modal_list.splice(index, count || 1);
-
+      console.log("new_modal_list", new_modal_list);
       return new_modal_list;
+    });
+    setData((prev) => {
+      const data_list = [...prev];
+      data_list.splice(index, count || 1);
+      return data_list;
     });
   };
 

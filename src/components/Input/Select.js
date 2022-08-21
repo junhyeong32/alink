@@ -169,11 +169,10 @@ export function LabelOutLineGroupingSelectInput({
           sx={{ height: "28px" }}
         >
           <ListSubheader>Category 1</ListSubheader>
+          <ListSubheader>Category 2</ListSubheader>
           <MenuItem value={1}>Option 1</MenuItem>
           <MenuItem value={2}>Option 2</MenuItem>
-          <ListSubheader>Category 2</ListSubheader>
-          <MenuItem value={3}>Option 3</MenuItem>
-          <MenuItem value={4}>Option 4</MenuItem>
+         
         </Select>
       </FormControl>
     </Column>

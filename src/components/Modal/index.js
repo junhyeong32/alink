@@ -3,7 +3,6 @@ import NeedConfirm from "./share/NeedConfirm";
 import ReadFile from "./share/ReadFile";
 import Result from "./dna/Result";
 import Area from "./setting/AreaModal";
-import SplitArea from "./setting/SplitAreaModal";
 import Change from "./bojang/ChangeOrg";
 import Division from "./Division";
 import Popup from "./Popup";
@@ -17,7 +16,7 @@ import { ModalContext } from "../../contexts/ModalContext";
 
 export default function Modal() {
   const { modal } = useContext(ModalContext);
-
+  console.log("data", modal);
   return modal.map((data, index) => {
     if (data === "upload") {
       return <Upload key={index} index={index} />;
@@ -28,7 +27,7 @@ export default function Modal() {
     } else if (data === "result") {
       return <Result key={index} index={index} />;
     } else if (data === "area") {
-      return <SplitArea key={index} index={index} />;
+      return <Area key={index} index={index} />;
     } else if (data === "change") {
       return <Change key={index} index={index} />;
     } else if (data === "division") {

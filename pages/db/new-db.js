@@ -115,7 +115,7 @@ export default function NewDb() {
     setAreaParentMenuList(() => {
       const parent = {};
       area?.map((d, key) => {
-        Object.assign(parent, { [d.parent]: d.parent });
+        Object.assign(parent, { [d.name]: d.name });
       });
       return parent;
     });

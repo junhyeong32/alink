@@ -34,9 +34,9 @@ export default function Menu() {
   const [cooperation_organization, setCooperationOrganization] = useState("");
   const [sample, setSample] = useState("");
   const [db_fields, setDbFields] = useState();
-  const [geomap, setGeoMap] = useState();
   const [cooperationMenuList, setCooperationMenuList] = useState("");
   const [coop_list, setCoopList] = useState([]);
+  const [area, setArea] = useState([]);
 
   const [file_name, setFileName] = useState("");
 
@@ -47,7 +47,22 @@ export default function Menu() {
   const { isPending, fields } = useGetFields();
   const { org_pending, sales } = useGetOrganization("sales");
   const { cooperation } = useGetOrganization("cooperation");
-  const { area, setArea } = useGetArea();
+
+  const getArea = async () => {
+    const res = (
+      await Axios.Get(`db/geomap`, {
+        params: {
+          token: getAccessToken(),
+        },
+      })
+    )?.data;
+    console.log(res);
+    if (res?.code === 200) setArea(res?.data);
+  };
+
+  useEffect(() => {
+    getArea();
+  }, []);
 
   const handleAddDb = async () => {
     console.log("test");
@@ -60,7 +75,7 @@ export default function Menu() {
       cooperation_organization_codes: coop_list.join(",") || undefined, //협력사 조직코드 (,)로 구분
       sample: sample,
       is_activated: is_activated, //활성화 여부(1, 0)
-      geomap: area,
+      geomap: area_org,
       fields: db_fields,
     });
     if (res?.code === 200) {
@@ -130,10 +145,10 @@ export default function Menu() {
     }
   }, [cooperation_organization]);
 
-  if (isPending) return <div>loading</div>;
+  console.log("area", area);
 
   return (
-    <Layout loading={isPending}>
+    <Layout loading={fields?.length === 0}>
       <Column sx={{ gap: 4.7, width: { xs: "100%", sm: "100%", md: 550 } }}>
         <Column sx={{ gap: 1 }}>
           <Typography variant="h1">DB 추가</Typography>
@@ -310,11 +325,11 @@ export default function Menu() {
             action={() =>
               openModal({
                 modal: "area",
-                content: { buttonAction: setAreaOrg },
                 data: {
-                  geomaps: area,
-                  setGeomaps: setArea,
+                  area: area,
+                  setArea: setArea,
                 },
+                content: { buttonAction: setAreaOrg },
               })
             }
           />

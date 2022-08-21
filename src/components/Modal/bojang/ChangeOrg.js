@@ -55,8 +55,7 @@ export default function Change({ index }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [select, setSelect] = useState("전체");
-
-  console.log(data);
+  console.log("data", data);
 
   return (
     <Modal open={modal[index] === "change"} onClose={() => closeModal(index)}>
@@ -91,6 +90,9 @@ export default function Change({ index }) {
                       reload: reload,
                     },
                   });
+                } else if (type === "area") {
+                  buttonAction(select);
+                  closeModal(index);
                 } else
                   openModal({
                     modal: "needconfirm",
