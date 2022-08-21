@@ -121,7 +121,7 @@ export default function Popup({ index }) {
             value={data[index]?.content}
             readOnly
             theme={"bubble"}
-            style={{ height: "90%" }}
+            style={{ height: "90%", overflowY: "scroll" }}
           />
 
           <Row
