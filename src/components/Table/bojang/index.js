@@ -178,7 +178,7 @@ export default function BojangTable({
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
-                  {d?.allocated_user?.organization?.head_office_name}
+                  {d?.organization?.name}
                 </TableCell>
                 <TableCell
                   key={d?.pk + 6}

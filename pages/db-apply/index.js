@@ -44,7 +44,7 @@ export default function DBApply() {
 
   const { menus } = useGetMenus();
   const { area } = useGetArea();
-  const { user, isUserPending, getUser } = useGetUser();
+  const { user, isUserPending, closeModal, getUser } = useGetUser();
   const { openModal } = useContext(ModalContext);
 
   useEffect(() => {
@@ -114,7 +114,10 @@ export default function DBApply() {
             }),
         },
       });
-    } else if (user?.deposit_status === "입금 완료") {
+    } else if (
+      user?.deposit_status === "입금 완료" &&
+      user?.status === "미승인"
+    ) {
       openModal({
         modal: "depositconfirm",
       });
