@@ -951,7 +951,7 @@ export default function Db() {
                           });
 
                           if (res?.code === 200) {
-                            enqueueSnackbar("조직이 변경되었습니다", {
+                            enqueueSnackbar("조직변경이 완료되었습니다.", {
                               variant: "success",
                               autoHideDuration: 2000,
                             });
@@ -984,7 +984,6 @@ export default function Db() {
                         title: "녹음 파일 대량 업로드",
                         is_sample: false,
                         fileType: "audio/*",
-                        contents: "자동분배를 진행하시겠습니까?",
                       },
                     })
                   }

@@ -240,12 +240,21 @@ export default function BojangTable({
                           })
                         }
                       >
-                        <Image
-                          src={"/recording.png"}
-                          width={18.75}
-                          height={22.92}
-                          alt=""
-                        />
+                        {data[key]?.values.filter(
+                          (v) =>
+                            v?.title === "녹취 파일" &&
+                            v?.value.includes("https") &&
+                            v?.value !== ""
+                        ).length !== 0 ? (
+                          <Image
+                            src={"/recording.png"}
+                            width={18.75}
+                            height={22.92}
+                            alt=""
+                          />
+                        ) : (
+                          ""
+                        )}
                       </TableCell>
                     );
                   } else if (
@@ -268,12 +277,18 @@ export default function BojangTable({
                           })
                         }
                       >
-                        <Image
-                          src={"/memo.png"}
-                          width={25}
-                          height={25}
-                          alt="memo"
-                        />
+                        {data[key]?.values.filter(
+                          (v) => v?.title === "메모" && v?.value !== ""
+                        ).length !== 0 ? (
+                          <Image
+                            src={"/memo.png"}
+                            width={25}
+                            height={25}
+                            alt="memo"
+                          />
+                        ) : (
+                          ""
+                        )}
                       </TableCell>
                     );
                   } else if (
@@ -296,12 +311,18 @@ export default function BojangTable({
                           })
                         }
                       >
-                        <Image
-                          src={"/dna.png"}
-                          width={12}
-                          height={25}
-                          alt="result"
-                        />
+                        {data[key]?.values.filter(
+                          (v) => v?.title === "결과지 파일" && v?.value !== ""
+                        ).length !== 0 ? (
+                          <Image
+                            src={"/dna.png"}
+                            width={12}
+                            height={25}
+                            alt="result"
+                          />
+                        ) : (
+                          ""
+                        )}
                       </TableCell>
                     );
                   }
