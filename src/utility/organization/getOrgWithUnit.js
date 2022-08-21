@@ -1,10 +1,25 @@
-import { getTitleOfOrg_name, getTitleOfOrg } from "./getTitleOfOrg";
+import {
+  getTitleOfOrg_name,
+  getTitleOfStartBranchOrg_name,
+} from "./getTitleOfOrg";
 
 export function getOrgWithUnit(orgs, unit, result) {
   for (let org of orgs) {
     getOrgWithUnit(org.children, unit, result);
 
     if (org.unit === unit) {
+      Object.assign(result, {
+        [org.code]: getTitleOfOrg_name(org),
+      });
+    }
+  }
+}
+
+export function getOrgWithManyUnit(orgs, unit1, unit2, result) {
+  for (let org of orgs) {
+    getOrgWithManyUnit(org.children, unit1, unit2, result);
+
+    if (org.unit === unit1 || org.unit === unit2) {
       Object.assign(result, {
         [org.code]: getTitleOfOrg_name(org),
       });
@@ -68,18 +83,9 @@ export function getOrgWithOfficeName(orgs, user_info, result) {
 export function getOrgByOfficeNameWithUnit(orgs, select, unit, result) {
   for (let org of orgs) {
     getOrgByOfficeNameWithUnit(org.children, select, unit, result);
-    console.log(
-      "result",
-      select,
-      org?.parent_code,
-      unit,
-      org?.unit,
-      select === org?.parent_code,
-      unit === org?.unit
-    );
-    if (select === org?.parent_code && unit === org?.unit) {
+    if (select === org?.region_name && unit === org?.unit) {
       Object.assign(result, {
-        [org.code]: getTitleOfOrg_name(org),
+        [org.code]: getTitleOfStartBranchOrg_name(org),
       });
     }
   }

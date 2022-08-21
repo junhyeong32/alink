@@ -8,6 +8,15 @@ export function getTitleOfOrg_name(org) {
   return str;
 }
 
+export function getTitleOfStartBranchOrg_name(org) {
+  let str = "";
+
+  if (org.branch_name) str += org.branch_name;
+  if (org.team_name) str += ">" + org.team_name;
+
+  return str;
+}
+
 export function getTitleOfOrg(org) {
   let str = "";
 

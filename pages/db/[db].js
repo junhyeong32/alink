@@ -39,6 +39,7 @@ import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import {
   getOrgWithUnit,
   getOrgByOfficeNameWithUnit,
+  getOrgWithManyUnit,
 } from "../../src/utility/organization/getOrgWithUnit";
 import moment from "moment";
 
@@ -79,6 +80,7 @@ export default function DbDetail() {
   const [age, setAge] = useState("");
   const [area, setArea] = useState([]);
   const [sales, setSales] = useState([]);
+  const [team, setTeam] = useState("");
 
   const [orgHead, setOrgHead] = useState(""); //메뉴 리스트만 바꾸는용
 
@@ -197,6 +199,7 @@ export default function DbDetail() {
         setOrgCode(organization_code);
         setOrganization(organization);
         setUserCode(allocated_user?.pk);
+        setOrgHead(allocated_user?.organization?.code);
         setDateAge(
           values.filter((v) => v?.title === "나이")?.[0]?.value.length > 5
             ? values.filter((v) => v?.title === "나이")?.[0]?.value
@@ -228,7 +231,6 @@ export default function DbDetail() {
       return child;
     });
   }, [area, parent_area]);
-  console.log("area", area);
 
   useEffect(() => {
     if (!org_code) return;
@@ -247,7 +249,7 @@ export default function DbDetail() {
         setSales(res?.data);
         const result = {};
 
-        getOrgWithUnit(res?.data, "region", result);
+        getOrgWithManyUnit(res?.data, "region", "team", result);
 
         setOrgMenuList(result);
       }
@@ -255,15 +257,17 @@ export default function DbDetail() {
     getSalesByHeadOffice();
   }, [org_code]);
 
-  useEffect(() => {
-    if (!orgHead) return;
-    const result = {};
-    getOrgByOfficeNameWithUnit(sales, orgHead, "team", result);
+  console.log(orgMenuList);
 
-    setTeamMenuList(result);
-  }, [orgHead]);
+  // useEffect(() => {
+  //   if (!orgHead) return;
+  //   const result = {};
+  //   getOrgByOfficeNameWithUnit(sales, orgMenuList[orgHead], "team", result);
 
-  console.log("teamMenuList", orgHead);
+  //   setTeamMenuList(result);
+  // }, [orgHead]);
+
+  // console.log("result", teamMenuList);
 
   useEffect(() => {
     if (!org_code) return;
@@ -272,7 +276,7 @@ export default function DbDetail() {
         await Axios.Get("member", {
           params: {
             token: getAccessToken(),
-            org_code: org_code,
+            org_code: orgHead ? orgHead : org_code,
           },
         })
       )?.data;
@@ -291,7 +295,7 @@ export default function DbDetail() {
 
         res?.data?.result?.map((user, key) =>
           Object.assign(listObj, {
-            [user?.pk]: user?.name + " " + userDbCount[key],
+            [user?.pk]: user?.name + " (" + userDbCount[key] + ")",
           })
         );
 
@@ -301,16 +305,7 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log(
-    "parent_area2",
-    values.filter((v) => v?.title === "나이")?.[0]?.value.length < 5
-      ? values.filter((v) => v?.title === "나이")?.[0]?.value
-      : new Date().getFullYear() -
-          new Date(
-            values.filter((v) => v?.title === "나이")?.[0]?.value
-          ).getFullYear() +
-          1
-  );
+  console.log(orgHead, user_code);
 
   return (
     <Layout loading={loading}>
@@ -677,37 +672,51 @@ export default function DbDetail() {
             <RowLabel label="조직" fs="h5">
               <Typography variant="h6">{organization?.name}</Typography>
             </RowLabel>
-            <RowLabel label="소속/성명" fs="h5">
-              <LabelOutLineSelectInput
-                alignItems={"start"}
-                title="소속"
-                disabled={
-                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
-                }
-                w={"33%"}
-                menuItems={orgMenuList}
-                value={orgHead}
-                setValue={setOrgHead}
-              />
-              <LabelOutLineGroupingSelectInput
-                alignItems={"start"}
-                title="팀"
-                w={"33%"}
-                disabled={
-                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
-                }
-              />
-              <LabelOutLineSelectInput
-                alignItems={"start"}
-                title="담당자명"
-                disabled={
-                  allocated_user?.pk !== user_info?.pk && rank !== "관리자"
-                }
-                w={"33%"}
-                menuItems={userMenuList}
-                value={user_code}
-                setValue={setUserCode}
-              />
+            <RowLabel label="소속/성명" fs="h5" alignItems="stasrt">
+              <Column sx={{ width: "100%", gap: 1 }}>
+                <LabelOutLineSelectInput
+                  alignItems={"start"}
+                  native
+                  title="소속"
+                  disabled={
+                    allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                  }
+                  w={"100%"}
+                  menuItems={orgMenuList}
+                  value={orgHead}
+                  setValue={setOrgHead}
+                />
+                {/* <LabelOutLineGroupingSelectInput
+                  alignItems={"start"}
+                  title="팀"
+                  w={"100%"}
+                  disabled={
+                    allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                  }
+                /> */}
+                {/* <LabelOutLineSelectInput
+                  alignItems={"start"}
+                  title="팀"
+                  disabled={
+                    allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                  }
+                  w={"100%"}
+                  menuItems={teamMenuList}
+                  value={team}
+                  setValue={setTeam}
+                /> */}
+                <LabelOutLineSelectInput
+                  alignItems={"start"}
+                  title="담당자명"
+                  disabled={
+                    allocated_user?.pk !== user_info?.pk && rank !== "관리자"
+                  }
+                  w={"100%"}
+                  menuItems={userMenuList}
+                  value={user_code}
+                  setValue={setUserCode}
+                />
+              </Column>
             </RowLabel>
           </Column>
         </Row>
@@ -956,7 +965,7 @@ export default function DbDetail() {
                           list_pk: router.query.db,
                           db_pk: router.query.menu,
                           organization_code: org_code,
-                          user_pk: user_code || user_info?.pk,
+                          user_pk: user_code,
                           status: status,
                           org_status: org_status,
                           geo_parent: parent_area,

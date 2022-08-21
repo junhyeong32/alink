@@ -207,9 +207,9 @@ export default function NewDb() {
         }}
       >
         <Typography variant="h1">고객 정보</Typography>
-        <RowLabel label="등록처" fs="h6">
+        {/* <RowLabel label="등록처" fs="h6">
           {user_info?.name}
-        </RowLabel>
+        </RowLabel> */}
         <RowLabel label="조직" fs="h6">
           <OutLineSelectInput
             w={"100%"}
@@ -513,8 +513,8 @@ export default function NewDb() {
               token: getAccessToken(),
               db_pk: router.query.menu,
               organization_code: head_office_org_code,
-              user_pk:
-                user_info?.grade === "관리자" ? user_info?.pk : undefined,
+              //   user_pk:
+              //     user_info?.grade === "관리자" ? user_info?.pk : undefined,
               geo_parent: parent_area,
               geo_name: child_area,
               values: newValue,

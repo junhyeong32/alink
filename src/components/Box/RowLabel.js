@@ -11,11 +11,12 @@ export default function RowLabel({
   sx,
   children,
   columnGap,
+  alignItems,
   textNoWrap,
 }) {
   return (
     <Row
-      alignItems="center"
+      alignItems={alignItems || "center"}
       justifyContent="start"
       wrap="norwap"
       sx={{
@@ -27,7 +28,7 @@ export default function RowLabel({
         ...sx,
       }}
     >
-      <Typography 
+      <Typography
         variant={fs || "normal"}
         align="left"
         sx={{
