@@ -937,36 +937,36 @@ export default function Db() {
                   h={28}
                   action={() => {
                     openModal({
-                      modal: "needconfirm",
+                      modal: "change",
                       content: {
-                        title: "DB 자동 분배",
-                        contents: "자동분배를 진행하시겠습니까?",
-                        buttonName: "변경",
-                        action: async () => {
+                        type: "changedb",
+                        title: "DB 조직 선택",
+                        contents: "DB를 선택하시겠습니까?",
+                        buttonName: "선택",
+                        buttonAction: async (select) => {
                           const res = await Axios.Post("db/menu/distribute", {
                             token: getAccessToken(),
                             db_pk: router.query.menu,
+                            org_code: select,
                           });
 
                           if (res?.code === 200) {
-                            closeModal(0, 2);
                             enqueueSnackbar("조직이 변경되었습니다", {
                               variant: "success",
                               autoHideDuration: 2000,
                             });
+                            closeModal();
+                            getDbDetail();
                           }
                         },
+                        reload: getDbDetail,
                       },
+                      data: headOfficeMenuList,
                     });
                   }}
                 />
               )}
-              {/* TODO
-                1. 파일을 multiple로 등록되게
-                2. 파일 업로드 버튼을 눌렀을때 upload api를 각 파일마다 호출
-                3. 프로그레스바로 현 상황 보여주기
-                4. 예외처리로 가져올때 https가 없으면 안보여주면 됨
-              */}
+
               {(rank === "관리자" ||
                 rank === "협력사" ||
                 rank === "부협력사") && (

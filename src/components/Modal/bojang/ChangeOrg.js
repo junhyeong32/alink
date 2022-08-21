@@ -55,7 +55,6 @@ export default function Change({ index }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [select, setSelect] = useState("전체");
-  console.log("data", data);
 
   return (
     <Modal open={modal[index] === "change"} onClose={() => closeModal(index)}>
@@ -91,6 +90,8 @@ export default function Change({ index }) {
                     },
                   });
                 } else if (type === "area") {
+                  buttonAction(select);
+                } else if (type === "changedb") {
                   buttonAction(select);
                   closeModal(index);
                 } else

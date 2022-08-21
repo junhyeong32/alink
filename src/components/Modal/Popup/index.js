@@ -38,20 +38,44 @@ export default function Popup({ index }) {
   const rePosition = data[index]?.position?.split("/");
 
   const style = {
-    width:
-      reSize?.length !== 1
-        ? Number(reSize?.[0])
-        : data[index]?.size === "대"
-        ? 600
-        : data[index]?.size === "중"
-        ? 500
-        : 250,
-    height:
-      reSize?.length !== 1
-        ? Number(reSize?.[1])
-        : data[index]?.size === "대"
-        ? 800
-        : 300,
+    width: {
+      lg:
+        reSize?.length !== 1
+          ? Number(reSize?.[0])
+          : data[index]?.size === "대"
+          ? 600
+          : data[index]?.size === "중"
+          ? 500
+          : 250,
+      md:
+        reSize?.length !== 1
+          ? Number(reSize?.[0])
+          : data[index]?.size === "대"
+          ? 600
+          : data[index]?.size === "중"
+          ? 500
+          : 250,
+      sm: "95%",
+      xs: "95%",
+    },
+
+    height: {
+      lg:
+        reSize?.length !== 1
+          ? Number(reSize?.[1])
+          : data[index]?.size === "대"
+          ? 800
+          : 300,
+      md:
+        reSize?.length !== 1
+          ? Number(reSize?.[1])
+          : data[index]?.size === "대"
+          ? 800
+          : 300,
+      sm: "95%",
+      xs: "95%",
+    },
+
     overflowY: "hidden",
     background: "#FFFFFF",
     position: "absolute",
@@ -97,7 +121,7 @@ export default function Popup({ index }) {
             value={data[index]?.content}
             readOnly
             theme={"bubble"}
-            style={{ height: "95%" }}
+            style={{ height: "90%" }}
           />
 
           <Row

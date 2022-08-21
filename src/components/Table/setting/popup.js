@@ -141,6 +141,7 @@ export default function PopupTable({ data, getList }) {
                                 token: getAccessToken(),
                                 popup_pk: list?.pk,
                               });
+
                               if (res?.code === 200) {
                                 enqueueSnackbar("팝업이 삭제되었습니다.", {
                                   variant: "success",

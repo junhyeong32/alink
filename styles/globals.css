@@ -123,7 +123,6 @@ body
 }
 
 .ql-editor {
-  min-height: 465px !important;
   overflow: hidden;
   overflow-y: scroll;
   overflow-x: scroll;
