@@ -1,9 +1,6 @@
 import { getTitleOfOrg_name, getTitleOfOrg } from "./getTitleOfOrg";
 
 export function getOrgWithUnit(orgs, unit, result) {
-  Object.assign(result, {
-    전체: "전체",
-  });
   for (let org of orgs) {
     getOrgWithUnit(org.children, unit, result);
 

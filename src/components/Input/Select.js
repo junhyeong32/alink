@@ -157,7 +157,7 @@ export function LabelOutLineGroupingSelectInput({
     >
       <Typography variant="h6">{title}</Typography>
 
-      <FormControl>
+      <FormControl sx={{ width: "100%" }}>
         <Select
           id="grouped-select"
           variant="outlined"
@@ -172,7 +172,6 @@ export function LabelOutLineGroupingSelectInput({
           <ListSubheader>Category 2</ListSubheader>
           <MenuItem value={1}>Option 1</MenuItem>
           <MenuItem value={2}>Option 2</MenuItem>
-         
         </Select>
       </FormControl>
     </Column>

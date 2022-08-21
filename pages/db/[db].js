@@ -589,7 +589,9 @@ export default function DbDetail() {
               />
             </RowLabel>
             <RowLabel label="등록처" fs="h5">
-              <Typography variant="h5">{db_detail?.uploader?.name}</Typography>
+              <Typography variant="h5">
+                {db_detail?.uploader?.organization?.name}
+              </Typography>
             </RowLabel>
           </Column>
           <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
@@ -648,6 +650,7 @@ export default function DbDetail() {
             </RowLabel>
             <RowLabel label="소속/성명" fs="h5">
               <LabelOutLineSelectInput
+                alignItems={"start"}
                 title="소속"
                 disabled={
                   allocated_user?.pk !== user_info?.pk && rank !== "관리자"
@@ -658,6 +661,7 @@ export default function DbDetail() {
                 setValue={setOrgHead}
               />
               <LabelOutLineGroupingSelectInput
+                alignItems={"start"}
                 title="팀"
                 w={"33%"}
                 disabled={
@@ -665,6 +669,7 @@ export default function DbDetail() {
                 }
               />
               <LabelOutLineSelectInput
+                alignItems={"start"}
                 title="담당자명"
                 disabled={
                   allocated_user?.pk !== user_info?.pk && rank !== "관리자"

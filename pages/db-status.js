@@ -138,20 +138,20 @@ export default function DbStatus() {
   }, [org_code]);
 
   useEffect(() => {
-    const head_result = {};
+    const head_result = { 전체: "전체" };
 
     getOrgWithUnit(org_code_by_sales, "region", head_result);
 
     setHeadOfficeMenuList(head_result);
     if (org_code) {
-      const branch_result = {};
+      const branch_result = { 전체: "전체" };
 
       getOrgWithUnit(org_code_by_sales, "branch", branch_result);
 
       setBranchMenuList(branch_result);
     } else if (branch) {
       console.log("실행");
-      const team_result = {};
+      const team_result = { 전체: "전체" };
 
       getOrgWithUnit(org_code_by_sales, "team", team_result);
 
