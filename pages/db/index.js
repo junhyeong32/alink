@@ -924,7 +924,7 @@ export default function Db() {
                           type: "dbUpload",
                           reload: getDbDetail,
                         },
-                        data: headOfficeMenuList,
+                        data: modalOrgMenuList,
                       });
                     }}
                   />
