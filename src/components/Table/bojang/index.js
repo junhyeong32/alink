@@ -202,6 +202,26 @@ export default function BojangTable({
                     head?.property.name !== "메모" &&
                     head?.property.name !== "결과지 파일"
                   ) {
+                    if (head?.property.name === "나이") {
+                      return (
+                        <TableCell
+                          key={_key}
+                          align="center"
+                          onClick={() =>
+                            router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                          }
+                        >
+                          {new Date().getFullYear() -
+                            new Date(
+                              data[key]?.values.find(
+                                (v) => v?.field_pk === head?.pk
+                              )?.value
+                            ).getFullYear() +
+                            1}
+                        </TableCell>
+                      );
+                    }
+
                     return (
                       <TableCell
                         key={_key}
