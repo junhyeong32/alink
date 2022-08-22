@@ -211,6 +211,17 @@ export default function Db() {
       if (res?.code === 200) {
         setMenuDetail(res?.data);
         setArea(res?.data?.geomap);
+        if (rank === "협력사" || rank === "부협력사") {
+          setModalOrgMenuList((prev) => {
+            const newData = { ...prev };
+
+            res?.data?.organizations?.map((org) =>
+              Object.assign(newData, { [org.code]: org.name })
+            );
+
+            return newData;
+          });
+        }
         setAreaParentMenuList(() => {
           const parent = { 전체: "전체" };
           res?.data?.geomap?.map((d, key) => {
@@ -257,7 +268,10 @@ export default function Db() {
     getOrgWithUnit(sales, "team", org);
 
     setHeadOfficeMenuList(head_org);
-    setModalOrgMenuList(denined_head_org);
+    if (rank !== "협력사" && rank !== "부협력사") {
+      setModalOrgMenuList(denined_head_org);
+    }
+
     setDeninedHeadOfficeMenuList(denined_head_org);
     setOrgMenuList(org);
   }, [sales]);
