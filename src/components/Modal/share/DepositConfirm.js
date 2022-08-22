@@ -76,7 +76,7 @@ export default function DepositConfirm({ index }) {
                 fs={"h4"}
                 action={() => {
                   closeModal();
-                  router.back();
+                  router.push("/");
                 }}
               />
             </Column>

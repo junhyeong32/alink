@@ -44,8 +44,8 @@ export default function DBApply() {
 
   const { menus } = useGetMenus();
   const { area } = useGetArea();
-  const { user, isUserPending, closeModal, getUser } = useGetUser();
-  const { openModal } = useContext(ModalContext);
+  const { user, isUserPending, getUser } = useGetUser();
+  const { openModal, closeModal } = useContext(ModalContext);
 
   useEffect(() => {
     if (menus?.length === 0 || user?.length === 0) return;
@@ -95,11 +95,10 @@ export default function DBApply() {
                   const res = Axios.Post("user/deposit", {
                     token: getAccessToken(),
                   });
-
-                  router.back();
                   closeModal();
+                  router.push("/");
                 },
-                closeAction: () => router.back(),
+                closeAction: () => router.push("/"),
                 contents: (
                   <Column>
                     <Typography variant="h5" color="primary.red" align="center">
