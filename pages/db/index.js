@@ -1059,7 +1059,7 @@ export default function Db() {
                                 {
                                   token: getAccessToken(),
                                   db_pk: router.query.menu,
-                                  org_code: user_info?.code,
+                                  org_code: user_info?.head_office_org_code,
                                 }
                               );
 
