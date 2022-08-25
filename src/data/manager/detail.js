@@ -1,5 +1,6 @@
 export const userListLabel = [
   "상태",
+  "이름",
   "아이디",
   "소속명",
   "이메일",

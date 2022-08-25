@@ -102,6 +102,7 @@ export function LabelOutLineSelectInput({
   menuItems,
   w,
   sx,
+  disabled,
   ...props
 }) {
   return (
@@ -124,6 +125,7 @@ export function LabelOutLineSelectInput({
           setValue(e.target.value);
         }}
         sx={{ height: "28px" }}
+        disabled={disabled}
       >
         {Object.entries(menuItems).map(([value, data], key) => (
           <MenuItem value={value} key={key}>

@@ -15,6 +15,19 @@ export function getOrgWithUnit(orgs, unit, result) {
   }
 }
 
+export function getOrgWithUnitName(orgs, unit, result) {
+  for (let org of orgs) {
+    getOrgWithUnit(org.children, unit, result);
+
+    if (org.unit === unit) {
+      Object.assign(result, {
+        [org.code]: org,
+      });
+    }
+  }
+}
+
+//조건 : unit 2개 이상
 export function getOrgWithManyUnit(orgs, unit1, unit2, result) {
   for (let org of orgs) {
     getOrgWithManyUnit(org.children, unit1, unit2, result);
@@ -27,6 +40,7 @@ export function getOrgWithManyUnit(orgs, unit1, unit2, result) {
   }
 }
 
+//조건 : 조직만 뽑아ㅗㄹ때
 export function getOrgHeadOffice(orgs, result) {
   orgs?.map((org) =>
     Object.assign(result, {
@@ -35,12 +49,17 @@ export function getOrgHeadOffice(orgs, result) {
   );
 }
 
+//조건 : 상위 코드 비교
 export function getOrgByParentRank(orgs, unit, rank, result) {
   for (let org of orgs) {
-    getOrgByRank(org.children, unit, rank, result);
-    console.log("rank", rank, org.parent_code);
+    getOrgByParentRank(org.children, unit, rank, result);
 
-    if (org.unit === unit && rank === org.parent_code) {
+    if (
+      org.unit === unit &&
+      (rank === "T0000" && unit === "region"
+        ? org.parent_code === "T0001" || org.parent_code === "T0000"
+        : rank === org.parent_code)
+    ) {
       Object.assign(result, {
         [org.code]: getTitleOfOrg_name(org),
       });
@@ -48,19 +67,20 @@ export function getOrgByParentRank(orgs, unit, rank, result) {
   }
 }
 
-// export function getOrgByParentRank(orgs, unit, rank, result) {
-//   for (let org of orgs) {
-//     getOrgByRank(org.children, unit, rank, result);
-//     console.log("rank", rank, org.parent_code);
+//조건 : 상위 코드 비교해서 팀이름만 가져오기
+export function getOrgWithTeam(orgs, unit, rank, result) {
+  for (let org of orgs) {
+    getOrgWithTeam(org.children, unit, rank, result);
 
-//     if (org.unit === unit && rank === org.parent_code) {
-//       Object.assign(result, {
-//         [org.code]: getTitleOfOrg_name(org),
-//       });
-//     }
-//   }
-// }
+    if (org.unit === unit && rank === org.parent_code) {
+      Object.assign(result, {
+        [org.code]: org?.name,
+      });
+    }
+  }
+}
 
+//일회성
 export function getOrgWithOfficeName(orgs, user_info, result) {
   for (let org of orgs) {
     getOrgWithOfficeName(org.children, user_info, result);
@@ -91,6 +111,7 @@ export function getOrgByOfficeNameWithUnit(orgs, select, unit, result) {
   }
 }
 
+//조건 : 검색 시 해당 이름이 포함되는지
 export function getOrgWithName(orgs, search, result) {
   for (let org of orgs) {
     getOrgWithName(org.children, search, result);
@@ -102,6 +123,7 @@ export function getOrgWithName(orgs, search, result) {
   }
 }
 
+//조건 : 검색 시 해당 이름이 포함되는지 + 카운트까지
 export function getOrgWithNameGetCount(orgs, search, result) {
   for (let org of orgs) {
     getOrgWithNameGetCount(org.children, search, result);

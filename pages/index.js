@@ -13,12 +13,14 @@ import {
 
 export default function Home({ getCookies }) {
   const router = useRouter();
+  const [user_info] = useState(getCookie("user_info"));
   const [cookie_list, setCookieList] = useState([]);
   const [cookieAction, setCookieAction] = useState(false);
   console.log(cookie_list);
   useEffect(() => {
     !getCookies && router.replace("/login");
   }, []);
+  console.log("hi", user_info);
 
   const { openModal } = useContext(ModalContext);
 
@@ -37,6 +39,7 @@ export default function Home({ getCookies }) {
       res?.data?.result?.map(
         (popup, key) =>
           popup.activate === "활성화(매일)" &&
+          user_info?.head_office === popup.organization_name &&
           (!getCookie(["popup"])
             ? true
             : getCookie(["popup"])?.indexOf(popup?.pk) === -1) &&

@@ -115,13 +115,13 @@ export default function Popup({ index }) {
         <Column
           alignItems={"center"}
           justifyContent={"between"}
-          sx={{ position: "relative", height: "100%" }}
+          sx={{ position: "relative", width: "100%", height: "100%" }}
         >
           <Editor
             value={data[index]?.content}
             readOnly
             theme={"bubble"}
-            style={{ height: "90%", overflowY: "scroll" }}
+            style={{ height: "90%", width: "100%", overflowY: "scroll" }}
           />
 
           <Row

@@ -21,6 +21,7 @@ import {
   getTitleOfOrg_name,
 } from "../../../utility/organization/getTitleOfOrg";
 import { useEffect } from "react";
+import { getCookie } from "../../../utility/getCookie";
 
 const Root = styled("div")`
   table {
@@ -57,7 +58,7 @@ export default function BojangTable({
 }) {
   const router = useRouter();
 
-  console.log("data", header, data);
+  const [rank] = useState(getCookie("user_info")?.grade);
 
   return (
     <Root sx={{ width: "100%" }}>
@@ -90,11 +91,18 @@ export default function BojangTable({
                   }}
                 />
               </TableCell>
-              {dbHeaderList?.map((header, key) => (
-                <TableCell align="center" key={key}>
-                  {header}
-                </TableCell>
-              ))}
+              {dbHeaderList?.map((header, key) => {
+                if (
+                  (rank === "부협력사" || rank === "협력사") &&
+                  (header === "소속" || header === "담당자")
+                )
+                  return;
+                return (
+                  <TableCell align="center" key={key}>
+                    {header}
+                  </TableCell>
+                );
+              })}
 
               {header?.fields?.map((head, key) => {
                 if (head?.is_list_shown === 1)
@@ -143,6 +151,18 @@ export default function BojangTable({
                   {key + 1}
                 </TableCell>
                 <TableCell
+                  key={d?.pk + 999}
+                  align="center"
+                  sx={{ width: 10 }}
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                >
+                  {d?.gift_user?.pk ? (
+                    <Image src="/gift.png" width={20} height={20} alt="gift" />
+                  ) : (
+                    ""
+                  )}
+                </TableCell>
+                <TableCell
                   key={d?.pk + 2}
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
@@ -173,20 +193,29 @@ export default function BojangTable({
                 >
                   {d?.uploader?.name}
                 </TableCell>
-                <TableCell
-                  key={d?.pk + 8}
-                  align="center"
-                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
-                >
-                  {d?.organization?.name}
-                </TableCell>
-                <TableCell
-                  key={d?.pk + 6}
-                  align="center"
-                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
-                >
-                  {getTitleOfOrg_name(d?.allocated_user?.organization)}
-                </TableCell>
+                {rank !== "부협력사" && rank !== "협력사" && (
+                  <>
+                    <TableCell
+                      key={d?.pk + 8}
+                      align="center"
+                      onClick={() =>
+                        router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                      }
+                    >
+                      {d?.organization?.name}
+                    </TableCell>
+                    <TableCell
+                      key={d?.pk + 6}
+                      align="center"
+                      onClick={() =>
+                        router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                      }
+                    >
+                      {getTitleOfOrg_name(d?.allocated_user?.organization)}
+                    </TableCell>
+                  </>
+                )}
+
                 <TableCell
                   key={d?.pk + 7}
                   align="center"
@@ -243,23 +272,7 @@ export default function BojangTable({
                     head?.property?.name === "녹취 파일"
                   ) {
                     return (
-                      <TableCell
-                        align="center"
-                        key={_key}
-                        onClick={() =>
-                          openModal({
-                            modal: "readFile",
-                            content: {
-                              title: "녹취 파일",
-                              data: data[key]?.values.filter(
-                                (v) =>
-                                  v?.title === "녹취 파일" &&
-                                  v?.value.includes("https")
-                              ),
-                            },
-                          })
-                        }
-                      >
+                      <TableCell align="center" key={_key}>
                         {data[key]?.values.filter(
                           (v) =>
                             v?.title === "녹취 파일" &&
@@ -271,6 +284,19 @@ export default function BojangTable({
                             width={18.75}
                             height={22.92}
                             alt=""
+                            onClick={() =>
+                              openModal({
+                                modal: "readFile",
+                                content: {
+                                  title: "녹취 파일",
+                                  data: data[key]?.values.filter(
+                                    (v) =>
+                                      v?.title === "녹취 파일" &&
+                                      v?.value.includes("https")
+                                  ),
+                                },
+                              })
+                            }
                           />
                         ) : (
                           ""
@@ -282,21 +308,7 @@ export default function BojangTable({
                     head?.property?.name === "메모"
                   ) {
                     return (
-                      <TableCell
-                        align="center"
-                        key={_key}
-                        onClick={() =>
-                          openModal({
-                            modal: "readFile",
-                            content: {
-                              title: "메모",
-                              data: data[key]?.values.filter(
-                                (v) => v?.title === "메모"
-                              ),
-                            },
-                          })
-                        }
-                      >
+                      <TableCell align="center" key={_key}>
                         {data[key]?.values.filter(
                           (v) => v?.title === "메모" && v?.value !== ""
                         ).length !== 0 ? (
@@ -305,6 +317,17 @@ export default function BojangTable({
                             width={25}
                             height={25}
                             alt="memo"
+                            onClick={() =>
+                              openModal({
+                                modal: "readFile",
+                                content: {
+                                  title: "메모",
+                                  data: data[key]?.values.filter(
+                                    (v) => v?.title === "메모"
+                                  ),
+                                },
+                              })
+                            }
                           />
                         ) : (
                           ""
@@ -316,21 +339,7 @@ export default function BojangTable({
                     head?.property?.name === "결과지 파일"
                   ) {
                     return (
-                      <TableCell
-                        align="center"
-                        key={_key}
-                        onClick={() =>
-                          openModal({
-                            modal: "readFile",
-                            content: {
-                              title: "결과지 파일",
-                              data: data[key]?.values.filter(
-                                (v) => v?.title === "결과지 파일"
-                              ),
-                            },
-                          })
-                        }
-                      >
+                      <TableCell align="center" key={_key}>
                         {data[key]?.values.filter(
                           (v) => v?.title === "결과지 파일" && v?.value !== ""
                         ).length !== 0 ? (
@@ -339,6 +348,17 @@ export default function BojangTable({
                             width={12}
                             height={25}
                             alt="result"
+                            onClick={() =>
+                              openModal({
+                                modal: "readFile",
+                                content: {
+                                  title: "결과지 파일",
+                                  data: data[key]?.values.filter(
+                                    (v) => v?.title === "결과지 파일"
+                                  ),
+                                },
+                              })
+                            }
                           />
                         ) : (
                           ""

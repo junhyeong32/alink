@@ -33,7 +33,7 @@ export default function Login() {
       return enqueueSnackbar("회원정보를 올바르게 입력해주세요.", {
         variant: "error",
         autoHideDuration: 2000,
-      });
+    });
     }
     setLoading(true);
     const res = (

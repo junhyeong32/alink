@@ -54,9 +54,6 @@ const Root = styled("div")`
 export default function DbGiftTable({ data, checkData }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const [bojang, setBojang] = useState(false);
-  const [db, setDb] = useState(false);
-  const [dna, setDna] = useState(false);
   const [rank, setRank] = useState(getCookie("user_info")?.grade);
 
   const { openModal, closeModal } = useContext(ModalContext);
@@ -130,7 +127,7 @@ export default function DbGiftTable({ data, checkData }) {
                         openModal({
                           modal: "needconfirm",
                           content: {
-                            contents: "DB 선물하기를 진행하시겠습니끼?",
+                            text: "DB 선물하기를 진행하시겠습니끼?",
                             buttonText: "승인",
                             action: async () => {
                               const res = await api.Post("db/list/present", {

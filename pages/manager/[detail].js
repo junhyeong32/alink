@@ -68,14 +68,16 @@ export default function Detail() {
                 {key === 0
                   ? user?.status
                   : key === 1
-                  ? user?.id
+                  ? user?.name
                   : key === 2
-                  ? user?.head_office
+                  ? user?.id
                   : key === 3
-                  ? user?.email
+                  ? user?.head_office
                   : key === 4
-                  ? user?.birthdate
+                  ? user?.email
                   : key === 5
+                  ? user?.birthdate
+                  : key === 6
                   ? user?.phone
                   : user?.created_date}
               </Typography>

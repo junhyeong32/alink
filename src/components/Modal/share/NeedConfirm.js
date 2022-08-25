@@ -21,8 +21,10 @@ import TopLabelContents from "../../Box/TopLableContents";
 import Button from "../../Button";
 
 const style = {
-  width: { lg: "411px", md: "411px", sm: "411px", xs: "90%" },
-  height: "185px",
+  minWidth: { lg: "411px", md: "411px", sm: "411px", xs: "90%" },
+  width: "auto",
+  minHeight: 185,
+  height: "auto",
   overflowX: "hidden",
   background: "#FFFFFF",
   position: "absolute",

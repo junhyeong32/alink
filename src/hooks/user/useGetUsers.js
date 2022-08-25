@@ -26,33 +26,9 @@ export default function useGetUsers({
   const [totalCouunt, setTotalCount] = useState();
   console.log("head_office_org_code", head_office_org_code);
 
-  const getUsers = async (orgCode) => {
+  const getUsers = async (orgCode, is_init) => {
     console.log("실행", excel);
     if (Number(excel) === 1) {
-      console.log(
-        "https://alinkapi.afg.kr/api/v1?" +
-          Object.entries({
-            token: getAccessToken(),
-            page: page,
-            count: count,
-            status: status === "전체" ? undefined : status,
-            grade: grade === "전체" ? undefined : grade,
-            head_office_org_code:
-              head_office_org_code === "전체"
-                ? undefined
-                : head_office_org_code,
-            org_code: org_code === "전체" ? undefined : org_code,
-            geo: geo === "전체" ? undefined : geo,
-            email: email,
-            id: id,
-            name: name,
-            phone: phone,
-            excel: excel,
-          })
-            ?.map((e) => e.join("="))
-            .join("&")
-            .toString()
-      );
       window.open(
         "https://alinkapi.afg.kr/api/v1/member?" +
           Object.entries({
@@ -81,29 +57,38 @@ export default function useGetUsers({
       return setExcel("");
     }
 
-    const res = (
-      await Axios.Get(`member`, {
-        params: {
-          token: getAccessToken(),
-          page: page,
-          count: count,
-          status: status === "전체" ? undefined : status,
-          grade: grade === "전체" ? undefined : grade,
-          head_office_org_code:
-            head_office_org_code === "전체" ? undefined : head_office_org_code,
-          org_code:
-            org_code === "전체" || orgCode === "전체"
-              ? undefined
-              : org_code || orgCode,
-          geo: geo === "전체" ? undefined : geo,
-          email: email,
-          id: id,
-          name: name,
-          phone: phone,
-          excel: excel,
-        },
-      })
-    )?.data;
+    const res = is_init
+      ? await Axios.Get(`member`, {
+          params: {
+            token: getAccessToken(),
+            page: 1,
+          },
+        })
+      : (
+          await Axios.Get(`member`, {
+            params: {
+              token: getAccessToken(),
+              page: page,
+              count: count,
+              status: status === "전체" ? undefined : status,
+              grade: grade === "전체" ? undefined : grade,
+              head_office_org_code:
+                head_office_org_code === "전체"
+                  ? undefined
+                  : head_office_org_code,
+              org_code:
+                org_code === "전체" || orgCode === "전체"
+                  ? undefined
+                  : org_code || orgCode,
+              geo: geo === "전체" ? undefined : geo,
+              email: email,
+              id: id,
+              name: name,
+              phone: phone,
+              excel: excel,
+            },
+          })
+        )?.data;
 
     if (res?.code === 200) {
       setUsers(res?.data.result);

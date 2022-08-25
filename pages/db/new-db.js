@@ -110,19 +110,6 @@ export default function NewDb() {
       });
   }, [age]);
 
-  //지역구분
-  useEffect(() => {}, [area]);
-
-  //소속
-  useEffect(() => {
-    if (sales?.length === 0) return;
-    const head_org = {};
-
-    getOrgHeadOffice(sales, head_org);
-
-    setHeadOfficeMenuList(head_org);
-  }, [sales]);
-
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -134,10 +121,21 @@ export default function NewDb() {
       )?.data;
 
       if (res?.code === 200) {
-        setHeadOfficeRankisCoopMenuList((prev) => {
+        const head_org = {};
+
+        setHeadOfficeMenuList((prev) => {
           const newData = { ...prev };
 
           res?.data?.organizations?.map((org, key) =>
+            Object.assign(newData, { [org.code]: org.name })
+          );
+
+          return newData;
+        });
+        setHeadOfficeRankisCoopMenuList((prev) => {
+          const newData = { ...prev };
+
+          res?.data?.cooperation_organizations?.map((org, key) =>
             Object.assign(newData, { [org.code]: org.name })
           );
 
@@ -286,7 +284,7 @@ export default function NewDb() {
         </RowLabel>
         <RowLabel label="성별" fs="h6">
           <FormControlLabel
-            label="남"
+            label="남자"
             control={
               <RadioInput
                 checked={
@@ -307,7 +305,7 @@ export default function NewDb() {
             }
           />
           <FormControlLabel
-            label="여"
+            label="여자"
             control={
               <RadioInput
                 checked={
@@ -525,6 +523,11 @@ export default function NewDb() {
                 autoHideDuration: 2000,
               });
               router.back();
+            } else {
+              enqueueSnackbar("동일한 연락처의 DB가 존재합니다.", {
+                variant: "success",
+                autoHideDuration: 2000,
+              });
             }
           }}
         />

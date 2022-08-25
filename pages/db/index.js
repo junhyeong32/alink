@@ -37,10 +37,7 @@ import { getAccessToken, getCookie } from "../../src/utility/getCookie";
 import GridBox from "../../src/components/Box/Grid";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 import useGetOrganization from "../../src/hooks/share/useGetOrganization";
-import {
-  getOrgWithUnit,
-  getOrgHeadOffice,
-} from "../../src/utility/organization/getOrgWithUnit";
+import { getOrgWithManyUnit } from "../../src/utility/organization/getOrgWithUnit";
 import UnderLineInput from "../../src/components/Input";
 import OrganizationList from "../../src/components/OrganizationList/List";
 import { useSnackbar } from "notistack";
@@ -49,7 +46,7 @@ import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import UnderLineSelectInput from "../../src/components/Input/Select";
 import { getOrgWithNameGetCount } from "../../src/utility/organization/getOrgWithUnit";
-import { useTransition } from "react";
+import { getTitleOfOrg_name } from "../../src/utility/organization/getTitleOfOrg";
 
 const moment = extendMoment(originalMoment);
 
@@ -58,6 +55,7 @@ export default function Db() {
   const { enqueueSnackbar } = useSnackbar();
 
   const el = useRef(null);
+  const [user_info] = useState(getCookie("user_info"));
 
   //data
   const [menu_detail, setMenuDetail] = useState([]);
@@ -67,9 +65,7 @@ export default function Db() {
   const [area, setArea] = useState([]);
 
   //change state
-  const [date_range, setDateRange] = useState(
-    moment.range(moment().clone().subtract(7, "days"), moment().clone())
-  );
+
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -116,15 +112,13 @@ export default function Db() {
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
-  const [modalOrgMenuList, setModalOrgMenuList] = useState({});
   const [orgMenuList, setOrgMenuList] = useState({ 전체: "전체" });
   const [uploaderMenuList, setUploaderMenuList] = useState({ 전체: "전체" });
   const [areaParentMenuList, setAreaParentMenuList] = useState({
     전체: "전체",
   });
-  const [deninedHeadOfficeMenuList, setDeninedHeadOfficeMenuList] = useState(
-    {}
-  );
+  const [deninedMenuList, setDeninedMenuList] = useState({});
+
   const [areaChildMenuList, setAreaChildMenuList] = useState({ 전체: "전체" });
 
   const { openModal, closeModal } = useContext(ModalContext);
@@ -184,8 +178,12 @@ export default function Db() {
               values: JSON.stringify(
                 [...values].filter((v) => v?.value !== "")
               ),
-              created_date_start: start_date,
-              created_date_end: end_date,
+              created_date_start: start_date
+                ? new Date(start_date).getTime()
+                : undefined,
+              created_date_end: end_date
+                ? new Date(end_date).getTime()
+                : undefined,
             },
           })
     )?.data;
@@ -200,6 +198,7 @@ export default function Db() {
 
   useEffect(() => {
     if (!router.isReady) return;
+    setOpen(false);
 
     const getDbMenu = async () => {
       const res = (
@@ -210,18 +209,28 @@ export default function Db() {
 
       if (res?.code === 200) {
         setMenuDetail(res?.data);
+        const head_org = { 전체: "전체" };
+        const coop_org = { 전체: "전체" };
+        const denined_org = {};
+
+        res?.data?.organizations?.map((org) =>
+          Object.assign(head_org, { [org?.code]: org?.name })
+        );
+
+        res?.data?.organizations?.map((org) =>
+          Object.assign(denined_org, { [org?.code]: org?.name })
+        );
+
+        res?.data?.cooperation_organizations?.map((org) =>
+          Object.assign(coop_org, { [org?.code]: org?.name })
+        );
+
+        setHeadOfficeMenuList(head_org);
+        setUploaderMenuList(coop_org);
+        setDeninedMenuList(denined_org);
+
         setArea(res?.data?.geomap);
-        if (rank === "협력사" || rank === "부협력사") {
-          setModalOrgMenuList((prev) => {
-            const newData = { ...prev };
 
-            res?.data?.organizations?.map((org) =>
-              Object.assign(newData, { [org.code]: org.name })
-            );
-
-            return newData;
-          });
-        }
         setAreaParentMenuList(() => {
           const parent = { 전체: "전체" };
           res?.data?.geomap?.map((d, key) => {
@@ -256,30 +265,10 @@ export default function Db() {
     });
   }, [menu_detail]);
 
-  //소속
-  useEffect(() => {
-    if (sales?.length === 0) return;
-    const head_org = { 전체: "전체" };
-    const denined_head_org = {};
-    const org = { 전체: "전체" };
-
-    getOrgHeadOffice(sales, head_org);
-    getOrgHeadOffice(sales, denined_head_org);
-    getOrgWithUnit(sales, "team", org);
-
-    setHeadOfficeMenuList(head_org);
-    if (rank !== "협력사" && rank !== "부협력사") {
-      setModalOrgMenuList(denined_head_org);
-    }
-
-    setDeninedHeadOfficeMenuList(denined_head_org);
-    setOrgMenuList(org);
-  }, [sales]);
-
   // db 필터 목록
   useEffect(() => {
     if (head_office_org_code === "전체") return;
-    const org = {};
+    const org = { 전체: "전체" };
     const headOfficeBySales = async () => {
       const res = (
         await Axios.Get("organization", {
@@ -292,7 +281,7 @@ export default function Db() {
       )?.data;
 
       if (res?.code === 200) {
-        getOrgWithUnit(res?.data, "region", org);
+        getOrgWithManyUnit(res?.data, "region", "team", org);
 
         setOrgMenuList(org);
       }
@@ -300,6 +289,83 @@ export default function Db() {
 
     headOfficeBySales();
   }, [head_office_org_code]);
+
+  console.log(rank);
+
+  useEffect(() => {
+    const head_office = { 전체: "전체" };
+    if (sales?.length !== 0 && rank === "지점장") {
+      console.log("111");
+      const getOrg = (orgs, unit1, unit2, result) => {
+        for (let org of orgs) {
+          getOrg(org.children, unit1, unit2, result);
+
+          if (
+            org?.branch_name === user_info?.branch &&
+            (org.unit === unit1 || org.unit === unit2)
+          ) {
+            Object.assign(result, {
+              [org.code]: getTitleOfOrg_name(org),
+            });
+          }
+        }
+      };
+      getOrg(sales, "branch", "team", head_office);
+    } else if (sales?.length !== 0 && rank === "본부장") {
+      console.log("222");
+      const getOrg = (orgs, unit1, unit2, result) => {
+        for (let org of orgs) {
+          getOrg(org.children, unit1, unit2, result);
+
+          if (
+            org?.region_name === user_info?.region &&
+            (org.unit === unit1 || org.unit === unit2)
+          ) {
+            Object.assign(result, {
+              [org.code]: getTitleOfOrg_name(org),
+            });
+          }
+        }
+      };
+      getOrg(sales, "branch", "team", head_office);
+    }
+
+    setOrgMenuList(head_office);
+  }, [sales]);
+
+  //영업진 조직
+  useEffect(() => {
+    if (
+      rank === "관리자" ||
+      rank === "부관리자" ||
+      rank === "본부장" ||
+      rank === "지점장" ||
+      rank === "협력사" ||
+      rank === "부협력사"
+    )
+      return;
+    if (!router.isReady) return;
+    const org = { 전체: "전체" };
+    const headOfficeBySales = async () => {
+      const res = (
+        await Axios.Get("organization", {
+          params: {
+            token: getAccessToken(),
+            type: "sales",
+            head_office_org_code: rank?.code,
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        getOrgWithManyUnit(res?.data, "region", "team", org);
+
+        setOrgMenuList(org);
+      }
+    };
+
+    headOfficeBySales();
+  }, [router.isReady]);
 
   //상세지역구분
   useEffect(() => {
@@ -345,6 +411,12 @@ export default function Db() {
 
     setInit(false);
   }, [init]);
+
+  useEffect(() => {
+    if (head_office_org_code !== "전체") {
+    }
+  }),
+    [head_office_org_code];
 
   useEffect(() => {
     const searchObj = {};
@@ -444,7 +516,7 @@ export default function Db() {
             <UnderLineSelectInput
               w={"100%"}
               title="조직명"
-              menuItems={deninedHeadOfficeMenuList}
+              menuItems={deninedMenuList}
               value={denied_org_code}
               setValue={setDeniedOrgCode}
             />
@@ -697,13 +769,18 @@ export default function Db() {
                   setValue={setHeadOfficeOrgCode}
                 />
               )}
-            <SelectInput
-              w="100%"
-              title="소속명"
-              menuItems={orgMenuList}
-              value={org_code}
-              setValue={setOrgCode}
-            />
+            {rank !== "협력사" &&
+              rank !== "부협력사" &&
+              rank !== "팀장" &&
+              rank !== "담당자" && (
+                <SelectInput
+                  w="100%"
+                  title="소속명"
+                  menuItems={orgMenuList}
+                  value={org_code}
+                  setValue={setOrgCode}
+                />
+              )}
             <SelectInput
               w="100%"
               title="업체승인"
@@ -715,13 +792,16 @@ export default function Db() {
               value={org_status}
               setValue={setOrgStatus}
             />
-            <SelectInput
-              w="100%"
-              title="등록처"
-              menuItems={uploaderMenuList}
-              value={uploader_organization_code}
-              setValue={setUploaderOrganizationCode}
-            />
+            {rank !== "협력사" && rank !== "부협력사" && (
+              <SelectInput
+                w="100%"
+                title="등록처"
+                menuItems={uploaderMenuList}
+                value={uploader_organization_code}
+                setValue={setUploaderOrganizationCode}
+              />
+            )}
+
             <Row alignItems={"end"} sx={{ width: "100%" }}>
               <SelectInput
                 title="지역"
@@ -739,14 +819,15 @@ export default function Db() {
                 setValue={setChildArea}
               />
             </Row>
-            <LabelUnderLineInput
-              w={"100%"}
-              title={"담당자"}
-              placeholder={"담당자명으로 검색하실 수 있습니다."}
-              value={allocated_user}
-              onChange={(e) => setAllocatedUser(e.target.value)}
-            />
-
+            {rank !== "협력사" && rank !== "부협력사" && (
+              <LabelUnderLineInput
+                w={"100%"}
+                title={"담당자"}
+                placeholder={"담당자명으로 검색하실 수 있습니다."}
+                value={allocated_user}
+                onChange={(e) => setAllocatedUser(e.target.value)}
+              />
+            )}
             {menu_detail?.fields
               ?.filter((d) => d?.is_filter_shown === 1)
               ?.map((filter, key) => {
@@ -801,7 +882,9 @@ export default function Db() {
                             {
                               ...date.key,
                               startDate: new Date(),
-                              endDate: new Date(),
+                              endDate: new Date().setDate(
+                                new Date().getDate() + 1
+                              ),
                             },
                           ])
                         }
@@ -901,7 +984,7 @@ export default function Db() {
                         buttonName: "변경",
                         list: checkData.join(","),
                       },
-                      data: modalOrgMenuList,
+                      data: headOfficeMenuList,
                     });
                   }}
                 />
@@ -938,7 +1021,7 @@ export default function Db() {
                           type: "dbUpload",
                           reload: getDbDetail,
                         },
-                        data: modalOrgMenuList,
+                        data: headOfficeMenuList,
                       });
                     }}
                   />
@@ -977,7 +1060,7 @@ export default function Db() {
                         },
                         reload: getDbDetail,
                       },
-                      data: modalOrgMenuList,
+                      data: headOfficeMenuList,
                     });
                   }}
                 />
@@ -1017,24 +1100,28 @@ export default function Db() {
                   w={90}
                   h={28}
                   action={() => {
-                    //TODO
-                    // 태웅이 형, [Aug 12, 2022 2:43:45 PM]:
-                    // 그래서 애초에 담당자가 내가 아닌경우에
-
-                    // 선물하기 버튼 누르면 가냥 안된다
-
-                    // 띄워달라는가
-
-                    // if (checkData.length === 0)
-                    //   return enqueueSnackbar("선물할 DB를 선택해주세요", {
-                    //     variant: "error",
-                    //     autoHideDuration: 2000,
-                    //   });
                     if (checkData?.length === 0)
-                      return enqueueSnackbar("DB를 선택해주세요", {
+                      return enqueueSnackbar("선물할 DB를 선택해주세요", {
                         variant: "error",
                         autoHideDuration: 2000,
                       });
+
+                    if (
+                      !checkData
+                        ?.map((c) =>
+                          db_list?.find(
+                            (db) =>
+                              db?.pk === c &&
+                              db?.allocated_user?.pk === user_info?.pk
+                          )
+                        )
+                        .some((e) => e !== undefined)
+                    ) {
+                      return enqueueSnackbar("본인 DB가 아닙니다.", {
+                        variant: "error",
+                        autoHideDuration: 2000,
+                      });
+                    }
 
                     openModal({
                       modal: "gift",

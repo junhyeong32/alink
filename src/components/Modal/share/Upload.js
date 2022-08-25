@@ -52,7 +52,8 @@ export default function Upload({ index }) {
   const { enqueueSnackbar } = useSnackbar();
   const [file, setFile] = useState("");
   const [loading, setLoading] = useState(false);
-  const { modal, closeModal, modalContent } = useContext(ModalContext);
+  const { modal, openModal, closeModal, modalContent } =
+    useContext(ModalContext);
   const {
     title,
     download,
@@ -65,7 +66,7 @@ export default function Upload({ index }) {
     reload,
   } = modalContent[index];
 
-  console.log(file)
+  console.log(file);
 
   return (
     <Modal open={modal[index] === "upload"} onClose={closeModal}>
@@ -210,26 +211,35 @@ export default function Upload({ index }) {
                 };
 
                 const upload = uploadUrl
-                  ? (await Axios.Post(uploadUrl, formData, config))?.code
-                  : (
-                      await Axios.Post(
-                        `document/upload-excel`,
-                        formData,
-                        config
-                      )
-                    )?.code;
-
-                if (upload === 200) {
+                  ? await Axios.Post(uploadUrl, formData, config)
+                  : await Axios.Post(`document/upload-excel`, formData, config);
+                console.log("upload", upload);
+                if (upload?.code === 200) {
                   enqueueSnackbar("파일이 업로드 되었습니다.", {
                     variant: "success",
                     autoHideDuration: 2000,
                   });
+                  reload && reload();
+
+                  closeModal(index);
                   setLoading(true);
+                } else if (upload?.code === 500) {
+                  setLoading(false);
+                  openModal({
+                    modal: "needconfirm",
+                    content: {
+                      buttonText: "확인",
+                      action: () => closeModal(1, 1),
+                      contents: (
+                        <Column>
+                          {upload?.message.map((m, key) => (
+                            <Typography key={key}>{m}</Typography>
+                          ))}
+                        </Column>
+                      ),
+                    },
+                  });
                 }
-
-                reload && reload();
-
-                closeModal(index);
               }}
             >
               {!loading && <Typography variant="h4">파일 업로드</Typography>}

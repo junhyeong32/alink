@@ -20,8 +20,12 @@ import Axios from "../src/utility/api";
 import { getAccessToken, getCookie } from "../src/utility/getCookie";
 import useGetOrganization from "../src/hooks/share/useGetOrganization";
 import {
+  getOrgByParentRank,
   getOrgHeadOffice,
   getOrgWithUnit,
+  getOrgWithTeam,
+  getOrgByOfficeNameWithUnit,
+  getOrgWithUnitName,
 } from "../src/utility/organization/getOrgWithUnit";
 import useGetArea from "../src/hooks/setting/useGetArea";
 import Carousel from "nuka-carousel";
@@ -31,6 +35,7 @@ export default function DbStatus() {
 
   //data
   const [dashboard_list, setDashBoardList] = useState([]);
+  const { sales } = useGetOrganization("sales");
   const { area } = useGetArea();
 
   //state
@@ -41,7 +46,7 @@ export default function DbStatus() {
   // 물어보기
   const [org_code, setOrgCode] = useState("전체");
   const [branch, setBranch] = useState("전체");
-  const [team, setTeam] = useState("전체");
+
   const [geo_name, setGeoName] = useState("전체");
   const [date, setDate] = useState(0);
   const [send_date, setSendDate] = useState(new Date().getMonth + 1);
@@ -53,14 +58,9 @@ export default function DbStatus() {
     전체: "전체",
   }); //본부
   const [branchMenuList, setBranchMenuList] = useState({ 전체: "전체" }); //지점
-  const [teamMenuList, setTeamMenuList] = useState({ 전체: "전체" }); //팀
   const [areaMenuItems, setAreaMenuItems] = useState({ 전체: "전체" });
-  const [dateMenuItems, setDateMenuItems] = useState({});
-
-  console.log("user_info", user_info);
 
   const getDbDashBoard = async () => {
-    console.log("date", date.length);
     const res = (
       await Axios.Get(`db/dashboard`, {
         params: {
@@ -72,12 +72,12 @@ export default function DbStatus() {
             rank === "팀장" ||
             rank === "담당자"
               ? user_info?.org_code
-              : team !== "전체"
-              ? team
               : branch !== "전체"
               ? branch
               : head_office_org_code !== "전체"
               ? head_office_org_code
+              : rank === "부관리자"
+              ? user_info?.org_code
               : undefined,
           geo_name: geo_name === "전체" ? undefined : geo_name,
           date: send_date,
@@ -106,58 +106,86 @@ export default function DbStatus() {
   }, [area]);
 
   useEffect(() => {
+    if (org_code === "전체") return;
     const getOrgCodeByData = async () => {
       const res = (
         await Axios.Get("organization", {
           params: {
             token: getAccessToken(),
             type: "sales",
-            head_office_org_code:
-              team !== "전체"
-                ? team
-                : branch !== "전체"
-                ? branch
-                : head_office_org_code !== "전체"
-                ? head_office_org_code
-                : undefined,
+            head_office_org_code: org_code !== "전체" ? org_code : undefined,
           },
         })
       )?.data;
 
       if (res?.code === 200) {
         setOrgCodeBySales(res?.data);
-        const head_org = { 전체: "전체" };
-
-        getOrgHeadOffice(res?.data, head_org);
-
-        setOrgMenuList(head_org);
       }
     };
 
     getOrgCodeByData();
   }, [org_code]);
 
+  //조직
   useEffect(() => {
-    const head_result = { 전체: "전체" };
-
-    getOrgWithUnit(org_code_by_sales, "region", head_result);
-
-    setHeadOfficeMenuList(head_result);
-    if (org_code) {
-      const branch_result = { 전체: "전체" };
-
-      getOrgWithUnit(org_code_by_sales, "branch", branch_result);
-
-      setBranchMenuList(branch_result);
-    } else if (branch) {
-      console.log("실행");
-      const team_result = { 전체: "전체" };
-
-      getOrgWithUnit(org_code_by_sales, "team", team_result);
-
-      setTeamMenuList(team_result);
+    const head_org = { 전체: "전체" };
+    if (sales?.length !== 0) {
+      getOrgHeadOffice(sales, head_org);
     }
-  }, [org_code, reset]);
+
+    setOrgMenuList(head_org);
+  }, [sales]);
+
+  //본부 관리자
+  useEffect(() => {
+    const head_office = { 전체: "전체" };
+    if (org_code !== "전체") {
+      getOrgWithUnit(org_code_by_sales, "region", head_office);
+    }
+
+    setHeadOfficeMenuList(head_office);
+  }, [org_code_by_sales]);
+
+  //본부 부관리자
+  useEffect(() => {
+    const head_office = { 전체: "전체" };
+    if (sales?.length !== 0 && rank === "부관리자") {
+      console.log("start");
+      getOrgWithUnit(sales, "region", head_office);
+    }
+
+    setHeadOfficeMenuList(head_office);
+  }, [sales]);
+
+  useEffect(() => {
+    if (rank !== "부관리자") return;
+    const branch = { 전체: "전체" };
+
+    if (sales?.length !== 0 && head_office_org_code !== "전체") {
+      getOrgByOfficeNameWithUnit(
+        sales,
+        headOfficeMenuList[head_office_org_code],
+        "branch",
+        branch
+      );
+      setBranchMenuList(branch);
+    }
+  }, [head_office_org_code]);
+
+  useEffect(() => {
+    if (rank !== "관리자") return;
+    const branch = { 전체: "전체" };
+    if (sales?.length !== 0 && head_office_org_code !== "전체") {
+      getOrgByOfficeNameWithUnit(
+        org_code_by_sales,
+        headOfficeMenuList[head_office_org_code],
+        "branch",
+        branch
+      );
+    }
+
+    setBranchMenuList(branch);
+  }, [head_office_org_code]);
 
   useEffect(() => {
     let d = new Date();
@@ -175,21 +203,21 @@ export default function DbStatus() {
             <>
               <Row justifyContent={"end"} sx={{ gap: 1 }}>
                 <Button
-                  h={20}
                   variant="contained"
                   bgColor={"primary"}
                   fs="h6"
                   color="primary.white"
                   text="검색"
+                  h={28}
                   action={getDbDashBoard}
                 />
                 <Button
-                  h={20}
                   variant="contained"
                   bgColor={"gray"}
                   fs="h6"
                   color="primary.white"
                   text="초기화"
+                  h={28}
                   action={() => setReset(!reset)}
                 />
               </Row>
@@ -198,6 +226,7 @@ export default function DbStatus() {
                 justifyContent={"between"}
                 alignItems={"center"}
                 sx={{
+                  mt: 1,
                   borderBottom: "1px solid black",
                   pb: 1,
                   gap: 2,
@@ -241,18 +270,14 @@ export default function DbStatus() {
                     value={branch}
                     setValue={setBranch}
                   />
-                  <LabelOutLineSelectInput
-                    title={"팀"}
-                    menuItems={teamMenuList}
-                    value={team}
-                    setValue={setTeam}
-                  />
                 </Row>
               </Row>
 
               <Row
                 alignItems={"center"}
-                justifyContent={"center"}
+                justifyContent={
+                  dashboard_list?.length < 3 ? "around" : "center"
+                }
                 sx={{ mt: 2, width: "100%" }}
               >
                 {dashboard_list?.length > 3 ? (

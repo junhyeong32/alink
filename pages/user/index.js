@@ -34,7 +34,7 @@ import useGetOrganization from "../../src/hooks/share/useGetOrganization";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 import {
   getOrgHeadOffice,
-  getOrgWithUnit,
+  getOrgWithManyUnit,
 } from "../../src/utility/organization/getOrgWithUnit";
 import Axios from "../../src/utility/api";
 import { getAccessToken, getCookie } from "../../src/utility/getCookie";
@@ -46,16 +46,18 @@ export default memo(function User() {
   //menuItems
   const [areaMenuItems, setAreaMenuItems] = useState({});
   const [salesMenuItems, setSalesMenuItems] = useState({});
-  const [coopMenuItems, setCoopMenuItems] = useState({});
+  const [headOfficeMenuItems, setHeadOfficeMenuItems] = useState({});
 
   //filter
   const [rank] = useState(getCookie("user_info")?.grade);
+
+  const [org_code_by_sales, setOrgCodeBySales] = useState([]);
 
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
   const [status, setStatus] = useState("전체");
   const [grade, setGrade] = useState("전체");
-  const [head_office_org_code, setHead_office_org_code] = useState("전체");
+  const [head_office_org_code, setHeadOfficeOrgCode] = useState("전체");
   const [org_code, setOrgCode] = useState("전체");
   const [geo, setGeo] = useState("전체");
   const [email, setEmail] = useState("");
@@ -68,7 +70,7 @@ export default memo(function User() {
   const [loading, setLoading] = useState(true);
 
   const { org_pending, sales } = useGetOrganization("sales");
-  const { cooperation } = useGetOrganization("cooperation");
+  // const { cooperation } = useGetOrganization("cooperation");
   const { area } = useGetArea();
 
   const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
@@ -96,7 +98,7 @@ export default memo(function User() {
   const handleInit = () => {
     setStatus("전체");
     setGrade("전체");
-    setHead_office_org_code("");
+    setHeadOfficeOrgCode("");
     setOrgCode("");
     setGeo("");
     setEmail("");
@@ -120,42 +122,42 @@ export default memo(function User() {
   }, [area]);
 
   useEffect(() => {
-    const head_result = {};
-    const result = {};
-
-    getOrgHeadOffice(sales, head_result);
-    getOrgWithUnit(sales, "team", result);
-
-    setSalesMenuItems(head_result);
-    setCoopMenuItems(result);
-  }, [sales]);
-
-  useEffect(() => {
-    if (head_office_org_code === "전체") return;
-    const org = {};
-    const headOfficeBySales = async () => {
+    if (org_code === "전체") return;
+    const getOrgCodeByData = async () => {
       const res = (
         await Axios.Get("organization", {
           params: {
             token: getAccessToken(),
             type: "sales",
-            head_office_org_code: head_office_org_code,
+            head_office_org_code: org_code !== "전체" ? org_code : undefined,
           },
         })
       )?.data;
 
-      console.log("res", res);
-
       if (res?.code === 200) {
-        console.log("res?.", res);
-        getOrgWithUnit(res?.data, "region", org);
-
-        setCoopMenuItems(org);
+        setOrgCodeBySales(res?.data);
       }
     };
 
-    headOfficeBySales();
-  }, [head_office_org_code]);
+    getOrgCodeByData();
+  }, [org_code]);
+
+  useEffect(() => {
+    const head_org = { 전체: "전체" };
+    if (sales?.length !== 0) {
+      getOrgHeadOffice(sales, head_org);
+    }
+
+    setSalesMenuItems(head_org);
+  }, [sales]);
+
+  useEffect(() => {
+    const head_result = { 전체: "전체" };
+    if (org_code !== "전체") {
+      getOrgWithManyUnit(org_code_by_sales, "region", "team", head_result);
+    }
+    setHeadOfficeMenuItems(head_result);
+  }, [org_code_by_sales, org_code]);
 
   useEffect(() => {
     if (!org_pending && !isUsersPending) {
@@ -163,7 +165,10 @@ export default memo(function User() {
     }
   }, [org_pending, isUsersPending]);
 
-  console.log("excel", org_pending, isUsersPending);
+  // useEffect(() => {
+  //   router.
+
+  // },[head_office_org_code])
 
   return (
     <Layout loading={loading}>
@@ -268,8 +273,8 @@ export default memo(function User() {
                 title="조직명"
                 menuItems={salesMenuItems}
                 w="100%"
-                value={head_office_org_code}
-                setValue={setHead_office_org_code}
+                value={org_code}
+                setValue={setOrgCode}
               />
               <LabelUnderLineInput
                 title="이메일"
@@ -287,10 +292,10 @@ export default memo(function User() {
             >
               <SelectInput
                 title="소속명"
-                menuItems={coopMenuItems}
+                menuItems={headOfficeMenuItems}
                 w="100%"
-                value={org_code}
-                setValue={setOrgCode}
+                value={head_office_org_code}
+                setValue={setHeadOfficeOrgCode}
               />
 
               <LabelUnderLineInput

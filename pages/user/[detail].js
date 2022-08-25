@@ -33,6 +33,7 @@ import Axios from "../../src/utility/api";
 import {
   getOrgWithUnit,
   getOrgHeadOffice,
+  getOrgByParentRank,
 } from "../../src/utility/organization/getOrgWithUnit";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 
@@ -105,13 +106,14 @@ export default function UserDetail() {
   }, [org_pending]);
 
   useEffect(() => {
+    if (!org_code) return;
     const getOrgCodeByData = async () => {
       const res = (
         await Axios.Get("organization", {
           params: {
             token: getAccessToken(),
             type: "sales",
-            // head_office_org_code: org_code || user_detail?.org_code,
+
             head_office_org_code: org_code,
           },
         })
@@ -126,11 +128,12 @@ export default function UserDetail() {
   }, [org_code]);
 
   useEffect(() => {
+    console.log("hi", org_code);
+    if (!org_code) return;
     if (grade === "지점장" || grade === "본부장") {
-      console.log("org_code_by_sales", org_code_by_sales);
       const head_result = {};
 
-      getOrgWithUnit(org_code_by_sales, "region", head_result);
+      getOrgByParentRank(sales, "region", org_code, head_result);
 
       setHeadOfficeMenuList(head_result);
     } else if (grade === "팀장") {
@@ -150,7 +153,7 @@ export default function UserDetail() {
       getOrgHeadOffice(cooperation, coop_org);
       setCooperationMenuList(coop_org);
     }
-  }, [org_code, grade, org_code_by_sales]);
+  }, [grade, org_code_by_sales]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -180,6 +183,7 @@ export default function UserDetail() {
             parent_org_code,
             branch,
             team,
+            region,
             head_office,
           } = res?.data;
           setId(id);
@@ -217,7 +221,7 @@ export default function UserDetail() {
           setOrgCode(head_office_org_code);
           setHeaderOrg(head_office_org_code);
           setHeadOfficeCode(parent_org_code);
-          setHeadOfficeName(head_office);
+          setHeadOfficeName(region);
           setBranchName(branch);
           setBranchCode(parent_org_code);
           setTeamCode(org_code);
@@ -266,7 +270,7 @@ export default function UserDetail() {
   //TODO
   //DB관리 setstate
 
-  console.log("changeDb", changeDb);
+  console.log("changeDb", head_office_code, headOfficeMenuList);
 
   return (
     <Layout loading={loading}>

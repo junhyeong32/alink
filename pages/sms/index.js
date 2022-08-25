@@ -75,8 +75,12 @@ export default function Sms() {
               page: page,
               count: count,
               user_name: user_name,
-              created_date_start: start_date,
-              created_date_end: end_date,
+              created_date_start: start_date
+                ? new Date(start_date).getTime()
+                : undefined,
+              created_date_end: end_date
+                ? new Date(end_date).getTime()
+                : undefined,
             },
           })
         )?.data;
@@ -125,7 +129,7 @@ export default function Sms() {
           wrap={"wrap"}
           sx={{ gap: 2 }}
         >
-          <div ref={el}>
+          <div ref={el} style={{ width: "25%" }}>
             <DateInput
               value={date}
               setValue={setDate}
@@ -140,7 +144,7 @@ export default function Sms() {
                     wrap={"wrap"}
                     sx={{ gap: 1, whiteSpace: "nowrap" }}
                   >
-                    등록일
+                    발송일
                     <Button
                       text="금일"
                       bgColor={"gray"}
@@ -152,7 +156,9 @@ export default function Sms() {
                           {
                             ...date.key,
                             startDate: new Date(),
-                            endDate: new Date(),
+                            endDate: new Date().setDate(
+                              new Date().getDate() + 1
+                            ),
                           },
                         ])
                       }

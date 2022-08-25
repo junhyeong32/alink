@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../src/components/Layout";
 import Column from "../../src/components/Box/Column";
@@ -21,37 +21,87 @@ import Axios from "../../src/utility/api";
 import useGetUsers from "../../src/hooks/user/useGetUsers";
 import { useTransition } from "react";
 import { getCookie } from "../../src/utility/getCookie";
+import useGetOrganization from "../../src/hooks/share/useGetOrganization";
+import {
+  getOrgByOfficeNameWithUnit,
+  getOrgWithManyUnit,
+} from "../../src/utility/organization/getOrgWithUnit";
+import { getTitleOfOrg_name } from "../../src/utility/organization/getTitleOfOrg";
 
 export default memo(function User() {
   const router = useRouter();
-
+  const [user_info] = useState(getCookie("user_info"));
   const [rank] = useState(getCookie("user_info")?.grade);
 
   const [checkList, setCheckList] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
-  const [org_code, setOrgCode] = useState("");
+  const [org_code, setOrgCode] = useState("전체");
   const [email, setEmail] = useState("");
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [headOfficeMenuItems, setHeadOfficeMenuItems] = useState({});
+
+  const { sales } = useGetOrganization("sales");
   const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
     useGetUsers({ page, count, org_code, email, id, name, phone });
-
 
   const handleInit = () => {
     // const doucument.
     // console.log()
 
-    setOrgCode("");
+    setOrgCode("전체");
     setEmail("");
     setId("");
     setName("");
     setPhone("");
 
-    getUsers(true);
+    getUsers("전체", true);
   };
+  console.log("hi", user_info?.region);
+
+  useEffect(() => {
+    const head_office = { 전체: "전체" };
+    if (sales?.length !== 0 && rank === "지점장") {
+      const getOrg = (orgs, unit1, unit2, result) => {
+        for (let org of orgs) {
+          getOrg(org.children, unit1, unit2, result);
+
+          if (
+            org?.branch_name === user_info?.branch &&
+            (org.unit === unit1 || org.unit === unit2)
+          ) {
+            Object.assign(result, {
+              [org.code]: getTitleOfOrg_name(org),
+            });
+          }
+        }
+      };
+      getOrg(sales, "branch", "team", head_office);
+    } else if (sales?.length !== 0 && rank === "본부장") {
+      const getOrg = (orgs, unit1, unit2, result) => {
+        for (let org of orgs) {
+          getOrg(org.children, unit1, unit2, result);
+
+          if (
+            org?.region_name === user_info?.region &&
+            (org.unit === unit1 || org.unit === unit2)
+          ) {
+            Object.assign(result, {
+              [org.code]: getTitleOfOrg_name(org),
+            });
+          }
+        }
+      };
+      getOrg(sales, "branch", "team", head_office);
+    }
+
+    setHeadOfficeMenuItems(head_office);
+  }, [sales]);
+
+  console.log("hi", users);
 
   return (
     <Layout loading={isUsersPending}>
@@ -70,8 +120,8 @@ export default memo(function User() {
               color="primary.white"
               fs="h6"
               w={60}
-              h={20}
-              action={getUsers}
+              h={28}
+              action={() => getUsers()}
             />
             <Button
               text="초기화"
@@ -80,7 +130,7 @@ export default memo(function User() {
               color="primary.white"
               fs="h6"
               w={60}
-              h={20}
+              h={28}
               action={handleInit}
             />
           </Row>
@@ -96,10 +146,10 @@ export default memo(function User() {
                 },
               }}
             >
-              {rank !== "팀장" && (
+              {rank !== "팀장" && rank !== "담당자" && (
                 <SelectInput
                   title="소속명"
-                  menuItems={{}}
+                  menuItems={headOfficeMenuItems}
                   value={org_code}
                   setValue={setOrgCode}
                   w={{
@@ -119,11 +169,11 @@ export default memo(function User() {
                 color="primary.white"
                 fs="h6"
                 w={60}
-                h={20}
+                h={28}
                 sx={{
                   display: { lg: "flex", md: "flex", sm: "flex", xs: "none" },
                 }}
-                action={getUsers}
+                action={() => getUsers()}
               />
               <Button
                 text="초기화"
@@ -132,7 +182,7 @@ export default memo(function User() {
                 color="primary.white"
                 fs="h6"
                 w={60}
-                h={20}
+                h={28}
                 sx={{
                   display: { lg: "flex", md: "flex", sm: "flex", xs: "none" },
                 }}
