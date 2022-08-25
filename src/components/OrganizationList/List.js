@@ -139,7 +139,7 @@ export default function OrganizationList({ group_list, open, absolute }) {
             key={list_key}
             mt={2}
             sx={{
-              height: "100vh",
+              height: "100%",
               overflowY: "scroll",
               // display: open ? "flex" : "none",
               // position: absolute && "absolute",
