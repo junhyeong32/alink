@@ -328,8 +328,8 @@ export default function Menu() {
           <Typography variant="h1">DB 구성</Typography>
           <Button
             text="지역 설정"
-            w={60}
-            h={20}
+            w={65}
+            h={28}
             fs="h6"
             action={() =>
               openModal({
@@ -361,7 +361,9 @@ export default function Menu() {
                 label="필터노출"
                 control={
                   <RadioInput
-                    checked={db_fields[key]?.is_filter_shown && 1}
+                    checked={
+                      db_fields[key]?.is_filter_shown === 1 ? true : false
+                    }
                     onClick={() =>
                       setDbFields(() => {
                         const arr = [...db_fields];
@@ -395,7 +397,7 @@ export default function Menu() {
                 control={
                   <RadioInput
                     disabled={field?.is_list_shown === 0}
-                    checked={db_fields[key]?.is_list_shown && 1}
+                    checked={db_fields[key]?.is_list_shown === 1 ? true : false}
                     onClick={() =>
                       setDbFields(() => {
                         const arr = [...db_fields];
@@ -419,7 +421,9 @@ export default function Menu() {
                 control={
                   <RadioInput
                     disabled={field?.is_detail_shown === 0}
-                    checked={db_fields[key]?.is_detail_shown && 1}
+                    checked={
+                      db_fields[key]?.is_detail_shown === 1 ? true : false
+                    }
                     onClick={() =>
                       setDbFields(() => {
                         const arr = [...db_fields];

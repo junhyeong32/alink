@@ -44,6 +44,27 @@ export default function Layout({ loading, children, sx }) {
     removeCookie("user_info", { path: "/" });
     router.replace("/login");
   };
+  useEffect(() => {
+    const _timer = setInterval(async () => {
+      const getToekn = (
+        await Axios.Get(`user?token=${getCookie("access_token")}`)
+      )?.data;
+
+      if (getToekn?.code === 500) {
+        logout();
+        clearInterval(_timer);
+        enqueueSnackbar("인증정보가 만료되었습니다.", {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+        router.replace("/login");
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(_timer);
+    };
+  }, [cookies]);
 
   useEffect(() => {
     setShowChild(true);
@@ -180,11 +201,7 @@ export default function Layout({ loading, children, sx }) {
               {menuText.map((menu, key) => {
                 console.log(menu);
                 if (menu === "DB 현황") {
-                  if (rank !== "협력사" && rank !== "부협력사") {
-                    return (
-                      <MenuBox key={key} text={menu} link={menu_link[key]} />
-                    );
-                  }
+                  return <MenuBox key={key} text={menu} link={"/"} />;
                 } else if (menu === "DB 신청하기" || menu === "DB 신청현황") {
                   if (
                     rank === "본부장" ||

@@ -142,3 +142,21 @@ body
 #date-input > div.rdrCalendarWrapper {
   display: none;
 }
+
+@media only screen and (min-width: 0px) {
+  #dateInput {
+    width: 100%;
+  }
+}
+
+@media only screen and ((min-width: 900px) and (max-width: 1279px)) {
+  #dateInput {
+    width: 25%;
+  }
+}
+
+@media only screen and ((min-width: 1280px) and (max-width: 30000px)) {
+  #dateInput {
+    width: 25%;
+  }
+}

@@ -15,7 +15,11 @@ import RoundColorBox from "../../src/components/Box/RoundColorBox";
 
 import Button from "../../src/components/Button";
 import RowLabel from "../../src/components/Box/RowLabel";
-import { OutLineInput } from "../../src/components/Input";
+import {
+  LabelOutLineInput,
+  LabelUnderLineInput,
+  OutLineInput,
+} from "../../src/components/Input";
 import CustomSwitch from "../../src/components/Switch";
 import useGetUser from "../../src/hooks/user/useGetUser";
 import useGetArea from "../../src/hooks/setting/useGetArea";
@@ -28,6 +32,7 @@ import { LensTwoTone } from "@mui/icons-material";
 import { useContext } from "react";
 import { ModalContext } from "../../src/contexts/ModalContext";
 import { numberFormat } from "../../src/utility/math";
+import moment from "moment";
 
 export default function DBApply() {
   const router = useRouter();
@@ -47,6 +52,9 @@ export default function DBApply() {
   const { user, isUserPending, getUser } = useGetUser();
   const { openModal, closeModal } = useContext(ModalContext);
 
+  const weekdayOf27 = moment(moment().format("yyyy-MM-27")).weekday();
+  const day = 27 - (weekdayOf27 === 6 || weekdayOf27 === 0 ? 1 : 0);
+
   useEffect(() => {
     if (menus?.length === 0 || user?.length === 0) return;
     const { db } = user;
@@ -59,6 +67,11 @@ export default function DBApply() {
             {
               is_activated: menu?.is_activated,
               count: db?.find((d) => d?.pk === menu.pk)?.allocation?.count,
+              count_for_next_month:
+                moment().date() >= day
+                  ? 0
+                  : db?.find((d) => d?.pk === menu.pk)?.allocation
+                      ?.count_for_next_month,
             },
           ],
           geomap: (() => {
@@ -140,6 +153,11 @@ export default function DBApply() {
               alignItems={"start"}
               sc={{ mb: 2 }}
             >
+              {moment().date() >= day && (
+                <Typography variant="h5" mb={2}>
+                  다음달 디비 수량 신청 기간입니다
+                </Typography>
+              )}
               <Typography variant="h5" sx={{ color: "#3532C7" }}>
                 {new Date().getMonth() + 1}월 DB 지원 대상자입니다.
               </Typography>
@@ -157,8 +175,9 @@ export default function DBApply() {
                 label_w={83}
                 sx={{ gap: 10 }}
               >
-                <Row alignItems={"center"}>
-                  <OutLineInput
+                <Row alignItems={"end"} sx={{ gap: 1 }}>
+                  <LabelUnderLineInput
+                    title="당월"
                     disabled={status === "퇴사자"}
                     w={90}
                     defaultValue={0}
@@ -175,24 +194,28 @@ export default function DBApply() {
                     개
                   </Typography>
 
-                  {/* <CustomSwitch
-                    sx={{ ml: 3 }}
-                    checked={
-                      changeDb[key]?.allocation[0].is_activated === 1
-                        ? true
-                        : false
-                    }
-                    onClick={(e) => {
-                      setChangeDb((prev) => {
-                        const newData = [...prev];
-                        if (newData[key].allocation[0].is_activated === 1)
-                          newData[key].allocation[0].is_activated = 0;
-                        else newData[key].allocation[0].is_activated = 1;
+                  {(true || moment().date() >= day) && (
+                    <>
+                      <LabelUnderLineInput
+                        title="익월"
+                        disabled={status === "퇴사자"}
+                        w={90}
+                        defaultValue={0}
+                        onBlur={(e) =>
+                          setChangeDb((prev) => {
+                            const newData = [...prev];
+                            newData[key].allocation[0].count_for_next_month =
+                              e.target.value;
 
-                        return newData;
-                      });
-                    }}
-                  /> */}
+                            return newData;
+                          })
+                        }
+                      />
+                      <Typography variant="h6" pl={1}>
+                        개
+                      </Typography>
+                    </>
+                  )}
                 </Row>
                 <Row wrap={"wrap"} sx={{ gap: 1 }}>
                   <Typography variant="h4" mr={3}>

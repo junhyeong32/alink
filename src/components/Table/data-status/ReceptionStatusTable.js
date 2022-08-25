@@ -83,7 +83,13 @@ export default function ReceptionStatus({ data, date }) {
             {data?.map((dashboard, key) => (
               <>
                 <TableRow>
-                  <TableCell rowSpan={4}>{dashboard?.title}</TableCell>
+                  <TableCell
+                    sx={{ borderRight: "1px solid rgba(224, 224, 224, 1)" }}
+                    rowSpan={4}
+                    align="center"
+                  >
+                    {dashboard?.title}
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell rowSpan={1} align="center">

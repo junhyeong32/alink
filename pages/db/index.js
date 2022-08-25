@@ -312,7 +312,6 @@ export default function Db() {
       };
       getOrg(sales, "branch", "team", head_office);
     } else if (sales?.length !== 0 && rank === "본부장") {
-      console.log("222");
       const getOrg = (orgs, unit1, unit2, result) => {
         for (let org of orgs) {
           getOrg(org.children, unit1, unit2, result);
@@ -733,7 +732,7 @@ export default function Db() {
               color="primary.white"
               fs="h6"
               w={60}
-              h={25}
+              h={28}
               sx={{ zIndex: open ? -1 : 0 }}
               action={() => getDbDetail()}
             />
@@ -744,7 +743,7 @@ export default function Db() {
               color="primary.white"
               fs="h6"
               w={60}
-              h={25}
+              h={28}
               sx={{ zIndex: open ? -1 : 0 }}
               action={() => {
                 setInit(true);
@@ -957,9 +956,9 @@ export default function Db() {
           <Row
             alignItems={"center"}
             justifyContent={"between"}
-            sx={{ mb: "10px" }}
+            sx={{ mb: "10px", gap: 1 }}
           >
-            <Row sx={{ gap: "5px" }}>
+            <Row wrap={"wrap"} sx={{ gap: "5px" }}>
               {rank === "관리자" && (
                 <Button
                   variant={"outlined"}
@@ -984,7 +983,7 @@ export default function Db() {
                         buttonName: "변경",
                         list: checkData.join(","),
                       },
-                      data: headOfficeMenuList,
+                      data: deninedMenuList,
                     });
                   }}
                 />
@@ -1021,7 +1020,7 @@ export default function Db() {
                           type: "dbUpload",
                           reload: getDbDetail,
                         },
-                        data: headOfficeMenuList,
+                        data: deninedMenuList,
                       });
                     }}
                   />
@@ -1060,7 +1059,7 @@ export default function Db() {
                         },
                         reload: getDbDetail,
                       },
-                      data: headOfficeMenuList,
+                      data: deninedMenuList,
                     });
                   }}
                 />

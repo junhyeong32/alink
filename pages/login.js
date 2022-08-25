@@ -20,20 +20,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
 
-  const getUser = async (token) => {
-    if (router.isReady) {
-      const res = (await Axios.Get(`user/db/count?token=${token}`))?.data;
-
-      if (res?.code === 200) return res?.data;
-    }
-  };
-
   const handleLogin = async () => {
     if (!id || !password) {
       return enqueueSnackbar("회원정보를 올바르게 입력해주세요.", {
         variant: "error",
         autoHideDuration: 2000,
-    });
+      });
     }
     setLoading(true);
     const res = (

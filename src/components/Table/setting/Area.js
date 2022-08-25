@@ -67,11 +67,7 @@ export default function AreaTable({ data, area_list, setAreaList }) {
                         onClick={() =>
                           setAreaList((prev) => {
                             const new_data = [...prev];
-                            console.log(
-                              "new_data",
-                              new_data.length,
-                              data.length
-                            );
+
                             if (new_data.length < data.length) return [data];
                             return [];
                           })
@@ -104,7 +100,6 @@ export default function AreaTable({ data, area_list, setAreaList }) {
                           : false
                       }
                       onClick={(e) => {
-                        console.log(e.target.checked);
                         if (!e.target.checked) {
                           setAreaList((prev) => {
                             const new_area = [...prev];

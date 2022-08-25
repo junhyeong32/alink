@@ -368,8 +368,8 @@ export default function MenuDetail() {
           <Typography variant="h1">DB 구성</Typography>
           <Button
             text="지역 설정"
-            w={60}
-            h={20}
+            w={65}
+            h={28}
             fs="h6"
             action={() =>
               openModal({

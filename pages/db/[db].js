@@ -43,6 +43,7 @@ import {
   getOrgWithManyUnit,
 } from "../../src/utility/organization/getOrgWithUnit";
 import moment from "moment";
+import { LoadingButton } from "@mui/lab";
 
 const Input = styled("input")({
   display: "none",
@@ -82,6 +83,7 @@ export default function DbDetail() {
   const [area, setArea] = useState([]);
   const [sales, setSales] = useState([]);
   const [team, setTeam] = useState("");
+  const [fileLoading, setFileLoading] = useState(false);
 
   const [orgHead, setOrgHead] = useState(""); //메뉴 리스트만 바꾸는용
 
@@ -266,8 +268,6 @@ export default function DbDetail() {
     getSalesByHeadOffice();
   }, [org_code]);
 
-  console.log(orgMenuList);
-
   // useEffect(() => {
   //   if (!orgHead) return;
   //   const result = {};
@@ -313,6 +313,8 @@ export default function DbDetail() {
     };
     getUserList();
   }, [org_code, orgHead]);
+
+  console.log("newValue", transcript_file);
 
   return (
     <Layout loading={loading}>
@@ -617,7 +619,14 @@ export default function DbDetail() {
               }
             })}
             <RowLabel label="등록일시" fs="h5">
-              <Typography variant="h5">{db_detail?.created_date}</Typography>
+              <Typography variant="h5">
+                {rank === "본부장" ||
+                rank === "지점장" ||
+                rank === "팀장" ||
+                rank === "담당자"
+                  ? db_detail?.allocated_date
+                  : db_detail?.created_date}
+              </Typography>
             </RowLabel>
             <RowLabel label="지역" fs="h5">
               <OutLineSelectInput
@@ -789,14 +798,13 @@ export default function DbDetail() {
                         <Input
                           accept="audio/*"
                           id="contained-button-file"
-                          // multiple
                           type="file"
                           onChange={(e) => setTranscriptFile(e.target.files[0])}
                         />
 
                         <Button
                           text="파일찾기"
-                          fs="h6"
+                          fs="h5"
                           bgColor={"gray"}
                           color={"primary.white"}
                           h={28}
@@ -804,49 +812,75 @@ export default function DbDetail() {
                         />
                       </label>
 
-                      <UnderLineInput disabled value={transcript_file?.name} />
-                      <Button
-                        text="업로드"
-                        fs="h6"
-                        h={28}
-                        sx={{ mt: 0.1 }}
-                        action={async () => {
+                      <UnderLineInput
+                        disabled
+                        value={transcript_file?.name || ""}
+                      />
+                      <LoadingButton
+                        variant="contained"
+                        loading={fileLoading}
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 700,
+                          height: 28,
+                          mt: 0.1,
+                        }}
+                        onClick={async () => {
                           if (!transcript_file)
                             return enqueueSnackbar("파일을 선택해주세요", {
                               variant: "error",
                               autoHideDuration: 2000,
                             });
+                          setFileLoading(true);
                           const _uploadFile = await uploadFile(transcript_file);
 
                           if (_uploadFile) {
                             setValues((prev) => {
                               const newData = [...prev];
-                              const newObj = Object.assign(
-                                {},
-                                newData?.filter(
-                                  (data) => data?.title === "녹취 파일"
-                                )[0]
+
+                              const getRecordField = menu_detail?.fields?.find(
+                                (data) => data?.property.name === "녹취 파일"
                               );
 
-                              newObj.value = _uploadFile;
-                              newObj.pk = undefined;
-
+                              const newObj = Object.assign(
+                                {},
+                                {
+                                  field_pk: getRecordField?.pk,
+                                  title: "녹취 파일",
+                                  value: _uploadFile,
+                                  created_date: new Date(
+                                    +new Date() + 3240 * 10000
+                                  )
+                                    .toISOString()
+                                    .replace("T", " ")
+                                    .replace(/\..*/, ""),
+                                }
+                              );
                               newData.push(newObj);
 
                               return newData;
                             });
 
-                            enqueueSnackbar(
-                              "파일이 정상적으로 등록 되었습니다.",
-                              {
-                                variant: "success",
-                                autoHideDuration: 2000,
-                              }
-                            );
-                            setTranscriptFile("");
+                            setFileLoading(false);
+                            if (!fileLoading) {
+                              setTranscriptFile("");
+                              document.querySelector(
+                                "#contained-button-file"
+                              ).value = "";
+
+                              enqueueSnackbar(
+                                "파일이 정상적으로 등록 되었습니다.",
+                                {
+                                  variant: "success",
+                                  autoHideDuration: 2000,
+                                }
+                              );
+                            }
                           }
                         }}
-                      />
+                      >
+                        업로드
+                      </LoadingButton>
                     </Row>
                   </Row>
 
@@ -915,18 +949,23 @@ export default function DbDetail() {
                       setMemo("");
                       setValues((prev) => {
                         const newData = [...prev];
+
+                        const getRecordField = menu_detail?.fields?.find(
+                          (data) => data?.property.name === "메모"
+                        );
+
                         const newObj = Object.assign(
                           {},
-                          newData?.filter((data) => data?.title === "메모")[0]
+                          {
+                            field_pk: getRecordField?.pk,
+                            title: "메모",
+                            value: memo,
+                            created_date: new Date(+new Date() + 3240 * 10000)
+                              .toISOString()
+                              .replace("T", " ")
+                              .replace(/\..*/, ""),
+                          }
                         );
-                        newObj.created_date = new Date(
-                          +new Date() + 3240 * 10000
-                        )
-                          .toISOString()
-                          .replace("T", " ")
-                          .replace(/\..*/, "");
-                        newObj.value = memo;
-                        newObj.pk = undefined;
 
                         newData.push(newObj);
 

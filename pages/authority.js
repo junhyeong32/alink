@@ -17,6 +17,7 @@ import { OrganizationContext } from "../src/contexts/OrganizationListContext";
 import UnderLineInput, { LabelUnderLineInput } from "../src/components/Input";
 import UnderLineSelectInput from "../src/components/Input/Select";
 import { getOrgHeadOffice } from "../src/utility/organization/getOrgWithUnit";
+import Image from "next/image";
 
 export default function Authority() {
   const router = useRouter();
@@ -40,6 +41,7 @@ export default function Authority() {
   const [org_sales, setOrgSales] = useState([]);
   const [search_list, setSearchList] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [orgOpen, setOrgOpen] = useState(false);
 
   const [orgMenuList, setOrgMenuList] = useState();
 
@@ -123,7 +125,20 @@ export default function Authority() {
         <Column
           alignItems={"center"}
           sx={{
-            width: 246,
+            minWidth: 246,
+            display: {
+              lg: "flex",
+              md: orgOpen ? "flex" : "none",
+              sm: orgOpen ? "flex" : "none",
+              xs: orgOpen ? "flex" : "none",
+            },
+            position: {
+              md: orgOpen ? "absolute" : "none",
+              sm: orgOpen ? "absolute" : "none",
+              xs: orgOpen ? "absolute" : "none",
+            },
+            zIndex: 1,
+            background: "white",
             height: "100%",
             overflowY: "scroll",
             gap: 2,
@@ -132,6 +147,25 @@ export default function Authority() {
           }}
         >
           <Column sx={{ width: "100%", p: 1, mt: 1 }}>
+            <Row
+              justifyContent={"end"}
+              sx={{
+                display: {
+                  lg: "none",
+                  md: orgOpen ? "flex" : "none",
+                  sm: orgOpen ? "flex" : "none",
+                  xs: orgOpen ? "flex" : "none",
+                },
+              }}
+            >
+              <Image
+                src="/black_x.png"
+                width={15}
+                height={15}
+                alt=""
+                onClick={() => setOrgOpen(false)}
+              />
+            </Row>
             <UnderLineSelectInput
               w={"100%"}
               title="조직명"
@@ -161,6 +195,20 @@ export default function Authority() {
         <Column sx={{ width: "100%", pl: 2 }}>
           <Row justifyContent={"end"} sx={{ width: "100%", mb: 2, gap: 1 }}>
             <Button
+              text={"조직도 보기"}
+              h={28}
+              fs={"h5"}
+              action={() => setOrgOpen(!orgOpen)}
+              sx={{
+                display: {
+                  lg: "none",
+                  md: "flex",
+                  sm: "flex",
+                  xs: "flex",
+                },
+              }}
+            />
+            <Button
               text={"검색"}
               w={56}
               h={28}
@@ -181,24 +229,51 @@ export default function Authority() {
               }}
             />
           </Row>
-          <Row alignItems={"end"} sx={{ widht: "100%", gap: 2 }}>
+          <Row
+            alignItems={"end"}
+            sx={{
+              widht: "100%",
+              gap: 2,
+              flexWrap: {
+                lg: "nowrap",
+                md: "nowrap",
+                sm: "wrap",
+                xs: "wrap",
+              },
+            }}
+          >
             <LabelUnderLineInput
               id="name"
               title={"사원명"}
-              w={"25%"}
+              w={{
+                lg: "25%",
+                md: "25%",
+                sm: "100%",
+                xs: "100%",
+              }}
               placeholder="사원명으로 검색"
               onBlur={(e) => setName(e.target.value)}
             />
             <LabelUnderLineInput
               id="id"
               title={"아이디"}
-              w={"25%"}
+              w={{
+                lg: "25%",
+                md: "25%",
+                sm: "100%",
+                xs: "100%",
+              }}
               placeholder="아이디로 검색"
               onBlur={(e) => setId(e.target.value)}
             />
             <UnderLineSelectInput
               title={"전월 급여액"}
-              w={"25%"}
+              w={{
+                lg: "25%",
+                md: "25%",
+                sm: "100%",
+                xs: "100%",
+              }}
               menuItems={{
                 전체: "전체",
                 "+1": "+",
@@ -209,7 +284,12 @@ export default function Authority() {
             />
             <UnderLineSelectInput
               title={"입금내역"}
-              w={"25%"}
+              w={{
+                lg: "25%",
+                md: "25%",
+                sm: "100%",
+                xs: "100%",
+              }}
               menuItems={{
                 전체: "전체",
                 "입금 완료": "입금 완료",

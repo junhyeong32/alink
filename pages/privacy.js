@@ -240,11 +240,10 @@ export default function Privacy() {
 
         <Button
           text="수정"
-          fs={"h6"}
-          w={90}
-          h={22}
+          fs={"h5"}
+          w={120}
+          h={35}
           action={handleUserUpdate}
-          //TODO enque 수정됫습니다 변경
         />
       </Column>
     </Layout>

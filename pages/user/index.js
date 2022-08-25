@@ -249,7 +249,7 @@ export default memo(function User() {
               fs={"h6"}
               color="primary.white"
               w={60}
-              h={20}
+              h={28}
               action={getUsers}
             />
             <Button
@@ -258,7 +258,7 @@ export default memo(function User() {
               fs={"h6"}
               color="primary.white"
               w={60}
-              h={20}
+              h={28}
               action={handleInit}
             />
           </Row>
@@ -341,7 +341,7 @@ export default memo(function User() {
                   fs={"h6"}
                   color="primary.white"
                   w={60}
-                  h={20}
+                  h={28}
                   action={() => setIsSearch(!is_search)}
                   sx={{
                     display: {
@@ -358,7 +358,7 @@ export default memo(function User() {
                   fs={"h6"}
                   color="primary.white"
                   w={60}
-                  h={20}
+                  h={28}
                   sx={{
                     display: {
                       lg: "flex",

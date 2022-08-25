@@ -369,7 +369,7 @@ export default function AreaModal({ index }) {
                                         let newData = [...prev];
 
                                         if (
-                                          newData.length <=
+                                          newData.length <
                                           selectedSplitedDetailGeo.length
                                         ) {
                                           return selectedSplitedDetailGeo;

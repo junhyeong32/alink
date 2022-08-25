@@ -129,7 +129,7 @@ export default function Sms() {
           wrap={"wrap"}
           sx={{ gap: 2 }}
         >
-          <div ref={el} style={{ width: "25%" }}>
+          <div ref={el} id="dateInput">
             <DateInput
               value={date}
               setValue={setDate}
@@ -225,7 +225,12 @@ export default function Sms() {
           <LabelUnderLineInput
             title="담당자"
             placeholder={"담당자로 검색하실 수 있습니다"}
-            w={styles.input}
+            w={{
+              lg: "25%",
+              md: "25%",
+              sm: "100%",
+              xs: "100%",
+            }}
             value={user_name}
             setValue={setuserName}
           />

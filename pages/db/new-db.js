@@ -25,6 +25,7 @@ import Axios from "../../src/utility/api";
 import RadioInput from "../../src/components/Radio";
 import uploadFile from "../../src/utility/uploadFile";
 import moment from "moment";
+import { LoadingButton } from "@mui/lab";
 
 const Input = styled("input")({
   display: "none",
@@ -58,6 +59,7 @@ export default function NewDb() {
   const [dateAge, setDateAge] = useState(null);
   const [age, setAge] = useState("");
   const [area, setArea] = useState([]);
+  const [fileLoading, setFileLoading] = useState(false);
 
   const [transcript_file, setTranscriptFile] = useState("");
 
@@ -205,21 +207,16 @@ export default function NewDb() {
         }}
       >
         <Typography variant="h1">고객 정보</Typography>
-        {/* <RowLabel label="등록처" fs="h6">
-          {user_info?.name}
-        </RowLabel> */}
-        <RowLabel label="조직" fs="h6">
-          <OutLineSelectInput
-            w={"100%"}
-            menuItems={
-              rank === "협력사" || rank === "부협력사"
-                ? headOfficeRankisCoopMenuList
-                : headOfficeMenuList
-            }
-            value={head_office_org_code}
-            setValue={setHeadOfficeOrgCode}
-          />
-        </RowLabel>
+        {rank !== "협력사" && rank !== "부협력사" && (
+          <RowLabel label="조직" fs="h6">
+            <OutLineSelectInput
+              w={"100%"}
+              menuItems={headOfficeMenuList}
+              value={head_office_org_code}
+              setValue={setHeadOfficeOrgCode}
+            />
+          </RowLabel>
+        )}
         <RowLabel label="고객명" fs="h6">
           <OutLineInput
             onBlur={(e) =>
@@ -438,36 +435,65 @@ export default function NewDb() {
               </label>
 
               <UnderLineInput disabled value={transcript_file?.name} />
-              <Button
-                text="업로드"
-                fs="h6"
-                h={25}
-                sx={{ mt: 0.1 }}
-                action={async () => {
+              <LoadingButton
+                variant="contained"
+                loading={fileLoading}
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  height: 28,
+                  mt: 0.1,
+                }}
+                onClick={async () => {
+                  if (!transcript_file)
+                    return enqueueSnackbar("파일을 선택해주세요", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
+                  setFileLoading(true);
                   const _uploadFile = await uploadFile(transcript_file);
 
                   if (_uploadFile) {
                     setValues((prev) => {
                       const newData = [...prev];
-                      const newObj = Object.assign(
-                        {},
-                        newData?.filter((data) => data?.name === "녹취 파일")[0]
+
+                      const getRecordField = menu_detail?.fields?.find(
+                        (data) => data?.property.name === "녹취 파일"
                       );
 
-                      newObj.value = _uploadFile;
-
+                      const newObj = Object.assign(
+                        {},
+                        {
+                          field_pk: getRecordField?.pk,
+                          title: "녹취 파일",
+                          value: _uploadFile,
+                          created_date: new Date(+new Date() + 3240 * 10000)
+                            .toISOString()
+                            .replace("T", " ")
+                            .replace(/\..*/, ""),
+                        }
+                      );
                       newData.push(newObj);
 
                       return newData;
                     });
-                    setTranscriptFile();
-                    enqueueSnackbar("파일이 정상적으로 등록 되었습니다.", {
-                      variant: "success",
-                      autoHideDuration: 2000,
-                    });
+
+                    setFileLoading(false);
+                    if (!fileLoading) {
+                      setTranscriptFile("");
+                      document.querySelector("#contained-button-file").value =
+                        "";
+
+                      enqueueSnackbar("파일이 정상적으로 등록 되었습니다.", {
+                        variant: "success",
+                        autoHideDuration: 2000,
+                      });
+                    }
                   }
                 }}
-              />
+              >
+                업로드
+              </LoadingButton>
             </Row>
           </Row>
         </RowLabel>
@@ -493,29 +519,35 @@ export default function NewDb() {
             //     )
             //   )
             // );
-            if (!head_office_org_code)
+            if (
+              !head_office_org_code &&
+              rank !== "협력사" &&
+              rank !== "부협력사"
+            )
               return enqueueSnackbar("조직을 선택해주세요.", {
                 variant: "error",
                 autoHideDuration: 2000,
               });
-            const newValue = values.map((v) =>
-              Object.assign(
-                {},
-                {
-                  field_pk: v.field_pk,
-                  value: v.value,
-                }
-              )
-            );
+            const newValues = values
+              .filter((v) => v?.value !== "")
+              .map((v) =>
+                Object.assign(
+                  {},
+                  {
+                    field_pk: v.field_pk,
+                    value: v.value,
+                  }
+                )
+              );
+
+            values;
             const res = await Axios.Post("db/list", {
               token: getAccessToken(),
               db_pk: router.query.menu,
               organization_code: head_office_org_code,
-              //   user_pk:
-              //     user_info?.grade === "관리자" ? user_info?.pk : undefined,
               geo_parent: parent_area,
               geo_name: child_area,
-              values: newValue,
+              values: newValues,
             });
             if (res?.code === 200) {
               enqueueSnackbar("DB가 등록되었습니다.", {
