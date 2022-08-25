@@ -513,7 +513,7 @@ export default function Index({ getCookies }) {
             mb: 5,
           }}
         >
-          {rank === "관리자" && rank === "부관리자" && (
+          {(rank === "관리자" || rank === "부관리자") && (
             <Column sx={{ gap: 2 }}>
               <Row alignItems={"center"} justifyContent={"between"}>
                 <Typography sx={{ fontSize: "30px" }}>협력사 DB</Typography>
