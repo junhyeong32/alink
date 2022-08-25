@@ -1039,6 +1039,7 @@ export default function Db() {
                   />
                 </>
               )}
+
               {(rank === "관리자" || rank === "부관리자") && (
                 <Button
                   text="DB 자동분배"
@@ -1051,24 +1052,27 @@ export default function Db() {
                       ? openModal({
                           modal: "needconfirm",
                           content: {
-                            contents: `자동분배를 진행하시겠습니까? `,
+                            contents: `자동분배를 진행하시겠습니까?`,
                             action: async () => {
                               const res = await Axios.Post(
-                                "db/list/head_office",
+                                "db/menu/distribute",
                                 {
-                                  // TODO
-                                  // 재차 확인
                                   token: getAccessToken(),
-                                  list_pks: list,
+                                  db_pk: router.query.menu,
+                                  org_code: user_info?.code,
                                 }
                               );
 
                               if (res?.code === 200) {
                                 closeModal();
-                                enqueueSnackbar("조직이 변경되었습니다", {
-                                  variant: "success",
-                                  autoHideDuration: 2000,
-                                });
+                                enqueueSnackbar(
+                                  "DB 자동분배가 완료되었습니다.",
+                                  {
+                                    variant: "success",
+                                    autoHideDuration: 2000,
+                                  }
+                                );
+                                getDbDetail();
                               }
                             },
                           },

@@ -511,6 +511,7 @@ export default function Index({ getCookies }) {
               rank !== "담당자"
                 ? 10
                 : 0,
+            mb: 5,
           }}
         >
           {rank !== "협력사" && rank !== "부협력사" && (
