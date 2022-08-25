@@ -128,7 +128,6 @@ export default function UserDetail() {
   }, [org_code]);
 
   useEffect(() => {
-    console.log("hi", org_code);
     if (!org_code) return;
     if (grade === "지점장" || grade === "본부장") {
       const head_result = {};
@@ -232,7 +231,6 @@ export default function UserDetail() {
 
       getDetail();
     } else {
-      console.log("실행함??");
       setDb((prev) => {
         const newData = [...prev];
 
@@ -269,8 +267,6 @@ export default function UserDetail() {
 
   //TODO
   //DB관리 setstate
-
-  console.log("changeDb", head_office_code, headOfficeMenuList);
 
   return (
     <Layout loading={loading}>
@@ -685,7 +681,6 @@ export default function UserDetail() {
                               newData[key].geomap = [];
                             }
 
-                            console.log("menus", newData[key].geomap);
                             return newData;
                           });
                         }}

@@ -40,10 +40,6 @@ const Root = styled("div")`
 `;
 
 export default function DbApplyStatusTable({ data, page }) {
-  const [all_checked, setAllChecked] = useState(false);
-  const [checked, setChecked] = useState([]);
-  console.log(data);
-
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>

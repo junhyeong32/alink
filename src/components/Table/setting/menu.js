@@ -129,8 +129,6 @@ export default function MenuTable({ data, getMenus }) {
                                   db_pk: list?.pk,
                                 });
 
-                                console.log(res);
-
                                 if (res?.code === 200) {
                                   enqueueSnackbar("삭제되었습니다.", {
                                     variant: "success",

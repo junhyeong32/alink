@@ -106,7 +106,6 @@ export default function NewDb() {
   }, [date]);
 
   useEffect(() => {
-    console.log("dateAge", dateAge, date, new Date(dateAge));
     if (!dateAge) return;
     if (
       dateAge?.length === 10 &&
@@ -195,8 +194,6 @@ export default function NewDb() {
 
     getDbMenu();
   }, [router.isReady]);
-
-  console.log("values", values);
 
   //상세지역구분
   useEffect(() => {

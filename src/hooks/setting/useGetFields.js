@@ -18,8 +18,6 @@ export default function useGetfields() {
       })
     )?.data;
 
-    console.log(res);
-
     if (res?.code === 200)
       startTransition(() => {
         setFields(res?.data);

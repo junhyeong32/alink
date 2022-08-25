@@ -34,8 +34,6 @@ export default function Layout({ loading, children, sx }) {
   const [user_info] = useState(cookies?.user_info);
   const { user, getUser } = useGetUser();
 
-  console.log("user,", user);
-
   const [showChild, setShowChild] = useState(false);
   const { menus, isPending, getMenus } = useGetMenus();
 
@@ -199,7 +197,6 @@ export default function Layout({ loading, children, sx }) {
               스위치 스타일 바구기
               */}
               {menuText.map((menu, key) => {
-                console.log(menu);
                 if (menu === "DB 현황") {
                   return <MenuBox key={key} text={menu} link={"/"} />;
                 } else if (menu === "DB 신청하기" || menu === "DB 신청현황") {
@@ -240,7 +237,6 @@ export default function Layout({ loading, children, sx }) {
               })}
 
               {menus?.map((d, key) => {
-                console.log("d", d);
                 if (d?.is_activated === 0) return;
                 if (
                   rank === "관리자" ||

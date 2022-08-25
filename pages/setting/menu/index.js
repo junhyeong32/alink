@@ -56,7 +56,7 @@ export default function Menu() {
         },
       })
     )?.data;
-    console.log(res);
+
     if (res?.code === 200) setArea(res?.data);
   };
 
@@ -153,8 +153,6 @@ export default function Menu() {
       });
     }
   }, [cooperation_organization]);
-
-  console.log("area", area);
 
   return (
     <Layout loading={fields?.length === 0}>
@@ -286,7 +284,7 @@ export default function Menu() {
                   // 태웅이 수정 후 작업
                   setFileName(e.target.files[0].name);
                   const _uploadFile = await uploadFile(e.target.files[0]);
-                  console.log(_uploadFile);
+
                   setSample(_uploadFile);
                 }}
                 sx={{ display: "none" }}

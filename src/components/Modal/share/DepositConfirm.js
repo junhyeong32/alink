@@ -46,8 +46,6 @@ export default function DepositConfirm({ index }) {
 
   const { modal, closeModal, modalContent } = useContext(ModalContext);
 
-  console.log(modalContent[index]);
-
   return (
     <Modal
       open={modal[index] === "depositconfirm" ? true : false}

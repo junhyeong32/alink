@@ -9,7 +9,6 @@ export default function useGetOrganization(type, head_office, name, id) {
   const [org_pending, setOrgPending] = useState(true);
 
   const getOrganization = async (_type, _head_office) => {
-    console.log(_type, _head_office);
     const res = (
       await Axios.Get("organization", {
         params: {
@@ -22,7 +21,6 @@ export default function useGetOrganization(type, head_office, name, id) {
     )?.data;
 
     if (res?.data.length !== 0) {
-      console.log("res", res);
       if (type === "sales" && !head_office) {
         setSales(res?.data);
       } else if (type === "cooperation" && !head_office) {

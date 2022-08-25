@@ -47,7 +47,6 @@ export default function Detail() {
     };
     getDetail();
   }, [router.isReady]);
-  console.log("user", user);
 
   return (
     <Layout loading={isPending}>

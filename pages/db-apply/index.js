@@ -85,15 +85,11 @@ export default function DBApply() {
       });
     });
 
-    // if()
-    console.log("hi", user);
-
     if (
       user?.status === "미승인" &&
       user?.pay_amount < 0 &&
       user?.deposit_status === "입금 미완료"
     ) {
-      console.log("hi", user);
       openModal({
         modal: "deposit",
         data: numberFormat(user?.pay_amount * -1),

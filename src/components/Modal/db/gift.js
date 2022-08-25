@@ -99,7 +99,6 @@ export default function Gift({ index }) {
           })
         )?.data;
 
-    console.log(res);
     if (res?.code === 200) {
       setUserList(res?.data?.result);
       setTotalCount(Math.ceil(res?.data.total_count / 20));
@@ -116,8 +115,6 @@ export default function Gift({ index }) {
   useEffect(() => {
     getUserList();
   }, [page]);
-
-  console.log("rank", data[index]);
 
   return (
     <Modal open={modal[index] === "gift" ? true : false} onClose={closeModal}>

@@ -42,10 +42,6 @@ const Root = styled("div")`
 `;
 
 export default function AreaTable({ data, area_list, setAreaList }) {
-  console.log("data", area_list);
-  // TODO
-  //다시 체크 시 arr 제거하기
-
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -104,7 +100,7 @@ export default function AreaTable({ data, area_list, setAreaList }) {
                           setAreaList((prev) => {
                             const new_area = [...prev];
                             const foundIndex = new_area.indexOf(list);
-                            console.log(foundIndex);
+
                             new_area.splice(key, 1);
                             return new_area;
                           });

@@ -372,7 +372,6 @@ export default function Authority() {
                   user_pks: checkList.join(","),
                   status: "승인",
                 });
-                console.log(res);
                 if (res?.code === 200)
                   enqueueSnackbar("승인 처리 되었습니다.", {
                     variant: "success",

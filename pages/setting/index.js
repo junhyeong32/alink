@@ -43,7 +43,6 @@ export default function Setting() {
     setLoading(true);
     getMenuByList();
   }, [menu, page]);
-  console.log(page, totalCouunt);
 
   return (
     <Layout loading={loading}>

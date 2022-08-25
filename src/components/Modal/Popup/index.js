@@ -101,8 +101,6 @@ export default function Popup({ index }) {
         : "50%",
   };
 
-  console.log(data[index]?.content);
-
   return (
     <Modal open={modal[index] === "popup"} onClose={() => closeModal(index)}>
       <Box
@@ -150,10 +148,9 @@ export default function Popup({ index }) {
                   typeof action === "function" &&
                     action((prev) => {
                       const newCookie = [...prev];
-                      console.log(newCookie);
 
                       const foundIndex = newCookie.indexOf(data[index]?.pk);
-                      console.log(foundIndex);
+
                       if (foundIndex === -1) newCookie.push(data[index]?.pk);
 
                       return newCookie;

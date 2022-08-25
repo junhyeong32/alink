@@ -59,8 +59,6 @@ export default function UserTable({ data, allocation_total, getUsers }) {
 
   const { openModal, closeModal } = useContext(ModalContext);
 
-  console.log("data", data);
-
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -231,8 +229,6 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                                     </Column>
                                   ),
                                   action: async () => {
-                                    console.log(location?.pk);
-
                                     if (!location?.pk) return;
 
                                     const res = await api.Post(

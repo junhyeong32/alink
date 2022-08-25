@@ -290,12 +290,9 @@ export default function Db() {
     headOfficeBySales();
   }, [head_office_org_code]);
 
-  console.log(rank);
-
   useEffect(() => {
     const head_office = { 전체: "전체" };
     if (sales?.length !== 0 && rank === "지점장") {
-      console.log("111");
       const getOrg = (orgs, unit1, unit2, result) => {
         for (let org of orgs) {
           getOrg(org.children, unit1, unit2, result);

@@ -112,7 +112,6 @@ export default function Index({ getCookies }) {
   }, []);
 
   useEffect(() => {
-    console.log("start");
     if (cookie_list.length === 0) return;
     setCookie(["popup"], cookie_list, {
       maxAge: 436000,
@@ -173,6 +172,7 @@ export default function Index({ getCookies }) {
   };
 
   useEffect(() => {
+    if (send_date.length !== 6) return;
     startTransition(() => {
       getDbDashBoard();
       getCooperationDashBoard();
@@ -235,7 +235,6 @@ export default function Index({ getCookies }) {
   useEffect(() => {
     const head_office = { 전체: "전체" };
     if (sales?.length !== 0 && rank === "부관리자") {
-      console.log("start");
       getOrgWithUnit(sales, "region", head_office);
     }
 

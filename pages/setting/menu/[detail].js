@@ -95,7 +95,7 @@ export default function MenuDetail() {
           },
         })
       )?.data;
-      console.log(res);
+
       if (res?.code === 200) {
         const {
           title,
@@ -193,8 +193,6 @@ export default function MenuDetail() {
     if (JSON.stringify(area_org) !== "{}")
       setArea((prev) => [...prev, area_org]);
   }, [area_org]);
-
-  console.log("hi", area_org, geomap);
 
   return (
     <Layout loading={loading}>

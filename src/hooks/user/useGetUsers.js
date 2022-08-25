@@ -24,10 +24,8 @@ export default function useGetUsers({
   const [allocation_total, setTotal] = useState([]);
   const [isUsersPending, setIsUsersPending] = useState(true);
   const [totalCouunt, setTotalCount] = useState();
-  console.log("head_office_org_code", head_office_org_code);
 
   const getUsers = async (orgCode, is_init) => {
-    console.log("실행", excel);
     if (Number(excel) === 1) {
       window.open(
         "https://alinkapi.afg.kr/api/v1/member?" +

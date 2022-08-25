@@ -140,7 +140,6 @@ export default function DbDetail() {
   }, [date]);
 
   useEffect(() => {
-    console.log("dateAge", dateAge, date, new Date(dateAge));
     if (!dateAge) return;
     if (
       dateAge?.length === 10 &&
@@ -242,10 +241,6 @@ export default function DbDetail() {
     getDbDetail();
   }, [router.isReady, router.query.db]);
 
-  {
-    console.log("hi", values);
-  }
-
   //상세지역구분
   useEffect(() => {
     if (!parent_area || parent_area === "전체" || area?.length === 0) return;
@@ -335,8 +330,6 @@ export default function DbDetail() {
     };
     getUserList();
   }, [org_code, orgHead]);
-
-  console.log("newValue", transcript_file);
 
   return (
     <Layout loading={loading}>
@@ -863,7 +856,6 @@ export default function DbDetail() {
                               (data) => data?.property.name === "녹취 파일"
                             );
 
-                            console.log(_uploadFile);
                             setValues((prev) => {
                               const newData = [...prev];
 
@@ -1124,7 +1116,6 @@ export default function DbDetail() {
               action={() => router.back()}
             />
           </Row>
-          {console.log("user_info", user_info)}
           {(allocated_user?.pk === user_info?.pk ||
             rank === "관리자" ||
             uploader?.pk === user_info?.pk) && (

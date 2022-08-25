@@ -14,7 +14,7 @@ export default function useModal() {
     setModalContent((prev) => {
       const new_modal_list = [...prev];
       new_modal_list.splice(index, count || 1);
-      console.log("new_modal_list", new_modal_list);
+
       return new_modal_list;
     });
     setData((prev) => {
@@ -25,7 +25,6 @@ export default function useModal() {
   };
 
   const openModal = ({ modal, content, data }) => {
-    console.log("hello", modal, content, data);
     setData((prev) => [...prev, data]);
     setModalContent((prev) => [...prev, content]);
     setModal((prev) => [...prev, modal]);

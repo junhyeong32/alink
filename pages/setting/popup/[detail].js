@@ -102,7 +102,6 @@ export default function Popup() {
     const findOrg = Object.keys(orgMenuList).find(
       (key) => orgMenuList[key] === org_code
     );
-    console.log("findOrgIndex", findOrg);
 
     setOrgCode(findOrg);
   }, [orgMenuList]);
@@ -110,8 +109,6 @@ export default function Popup() {
   useEffect(() => {
     getPopupDetail();
   }, [router.isReady]);
-
-  console.log(content);
 
   return (
     <Layout>
