@@ -337,6 +337,7 @@ export default function AreaModal({ index }) {
                             return newState;
                           });
                           setAreaList([]);
+                          closeModal(1, 1);
                         },
                       },
                     });

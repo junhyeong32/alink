@@ -51,6 +51,7 @@ const Root = styled("div")`
 export default function BojangTable({
   openModal,
   closeModal,
+  page,
   header,
   data,
   checkData,
@@ -148,7 +149,11 @@ export default function BojangTable({
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
-                  {key + 1}
+                  {page === 1
+                    ? key + 1
+                    : page === 2
+                    ? page * 10 + key + 1
+                    : page * 10 + (page - 2) * 10 + key + 1}
                 </TableCell>
                 <TableCell
                   key={d?.pk + 999}

@@ -243,6 +243,7 @@ export function DatePicker({
   title,
   placeholder,
   date,
+  setDate,
   value,
   setValue,
   w,
@@ -251,6 +252,7 @@ export function DatePicker({
   forwardRef,
   locale,
   disabled,
+  setChangeLog,
   ...props
 }) {
   return (
@@ -276,6 +278,7 @@ export function DatePicker({
           }}
         >
           <TextField
+            id="date_input"
             sx={{
               "& input::placeholder": {
                 // fontSize: "10px",
@@ -297,6 +300,10 @@ export function DatePicker({
             fullWidth
             placeholder={"YYYY-DD-MM"}
             value={date}
+            onBlur={(e) => setChangeLog && setChangeLog(e.target.value)}
+            onChange={(e) => {
+              setDate && setDate(e.target.value);
+            }}
             onClick={() => {
               document.querySelector(".rdrCalendarWrapper").style.position =
                 "absolute";

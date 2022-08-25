@@ -26,6 +26,7 @@ import RadioInput from "../../src/components/Radio";
 import uploadFile from "../../src/utility/uploadFile";
 import moment from "moment";
 import { LoadingButton } from "@mui/lab";
+import GridBox from "../../src/components/Box/Grid";
 
 const Input = styled("input")({
   display: "none",
@@ -56,8 +57,9 @@ export default function NewDb() {
   const [child_area, setChildArea] = useState("");
   const [values, setValues] = useState([]);
   const [date, setDate] = useState(null);
-  const [dateAge, setDateAge] = useState(null);
+  const [dateAge, setDateAge] = useState("");
   const [age, setAge] = useState("");
+  const [dateAgeChangeLog, setDateAgeChangeLog] = useState(false);
   const [area, setArea] = useState([]);
   const [fileLoading, setFileLoading] = useState(false);
 
@@ -89,7 +91,9 @@ export default function NewDb() {
     if (!date) return;
 
     document.querySelector(".rdrCalendarWrapper").style.display = "none";
-    setDateAge(moment(date).format("YYYY-MM-DD"));
+    if (dateAge !== moment(date).format("YYYY-MM-DD"))
+      setDateAge(moment(date).format("YYYY-MM-DD"));
+
     document.querySelector("#age").value =
       new Date().getFullYear() - date.getFullYear() + 1;
     setValues((prev) => {
@@ -100,6 +104,25 @@ export default function NewDb() {
       return newData;
     });
   }, [date]);
+
+  useEffect(() => {
+    console.log("dateAge", dateAge, date, new Date(dateAge));
+    if (!dateAge) return;
+    if (
+      dateAge?.length === 10 &&
+      dateAge?.includes("-", 5) &&
+      dateAge?.includes("-", 7) &&
+      new Date(dateAge) instanceof Date &&
+      !isNaN(new Date(dateAge))
+    ) {
+      setDate(new Date(dateAge));
+    } else {
+      return enqueueSnackbar("날짜형식을 올바르게 입력해주세요", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  }, [dateAgeChangeLog]);
 
   useEffect(() => {
     if (!date && age)
@@ -123,6 +146,7 @@ export default function NewDb() {
       )?.data;
 
       if (res?.code === 200) {
+        setMenuDetail(res?.data);
         const head_org = {};
 
         setHeadOfficeMenuList((prev) => {
@@ -172,7 +196,7 @@ export default function NewDb() {
     getDbMenu();
   }, [router.isReady]);
 
-  console.log("headOfficeRankisCoopMenuList", headOfficeRankisCoopMenuList);
+  console.log("values", values);
 
   //상세지역구분
   useEffect(() => {
@@ -268,9 +292,11 @@ export default function NewDb() {
           <div ref={el} style={{ width: "50%" }}>
             <DatePicker
               date={dateAge}
+              setDate={setDateAge}
               value={date}
               setValue={setDate}
               w={"100%"}
+              setChangeLog={setDateAgeChangeLog}
             />
           </div>
           <OutLineInput
@@ -454,12 +480,12 @@ export default function NewDb() {
                   const _uploadFile = await uploadFile(transcript_file);
 
                   if (_uploadFile) {
+                    const getRecordField = menu_detail?.fields?.find(
+                      (data) => data?.property.name === "녹취 파일"
+                    );
+
                     setValues((prev) => {
                       const newData = [...prev];
-
-                      const getRecordField = menu_detail?.fields?.find(
-                        (data) => data?.property.name === "녹취 파일"
-                      );
 
                       const newObj = Object.assign(
                         {},
@@ -498,6 +524,35 @@ export default function NewDb() {
           </Row>
         </RowLabel>
       </Column>
+      <GridBox
+        itemCount={4}
+        alignItems={"end"}
+        sx={{ width: "100%", gap: 1, mt: 3, maxWidth: 1024 }}
+      >
+        {values?.map(
+          (v, _key) =>
+            v?.title === "녹취 파일" &&
+            v?.value &&
+            v?.value.includes("https") && (
+              <Column
+                sx={{
+                  width: "100%",
+                  p: 1,
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                }}
+              >
+                <Typography variant="h6" ml={3} mb={1}>
+                  {v?.created_date}{" "}
+                </Typography>
+                <audio controls src={v?.value} style={{ width: "100%" }}>
+                  Your browser does not support the
+                  <code>audio</code> element.
+                </audio>
+              </Column>
+            )
+        )}
+      </GridBox>
 
       <Row justifyContent={"center"} sx={{ width: "100%", mt: 10, gap: 1.5 }}>
         <Button
@@ -506,19 +561,6 @@ export default function NewDb() {
           w={158}
           h={25}
           action={async () => {
-            // console.log(
-            //   "hi",
-            //   values.map((v) =>
-            //     Object.assign(
-            //       {},
-            //       {
-            //         pk: v.pk,
-            //         field_pk: v.field_pk,
-            //         value: v.value,
-            //       }
-            //     )
-            //   )
-            // );
             if (
               !head_office_org_code &&
               rank !== "협력사" &&
@@ -528,6 +570,8 @@ export default function NewDb() {
                 variant: "error",
                 autoHideDuration: 2000,
               });
+
+            // if(new)
             const newValues = values
               .filter((v) => v?.value !== "")
               .map((v) =>

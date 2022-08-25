@@ -1011,17 +1011,30 @@ export default function Db() {
                     w={90}
                     h={28}
                     action={() => {
-                      openModal({
-                        modal: "change",
-                        content: {
-                          title: "DB 조직 선택",
-                          contents: "DB를 선택하시겠습니까?",
-                          buttonName: "선택",
-                          type: "dbUpload",
-                          reload: getDbDetail,
-                        },
-                        data: deninedMenuList,
-                      });
+                      rank === "협력사" ||
+                      rank === "부협력사" ||
+                      rank === "부관리자"
+                        ? openModal({
+                            modal: "upload",
+                            content: {
+                              title: "DB 대량 등록",
+                              is_sample: true,
+                              uploadUrl: `db/menu/excelupload/${router.query.menu}`,
+                              reload: getDbDetail,
+                            },
+                            data: deninedMenuList,
+                          })
+                        : openModal({
+                            modal: "change",
+                            content: {
+                              title: "DB 조직 선택",
+                              contents: "DB를 선택하시겠습니까?",
+                              buttonName: "선택",
+                              type: "dbUpload",
+                              reload: getDbDetail,
+                            },
+                            data: deninedMenuList,
+                          });
                     }}
                   />
                 </>
@@ -1034,33 +1047,65 @@ export default function Db() {
                   w={90}
                   h={28}
                   action={() => {
-                    openModal({
-                      modal: "change",
-                      content: {
-                        type: "changedb",
-                        title: "DB 조직 선택",
-                        contents: "DB를 선택하시겠습니까?",
-                        buttonName: "선택",
-                        buttonAction: async (select) => {
-                          const res = await Axios.Post("db/menu/distribute", {
-                            token: getAccessToken(),
-                            db_pk: router.query.menu,
-                            org_code: select,
-                          });
+                    rank === "부관리자"
+                      ? openModal({
+                          modal: "needconfirm",
+                          content: {
+                            contents: `자동분배를 진행하시겠습니까? `,
+                            action: async () => {
+                              const res = await Axios.Post(
+                                "db/list/head_office",
+                                {
+                                  // TODO
+                                  // 재차 확인
+                                  token: getAccessToken(),
+                                  list_pks: list,
+                                }
+                              );
 
-                          if (res?.code === 200) {
-                            enqueueSnackbar("DB 자동분배가 완료되었습니다.", {
-                              variant: "success",
-                              autoHideDuration: 2000,
-                            });
-                            closeModal();
-                            getDbDetail();
-                          }
-                        },
-                        reload: getDbDetail,
-                      },
-                      data: deninedMenuList,
-                    });
+                              if (res?.code === 200) {
+                                closeModal();
+                                enqueueSnackbar("조직이 변경되었습니다", {
+                                  variant: "success",
+                                  autoHideDuration: 2000,
+                                });
+                              }
+                            },
+                          },
+                        })
+                      : openModal({
+                          modal: "change",
+                          content: {
+                            type: "changedb",
+                            title: "DB 조직 선택",
+                            contents: "DB를 선택하시겠습니까?",
+                            buttonName: "선택",
+                            buttonAction: async (select) => {
+                              const res = await Axios.Post(
+                                "db/menu/distribute",
+                                {
+                                  token: getAccessToken(),
+                                  db_pk: router.query.menu,
+                                  org_code: select,
+                                }
+                              );
+
+                              if (res?.code === 200) {
+                                enqueueSnackbar(
+                                  "DB 자동분배가 완료되었습니다.",
+                                  {
+                                    variant: "success",
+                                    autoHideDuration: 2000,
+                                  }
+                                );
+                                closeModal();
+                                getDbDetail();
+                              }
+                            },
+                            reload: getDbDetail,
+                          },
+                          data: deninedMenuList,
+                        });
                   }}
                 />
               )}
@@ -1177,6 +1222,7 @@ export default function Db() {
             closeModal={closeModal}
             header={menu_detail}
             data={db_list}
+            page={page}
             checkData={checkData}
             setCheckData={setCheckData}
           />

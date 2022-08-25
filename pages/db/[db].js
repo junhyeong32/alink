@@ -78,7 +78,8 @@ export default function DbDetail() {
   const [organization, setOrganization] = useState({});
   const [user_code, setUserCode] = useState("");
   const [date, setDate] = useState(null);
-  const [dateAge, setDateAge] = useState(null);
+  const [dateAge, setDateAge] = useState("");
+  const [dateAgeChangeLog, setDateAgeChangeLog] = useState(false);
   const [age, setAge] = useState("");
   const [area, setArea] = useState([]);
   const [sales, setSales] = useState([]);
@@ -124,7 +125,9 @@ export default function DbDetail() {
     if (!date) return;
 
     document.querySelector(".rdrCalendarWrapper").style.display = "none";
-    setDateAge(moment(date).format("YYYY-MM-DD"));
+    if (dateAge !== moment(date).format("YYYY-MM-DD"))
+      setDateAge(moment(date).format("YYYY-MM-DD"));
+
     document.querySelector("#age").value =
       new Date().getFullYear() - date.getFullYear() + 1;
     setValues((prev) => {
@@ -135,6 +138,25 @@ export default function DbDetail() {
       return newData;
     });
   }, [date]);
+
+  useEffect(() => {
+    console.log("dateAge", dateAge, date, new Date(dateAge));
+    if (!dateAge) return;
+    if (
+      dateAge?.length === 10 &&
+      dateAge?.includes("-", 5) &&
+      dateAge?.includes("-", 7) &&
+      new Date(dateAge) instanceof Date &&
+      !isNaN(new Date(dateAge))
+    ) {
+      setDate(new Date(dateAge));
+    } else {
+      return enqueueSnackbar("날짜형식을 올바르게 입력해주세요", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  }, [dateAgeChangeLog]);
 
   useEffect(() => {
     if (!date && age)
@@ -403,9 +425,11 @@ export default function DbDetail() {
                                 uploader?.organization?.code
                             }
                             date={dateAge}
+                            setDate={setDateAge}
                             value={date}
                             setValue={setDate}
                             w={"100%"}
+                            setChangeLog={setDateAgeChangeLog}
                           />
                         </div>
 
@@ -835,12 +859,13 @@ export default function DbDetail() {
                           const _uploadFile = await uploadFile(transcript_file);
 
                           if (_uploadFile) {
+                            const getRecordField = menu_detail?.fields?.find(
+                              (data) => data?.property.name === "녹취 파일"
+                            );
+
+                            console.log(_uploadFile);
                             setValues((prev) => {
                               const newData = [...prev];
-
-                              const getRecordField = menu_detail?.fields?.find(
-                                (data) => data?.property.name === "녹취 파일"
-                              );
 
                               const newObj = Object.assign(
                                 {},
@@ -946,13 +971,14 @@ export default function DbDetail() {
                           variant: "error",
                           autoHideDuration: 2000,
                         });
+
+                      const getRecordField = menu_detail?.fields?.find(
+                        (data) => data?.property.name === "메모"
+                      );
+
                       setMemo("");
                       setValues((prev) => {
                         const newData = [...prev];
-
-                        const getRecordField = menu_detail?.fields?.find(
-                          (data) => data?.property.name === "메모"
-                        );
 
                         const newObj = Object.assign(
                           {},

@@ -74,7 +74,11 @@ export default function DbApplyStatusTable({ data, page }) {
                 }}
               >
                 <TableCell align="center">
-                  {page === 1 ? key + 1 : page * 20 + key + 1}
+                  {page === 1
+                    ? key + 1
+                    : page === 2
+                    ? page * 10 + key + 1
+                    : page * 10 + (page - 2) * 10 + key + 1}
                 </TableCell>
                 <TableCell align="center">{list?.db_name}</TableCell>
                 <TableCell align="center">{list?.count}</TableCell>
