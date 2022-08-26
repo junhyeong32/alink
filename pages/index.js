@@ -33,8 +33,10 @@ import CooperationTable from "../src/components/Table/data-status/CooperationTab
 import { useTransition } from "react";
 import { ModalContext } from "../src/contexts/ModalContext";
 import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
 
 export default function Index({ getCookies }) {
+  const router = useRouter();
   const [user_info] = useState(getCookie("user_info"));
   const [cookies, setCookie] = useCookies();
 
@@ -276,6 +278,8 @@ export default function Index({ getCookies }) {
     d.setMonth(d.getMonth() - date);
     setSendDate(d.toISOString().substring(0, 8).replace(/-/g, ""));
   }, [date]);
+
+  if (!getCookies) return <></>;
 
   return (
     <Layout loading={loading}>
