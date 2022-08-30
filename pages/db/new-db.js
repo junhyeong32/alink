@@ -59,7 +59,7 @@ export default function NewDb() {
   const [date, setDate] = useState(null);
   const [dateAge, setDateAge] = useState("");
   const [age, setAge] = useState("");
-  const [dateAgeChangeLog, setDateAgeChangeLog] = useState(false);
+  const [dateAgeChangeLog, setDateAgeChangeLog] = useState("");
   const [area, setArea] = useState([]);
   const [fileLoading, setFileLoading] = useState(false);
 
@@ -116,7 +116,9 @@ export default function NewDb() {
     ) {
       setDate(new Date(dateAge));
     } else {
-      return enqueueSnackbar("날짜형식을 올바르게 입력해주세요", {
+      // setDateAge("");
+
+      enqueueSnackbar("날짜형식을 올바르게 입력해주세요", {
         variant: "error",
         autoHideDuration: 2000,
       });
@@ -124,7 +126,7 @@ export default function NewDb() {
   }, [dateAgeChangeLog]);
 
   useEffect(() => {
-    if (!date && age)
+    if (!date && age) {
       setValues((prev) => {
         const newData = [...prev];
         const dataObj = newData.filter((data) => data.name === "나이");
@@ -132,6 +134,7 @@ export default function NewDb() {
 
         return newData;
       });
+    }
   }, [age]);
 
   useEffect(() => {
@@ -293,6 +296,7 @@ export default function NewDb() {
               value={date}
               setValue={setDate}
               w={"100%"}
+              changeLog={dateAgeChangeLog}
               setChangeLog={setDateAgeChangeLog}
             />
           </div>

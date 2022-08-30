@@ -60,6 +60,7 @@ export default function UserDetail() {
   const { area } = useGetArea();
 
   const { menus } = useGetMenus();
+
   const [org_code_by_sales, setOrgCodeBySales] = useState([]);
 
   //login info
@@ -230,7 +231,13 @@ export default function UserDetail() {
       };
 
       getDetail();
-    } else {
+    }
+  }, [router.isReady]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    if (menus.length !== 0 && router.query.detail === "new-id") {
       setDb((prev) => {
         const newData = [...prev];
 
@@ -257,7 +264,7 @@ export default function UserDetail() {
         return newData;
       });
     }
-  }, [router.isReady]);
+  }, [router.isReady, menus]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -655,13 +662,19 @@ export default function UserDetail() {
                     </Row>
                     <Row wrap={"wrap"} sx={{ gap: 1 }}>
                       <RoundColorBox
+                        disabled={
+                          router.query.detail !== "new-id" &&
+                          (status === "퇴사자" || rank === "부관리자")
+                        }
                         background={
-                          changeDb[key]?.geomap.length === area.length
+                          changeDb[key]?.geomap.length ===
+                          menus[key]?.geomap.length
                             ? "#0D1D41"
                             : "#E6E6E6"
                         }
                         fc={
-                          changeDb[key]?.geomap.length === area.length
+                          changeDb[key]?.geomap.length ===
+                          menus[key]?.geomap.length
                             ? "#FFFFFF"
                             : "#000000"
                         }
@@ -671,10 +684,13 @@ export default function UserDetail() {
                           setChangeDb((prev) => {
                             const newData = [...prev];
 
-                            if (newData[key].geomap.length < area.length) {
+                            if (
+                              newData[key].geomap.length <
+                              menus[key]?.geomap?.length
+                            ) {
                               newData[key].geomap = [];
 
-                              area.map((map) =>
+                              menus[key]?.geomap?.map((map) =>
                                 newData[key].geomap?.push({ name: map?.name })
                               );
                             } else {
@@ -687,19 +703,21 @@ export default function UserDetail() {
                       >
                         전국
                       </RoundColorBox>
-                      {area?.map((map, area_key) => (
+                      {/* {menus?.map((menu, area_key) => { */}
+                      {/* return  */}
+                      {menus[key]?.geomap?.map((geo, area_key) => (
                         <RoundColorBox
                           key={area_key}
                           background={
                             changeDb[key]?.geomap?.find(
-                              (d) => d?.name === map?.name
+                              (d) => d?.name === geo?.name
                             )
                               ? "#0D1D41"
                               : "#E6E6E6"
                           }
                           fc={
                             changeDb[key]?.geomap?.find(
-                              (d) => d?.name === map?.name
+                              (d) => d?.name === geo?.name
                             )
                               ? "#FFFFFF"
                               : "#000000"
@@ -714,11 +732,11 @@ export default function UserDetail() {
                               const newDataGeo = newData[key].geomap;
 
                               const foundIndex = newDataGeo?.findIndex(
-                                (d) => d?.name === map?.name
+                                (d) => d?.name === geo?.name
                               );
 
                               if (foundIndex === -1) {
-                                newDataGeo.push({ name: map?.name });
+                                newDataGeo.push({ name: geo?.name });
                               } else {
                                 newDataGeo.splice(foundIndex, 1);
                               }
@@ -727,7 +745,7 @@ export default function UserDetail() {
                             });
                           }}
                         >
-                          {map?.name}
+                          {geo?.name}
                         </RoundColorBox>
                       ))}
                     </Row>

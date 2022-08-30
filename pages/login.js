@@ -17,7 +17,6 @@ export default function Login() {
   const router = useRouter();
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
 
   const handleLogin = async () => {
@@ -35,8 +34,8 @@ export default function Login() {
       })
     )?.data;
     //관리자 계정
-    //ALINK000
-    //alink000!!
+    //ALINK0000
+    //link000!!
 
     // ALINK0001
     // link001!!
@@ -51,19 +50,16 @@ export default function Login() {
         path: "/",
         maxAge: 86400,
       });
-
-      setLoading(false);
       enqueueSnackbar("로그인 되었습니다.", {
         variant: "sucess",
         autoHideDuration: 2000,
       });
-      router.replace(`/`);
+      router.replace("/");
     } else {
       enqueueSnackbar("회원정보가 일치하지 않습니다.", {
         variant: "error",
         autoHideDuration: 2000,
       });
-      setLoading(false);
     }
   };
 
@@ -161,10 +157,8 @@ export default function Login() {
         }}
         variant="contained"
         color="primary"
-        loading={loading}
-        loadingIndicator="Loading..."
       >
-        {!loading && <Typography variant="h3">로그인</Typography>}
+        <Typography variant="h3">로그인</Typography>
       </LoadingButton>
     </main>
   );

@@ -54,8 +54,6 @@ export default function NeedConfirm({ index }) {
     closeAction,
   } = modalContent[index];
 
-  console.log(modalContent[index]);
-
   return (
     <Modal
       open={modal[index] === "needconfirm" ? true : false}

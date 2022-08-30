@@ -17,7 +17,7 @@ export default function useGetMenus() {
         },
       })
     )?.data;
-    console.log(res);
+    
     if (res?.code === 200)
       startTransition(() => {
         setMenus(res?.data);

@@ -60,7 +60,6 @@ export default memo(function User() {
 
     getUsers("전체", true);
   };
-  console.log("hi", user_info?.region);
 
   useEffect(() => {
     const head_office = { 전체: "전체" };
@@ -100,8 +99,6 @@ export default memo(function User() {
 
     setHeadOfficeMenuItems(head_office);
   }, [sales]);
-
-  console.log("hi", users);
 
   return (
     <Layout loading={isUsersPending}>

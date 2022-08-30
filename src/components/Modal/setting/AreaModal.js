@@ -156,8 +156,6 @@ export default function AreaModal({ index }) {
     });
   }, [splitedGeos]);
 
-  console.log("geomap", area_list);
-
   return (
     <Modal open={modal[index] === "area" ? true : false} onClose={closeModal}>
       <Box>
