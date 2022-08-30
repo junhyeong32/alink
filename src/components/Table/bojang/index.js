@@ -248,7 +248,7 @@ export default function BojangTable({
                         >
                           {data[key]?.values.find(
                             (v) => v?.field_pk === head?.pk
-                          )?.value.length === 2
+                          )?.value?.length === 2
                             ? data[key]?.values.find(
                                 (v) => v?.field_pk === head?.pk
                               )?.value
@@ -259,7 +259,7 @@ export default function BojangTable({
                                     (v) => v?.field_pk === head?.pk
                                   )?.value;
 
-                                  return getDate.length === 8
+                                  return getDate?.length === 8
                                     ? getDate.slice(0, 4) +
                                         "-" +
                                         getDate.slice(5, 6) +
