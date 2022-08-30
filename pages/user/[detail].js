@@ -617,7 +617,26 @@ export default function UserDetail() {
               <Typography variant="h1">DB 관리</Typography>
               {db?.map((d, key) => (
                 <Column key={key}>
-                  <RowLabel label={d?.title} fs="h4" label_w={83}>
+                  <RowLabel
+                    label={d?.title}
+                    fs="h4"
+                    label_w={83}
+                    sx={{
+                      flexDirection: {
+                        lg: "row",
+                        md: "row",
+                        sm: "row",
+                        xs: "column",
+                      },
+                      alignItems: {
+                        lg: "center",
+                        md: "center",
+                        sm: "center",
+                        xs: "flex-start",
+                      },
+                      rowGap: 2,
+                    }}
+                  >
                     <Row alignItems={"center"}>
                       <OutLineInput
                         disabled={
