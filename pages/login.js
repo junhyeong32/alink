@@ -26,7 +26,7 @@ export default function Login() {
         autoHideDuration: 2000,
       });
     }
-    setLoading(true);
+    // setLoading(true);
     const res = (
       await Axios.Post("user/signin", {
         id: id,
