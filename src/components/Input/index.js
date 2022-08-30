@@ -253,6 +253,7 @@ export function DatePicker({
   locale,
   disabled,
   setChangeLog,
+  changeLog,
   ...props
 }) {
   return (

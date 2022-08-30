@@ -213,7 +213,7 @@ export default function Upload({ index }) {
                 const upload = uploadUrl
                   ? await Axios.Post(uploadUrl, formData, config)
                   : await Axios.Post(`document/upload-excel`, formData, config);
-                console.log("upload", upload);
+
                 if (upload?.code === 200) {
                   enqueueSnackbar("파일이 업로드 되었습니다.", {
                     variant: "success",

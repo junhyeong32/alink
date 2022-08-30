@@ -150,7 +150,7 @@ export default function DbDetail() {
     ) {
       setDate(new Date(dateAge));
     } else {
-      return enqueueSnackbar("날짜형식을 올바르게 입력해주세요", {
+      enqueueSnackbar("날짜형식을 올바르게 입력해주세요", {
         variant: "error",
         autoHideDuration: 2000,
       });
@@ -635,7 +635,17 @@ export default function DbDetail() {
                 }
               }
             })}
-            <RowLabel label="등록일시" fs="h5">
+            <RowLabel
+              label={
+                rank === "본부장" ||
+                rank === "지점장" ||
+                rank === "팀장" ||
+                rank === "담당자"
+                  ? "분배일시"
+                  : "등록일시"
+              }
+              fs="h5"
+            >
               <Typography variant="h5">
                 {rank === "본부장" ||
                 rank === "지점장" ||
