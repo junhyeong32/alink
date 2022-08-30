@@ -58,6 +58,7 @@ export default function BojangTable({
   setCheckData,
 }) {
   const router = useRouter();
+  const today = new Date();
 
   const [rank] = useState(getCookie("user_info")?.grade);
 
@@ -245,13 +246,29 @@ export default function BojangTable({
                             router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
                           }
                         >
-                          {new Date().getFullYear() -
-                            new Date(
-                              data[key]?.values.find(
+                          {data[key]?.values.find(
+                            (v) => v?.field_pk === head?.pk
+                          )?.value.length === 2
+                            ? data[key]?.values.find(
                                 (v) => v?.field_pk === head?.pk
                               )?.value
-                            ).getFullYear() +
-                            1}
+                            : today.getFullYear() -
+                              new Date(
+                                (() => {
+                                  let getDate = data[key]?.values.find(
+                                    (v) => v?.field_pk === head?.pk
+                                  )?.value;
+
+                                  return getDate.length === 8
+                                    ? getDate.slice(0, 4) +
+                                        "-" +
+                                        getDate.slice(5, 6) +
+                                        "-" +
+                                        getDate.slice(7, 8)
+                                    : getDate;
+                                })()
+                              ).getFullYear() +
+                              1}
                         </TableCell>
                       );
                     }
