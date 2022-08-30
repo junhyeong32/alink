@@ -449,6 +449,7 @@ export default function Db() {
   }, [denied_org_code]);
 
   useEffect(() => {
+    if (!open) return;
     const getDbDeniedList = async () => {
       const res = (
         await Axios.Get("db/denied", {
@@ -477,7 +478,7 @@ export default function Db() {
     };
 
     getDbDeniedList();
-  }, [denied_org_code]);
+  }, [denied_org_code, open]);
 
   return (
     <Layout
