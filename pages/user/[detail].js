@@ -722,49 +722,53 @@ export default function UserDetail() {
                       </RoundColorBox>
                       {/* {menus?.map((menu, area_key) => { */}
                       {/* return  */}
-                      {menus[key]?.geomap?.map((geo, area_key) => (
-                        <RoundColorBox
-                          key={area_key}
-                          background={
-                            changeDb[key]?.geomap?.find(
-                              (d) => d?.name === geo?.name
-                            )
-                              ? "#0D1D41"
-                              : "#E6E6E6"
-                          }
-                          fc={
-                            changeDb[key]?.geomap?.find(
-                              (d) => d?.name === geo?.name
-                            )
-                              ? "#FFFFFF"
-                              : "#000000"
-                          }
-                          fs={12}
-                          sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
-                          onClick={() => {
-                            if (status === "퇴사자" || rank === "부관리자")
-                              return;
-                            setChangeDb((prev) => {
-                              const newData = [...prev];
-                              const newDataGeo = newData[key].geomap;
-
-                              const foundIndex = newDataGeo?.findIndex(
-                                (d) => d?.name === geo?.name
-                              );
-
-                              if (foundIndex === -1) {
-                                newDataGeo.push({ name: geo?.name });
-                              } else {
-                                newDataGeo.splice(foundIndex, 1);
+                      {menus[key]?.geomap?.map(
+                        (geo, area_key) =>
+                          menus[key]?.geomap[area_key - 1]?.parent !==
+                            geo?.parent && (
+                            <RoundColorBox
+                              key={area_key}
+                              background={
+                                changeDb[key]?.geomap?.find(
+                                  (d) => d?.name === geo?.name
+                                )
+                                  ? "#0D1D41"
+                                  : "#E6E6E6"
                               }
+                              fc={
+                                changeDb[key]?.geomap?.find(
+                                  (d) => d?.name === geo?.name
+                                )
+                                  ? "#FFFFFF"
+                                  : "#000000"
+                              }
+                              fs={12}
+                              sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
+                              onClick={() => {
+                                if (status === "퇴사자" || rank === "부관리자")
+                                  return;
+                                setChangeDb((prev) => {
+                                  const newData = [...prev];
+                                  const newDataGeo = newData[key].geomap;
 
-                              return newData;
-                            });
-                          }}
-                        >
-                          {geo?.parent}
-                        </RoundColorBox>
-                      ))}
+                                  const foundIndex = newDataGeo?.findIndex(
+                                    (d) => d?.name === geo?.name
+                                  );
+
+                                  if (foundIndex === -1) {
+                                    newDataGeo.push({ name: geo?.name });
+                                  } else {
+                                    newDataGeo.splice(foundIndex, 1);
+                                  }
+
+                                  return newData;
+                                });
+                              }}
+                            >
+                              {geo?.parent}
+                            </RoundColorBox>
+                          )
+                      )}
                     </Row>
                   </RowLabel>
                 </Column>
