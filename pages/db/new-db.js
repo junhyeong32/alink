@@ -191,7 +191,8 @@ export default function NewDb() {
         setAreaParentMenuList(() => {
           const parent = {};
           res?.data?.geomap?.map((d, key) => {
-            Object.assign(parent, { [d.name]: d.name });
+            if (res?.data?.geomap[(key = 1)]?.parent !== d?.parent)
+              Object.assign(parent, { [d.parent]: d.parent });
           });
           return parent;
         });
@@ -415,7 +416,7 @@ export default function NewDb() {
                             user_info?.org_code !== uploader?.organization?.code
                           }
                           checked={
-                            values.filter((v) => v?.title === "결혼여부")?.[0]
+                            values.filter((v) => v?.name === "결혼여부")?.[0]
                               ?.value === "미혼"
                           }
                           onClick={() =>
@@ -443,7 +444,7 @@ export default function NewDb() {
                             user_info?.org_code !== uploader?.organization?.code
                           }
                           checked={
-                            values.filter((v) => v?.title === "결혼여부")?.[0]
+                            values.filter((v) => v?.name === "결혼여부")?.[0]
                               ?.value === "기혼"
                           }
                           onClick={() =>
@@ -836,6 +837,17 @@ export default function NewDb() {
               rank !== "부협력사"
             )
               return enqueueSnackbar("조직을 선택해주세요.", {
+                variant: "error",
+                autoHideDuration: 2000,
+              });
+
+            const regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+            if (
+              !regPhone.test(
+                values.filter((data) => data.name === "연락처")?.value
+              )
+            )
+              return enqueueSnackbar("전화번호 형식은 000-0000-000 입니다.", {
                 variant: "error",
                 autoHideDuration: 2000,
               });

@@ -459,19 +459,28 @@ export default function DbDetail() {
                             uploader?.pk !== user_info?.pk &&
                             user_info?.org_code !== uploader?.organization?.code
                           }
-                          defaultValue={
-                            values.filter((v) => v?.title === "나이")?.[0]
-                              ?.value.length < 5
+                          defaultValue={(() => {
+                            let filterValue = values.filter(
+                              (v) => v?.title === "나이"
+                            )?.[0]?.value;
+
+                            return filterValue?.length < 5
                               ? values.filter((v) => v?.title === "나이")?.[0]
                                   ?.value
-                              : new Date().getFullYear() -
+                              : filterValue?.length === 8
+                              ? new Date().getFullYear() -
                                 new Date(
-                                  values.filter(
-                                    (v) => v?.title === "나이"
-                                  )?.[0]?.value
+                                  filterValue?.slice(0, 4) +
+                                    "-" +
+                                    filterValue?.slice(4, 6) +
+                                    "-" +
+                                    filterValue?.slice(6, 8)
                                 ).getFullYear() +
                                 1
-                          }
+                              : new Date().getFullYear() -
+                                new Date(filterValue).getFullYear() +
+                                1;
+                          })()}
                           onBlur={(e) => setAge(e.target.value)}
                         />
                       </RowLabel>
