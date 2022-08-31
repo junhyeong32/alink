@@ -841,10 +841,16 @@ export default function NewDb() {
                 autoHideDuration: 2000,
               });
 
+            if (!parent_area)
+              return enqueueSnackbar("지역을 선택해주세요.", {
+                variant: "error",
+                autoHideDuration: 2000,
+              });
+
             const regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
             if (
               !regPhone.test(
-                values.filter((data) => data.name === "연락처")?.value
+                values.filter((data) => data.name === "연락처")[0]?.value
               )
             )
               return enqueueSnackbar("전화번호 형식은 000-0000-000 입니다.", {
