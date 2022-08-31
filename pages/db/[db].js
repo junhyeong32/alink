@@ -406,7 +406,7 @@ export default function DbDetail() {
                           }
                           onBlur={(e) => {
                             const regPhone =
-                              /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+                              /^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$/;
 
                             if (!regPhone.test(e.target.value))
                               return enqueueSnackbar(
@@ -1152,7 +1152,7 @@ export default function DbDetail() {
                           });
 
                         const regPhone =
-                          /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+                          /^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$/;
                         if (
                           !regPhone.test(
                             values.filter((data) => data.title === "연락처")[0]

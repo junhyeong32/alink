@@ -255,12 +255,6 @@ export default function NewDb() {
                 return (
                   <RowLabel label="고객명" fs="h5" key={key}>
                     <OutLineInput
-                      disabled={
-                        allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자" &&
-                        uploader?.pk !== user_info?.pk &&
-                        user_info?.org_code !== uploader?.organization?.code
-                      }
                       onBlur={(e) =>
                         setValues((prev) => {
                           const newData = [...prev];
@@ -279,15 +273,9 @@ export default function NewDb() {
                 return (
                   <RowLabel label="연락처" fs="h5" key={key}>
                     <OutLineInput
-                      disabled={
-                        allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자" &&
-                        uploader?.pk !== user_info?.pk &&
-                        user_info?.org_code !== uploader?.organization?.code
-                      }
                       onBlur={(e) => {
                         const regPhone =
-                          /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+                          /^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$/;
                         if (!regPhone.test(e.target.value))
                           return enqueueSnackbar(
                             "전화번호 형식은 000-0000-000 입니다.",
@@ -314,12 +302,6 @@ export default function NewDb() {
                   <RowLabel label="나이" fs="h5" key={key}>
                     <div ref={el} style={{ width: "50%" }}>
                       <DatePicker
-                        disabled={
-                          allocated_user?.pk !== user_info?.pk &&
-                          rank !== "관리자" &&
-                          uploader?.pk !== user_info?.pk &&
-                          user_info?.org_code !== uploader?.organization?.code
-                        }
                         date={dateAge}
                         setDate={setDateAge}
                         value={date}
@@ -331,12 +313,6 @@ export default function NewDb() {
 
                     <OutLineInput
                       id="age"
-                      disabled={
-                        allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자" &&
-                        uploader?.pk !== user_info?.pk &&
-                        user_info?.org_code !== uploader?.organization?.code
-                      }
                       onBlur={(e) => setAge(e.target.value)}
                     />
                   </RowLabel>
@@ -348,12 +324,6 @@ export default function NewDb() {
                       label="남자"
                       control={
                         <RadioInput
-                          disabled={
-                            allocated_user?.pk !== user_info?.pk &&
-                            rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
-                          }
                           checked={
                             values.filter((v) => v?.name === "성별")?.[0]
                               ?.value === "남자"
@@ -376,12 +346,6 @@ export default function NewDb() {
                       label="여자"
                       control={
                         <RadioInput
-                          disabled={
-                            allocated_user?.pk !== user_info?.pk &&
-                            rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
-                          }
                           checked={
                             values.filter((v) => v?.name === "성별")?.[0]
                               ?.value === "여자"
@@ -409,12 +373,6 @@ export default function NewDb() {
                       label="미혼"
                       control={
                         <RadioInput
-                          disabled={
-                            allocated_user?.pk !== user_info?.pk &&
-                            rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
-                          }
                           checked={
                             values.filter((v) => v?.name === "결혼여부")?.[0]
                               ?.value === "미혼"
@@ -437,12 +395,6 @@ export default function NewDb() {
                       label="기혼"
                       control={
                         <RadioInput
-                          disabled={
-                            allocated_user?.pk !== user_info?.pk &&
-                            rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
-                          }
                           checked={
                             values.filter((v) => v?.name === "결혼여부")?.[0]
                               ?.value === "기혼"
@@ -467,12 +419,6 @@ export default function NewDb() {
                 return (
                   <RowLabel label="특이사항" fs="h5" key={key}>
                     <OutLineInput
-                      disabled={
-                        allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자" &&
-                        uploader?.pk !== user_info?.pk &&
-                        user_info?.org_code !== uploader?.organization?.code
-                      }
                       multiline
                       rows={3}
                       w={"100%"}
@@ -501,12 +447,6 @@ export default function NewDb() {
                   <RowLabel label={field?.property?.name} fs="h5" key={key}>
                     <OutLineInput
                       w={"100%"}
-                      disabled={
-                        allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자" &&
-                        uploader?.pk !== user_info?.pk &&
-                        user_info?.org_code !== uploader?.organization?.code
-                      }
                       onBlur={(e) =>
                         setValues((prev) => {
                           const newData = [...prev];
@@ -841,19 +781,19 @@ export default function NewDb() {
                 autoHideDuration: 2000,
               });
 
-            if (!parent_area)
-              return enqueueSnackbar("지역을 선택해주세요.", {
-                variant: "error",
-                autoHideDuration: 2000,
-              });
-
-            const regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+            const regPhone = /^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$/;
             if (
               !regPhone.test(
                 values.filter((data) => data.name === "연락처")[0]?.value
               )
             )
               return enqueueSnackbar("전화번호 형식은 000-0000-000 입니다.", {
+                variant: "error",
+                autoHideDuration: 2000,
+              });
+
+            if (!parent_area)
+              return enqueueSnackbar("지역을 선택해주세요.", {
                 variant: "error",
                 autoHideDuration: 2000,
               });
