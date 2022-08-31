@@ -681,10 +681,6 @@ export default function UserDetail() {
                     </Row>
                     <Row wrap={"wrap"} sx={{ gap: 1 }}>
                       <RoundColorBox
-                        disabled={
-                          router.query.detail !== "new-id" &&
-                          (status === "퇴사자" || rank === "부관리자")
-                        }
                         background={
                           changeDb[key]?.geomap.length ===
                           menus[key]?.geomap.length
@@ -700,6 +696,8 @@ export default function UserDetail() {
                         fs={12}
                         sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
                         onClick={() => {
+                          if (status === "퇴사자" || rank === "부관리자")
+                            return;
                           setChangeDb((prev) => {
                             const newData = [...prev];
 
@@ -764,7 +762,7 @@ export default function UserDetail() {
                             });
                           }}
                         >
-                          {geo?.name}
+                          {geo?.parent}
                         </RoundColorBox>
                       ))}
                     </Row>

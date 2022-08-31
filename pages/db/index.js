@@ -866,7 +866,7 @@ export default function Db() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      등록일
+                      분배일
                       <Button
                         text="금일"
                         bgColor={"gray"}

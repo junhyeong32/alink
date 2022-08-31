@@ -93,7 +93,7 @@ export default memo(function User() {
 
   //data
 
-  const { openModal, closeModal, modalContent } = useContext(ModalContext);
+  // const { openModal, closeModal, modalContent } = useContext(ModalContext);
 
   const handleInit = () => {
     setStatus("전체");

@@ -89,7 +89,6 @@ export default function NewDb() {
 
   useEffect(() => {
     if (!date) return;
-    console.log("date", date, age);
     document.querySelector(".rdrCalendarWrapper").style.display = "none";
     if (dateAge !== moment(date).format("YYYY-MM-DD"))
       setDateAge(moment(date).format("YYYY-MM-DD"));
@@ -104,7 +103,6 @@ export default function NewDb() {
       return newData;
     });
   }, [date]);
-  console.log(values);
 
   useEffect(() => {
     if (!dateAge) return;
@@ -170,15 +168,19 @@ export default function NewDb() {
 
           return newData;
         });
+
+        console.log("res?.data?.fields", res?.data?.fields);
         setValues((prev) => {
           const newData = [...prev];
 
-          res?.data?.fields?.map((menu, key) =>
-            newData.push({
-              field_pk: menu?.pk,
-              value: "",
-              name: menu?.property?.name,
-            })
+          res?.data?.fields?.map(
+            (menu, key) =>
+              menu?.is_detail_shown === 1 &&
+              newData.push({
+                field_pk: menu?.pk,
+                value: "",
+                name: menu?.property?.name,
+              })
           );
 
           return newData;
@@ -217,6 +219,8 @@ export default function NewDb() {
       return child;
     });
   }, [parent_area]);
+
+  console.log(values);
 
   return (
     <Layout>

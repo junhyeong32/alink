@@ -461,28 +461,6 @@ export default function DbDetail() {
                           }
                           onBlur={(e) => setAge(e.target.value)}
                         />
-                        {/* <OutLineInput
-                          disabled={
-                            allocated_user?.pk !== user_info?.pk &&
-                            rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk
-                          }
-                          defaultValue={
-                            values.filter((v) => v?.title === "나이")?.[0]
-                              ?.value
-                          }
-                          onBlur={(e) =>
-                            setValues((prev) => {
-                              const newData = [...prev];
-                              const dataObj = newData.filter(
-                                (data) => data.title === "나이"
-                              );
-                              dataObj[0].value = e.target.value;
-
-                              return newData;
-                            })
-                          }
-                        /> */}
                       </RowLabel>
                     );
                   case "성별":
@@ -644,6 +622,39 @@ export default function DbDetail() {
                         />
                       </RowLabel>
                     );
+
+                  case "메모":
+                    return;
+
+                  default:
+                    return (
+                      <RowLabel label={field?.property?.name} fs="h5" key={key}>
+                        <OutLineInput
+                          w={"100%"}
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자" &&
+                            uploader?.pk !== user_info?.pk &&
+                            user_info?.org_code !== uploader?.organization?.code
+                          }
+                          defaultValue={
+                            values.filter((v) => v?.title === "고객명")?.[0]
+                              ?.value
+                          }
+                          onBlur={(e) =>
+                            setValues((prev) => {
+                              const newData = [...prev];
+                              const dataObj = newData.filter(
+                                (data) => data.title === "고객명"
+                              );
+                              dataObj[0].value = e.target.value;
+
+                              return newData;
+                            })
+                          }
+                        />
+                      </RowLabel>
+                    );
                 }
               }
             })}
@@ -738,42 +749,54 @@ export default function DbDetail() {
                 </RoundColorBox>
               )}
             </RowLabel>
-            <RowLabel label="업체승인" fs="h5">
-              <OutLineSelectInput
-                disabled={
-                  allocated_user?.pk !== user_info?.pk &&
-                  rank !== "관리자" &&
-                  uploader?.pk !== user_info?.pk &&
-                  user_info?.org_code !== uploader?.organization?.code
-                }
-                w={"50%"}
-                menuItems={{
-                  AS승인: "AS승인",
-                  AS반려: "AS반려",
-                }}
-                value={org_status}
-                setValue={setOrgStatus}
-              />
-            </RowLabel>
+            {rank !== "본부장" &&
+              rank !== "지점장" &&
+              rank !== "팀장" &&
+              rank !== "담당자" && (
+                <RowLabel label="업체승인" fs="h5">
+                  <OutLineSelectInput
+                    disabled={
+                      allocated_user?.pk !== user_info?.pk &&
+                      rank !== "관리자" &&
+                      uploader?.pk !== user_info?.pk &&
+                      user_info?.org_code !== uploader?.organization?.code
+                    }
+                    w={"50%"}
+                    menuItems={{
+                      AS승인: "AS승인",
+                      AS반려: "AS반려",
+                    }}
+                    value={org_status}
+                    setValue={setOrgStatus}
+                  />
+                </RowLabel>
+              )}
+
             <RowLabel label="조직" fs="h5">
               <Typography variant="h6">{organization?.name}</Typography>
             </RowLabel>
-            {rank !== "협력사" && rank !== "부협력사" && (
-              <RowLabel label="소속/성명" fs="h5" alignItems="stasrt">
-                <Row sx={{ width: "100%", gap: 1 }}>
-                  <LabelOutLineSelectInput
-                    alignItems={"start"}
-                    native
-                    title="소속"
-                    disabled={
-                      allocated_user?.pk !== user_info?.pk && rank !== "관리자"
-                    }
-                    w={"50%"}
-                    menuItems={orgMenuList}
-                    value={orgHead}
-                    setValue={setOrgHead}
-                  />
-                  {/* <LabelOutLineGroupingSelectInput
+            {rank !== "협력사" &&
+              rank !== "부협력사" &&
+              rank !== "본부장" &&
+              rank !== "지점장" &&
+              rank !== "팀장" &&
+              rank !== "담당자" && (
+                <RowLabel label="소속/성명" fs="h5" alignItems="stasrt">
+                  <Row sx={{ width: "100%", gap: 1 }}>
+                    <LabelOutLineSelectInput
+                      alignItems={"start"}
+                      native
+                      title="소속"
+                      disabled={
+                        allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자"
+                      }
+                      w={"50%"}
+                      menuItems={orgMenuList}
+                      value={orgHead}
+                      setValue={setOrgHead}
+                    />
+                    {/* <LabelOutLineGroupingSelectInput
                   alignItems={"start"}
                   title="팀"
                   w={"100%"}
@@ -781,7 +804,7 @@ export default function DbDetail() {
                     allocated_user?.pk !== user_info?.pk && rank !== "관리자"
                   }
                 /> */}
-                  {/* <LabelOutLineSelectInput
+                    {/* <LabelOutLineSelectInput
                   alignItems={"start"}
                   title="팀"
                   disabled={
@@ -792,20 +815,21 @@ export default function DbDetail() {
                   value={team}
                   setValue={setTeam}
                 /> */}
-                  <LabelOutLineSelectInput
-                    alignItems={"start"}
-                    title="담당자명"
-                    disabled={
-                      allocated_user?.pk !== user_info?.pk && rank !== "관리자"
-                    }
-                    w={"50%"}
-                    menuItems={userMenuList}
-                    value={user_code}
-                    setValue={setUserCode}
-                  />
-                </Row>
-              </RowLabel>
-            )}
+                    <LabelOutLineSelectInput
+                      alignItems={"start"}
+                      title="담당자명"
+                      disabled={
+                        allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자"
+                      }
+                      w={"50%"}
+                      menuItems={userMenuList}
+                      value={user_code}
+                      setValue={setUserCode}
+                    />
+                  </Row>
+                </RowLabel>
+              )}
           </Column>
         </Row>
         {(allocated_user?.pk === user_info?.pk ||
