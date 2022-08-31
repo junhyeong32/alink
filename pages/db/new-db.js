@@ -89,7 +89,7 @@ export default function NewDb() {
 
   useEffect(() => {
     if (!date) return;
-
+    console.log("date", date, age);
     document.querySelector(".rdrCalendarWrapper").style.display = "none";
     if (dateAge !== moment(date).format("YYYY-MM-DD"))
       setDateAge(moment(date).format("YYYY-MM-DD"));
@@ -104,6 +104,7 @@ export default function NewDb() {
       return newData;
     });
   }, [date]);
+  console.log(values);
 
   useEffect(() => {
     if (!dateAge) return;
@@ -130,7 +131,7 @@ export default function NewDb() {
       setValues((prev) => {
         const newData = [...prev];
         const dataObj = newData.filter((data) => data.name === "나이");
-        dataObj[0].value = moment(date).format("YYYY-MM-DD");
+        dataObj[0].value = age;
 
         return newData;
       });

@@ -162,7 +162,7 @@ export default function DbDetail() {
       setValues((prev) => {
         const newData = [...prev];
         const dataObj = newData.filter((data) => data.title === "나이");
-        dataObj[0].value = moment(date).format("YYYY-MM-DD");
+        dataObj[0].value = age;
 
         return newData;
       });
@@ -228,11 +228,21 @@ export default function DbDetail() {
         setOrganization(organization);
         setUserCode(allocated_user?.pk);
         setOrgHead(allocated_user?.organization?.code);
-        setDateAge(
-          values.filter((v) => v?.title === "나이")?.[0]?.value.length > 5
-            ? values.filter((v) => v?.title === "나이")?.[0]?.value
-            : null
-        );
+        let valuesAge = values?.filter((v) => v?.title === "나이")?.[0]?.value;
+
+        if (valuesAge?.length === 8) {
+          setDateAge(
+            valuesAge.slice(0, 4) +
+              "-" +
+              valuesAge.slice(4, 6) +
+              "-" +
+              valuesAge.slice(6, 8)
+          );
+        } else if (valuesAge?.length === 2) {
+          setAge(valuesAge);
+        } else if (valuesAge.length > 0) {
+          setDateAge(valuesAge);
+        }
       }
 
       setLoading(false);
@@ -330,6 +340,8 @@ export default function DbDetail() {
     };
     getUserList();
   }, [org_code, orgHead]);
+
+  console.log("hi", dateAge, age, date);
 
   return (
     <Layout loading={loading}>
