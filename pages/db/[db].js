@@ -342,7 +342,7 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log("hi", menu_detail);
+  console.log("hi", status);
 
   return (
     <Layout loading={loading}>
@@ -769,8 +769,8 @@ export default function DbDetail() {
                   )}
                 </Row>
               ) : (
-                <RoundColorBox bgColor={argument_status[status]}>
-                  {status}
+                <RoundColorBox background={argument_status[status]}>
+                  <Typography variant="h6">{status}</Typography>
                 </RoundColorBox>
               )}
             </RowLabel>
