@@ -61,6 +61,7 @@ export default function NewDb() {
   const [age, setAge] = useState("");
   const [dateAgeChangeLog, setDateAgeChangeLog] = useState("");
   const [area, setArea] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [fileLoading, setFileLoading] = useState(false);
 
   const [transcript_file, setTranscriptFile] = useState("");
@@ -169,7 +170,6 @@ export default function NewDb() {
           return newData;
         });
 
-        console.log("res?.data?.fields", res?.data?.fields);
         setValues((prev) => {
           const newData = [...prev];
 
@@ -195,6 +195,7 @@ export default function NewDb() {
           });
           return parent;
         });
+        setLoading(false);
       }
     };
 
@@ -220,10 +221,10 @@ export default function NewDb() {
     });
   }, [parent_area]);
 
-  console.log(values);
+  console.log("menu,", values);
 
   return (
-    <Layout>
+    <Layout loading={loading}>
       <Column
         sx={{
           width: {
@@ -246,21 +247,281 @@ export default function NewDb() {
             />
           </RowLabel>
         )}
-        <RowLabel label="고객명" fs="h6">
-          <OutLineInput
-            onBlur={(e) =>
-              setValues((prev) => {
-                const newData = [...prev];
-                const dataObj = newData.filter(
-                  (data) => data.name === "고객명"
-                );
-                dataObj[0].value = e.target.value;
+        {menu_detail?.fields?.map((field, key) => {
+          if (field?.is_detail_shown === 1) {
+            switch (field?.property?.name) {
+              case "고객명":
+                return (
+                  <RowLabel label="고객명" fs="h5" key={key}>
+                    <OutLineInput
+                      disabled={
+                        allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자" &&
+                        uploader?.pk !== user_info?.pk &&
+                        user_info?.org_code !== uploader?.organization?.code
+                      }
+                      onBlur={(e) =>
+                        setValues((prev) => {
+                          const newData = [...prev];
+                          const dataObj = newData.filter(
+                            (data) => data.name === "고객명"
+                          );
+                          dataObj[0].value = e.target.value;
 
-                return newData;
-              })
+                          return newData;
+                        })
+                      }
+                    />
+                  </RowLabel>
+                );
+              case "연락처":
+                return (
+                  <RowLabel label="연락처" fs="h5" key={key}>
+                    <OutLineInput
+                      disabled={
+                        allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자" &&
+                        uploader?.pk !== user_info?.pk &&
+                        user_info?.org_code !== uploader?.organization?.code
+                      }
+                      onBlur={(e) =>
+                        setValues((prev) => {
+                          const newData = [...prev];
+                          const dataObj = newData.filter(
+                            (data) => data.name === "연락처"
+                          );
+                          dataObj[0].value = e.target.value;
+
+                          return newData;
+                        })
+                      }
+                    />
+                  </RowLabel>
+                );
+              case "나이":
+                return (
+                  <RowLabel label="나이" fs="h5" key={key}>
+                    <div ref={el} style={{ width: "50%" }}>
+                      <DatePicker
+                        disabled={
+                          allocated_user?.pk !== user_info?.pk &&
+                          rank !== "관리자" &&
+                          uploader?.pk !== user_info?.pk &&
+                          user_info?.org_code !== uploader?.organization?.code
+                        }
+                        date={dateAge}
+                        setDate={setDateAge}
+                        value={date}
+                        setValue={setDate}
+                        w={"100%"}
+                        setChangeLog={setDateAgeChangeLog}
+                      />
+                    </div>
+
+                    <OutLineInput
+                      id="age"
+                      disabled={
+                        allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자" &&
+                        uploader?.pk !== user_info?.pk &&
+                        user_info?.org_code !== uploader?.organization?.code
+                      }
+                      onBlur={(e) => setAge(e.target.value)}
+                    />
+                  </RowLabel>
+                );
+              case "성별":
+                return (
+                  <RowLabel label="성별" fs="h5" key={key}>
+                    <FormControlLabel
+                      label="남자"
+                      control={
+                        <RadioInput
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자" &&
+                            uploader?.pk !== user_info?.pk &&
+                            user_info?.org_code !== uploader?.organization?.code
+                          }
+                          checked={
+                            values.filter((v) => v?.name === "성별")?.[0]
+                              ?.value === "남자"
+                          }
+                          onClick={() =>
+                            setValues((prev) => {
+                              const newData = [...prev];
+                              const dataObj = newData.filter(
+                                (data) => data.name === "성별"
+                              );
+                              dataObj[0].value = "남자";
+
+                              return newData;
+                            })
+                          }
+                        />
+                      }
+                    />
+                    <FormControlLabel
+                      label="여자"
+                      control={
+                        <RadioInput
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자" &&
+                            uploader?.pk !== user_info?.pk &&
+                            user_info?.org_code !== uploader?.organization?.code
+                          }
+                          checked={
+                            values.filter((v) => v?.name === "성별")?.[0]
+                              ?.value === "여자"
+                          }
+                          onClick={() =>
+                            setValues((prev) => {
+                              const newData = [...prev];
+                              const dataObj = newData.filter(
+                                (data) => data.name === "성별"
+                              );
+                              dataObj[0].value = "여자";
+
+                              return newData;
+                            })
+                          }
+                        />
+                      }
+                    />
+                  </RowLabel>
+                );
+              case "결혼여부":
+                return (
+                  <RowLabel label="결혼여부" fs="h5" key={key}>
+                    <FormControlLabel
+                      label="미혼"
+                      control={
+                        <RadioInput
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자" &&
+                            uploader?.pk !== user_info?.pk &&
+                            user_info?.org_code !== uploader?.organization?.code
+                          }
+                          checked={
+                            values.filter((v) => v?.title === "결혼여부")?.[0]
+                              ?.value === "미혼"
+                          }
+                          onClick={() =>
+                            setValues((prev) => {
+                              const newData = [...prev];
+                              const dataObj = newData.filter(
+                                (data) => data.name === "결혼여부"
+                              );
+                              dataObj[0].value = "미혼";
+
+                              return newData;
+                            })
+                          }
+                        />
+                      }
+                    />
+                    <FormControlLabel
+                      label="기혼"
+                      control={
+                        <RadioInput
+                          disabled={
+                            allocated_user?.pk !== user_info?.pk &&
+                            rank !== "관리자" &&
+                            uploader?.pk !== user_info?.pk &&
+                            user_info?.org_code !== uploader?.organization?.code
+                          }
+                          checked={
+                            values.filter((v) => v?.title === "결혼여부")?.[0]
+                              ?.value === "기혼"
+                          }
+                          onClick={() =>
+                            setValues((prev) => {
+                              const newData = [...prev];
+                              const dataObj = newData.filter(
+                                (data) => data.name === "결혼여부"
+                              );
+                              dataObj[0].value = "기혼";
+
+                              return newData;
+                            })
+                          }
+                        />
+                      }
+                    />
+                  </RowLabel>
+                );
+              case "특이사항":
+                return (
+                  <RowLabel label="특이사항" fs="h5" key={key}>
+                    <OutLineInput
+                      disabled={
+                        allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자" &&
+                        uploader?.pk !== user_info?.pk &&
+                        user_info?.org_code !== uploader?.organization?.code
+                      }
+                      multiline
+                      rows={3}
+                      w={"100%"}
+                      onBlur={(e) =>
+                        setValues((prev) => {
+                          const newData = [...prev];
+                          const dataObj = newData.filter(
+                            (data) => data.name === "특이사항"
+                          );
+                          dataObj[0].value = e.target.value;
+
+                          return newData;
+                        })
+                      }
+                    />
+                  </RowLabel>
+                );
+
+              case "메모":
+                return;
+              case "녹취 파일":
+                return;
+
+              default:
+                return (
+                  <RowLabel label={field?.property?.name} fs="h5" key={key}>
+                    <OutLineInput
+                      w={"100%"}
+                      disabled={
+                        allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자" &&
+                        uploader?.pk !== user_info?.pk &&
+                        user_info?.org_code !== uploader?.organization?.code
+                      }
+                      onBlur={(e) =>
+                        setValues((prev) => {
+                          const newData = [...prev];
+                          const dataObj = newData.filter(
+                            (data) => data?.pk === field?.pk
+                          );
+
+                          if (dataObj[0]?.value) {
+                            dataObj[0].value = e.target.value;
+                          } else {
+                            newData.push({
+                              ...field,
+                              field_pk: field?.pk,
+                              value: e.target.value,
+                            });
+                          }
+
+                          return newData;
+                        })
+                      }
+                    />
+                  </RowLabel>
+                );
             }
-          />
-        </RowLabel>
+          }
+        })}
         <RowLabel label="지역" fs="h6">
           <OutLineSelectInput
             title="지역"
@@ -278,6 +539,22 @@ export default function NewDb() {
             setValue={setChildArea}
           />
         </RowLabel>
+        {/* <RowLabel label="고객명" fs="h6">
+          <OutLineInput
+            onBlur={(e) =>
+              setValues((prev) => {
+                const newData = [...prev];
+                const dataObj = newData.filter(
+                  (data) => data.name === "고객명"
+                );
+                dataObj[0].value = e.target.value;
+
+                return newData;
+              })
+            }
+          />
+        </RowLabel>
+       
         <RowLabel label="연락처" fs="h6">
           <OutLineInput
             onBlur={(e) =>
@@ -419,32 +696,8 @@ export default function NewDb() {
               })
             }
           />
-        </RowLabel>
+        </RowLabel> */}
         <RowLabel label="녹취파일" fs="h6">
-          {/* <Column sx={{ gap: 1 }}>
-            <Row justifyContent={"end"} sx={{ gap: 1 }}>
-              <label htmlFor="contained-button-file">
-                <Input
-                  accept="audio/*"
-                  id="contained-button-file"
-                  // multiple
-                  type="file"
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
-                <Button
-                  text="파일찾기"
-                  fs="h6"
-                  bgColor={"gray"}
-                  color={"primary.white"}
-                  h={25}
-                  component={"span"}
-                />
-              </label>
-              <Button text="업로드" fs="h6" h={25} />
-            </Row>
-
-            <DisableBox text="마우스로 파일을 끌어오세요." w={367} h={95} />
-          </Column> */}
           <Row alignItems={"center"} sx={{ gap: 2 }}>
             <Row alignItems={"center"} justifyContent={"start"} sx={{ gap: 1 }}>
               <label htmlFor="contained-button-file">

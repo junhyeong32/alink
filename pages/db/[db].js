@@ -44,6 +44,7 @@ import {
 } from "../../src/utility/organization/getOrgWithUnit";
 import moment from "moment";
 import { LoadingButton } from "@mui/lab";
+import { ConnectingAirportsOutlined } from "@mui/icons-material";
 
 const Input = styled("input")({
   display: "none",
@@ -341,7 +342,7 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log("hi", dateAge, age, date);
+  console.log("hi", values);
 
   return (
     <Layout loading={loading}>
@@ -625,10 +626,13 @@ export default function DbDetail() {
 
                   case "메모":
                     return;
+                  case "녹취 파일":
+                    return;
 
                   default:
                     return (
                       <RowLabel label={field?.property?.name} fs="h5" key={key}>
+                        {console.log("hi", values, field)}
                         <OutLineInput
                           w={"100%"}
                           disabled={
@@ -638,16 +642,25 @@ export default function DbDetail() {
                             user_info?.org_code !== uploader?.organization?.code
                           }
                           defaultValue={
-                            values.filter((v) => v?.title === "고객명")?.[0]
+                            values.filter((v) => v?.field_pk === field?.pk)?.[0]
                               ?.value
                           }
                           onBlur={(e) =>
                             setValues((prev) => {
                               const newData = [...prev];
                               const dataObj = newData.filter(
-                                (data) => data.title === "고객명"
+                                (data) => data?.pk === field?.pk
                               );
-                              dataObj[0].value = e.target.value;
+
+                              if (dataObj[0]?.value) {
+                                dataObj[0].value = e.target.value;
+                              } else {
+                                newData.push({
+                                  ...field,
+                                  field_pk: field?.pk,
+                                  value: e.target.value,
+                                });
+                              }
 
                               return newData;
                             })
