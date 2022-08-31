@@ -284,7 +284,17 @@ export default function NewDb() {
                         uploader?.pk !== user_info?.pk &&
                         user_info?.org_code !== uploader?.organization?.code
                       }
-                      onBlur={(e) =>
+                      onBlur={(e) => {
+                        const regPhone =
+                          /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+                        if (!regPhone.test(e.target.value))
+                          return enqueueSnackbar(
+                            "전화번호 형식은 000-0000-000 입니다.",
+                            {
+                              variant: "error",
+                              autoHideDuration: 2000,
+                            }
+                          );
                         setValues((prev) => {
                           const newData = [...prev];
                           const dataObj = newData.filter(
@@ -293,8 +303,8 @@ export default function NewDb() {
                           dataObj[0].value = e.target.value;
 
                           return newData;
-                        })
-                      }
+                        });
+                      }}
                     />
                   </RowLabel>
                 );

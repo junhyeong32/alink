@@ -342,7 +342,7 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log("hi", values);
+  console.log("hi", menu_detail);
 
   return (
     <Layout loading={loading}>
@@ -404,7 +404,19 @@ export default function DbDetail() {
                             values.filter((v) => v?.title === "연락처")?.[0]
                               ?.value
                           }
-                          onBlur={(e) =>
+                          onBlur={(e) => {
+                            const regPhone =
+                              /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+
+                            if (!regPhone.test(e.target.value))
+                              return enqueueSnackbar(
+                                "전화번호 형식은 000-0000-000 입니다.",
+                                {
+                                  variant: "error",
+                                  autoHideDuration: 2000,
+                                }
+                              );
+
                             setValues((prev) => {
                               const newData = [...prev];
                               const dataObj = newData.filter(
@@ -413,8 +425,8 @@ export default function DbDetail() {
                               dataObj[0].value = e.target.value;
 
                               return newData;
-                            })
-                          }
+                            });
+                          }}
                         />
                       </RowLabel>
                     );
@@ -769,15 +781,17 @@ export default function DbDetail() {
                 <RowLabel label="업체승인" fs="h5">
                   <OutLineSelectInput
                     disabled={
-                      allocated_user?.pk !== user_info?.pk &&
-                      rank !== "관리자" &&
-                      uploader?.pk !== user_info?.pk &&
-                      user_info?.org_code !== uploader?.organization?.code
+                      (allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자" &&
+                        uploader?.pk !== user_info?.pk &&
+                        user_info?.org_code !== uploader?.organization?.code) ||
+                      status !== "가입불가(AS신청)"
                     }
                     w={"50%"}
                     menuItems={{
                       AS승인: "AS승인",
                       AS반려: "AS반려",
+                      default: "default",
                     }}
                     value={org_status}
                     setValue={setOrgStatus}
@@ -1138,7 +1152,8 @@ export default function DbDetail() {
                           organization_code: org_code,
                           user_pk: user_code,
                           status: status,
-                          org_status: org_status,
+                          org_status:
+                            org_status === "default" ? undefined : org_status,
                           geo_parent: parent_area,
                           geo_name: child_area,
                           values: [...newValue],
