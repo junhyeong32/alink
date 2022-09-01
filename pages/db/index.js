@@ -480,6 +480,8 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code, open]);
 
+  console.log(values);
+
   return (
     <Layout
       loading={loading}
@@ -835,16 +837,24 @@ export default function Db() {
                     w={"100%"}
                     title={filter?.property?.name}
                     placeholder={`${filter?.property?.name}(으)로 검색하실 수 있습니다.`}
-                    onBlur={(e) =>
+                    onBlur={(e) => {
                       setValues((prev) => {
                         const newData = [...prev];
                         const fieldObj = newData.filter(
                           (field) => field.field_pk === filter?.pk
                         );
-                        fieldObj[0].value = e.target.value;
+
+                        if (filter?.property?.name === "연락처") {
+                          fieldObj[0].value = e.target.value
+                            ?.split("-")
+                            ?.join("");
+                        } else {
+                          fieldObj[0].value = e.target.value;
+                        }
+
                         return newData;
-                      })
-                    }
+                      });
+                    }}
                   />
                 );
               })}
