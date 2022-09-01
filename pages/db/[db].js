@@ -44,7 +44,7 @@ import {
 } from "../../src/utility/organization/getOrgWithUnit";
 import moment from "moment";
 import { LoadingButton } from "@mui/lab";
-import { ConnectingAirportsOutlined } from "@mui/icons-material";
+import { formatPhoneNumber } from "../../src/utility/formatPhone";
 
 const Input = styled("input")({
   display: "none",
@@ -400,10 +400,10 @@ export default function DbDetail() {
                             uploader?.pk !== user_info?.pk &&
                             user_info?.org_code !== uploader?.organization?.code
                           }
-                          defaultValue={
+                          defaultValue={formatPhoneNumber(
                             values.filter((v) => v?.title === "연락처")?.[0]
                               ?.value
-                          }
+                          )}
                           onBlur={(e) => {
                             const regPhone =
                               /^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$/;

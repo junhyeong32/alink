@@ -79,7 +79,7 @@ export default function Login() {
         justifyContent: "center",
       }}
     >
-      <Image src="/alink.png" width={360} height={117} alt="" />
+      <Image src="/alink-logo.png" width={137} height={60} alt="" />
       <Column
         alignItems="start"
         justifyContent="start"
