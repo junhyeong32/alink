@@ -191,8 +191,7 @@ export default function NewDb() {
         setAreaParentMenuList(() => {
           const parent = {};
           res?.data?.geomap?.map((d, key) => {
-            if (res?.data?.geomap[(key = 1)]?.parent !== d?.parent)
-              Object.assign(parent, { [d.parent]: d.parent });
+            Object.assign(parent, { [d.name]: d.name });
           });
           return parent;
         });
