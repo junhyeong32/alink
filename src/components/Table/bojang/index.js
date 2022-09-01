@@ -22,6 +22,7 @@ import {
 } from "../../../utility/organization/getTitleOfOrg";
 import { useEffect } from "react";
 import { getCookie } from "../../../utility/getCookie";
+import { formatPhoneNumber } from "../../../utility/formatPhone";
 
 const Root = styled("div")`
   table {
@@ -269,6 +270,22 @@ export default function BojangTable({
                                 })()
                               ).getFullYear() +
                               1}
+                        </TableCell>
+                      );
+                    } else if (head?.property.name === "연락처") {
+                      return (
+                        <TableCell
+                          key={_key}
+                          align="center"
+                          onClick={() =>
+                            router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                          }
+                        >
+                          {formatPhoneNumber(
+                            data[key]?.values.find(
+                              (v) => v?.field_pk === head?.pk
+                            )?.value
+                          ) || "-"}
                         </TableCell>
                       );
                     }

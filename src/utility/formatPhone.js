@@ -1,4 +1,5 @@
 export const formatPhoneNumber = (input) => {
+  if (!input) return;
   const cleanInput = input.replaceAll(/[^0-9]/g, "");
   let result = "";
   const length = cleanInput.length;
