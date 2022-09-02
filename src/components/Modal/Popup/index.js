@@ -172,7 +172,7 @@ export default function Popup({ index }) {
                 index === 0 &&
                   typeof setCookieAction === "function" &&
                   setCookieAction(!_cookieAction);
-                closeModal();
+                closeModal(index);
               }}
             />
           </Row>

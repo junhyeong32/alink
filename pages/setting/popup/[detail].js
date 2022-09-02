@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../../src/components/Layout";
 import Column from "../../../src/components/Box/Column";
@@ -28,11 +28,13 @@ import { useTransition } from "react";
 import useGetOrganization from "../../../src/hooks/share/useGetOrganization";
 import { getOrgHeadOffice } from "../../../src/utility/organization/getOrgWithUnit";
 import { useSnackbar } from "notistack";
+import moment from "moment";
 
 export default function Popup() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [orgMenuList, setOrgMenuList] = useState({});
+  const el = useRef(null);
 
   const [title, setTitle] = useState("");
   const [size, setSize] = useState("");
@@ -44,6 +46,15 @@ export default function Popup() {
   const [activate, setActivate] = useState("");
   const [content, setContent] = useState("");
   const [pk, setPk] = useState("");
+  const [start_date, setStartDate] = useState("");
+  const [end_date, setEndDate] = useState("");
+  const [date, setDate] = useState([
+    {
+      startDate: new Date(),
+      endDate: null,
+      key: "selection",
+    },
+  ]);
 
   const [org_code, setOrgCode] = useState("전체");
 
@@ -51,6 +62,27 @@ export default function Popup() {
   const [isPending, startTransition] = useTransition();
 
   const { sales } = useGetOrganization("sales");
+
+  const handleClose = (e) => {
+    if (el.current && !el.current.contains(e.target)) {
+      document.querySelector(".rdrCalendarWrapper").style.display = "none";
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleClose);
+    return () => {
+      window.removeEventListener("click", handleClose);
+    };
+  }, [el]);
+
+  useEffect(() => {
+    if (date[0].startDate && !date[0].endDate) return;
+    if (date[0].startDate)
+      setStartDate(moment(date[0].startDate).format("YYYY-MM-DD"));
+    if (date[0].endDate && String(date[0].endDate) !== "Invalid date")
+      setEndDate(moment(date[0].endDate).format("YYYY-MM-DD"));
+  }, [date]);
 
   useEffect(() => {
     if (sales?.length === 0) return;
@@ -82,7 +114,14 @@ export default function Popup() {
         const resize = size.split("/");
         const rePostion = position.split("/");
 
-        setActivate(activate);
+        if (activate.split("~").length === 2) {
+          setActivate("활성화(기간 설정)");
+          setStartDate(activate.split("~")[0]);
+          setEndDate(activate.split("~")[1]);
+        } else {
+          setActivate(activate);
+        }
+
         setContent(content);
         setOrgCode(organization_name);
         setPosition(rePostion?.length === 1 ? position : "custom");
@@ -237,13 +276,23 @@ export default function Popup() {
               비활성화: "비활성화",
             }}
           />
+          {activate === "활성화(기간 설정)" && (
+            <div ref={el}>
+              <DateInput
+                value={date}
+                setValue={setDate}
+                textValue={date}
+                startValue={start_date}
+                endValue={end_date}
+              />
+            </div>
+          )}
         </RowLabel>
 
         <Editor
-          value={content}
-          onBlur={(previousRange, source, editor) =>
-            setContent(editor.getHTML())
-          }
+          onBlur={(e, t, c) => {
+            setContent(c.getHTML());
+          }}
         />
 
         <Row
@@ -266,7 +315,10 @@ export default function Popup() {
                 title: title,
                 size: size === "custom" ? width + "/" + height : size,
                 position: position === "custom" ? x + "/" + y : position,
-                activate: activate,
+                activate:
+                  activate === "활성화(기간 설정)"
+                    ? `${start_date}~${end_date}`
+                    : activate,
                 content: content,
               });
 

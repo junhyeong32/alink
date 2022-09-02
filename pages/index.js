@@ -89,9 +89,12 @@ export default function Index({ getCookies }) {
     if (res?.code === 200) {
       // TODO
       // 팝업 기간 설정
+      console.log(res?.data?.result);
       res?.data?.result?.map(
         (popup, key) =>
-          popup.activate === "활성화(매일)" &&
+          (popup.activate === "활성화(매일)" ||
+            new Date(popup.activate.split("~")[0]) - new Date() < 0 ||
+            new Date(popup.activate.split("~")[1]) - new Date() > 0) &&
           user_info?.head_office === popup.organization_name &&
           (!getCookie(["popup"])
             ? true
