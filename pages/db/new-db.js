@@ -647,7 +647,130 @@ export default function NewDb() {
             }
           />
         </RowLabel> */}
+        {menu_detail?.fields?.find(
+          (field, key) =>
+            field?.is_detail_shown === 1 &&
+            field?.property?.name === "녹취 파일"
+        ) && (
+          <RowLabel label="녹취파일" fs="h6">
+            <Row alignItems={"center"} sx={{ gap: 2 }}>
+              <Row
+                alignItems={"center"}
+                justifyContent={"start"}
+                sx={{ gap: 1 }}
+              >
+                <label htmlFor="contained-button-file">
+                  <Input
+                    accept="audio/*"
+                    id="contained-button-file"
+                    type="file"
+                    onChange={(e) => setTranscriptFile(e.target.files[0])}
+                  />
+
+                  <Button
+                    text="파일찾기"
+                    fs="h6"
+                    bgColor={"gray"}
+                    color={"primary.white"}
+                    h={25}
+                    component={"span"}
+                  />
+                </label>
+
+                <UnderLineInput disabled value={transcript_file?.name} />
+                <LoadingButton
+                  variant="contained"
+                  loading={fileLoading}
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    height: 28,
+                    mt: 0.1,
+                  }}
+                  onClick={async () => {
+                    if (!transcript_file)
+                      return enqueueSnackbar("파일을 선택해주세요", {
+                        variant: "error",
+                        autoHideDuration: 2000,
+                      });
+                    setFileLoading(true);
+                    const _uploadFile = await uploadFile(transcript_file);
+
+                    if (_uploadFile) {
+                      const getRecordField = menu_detail?.fields?.find(
+                        (data) => data?.property.name === "녹취 파일"
+                      );
+
+                      setValues((prev) => {
+                        const newData = [...prev];
+
+                        const newObj = Object.assign(
+                          {},
+                          {
+                            field_pk: getRecordField?.pk,
+                            title: "녹취 파일",
+                            value: _uploadFile,
+                            created_date: new Date(+new Date() + 3240 * 10000)
+                              .toISOString()
+                              .replace("T", " ")
+                              .replace(/\..*/, ""),
+                          }
+                        );
+                        newData.push(newObj);
+
+                        return newData;
+                      });
+
+                      setFileLoading(false);
+                      if (!fileLoading) {
+                        setTranscriptFile("");
+                        document.querySelector("#contained-button-file").value =
+                          "";
+
+                        enqueueSnackbar("파일이 정상적으로 등록 되었습니다.", {
+                          variant: "success",
+                          autoHideDuration: 2000,
+                        });
+                      }
+                    }
+                  }}
+                >
+                  업로드
+                </LoadingButton>
+              </Row>
+            </Row>
+          </RowLabel>
+        )}
       </Column>
+      <GridBox
+        itemCount={4}
+        alignItems={"end"}
+        sx={{ width: "100%", gap: 1, mt: 3, maxWidth: 1024 }}
+      >
+        {values?.map(
+          (v, _key) =>
+            v?.title === "녹취 파일" &&
+            v?.value &&
+            v?.value.includes("https") && (
+              <Column
+                sx={{
+                  width: "100%",
+                  p: 1,
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                }}
+              >
+                <Typography variant="h6" ml={3} mb={1}>
+                  {v?.created_date}{" "}
+                </Typography>
+                <audio controls src={v?.value} style={{ width: "100%" }}>
+                  Your browser does not support the
+                  <code>audio</code> element.
+                </audio>
+              </Column>
+            )
+        )}
+      </GridBox>
 
       <Row justifyContent={"center"} sx={{ width: "100%", mt: 10, gap: 1.5 }}>
         <Button
@@ -732,118 +855,3 @@ export default function NewDb() {
     </Layout>
   );
 }
-
-// <RowLabel label="녹취파일" fs="h6">
-// <Row alignItems={"center"} sx={{ gap: 2 }}>
-//   <Row alignItems={"center"} justifyContent={"start"} sx={{ gap: 1 }}>
-//     <label htmlFor="contained-button-file">
-//       <Input
-//         accept="audio/*"
-//         id="contained-button-file"
-//         type="file"
-//         onChange={(e) => setTranscriptFile(e.target.files[0])}
-//       />
-
-//       <Button
-//         text="파일찾기"
-//         fs="h6"
-//         bgColor={"gray"}
-//         color={"primary.white"}
-//         h={25}
-//         component={"span"}
-//       />
-//     </label>
-
-//     <UnderLineInput disabled value={transcript_file?.name} />
-//     <LoadingButton
-//       variant="contained"
-//       loading={fileLoading}
-//       sx={{
-//         fontSize: 14,
-//         fontWeight: 700,
-//         height: 28,
-//         mt: 0.1,
-//       }}
-//       onClick={async () => {
-//         if (!transcript_file)
-//           return enqueueSnackbar("파일을 선택해주세요", {
-//             variant: "error",
-//             autoHideDuration: 2000,
-//           });
-//         setFileLoading(true);
-//         const _uploadFile = await uploadFile(transcript_file);
-
-//         if (_uploadFile) {
-//           const getRecordField = menu_detail?.fields?.find(
-//             (data) => data?.property.name === "녹취 파일"
-//           );
-
-//           setValues((prev) => {
-//             const newData = [...prev];
-
-//             const newObj = Object.assign(
-//               {},
-//               {
-//                 field_pk: getRecordField?.pk,
-//                 title: "녹취 파일",
-//                 value: _uploadFile,
-//                 created_date: new Date(+new Date() + 3240 * 10000)
-//                   .toISOString()
-//                   .replace("T", " ")
-//                   .replace(/\..*/, ""),
-//               }
-//             );
-//             newData.push(newObj);
-
-//             return newData;
-//           });
-
-//           setFileLoading(false);
-//           if (!fileLoading) {
-//             setTranscriptFile("");
-//             document.querySelector("#contained-button-file").value =
-//               "";
-
-//             enqueueSnackbar("파일이 정상적으로 등록 되었습니다.", {
-//               variant: "success",
-//               autoHideDuration: 2000,
-//             });
-//           }
-//         }
-//       }}
-//     >
-//       업로드
-//     </LoadingButton>
-//   </Row>
-// </Row>
-// </RowLabel>
-// </Column>
-// <GridBox
-// itemCount={4}
-// alignItems={"end"}
-// sx={{ width: "100%", gap: 1, mt: 3, maxWidth: 1024 }}
-// >
-// {values?.map(
-// (v, _key) =>
-//   v?.title === "녹취 파일" &&
-//   v?.value &&
-//   v?.value.includes("https") && (
-//     <Column
-//       sx={{
-//         width: "100%",
-//         p: 1,
-//         border: "1px solid black",
-//         borderRadius: "5px",
-//       }}
-//     >
-//       <Typography variant="h6" ml={3} mb={1}>
-//         {v?.created_date}{" "}
-//       </Typography>
-//       <audio controls src={v?.value} style={{ width: "100%" }}>
-//         Your browser does not support the
-//         <code>audio</code> element.
-//       </audio>
-//     </Column>
-//   )
-// )}
-// </GridBox>
