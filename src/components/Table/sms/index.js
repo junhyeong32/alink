@@ -14,6 +14,7 @@ import { useState } from "react";
 import { sms_header } from "./smsHeaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
+import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
 const Root = styled("div")`
   table {
     box-shadow: none;
@@ -77,6 +78,7 @@ export default function SmsTable({ data, page }) {
                     ? page * 10 + key + 1
                     : page * 10 + (page - 2) * 10 + key + 1}
                 </TableCell>
+                <TableCell align="center">{getTitleOfOrg(sms)}</TableCell>
                 <TableCell align="center">{sms?.name}</TableCell>
                 <TableCell align="center">{sms?.message}</TableCell>
                 <TableCell align="center">{sms?.created_date}</TableCell>

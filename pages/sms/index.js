@@ -245,7 +245,7 @@ export default function Sms() {
           page={page}
           count={totalCount}
           onChange={(subject, newPage) => {
-            getDbDetail(false, newPage);
+            getNotification(false, newPage);
             setPage(newPage);
           }}
           color="primary"

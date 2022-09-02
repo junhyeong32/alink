@@ -83,7 +83,7 @@ export default function Popup({ index }) {
     borderRadius: "5",
     border: "none",
     transform: data[index]?.position === "중앙" && "translate(-50%, -50%)",
-    pt: 2,
+
     right: data[index]?.position === "우측상단" && 0,
     left:
       rePosition?.length !== 1
@@ -119,7 +119,7 @@ export default function Popup({ index }) {
             value={data[index]?.content}
             readOnly
             theme={"bubble"}
-            style={{ height: "90%", width: "100%", overflowY: "scroll" }}
+            style={{ height: "100%", width: "100%", overflowY: "scroll" }}
           />
 
           <Row

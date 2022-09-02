@@ -115,6 +115,7 @@ export default function BojangTable({
                     </TableCell>
                   );
               })}
+              <TableCell align="center">분배일시</TableCell>
             </TableRow>
           </TableHead>
 
@@ -406,6 +407,12 @@ export default function BojangTable({
                     );
                   }
                 })}
+                <TableCell
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                  align="center"
+                >
+                  {d?.allocated_date}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
