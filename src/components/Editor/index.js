@@ -66,7 +66,7 @@ export default function Editor(props) {
         quillRef.current
           .getEditor()
           .insertEmbed(range?.index || null, "image", res);
-        quillRef.current.getEditor().setSelection(range?.index + 1);
+        // quillRef.current?.getEditor()?.setSelection(range?.index + 1);
       }
     };
   };

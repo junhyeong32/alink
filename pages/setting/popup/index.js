@@ -57,6 +57,7 @@ export default function Popup() {
       key: "selection",
     },
   ]);
+  const [count, setCount] = useState(1);
 
   const [org_code, setOrgCode] = useState("전체");
 
@@ -246,25 +247,28 @@ export default function Popup() {
             w={160}
             h={25}
             action={async () => {
-              const res = await Axios.Post("popup", {
-                token: getAccessToken(),
-                organization_code: org_code === "전체" ? "all" : org_code,
-                title: title,
-                size: size === "custom" ? width + "/" + height : size,
-                position: position === "custom" ? x + "/" + y : position,
-                activate:
-                  activate === "활성화(기간 설정)"
-                    ? `${start_date}~${end_date}`
-                    : activate,
-                content: content,
-              });
-
-              if (res?.code === 200) {
-                enqueueSnackbar("팝업이 생성되었습니다.", {
-                  variant: "success",
-                  autoHideDuration: 2000,
+              setCount(count + 1);
+              if (count === 2) {
+                const res = await Axios.Post("popup", {
+                  token: getAccessToken(),
+                  organization_code: org_code === "전체" ? "all" : org_code,
+                  title: title,
+                  size: size === "custom" ? width + "/" + height : size,
+                  position: position === "custom" ? x + "/" + y : position,
+                  activate:
+                    activate === "활성화(기간 설정)"
+                      ? `${start_date}~${end_date}`
+                      : activate,
+                  content: content,
                 });
-                router.back();
+
+                if (res?.code === 200) {
+                  enqueueSnackbar("팝업이 생성되었습니다.", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+                  router.back();
+                }
               }
             }}
           />
