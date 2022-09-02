@@ -152,7 +152,7 @@ export default function Popup() {
                 }
               />
               <FormControlLabel
-                label="중(가로:600, 세로:800)"
+                label="중(가로:500, 세로:300)"
                 control={
                   <RadioInput
                     checked={size === "중"}
@@ -161,7 +161,7 @@ export default function Popup() {
                 }
               />
               <FormControlLabel
-                label="소(가로:600, 세로:800)"
+                label="소(가로:250, 세로:300)"
                 control={
                   <RadioInput
                     checked={size === "소"}
