@@ -178,10 +178,10 @@ export default function Db() {
               values: JSON.stringify(
                 [...values].filter((v) => v?.value !== "")
               ),
-              created_date_start: start_date
+              allocated_date_start: start_date
                 ? new Date(start_date).getTime()
                 : undefined,
-              created_date_end: end_date
+              allocated_date_end: end_date
                 ? new Date(end_date).getTime()
                 : undefined,
             },

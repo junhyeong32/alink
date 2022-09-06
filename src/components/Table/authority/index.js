@@ -17,6 +17,7 @@ import Button from "../../Button";
 import Row from "../../Box/Row";
 import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
 import { numberFormat } from "../../../utility/math";
+import { getCookie } from "../../../utility/getCookie";
 const Root = styled("div")`
   table {
     box-shadow: none;
@@ -42,6 +43,8 @@ const Root = styled("div")`
 `;
 
 export default function AuthorityTable({ data, checkList, setCheckList }) {
+  const [rank] = useState(getCookie("user_info")?.grade);
+
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -113,7 +116,9 @@ export default function AuthorityTable({ data, checkList, setCheckList }) {
                 <TableCell align="center">{list?.rank}</TableCell>
                 <TableCell align="center">{getTitleOfOrg(list)}</TableCell>
                 <TableCell align="center">
-                  {numberFormat(list?.pay_amount)}
+                  {rank === "관리자" && Number(list?.pay_amount) > 0
+                    ? "+"
+                    : numberFormat(list?.pay_amount)}
                 </TableCell>
                 <TableCell
                   sx={{

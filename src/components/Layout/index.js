@@ -133,15 +133,19 @@ export default function Layout({ loading, children, sx }) {
                 onClick={() => setVisible(false)}
               />
             </Row>
-            <Box sx={{ cursor: "pointer" }}>
+            <Row
+              justifyContent={"center"}
+              sx={{ width: "100%", cursor: "pointer" }}
+            >
               <Image
-                src="/alink.png"
-                width={240}
-                height={63}
+                src="/alink-logo.png"
+                layout="fixed"
+                width={137}
+                height={60}
                 alt=""
                 onClick={() => router.push("/")}
               />
-            </Box>
+            </Row>
             <Row
               alignItems={"start"}
               justifyContent={"between"}

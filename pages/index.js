@@ -301,7 +301,7 @@ export default function Index({ getCookies }) {
                   text="검색"
                   h={28}
                   action={() => {
-                    if (geo_name !== 전체) {
+                    if (geo_name !== "전체") {
                       getDbDashBoard();
                       getCooperationDashBoard;
                     } else {
