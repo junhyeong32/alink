@@ -395,15 +395,18 @@ export default function DbDetail() {
                       <RowLabel label="연락처" fs="h5" key={key}>
                         <OutLineInput
                           disabled={
-                            allocated_user?.pk !== user_info?.pk &&
                             rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
+                            rank !== "협력사" &&
+                            rank !== "부협력사"
                           }
-                          defaultValue={formatPhoneNumber(
+                          defaultValue={
+                            formatPhoneNumber(
+                              values.filter((v) => v?.title === "연락처")?.[0]
+                                ?.value
+                            ) ||
                             values.filter((v) => v?.title === "연락처")?.[0]
                               ?.value
-                          )}
+                          }
                           onBlur={(e) => {
                             const regPhone =
                               /^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$/;
@@ -436,11 +439,9 @@ export default function DbDetail() {
                         <div ref={el} style={{ width: "50%" }}>
                           <DatePicker
                             disabled={
-                              allocated_user?.pk !== user_info?.pk &&
                               rank !== "관리자" &&
-                              uploader?.pk !== user_info?.pk &&
-                              user_info?.org_code !==
-                                uploader?.organization?.code
+                              rank !== "협력사" &&
+                              rank !== "부협력사"
                             }
                             date={dateAge}
                             setDate={setDateAge}
@@ -454,10 +455,9 @@ export default function DbDetail() {
                         <OutLineInput
                           id="age"
                           disabled={
-                            allocated_user?.pk !== user_info?.pk &&
                             rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
+                            rank !== "협력사" &&
+                            rank !== "부협력사"
                           }
                           defaultValue={(() => {
                             let filterValue = values.filter(
@@ -493,11 +493,9 @@ export default function DbDetail() {
                           control={
                             <RadioInput
                               disabled={
-                                allocated_user?.pk !== user_info?.pk &&
                                 rank !== "관리자" &&
-                                uploader?.pk !== user_info?.pk &&
-                                user_info?.org_code !==
-                                  uploader?.organization?.code
+                                rank !== "협력사" &&
+                                rank !== "부협력사"
                               }
                               checked={
                                 values.filter((v) => v?.title === "성별")?.[0]
@@ -522,11 +520,9 @@ export default function DbDetail() {
                           control={
                             <RadioInput
                               disabled={
-                                allocated_user?.pk !== user_info?.pk &&
                                 rank !== "관리자" &&
-                                uploader?.pk !== user_info?.pk &&
-                                user_info?.org_code !==
-                                  uploader?.organization?.code
+                                rank !== "협력사" &&
+                                rank !== "부협력사"
                               }
                               checked={
                                 values.filter((v) => v?.title === "성별")?.[0]
@@ -556,11 +552,9 @@ export default function DbDetail() {
                           control={
                             <RadioInput
                               disabled={
-                                allocated_user?.pk !== user_info?.pk &&
                                 rank !== "관리자" &&
-                                uploader?.pk !== user_info?.pk &&
-                                user_info?.org_code !==
-                                  uploader?.organization?.code
+                                rank !== "협력사" &&
+                                rank !== "부협력사"
                               }
                               checked={
                                 values.filter(
@@ -586,11 +580,9 @@ export default function DbDetail() {
                           control={
                             <RadioInput
                               disabled={
-                                allocated_user?.pk !== user_info?.pk &&
                                 rank !== "관리자" &&
-                                uploader?.pk !== user_info?.pk &&
-                                user_info?.org_code !==
-                                  uploader?.organization?.code
+                                rank !== "협력사" &&
+                                rank !== "부협력사"
                               }
                               checked={
                                 values.filter(
@@ -618,17 +610,19 @@ export default function DbDetail() {
                       <RowLabel label="특이사항" fs="h5" key={key}>
                         <OutLineInput
                           disabled={
-                            allocated_user?.pk !== user_info?.pk &&
                             rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
+                            rank !== "협력사" &&
+                            rank !== "부협력사"
                           }
                           multiline
                           rows={3}
                           w={"100%"}
                           defaultValue={
-                            values.filter((v) => v?.title === "특이사항")?.[0]
-                              ?.value
+                            allocated_user?.pk !== user_info?.pk
+                              ? ""
+                              : values.filter(
+                                  (v) => v?.title === "특이사항"
+                                )?.[0]?.value
                           }
                           onBlur={(e) =>
                             setValues((prev) => {
@@ -653,14 +647,12 @@ export default function DbDetail() {
                   default:
                     return (
                       <RowLabel label={field?.property?.name} fs="h5" key={key}>
-                        {console.log("hi", values, field)}
                         <OutLineInput
                           w={"100%"}
                           disabled={
-                            allocated_user?.pk !== user_info?.pk &&
                             rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
+                            rank !== "협력사" &&
+                            rank !== "부협력사"
                           }
                           defaultValue={
                             values.filter((v) => v?.field_pk === field?.pk)?.[0]
@@ -721,10 +713,7 @@ export default function DbDetail() {
                 value={parent_area}
                 setValue={setParentArea}
                 disabled={
-                  allocated_user?.pk !== user_info?.pk &&
-                  rank !== "관리자" &&
-                  uploader?.pk !== user_info?.pk &&
-                  user_info?.org_code !== uploader?.organization?.code
+                  rank !== "관리자" && rank !== "협력사" && rank !== "부협력사"
                 }
               />
               <OutLineSelectInput
@@ -734,17 +723,20 @@ export default function DbDetail() {
                 value={child_area}
                 setValue={setChildArea}
                 disabled={
-                  allocated_user?.pk !== user_info?.pk &&
-                  rank !== "관리자" &&
-                  uploader?.pk !== user_info?.pk &&
-                  user_info?.org_code !== uploader?.organization?.code
+                  rank !== "관리자" && rank !== "협력사" && rank !== "부협력사"
                 }
               />
             </RowLabel>
 
-            <RowLabel label="등록처" fs="h5">
-              <Typography variant="h5">{db_detail?.uploader?.name}</Typography>
-            </RowLabel>
+            {(rank === "관리자" ||
+              rank === "협력사" ||
+              rank === "부협력사") && (
+              <RowLabel label="등록처" fs="h5">
+                <Typography variant="h5">
+                  {db_detail?.uploader?.name}
+                </Typography>
+              </RowLabel>
+            )}
           </Column>
           <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
             <Typography variant="h1">담당자 정보</Typography>

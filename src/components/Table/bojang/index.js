@@ -100,6 +100,14 @@ export default function BojangTable({
                   (header === "소속" || header === "담당자")
                 )
                   return;
+
+                if (
+                  rank !== "관리자" &&
+                  rank !== "협력사" &&
+                  rank !== "부협력사" &&
+                  header === "등록처"
+                )
+                  return;
                 return (
                   <TableCell align="center" key={key}>
                     {header}
@@ -116,6 +124,7 @@ export default function BojangTable({
                   );
               })}
               <TableCell align="center">분배일시</TableCell>
+              <TableCell align="center">최초 분배자</TableCell>
             </TableRow>
           </TableHead>
 
@@ -194,13 +203,18 @@ export default function BojangTable({
                 >
                   {d?.org_status}
                 </TableCell>
-                <TableCell
-                  key={d?.pk + 5}
-                  align="center"
-                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
-                >
-                  {d?.uploader?.name}
-                </TableCell>
+                {(rank === "관리자" ||
+                  rank === "협력사" ||
+                  rank === "부협력사") && (
+                  <TableCell
+                    key={d?.pk + 5}
+                    align="center"
+                    onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                  >
+                    {d?.uploader?.name}
+                  </TableCell>
+                )}
+
                 {rank !== "부협력사" && rank !== "협력사" && (
                   <>
                     <TableCell
@@ -412,6 +426,12 @@ export default function BojangTable({
                   align="center"
                 >
                   {d?.allocated_date}
+                </TableCell>
+                <TableCell
+                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                  align="center"
+                >
+                  {d?.first_gift_user?.name}
                 </TableCell>
               </TableRow>
             ))}

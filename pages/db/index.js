@@ -791,15 +791,17 @@ export default function Db() {
               value={org_status}
               setValue={setOrgStatus}
             />
-            {rank !== "협력사" && rank !== "부협력사" && (
-              <SelectInput
-                w="100%"
-                title="등록처"
-                menuItems={uploaderMenuList}
-                value={uploader_organization_code}
-                setValue={setUploaderOrganizationCode}
-              />
-            )}
+            {rank !== "협력사" &&
+              rank !== "부협력사" &&
+              rank !== "부관리자" && (
+                <SelectInput
+                  w="100%"
+                  title="등록처"
+                  menuItems={uploaderMenuList}
+                  value={uploader_organization_code}
+                  setValue={setUploaderOrganizationCode}
+                />
+              )}
 
             <Row alignItems={"end"} sx={{ width: "100%" }}>
               <SelectInput
