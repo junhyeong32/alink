@@ -367,10 +367,9 @@ export default function DbDetail() {
                       <RowLabel label="고객명" fs="h5" key={key}>
                         <OutLineInput
                           disabled={
-                            allocated_user?.pk !== user_info?.pk &&
                             rank !== "관리자" &&
-                            uploader?.pk !== user_info?.pk &&
-                            user_info?.org_code !== uploader?.organization?.code
+                            rank !== "협력사" &&
+                            rank !== "부협력사"
                           }
                           defaultValue={
                             values.filter((v) => v?.title === "고객명")?.[0]

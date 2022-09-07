@@ -300,7 +300,10 @@ export default function BojangTable({
                             data[key]?.values.find(
                               (v) => v?.field_pk === head?.pk
                             )?.value
-                          ) || "-"}
+                          ) ||
+                            data[key]?.values.find(
+                              (v) => v?.field_pk === head?.pk
+                            )?.value}
                         </TableCell>
                       );
                     }
