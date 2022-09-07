@@ -891,11 +891,11 @@ export default function DbDetail() {
               )}
           </Column>
         </Row>
-        {/* {(allocated_user?.pk === user_info?.pk ||
+        {(allocated_user?.pk === user_info?.pk ||
           rank === "관리자" ||
           user_info?.org_code === uploader?.organization?.code ||
-          uploader?.pk === user_info?.pk) && */}
-        {menu_detail?.fields
+          uploader?.pk === user_info?.pk) &&
+        menu_detail?.fields
           ?.filter(
             (field) =>
               field?.is_detail_shown === 1 &&

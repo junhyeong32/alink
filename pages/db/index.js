@@ -45,7 +45,10 @@ import { OrganizationContext } from "../../src/contexts/OrganizationListContext"
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import UnderLineSelectInput from "../../src/components/Input/Select";
-import { getOrgWithNameGetCount } from "../../src/utility/organization/getOrgWithUnit";
+import {
+  getOrgWithNameGetCount,
+  getOrgWithUnit,
+} from "../../src/utility/organization/getOrgWithUnit";
 import { getTitleOfOrg_name } from "../../src/utility/organization/getTitleOfOrg";
 
 const moment = extendMoment(originalMoment);
@@ -83,6 +86,8 @@ export default function Db() {
   const [totalCount, setTotalCount] = useState();
   const [head_office_org_code, setHeadOfficeOrgCode] = useState("전체");
   const [org_code, setOrgCode] = useState("전체");
+  const [head_coop, setHeadCoop] = useState("전체");
+  const [sub_coop, setSubCoop] = useState("전체");
   const [status, setStatus] = useState("전체");
   const [org_status, setOrgStatus] = useState("전체");
   const [allocated_user, setAllocatedUser] = useState("");
@@ -113,6 +118,8 @@ export default function Db() {
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
   const [orgMenuList, setOrgMenuList] = useState({ 전체: "전체" });
+  const [headCoopMenuList, setHeadCoopMenuList] = useState({ 전체: "전체" });
+  const [subCoopMenuList, setSubCoopMenuList] = useState({ 전체: "전체" });
   const [uploaderMenuList, setUploaderMenuList] = useState({ 전체: "전체" });
   const [areaParentMenuList, setAreaParentMenuList] = useState({
     전체: "전체",
@@ -162,10 +169,25 @@ export default function Db() {
               count: count,
               db_pk: router.query.menu,
               head_office_org_code:
-                head_office_org_code === "전체"
+                (rank === "협력사" || rank === "부협력사") &&
+                head_coop === "전체"
+                  ? undefined
+                  : (rank === "협력사" || rank === "부협력사") &&
+                    head_coop !== "전체"
+                  ? head_coop
+                  : head_office_org_code === "전체"
                   ? undefined
                   : head_office_org_code,
-              org_code: org_code === "전체" ? undefined : org_code,
+              org_code:
+                (rank === "협력사" || rank === "부협력사") &&
+                sub_coop === "전체"
+                  ? undefined
+                  : (rank === "협력사" || rank === "부협력사") &&
+                    sub_coop !== "전체"
+                  ? sub_coop
+                  : org_code === "전체"
+                  ? undefined
+                  : org_code,
               status: status === "전체" ? undefined : status,
               org_status: org_status === "전체" ? undefined : org_status,
               allocated_user: allocated_user,
@@ -227,7 +249,10 @@ export default function Db() {
 
         setHeadOfficeMenuList(head_org);
         setUploaderMenuList(coop_org);
+        setHeadCoopMenuList(coop_org);
         setDeninedMenuList(denined_org);
+
+        console.log("coop_org", coop_org);
 
         setArea(res?.data?.geomap);
 
@@ -390,7 +415,9 @@ export default function Db() {
 
     setOrgCode("전체");
     setHeadOfficeOrgCode("전체");
+    setSubCoop("전체");
     setOrgStatus("전체");
+    setHeadCoop("전체");
     setUploaderOrganizationCode("전체");
     setAllocatedUser("");
     setParentArea("전체");
@@ -409,10 +436,30 @@ export default function Db() {
   }, [init]);
 
   useEffect(() => {
-    if (head_office_org_code !== "전체") {
-    }
-  }),
-    [head_office_org_code];
+    if (head_coop === "전체") return;
+
+    const getCooperation = async () => {
+      const res = (
+        await Axios.Get("organization", {
+          params: {
+            token: getAccessToken(),
+            type: "cooperation",
+            head_office_org_code: head_coop,
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        const sub_org = { 전체: "전체" };
+
+        getOrgWithUnit(res?.data, "region", sub_org);
+
+        setSubCoopMenuList(sub_org);
+      }
+    };
+
+    getCooperation();
+  }, [head_coop]);
 
   useEffect(() => {
     const searchObj = {};
@@ -782,6 +829,25 @@ export default function Db() {
                   setValue={setOrgCode}
                 />
               )}
+
+            {(rank === "협력사" || rank === "부협력사") && (
+              <SelectInput
+                w="100%"
+                title="협력사명"
+                menuItems={headCoopMenuList}
+                value={head_coop}
+                setValue={setHeadCoop}
+              />
+            )}
+            {(rank === "협력사" || rank === "부협력사") && (
+              <SelectInput
+                w="100%"
+                title="부협력사명"
+                menuItems={subCoopMenuList}
+                value={sub_coop}
+                setValue={setSubCoop}
+              />
+            )}
             <SelectInput
               w="100%"
               title="업체승인"

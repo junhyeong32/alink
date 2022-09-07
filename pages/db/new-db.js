@@ -415,6 +415,7 @@ export default function NewDb() {
                   </RowLabel>
                 );
               case "특이사항":
+                
                 return (
                   <RowLabel label="특이사항" fs="h5" key={key}>
                     <OutLineInput

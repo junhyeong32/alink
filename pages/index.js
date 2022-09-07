@@ -70,6 +70,7 @@ export default function Index({ getCookies }) {
   }); //본부
   const [branchMenuList, setBranchMenuList] = useState({ 전체: "전체" }); //지점
   const [areaMenuItems, setAreaMenuItems] = useState({ 전체: "전체" });
+  const [coopMenuList, setCoopMenuList] = useState({ 전체: "전체" });
 
   useEffect(() => {
     !getCookies && router.replace("/login");
@@ -89,7 +90,6 @@ export default function Index({ getCookies }) {
     if (res?.code === 200) {
       // TODO
       // 팝업 기간 설정
-      console.log(res?.data?.result);
       res?.data?.result?.map(
         (popup, key) =>
           (popup.activate === "활성화(매일)" ||
@@ -128,15 +128,12 @@ export default function Index({ getCookies }) {
       await Axios.Get(`db/dashboard`, {
         params: {
           token: getAccessToken(),
-          head_office_org_code:
-            rank === "협력사" || rank === "부협력사"
-              ? undefined
-              : org_code === "전체"
-              ? undefined
-              : org_code,
+          head_office_org_code: org_code === "전체" ? undefined : org_code,
           org_code:
             rank === "협력사" || rank === "부협력사"
-              ? undefined
+              ? branch === "전체"
+                ? undefined
+                : branch
               : rank === "본부장" ||
                 rank === "지점장" ||
                 rank === "팀장" ||
@@ -218,6 +215,7 @@ export default function Index({ getCookies }) {
 
   //조직
   useEffect(() => {
+    if (rank === "협력사" || rank === "부협력사") return;
     const head_org = { 전체: "전체" };
     if (sales?.length !== 0) {
       getOrgHeadOffice(sales, head_org);
@@ -228,6 +226,7 @@ export default function Index({ getCookies }) {
 
   //본부 관리자
   useEffect(() => {
+    if (rank === "협력사" || rank === "부협력사") return;
     const head_office = { 전체: "전체" };
     if (org_code !== "전체") {
       getOrgWithUnit(org_code_by_sales, "region", head_office);
@@ -275,6 +274,34 @@ export default function Index({ getCookies }) {
 
     setBranchMenuList(branch);
   }, [head_office_org_code]);
+  console.log(rank !== "협력사" && rank !== "부협력사");
+  useEffect(() => {
+    if (rank !== "협력사" && rank !== "부협력사") return;
+
+    const getOrgCodeByData = async () => {
+      const res = (
+        await Axios.Get("organization", {
+          params: {
+            token: getAccessToken(),
+            type: "cooperation",
+            head_office_org_code: user_info?.org_code,
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        const head_org = { 전체: "전체" };
+        const coop_org = { 전체: "전체" };
+        getOrgHeadOffice(res?.data, head_org);
+        getOrgWithUnit(res?.data, "region", coop_org);
+
+        setOrgMenuList(head_org);
+        setCoopMenuList(coop_org);
+      }
+    };
+
+    getOrgCodeByData();
+  }, []);
 
   useEffect(() => {
     let d = new Date();
@@ -347,16 +374,22 @@ export default function Index({ getCookies }) {
                     value={geo_name}
                     setValue={setGeoName}
                   />
-                  {rank !== "협력사" &&
-                    rank !== "부협력사" &&
-                    rank !== "부관리자" && (
-                      <LabelOutLineSelectInput
-                        title={"조직"}
-                        menuItems={orgMenuList}
-                        value={org_code}
-                        setValue={setOrgCode}
-                      />
-                    )}
+                  {rank !== "부관리자" && (
+                    <LabelOutLineSelectInput
+                      title={"조직"}
+                      menuItems={orgMenuList}
+                      value={org_code}
+                      setValue={setOrgCode}
+                    />
+                  )}
+                  {(rank === "협력사" || rank === "부협력사") && (
+                    <LabelOutLineSelectInput
+                      title={"소속"}
+                      menuItems={coopMenuList}
+                      value={branch}
+                      setValue={setBranch}
+                    />
+                  )}
                   {rank !== "협력사" && rank !== "부협력사" && (
                     <>
                       <LabelOutLineSelectInput
