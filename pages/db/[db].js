@@ -493,6 +493,7 @@ export default function DbDetail() {
                             <RadioInput
                               disabled={
                                 rank !== "관리자" &&
+                                rank !== "부관리자" &&
                                 rank !== "협력사" &&
                                 rank !== "부협력사"
                               }
@@ -520,6 +521,7 @@ export default function DbDetail() {
                             <RadioInput
                               disabled={
                                 rank !== "관리자" &&
+                                rank !== "부관리자" &&
                                 rank !== "협력사" &&
                                 rank !== "부협력사"
                               }
@@ -552,6 +554,7 @@ export default function DbDetail() {
                             <RadioInput
                               disabled={
                                 rank !== "관리자" &&
+                                rank !== "부관리자" &&
                                 rank !== "협력사" &&
                                 rank !== "부협력사"
                               }
@@ -580,6 +583,7 @@ export default function DbDetail() {
                             <RadioInput
                               disabled={
                                 rank !== "관리자" &&
+                                rank !== "부관리자" &&
                                 rank !== "협력사" &&
                                 rank !== "부협력사"
                               }
@@ -605,13 +609,18 @@ export default function DbDetail() {
                       </RowLabel>
                     );
                   case "특이사항":
+                    console.log("xmrdl", field);
                     return (
                       <RowLabel label="특이사항" fs="h5" key={key}>
                         <OutLineInput
                           disabled={
                             rank !== "관리자" &&
-                            rank !== "협력사" &&
-                            rank !== "부협력사"
+                            rank !== "부관리자" &&
+                            (rank === "본부장" ||
+                              rank === "지점장" ||
+                              rank === "팀장" ||
+                              rank === "담당자") &&
+                            allocated_user?.pk !== user_info?.pk
                           }
                           multiline
                           rows={3}
@@ -619,6 +628,10 @@ export default function DbDetail() {
                           defaultValue={
                             rank !== "관리자" &&
                             rank !== "부관리자" &&
+                            (rank === "본부장" ||
+                              rank === "지점장" ||
+                              rank === "팀장" ||
+                              rank === "담당자") &&
                             allocated_user?.pk !== user_info?.pk
                               ? ""
                               : values.filter(
@@ -628,10 +641,26 @@ export default function DbDetail() {
                           onBlur={(e) =>
                             setValues((prev) => {
                               const newData = [...prev];
-                              const dataObj = newData.filter(
-                                (data) => data.title === "특이사항"
+                              console.log(
+                                "hi",
+                                newData.filter(
+                                  (data) => data.title === "특이사항"
+                                )
                               );
-                              dataObj[0].value = e.target.value;
+                              if (
+                                newData.filter(
+                                  (data) => data.title === "특이사항"
+                                ).length !== 0
+                              )
+                                newData.filter(
+                                  (data) => data.title === "특이사항"
+                                )[0].value = e.target.value;
+                              else {
+                                newData.push({
+                                  field_pk: field?.pk,
+                                  value: e.target.value,
+                                });
+                              }
 
                               return newData;
                             })
@@ -685,6 +714,7 @@ export default function DbDetail() {
                 }
               }
             })}
+
             <RowLabel
               label={
                 rank === "본부장" ||
@@ -861,161 +891,163 @@ export default function DbDetail() {
               )}
           </Column>
         </Row>
-        {(allocated_user?.pk === user_info?.pk ||
+        {/* {(allocated_user?.pk === user_info?.pk ||
           rank === "관리자" ||
           user_info?.org_code === uploader?.organization?.code ||
-          uploader?.pk === user_info?.pk) &&
-          menu_detail?.fields
-            ?.filter(
-              (field) =>
-                field?.is_detail_shown === 1 &&
-                field?.property?.name === "녹취 파일"
-            )
-            ?.map((filter_data) => (
-              <>
-                <Typography variant="h4" color="primary.red">
-                  녹취파일 및 메모는 등록 후 삭제가 불가하며, 업로드 하지 않을
-                  시 저장이 되지 않습니다.
-                </Typography>
+          uploader?.pk === user_info?.pk) && */}
+        {menu_detail?.fields
+          ?.filter(
+            (field) =>
+              field?.is_detail_shown === 1 &&
+              field?.property?.name === "녹취 파일"
+          )
+          ?.map((filter_data) => (
+            <>
+              <Typography variant="h4" color="primary.red">
+                녹취파일 및 메모는 등록 후 삭제가 불가하며, 업로드 하지 않을 시
+                저장이 되지 않습니다.
+              </Typography>
 
-                <Column sx={{ gap: 1 }}>
-                  <Row alignItems={"center"} sx={{ gap: 2 }}>
-                    <Typography variant="h1">녹취파일</Typography>
-                    <Row
-                      alignItems={"center"}
-                      justifyContent={"start"}
-                      sx={{ gap: 1 }}
-                    >
-                      <label htmlFor="contained-button-file">
-                        <Input
-                          accept="audio/*"
-                          id="contained-button-file"
-                          type="file"
-                          onChange={(e) => setTranscriptFile(e.target.files[0])}
-                        />
-
-                        <Button
-                          text="파일찾기"
-                          fs="h5"
-                          bgColor={"gray"}
-                          color={"primary.white"}
-                          h={28}
-                          component={"span"}
-                        />
-                      </label>
-
-                      <UnderLineInput
-                        disabled
-                        value={transcript_file?.name || ""}
-                      />
-                      <LoadingButton
-                        variant="contained"
-                        loading={fileLoading}
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 700,
-                          height: 28,
-                          mt: 0.1,
-                        }}
-                        onClick={async () => {
-                          if (!transcript_file)
-                            return enqueueSnackbar("파일을 선택해주세요", {
-                              variant: "error",
-                              autoHideDuration: 2000,
-                            });
-                          setFileLoading(true);
-                          const _uploadFile = await uploadFile(transcript_file);
-
-                          if (_uploadFile) {
-                            const getRecordField = menu_detail?.fields?.find(
-                              (data) => data?.property.name === "녹취 파일"
-                            );
-
-                            setValues((prev) => {
-                              const newData = [...prev];
-
-                              const newObj = Object.assign(
-                                {},
-                                {
-                                  field_pk: getRecordField?.pk,
-                                  title: "녹취 파일",
-                                  value: _uploadFile,
-                                  created_date: new Date(
-                                    +new Date() + 3240 * 10000
-                                  )
-                                    .toISOString()
-                                    .replace("T", " ")
-                                    .replace(/\..*/, ""),
-                                }
-                              );
-                              newData.push(newObj);
-
-                              return newData;
-                            });
-
-                            setFileLoading(false);
-                            if (!fileLoading) {
-                              setTranscriptFile("");
-                              document.querySelector(
-                                "#contained-button-file"
-                              ).value = "";
-
-                              enqueueSnackbar(
-                                "파일이 정상적으로 등록 되었습니다.",
-                                {
-                                  variant: "success",
-                                  autoHideDuration: 2000,
-                                }
-                              );
-                            }
-                          }
-                        }}
-                      >
-                        업로드
-                      </LoadingButton>
-                    </Row>
-                  </Row>
-
-                  <GridBox
-                    itemCount={4}
-                    alignItems={"end"}
-                    sx={{ width: "100%", gap: 1, mt: 1, maxWidth: 1024 }}
+              <Column sx={{ gap: 1 }}>
+                <Row alignItems={"center"} sx={{ gap: 2 }}>
+                  <Typography variant="h1">녹취파일</Typography>
+                  <Row
+                    alignItems={"center"}
+                    justifyContent={"start"}
+                    sx={{ gap: 1 }}
                   >
-                    {values?.map(
-                      (v, _key) =>
-                        v?.title === "녹취 파일" &&
-                        v?.value &&
-                        v?.value.includes("https") && (
-                          <Column
-                            sx={{
-                              width: "100%",
-                              p: 1,
-                              border: "1px solid black",
-                              borderRadius: "5px",
-                            }}
+                    <label htmlFor="contained-button-file">
+                      <Input
+                        accept="audio/*"
+                        id="contained-button-file"
+                        type="file"
+                        onChange={(e) => setTranscriptFile(e.target.files[0])}
+                      />
+
+                      <Button
+                        text="파일찾기"
+                        fs="h5"
+                        bgColor={"gray"}
+                        color={"primary.white"}
+                        h={28}
+                        component={"span"}
+                      />
+                    </label>
+
+                    <UnderLineInput
+                      disabled
+                      value={transcript_file?.name || ""}
+                    />
+                    <LoadingButton
+                      variant="contained"
+                      loading={fileLoading}
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 700,
+                        height: 28,
+                        mt: 0.1,
+                      }}
+                      onClick={async () => {
+                        if (!transcript_file)
+                          return enqueueSnackbar("파일을 선택해주세요", {
+                            variant: "error",
+                            autoHideDuration: 2000,
+                          });
+                        setFileLoading(true);
+                        const _uploadFile = await uploadFile(transcript_file);
+
+                        if (_uploadFile) {
+                          const getRecordField = menu_detail?.fields?.find(
+                            (data) => data?.property.name === "녹취 파일"
+                          );
+
+                          setValues((prev) => {
+                            const newData = [...prev];
+
+                            const newObj = Object.assign(
+                              {},
+                              {
+                                field_pk: getRecordField?.pk,
+                                title: "녹취 파일",
+                                value: _uploadFile,
+                                created_date: new Date(
+                                  +new Date() + 3240 * 10000
+                                )
+                                  .toISOString()
+                                  .replace("T", " ")
+                                  .replace(/\..*/, ""),
+                              }
+                            );
+                            newData.push(newObj);
+
+                            return newData;
+                          });
+
+                          setFileLoading(false);
+                          if (!fileLoading) {
+                            setTranscriptFile("");
+                            document.querySelector(
+                              "#contained-button-file"
+                            ).value = "";
+
+                            enqueueSnackbar(
+                              "파일이 정상적으로 등록 되었습니다.",
+                              {
+                                variant: "success",
+                                autoHideDuration: 2000,
+                              }
+                            );
+                          }
+                        }
+                      }}
+                    >
+                      업로드
+                    </LoadingButton>
+                  </Row>
+                </Row>
+
+                <GridBox
+                  itemCount={4}
+                  alignItems={"end"}
+                  sx={{ width: "100%", gap: 1, mt: 1, maxWidth: 1024 }}
+                >
+                  {values?.map(
+                    (v, _key) =>
+                      v?.title === "녹취 파일" &&
+                      v?.value &&
+                      v?.value.includes("https") && (
+                        <Column
+                          sx={{
+                            width: "100%",
+                            p: 1,
+                            border: "1px solid black",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          <Typography variant="h6" ml={3} mb={1}>
+                            {v?.created_date}{" "}
+                          </Typography>
+                          <audio
+                            controls
+                            src={v?.value}
+                            style={{ width: "100%" }}
                           >
-                            <Typography variant="h6" ml={3} mb={1}>
-                              {v?.created_date}{" "}
-                            </Typography>
-                            <audio
-                              controls
-                              src={v?.value}
-                              style={{ width: "100%" }}
-                            >
-                              Your browser does not support the
-                              <code>audio</code> element.
-                            </audio>
-                          </Column>
-                        )
-                    )}
-                  </GridBox>
-                </Column>
-              </>
-            ))}
-        {(allocated_user?.pk === user_info?.pk ||
-          rank === "관리자" ||
-          user_info?.org_code === uploader?.organization?.code ||
-          uploader?.pk === user_info?.pk) &&
+                            Your browser does not support the
+                            <code>audio</code> element.
+                          </audio>
+                        </Column>
+                      )
+                  )}
+                </GridBox>
+              </Column>
+            </>
+          ))}
+        {/* } */}
+        {
+          // (allocated_user?.pk === user_info?.pk ||
+          //   rank === "관리자" ||
+          //   user_info?.org_code === uploader?.organization?.code ||
+          //   uploader?.pk === user_info?.pk) &&
           menu_detail?.fields
             ?.filter(
               (field) =>
@@ -1098,7 +1130,8 @@ export default function DbDetail() {
                   )}
                 </GridBox>
               </Column>
-            ))}
+            ))
+        }
 
         <Row justifyContent={"between"} sx={{ gap: "12px", width: "100%" }}>
           <Button
