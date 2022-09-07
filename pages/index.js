@@ -355,19 +355,23 @@ export default function Index({ getCookies }) {
                       setValue={setOrgCode}
                     />
                   )}
-                  <LabelOutLineSelectInput
-                    title={"본부"}
-                    menuItems={headOfficeMenuList}
-                    value={head_office_org_code}
-                    setValue={setHeadOfficeOrgCode}
-                  />
+                  {rank !== "협력사" && rank !== "부협력사" && (
+                    <>
+                      <LabelOutLineSelectInput
+                        title={"본부"}
+                        menuItems={headOfficeMenuList}
+                        value={head_office_org_code}
+                        setValue={setHeadOfficeOrgCode}
+                      />
 
-                  <LabelOutLineSelectInput
-                    title={"지점"}
-                    menuItems={branchMenuList}
-                    value={branch}
-                    setValue={setBranch}
-                  />
+                      <LabelOutLineSelectInput
+                        title={"지점"}
+                        menuItems={branchMenuList}
+                        value={branch}
+                        setValue={setBranch}
+                      />
+                    </>
+                  )}
                 </Row>
               </Row>
 

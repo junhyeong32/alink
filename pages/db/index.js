@@ -480,7 +480,7 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code, open]);
 
-  console.log(values);
+  console.log(uploaderMenuList);
 
   return (
     <Layout
@@ -759,7 +759,8 @@ export default function Db() {
             {rank !== "담당자" &&
               rank !== "팀장" &&
               rank !== "지점장" &&
-              rank !== "본부장" && (
+              rank !== "본부장" &&
+              rank !== "협력사" && (
                 <SelectInput
                   w="100%"
                   title="조직명"
@@ -791,17 +792,15 @@ export default function Db() {
               value={org_status}
               setValue={setOrgStatus}
             />
-            {rank !== "협력사" &&
-              rank !== "부협력사" &&
-              rank !== "부관리자" && (
-                <SelectInput
-                  w="100%"
-                  title="등록처"
-                  menuItems={uploaderMenuList}
-                  value={uploader_organization_code}
-                  setValue={setUploaderOrganizationCode}
-                />
-              )}
+            {rank !== "부협력사" && rank !== "부관리자" && (
+              <SelectInput
+                w="100%"
+                title="등록처"
+                menuItems={uploaderMenuList}
+                value={uploader_organization_code}
+                setValue={setUploaderOrganizationCode}
+              />
+            )}
 
             <Row alignItems={"end"} sx={{ width: "100%" }}>
               <SelectInput
