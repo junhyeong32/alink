@@ -617,6 +617,9 @@ export default function DbDetail() {
                           rows={3}
                           w={"100%"}
                           defaultValue={
+                            rank !== "관리자" &&
+                            rank !== "협력사" &&
+                            rank !== "부협력사" &&
                             allocated_user?.pk !== user_info?.pk
                               ? ""
                               : values.filter(

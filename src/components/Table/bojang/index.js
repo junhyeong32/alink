@@ -24,31 +24,6 @@ import { useEffect } from "react";
 import { getCookie } from "../../../utility/getCookie";
 import { formatPhoneNumber } from "../../../utility/formatPhone";
 
-const Root = styled("div")`
-  table {
-    box-shadow: none;
-    width: 100%;
-    height: 100%;
-  }
-
-  th {
-    border-top: 3px solid #0d1d41;
-    border-bottom: none;
-    height: 37px;
-    text-align: center;
-    box-shadow: none;
-    font-weight: bold;
-    font-size: 12px;
-    padding: 0;
-    min-width: 80px;
-  }
-  td {
-    padding: 8px;
-    font-size: 12px;
-    border-bottom: none;
-  }
-`;
-
 export default function BojangTable({
   openModal,
   closeModal,
@@ -61,7 +36,33 @@ export default function BojangTable({
   const router = useRouter();
   const today = new Date();
 
+  const Root = styled("div")`
+    table {
+      box-shadow: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    th {
+      border-top: 3px solid #0d1d41;
+      border-bottom: none;
+      height: 37px;
+      text-align: center;
+      box-shadow: none;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 0;
+      min-width: 80px;
+    }
+    td {
+      padding: 8px;
+      font-size: 12px;
+      border-bottom: none;
+    }
+  `;
+
   const [rank] = useState(getCookie("user_info")?.grade);
+  const [user_info] = useState(getCookie("user_info"));
 
   return (
     <Root sx={{ width: "100%" }}>
@@ -159,6 +160,15 @@ export default function BojangTable({
                 <TableCell
                   key={"hi" + key}
                   align="center"
+                  sx={{
+                    fontWeight:
+                      (rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === " 팀장") &&
+                      d?.allocated_user?.pk === user_info?.pk
+                        ? "bold"
+                        : "normal",
+                  }}
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
                   {page === 1
@@ -170,7 +180,16 @@ export default function BojangTable({
                 <TableCell
                   key={d?.pk + 999}
                   align="center"
-                  sx={{ width: 10 }}
+                  sx={{
+                    width: 10,
+                    fontWeight:
+                      (rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === " 팀장") &&
+                      d?.allocated_user?.pk === user_info?.pk
+                        ? "bold"
+                        : "normal",
+                  }}
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
                   {d?.gift_user?.pk ? (
@@ -182,6 +201,15 @@ export default function BojangTable({
                 <TableCell
                   key={d?.pk + 2}
                   align="center"
+                  sx={{
+                    fontWeight:
+                      (rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === " 팀장") &&
+                      d?.allocated_user?.pk === user_info?.pk
+                        ? "bold"
+                        : "normal",
+                  }}
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
                   {d?.geo_parent + " " + d?.geo_name}
@@ -189,6 +217,15 @@ export default function BojangTable({
                 <TableCell
                   key={d?.pk + 3}
                   align="center"
+                  sx={{
+                    fontWeight:
+                      (rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === " 팀장") &&
+                      d?.allocated_user?.pk === user_info?.pk
+                        ? "bold"
+                        : "normal",
+                  }}
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
                   {d?.status}
@@ -199,6 +236,13 @@ export default function BojangTable({
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                   sx={{
                     color: d?.org_status === "AS승인" ? "#FF0000" : "#3532C7",
+                    fontWeight:
+                      (rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === " 팀장") &&
+                      d?.allocated_user?.pk === user_info?.pk
+                        ? "bold"
+                        : "normal",
                   }}
                 >
                   {d?.org_status}
@@ -210,6 +254,15 @@ export default function BojangTable({
                     key={d?.pk + 5}
                     align="center"
                     onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                    sx={{
+                      fontWeight:
+                        (rank === "본부장" ||
+                          rank === "지점장" ||
+                          rank === " 팀장") &&
+                        d?.allocated_user?.pk === user_info?.pk
+                          ? "bold"
+                          : "normal",
+                    }}
                   >
                     {d?.uploader?.name}
                   </TableCell>
@@ -223,6 +276,15 @@ export default function BojangTable({
                       onClick={() =>
                         router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
                       }
+                      sx={{
+                        fontWeight:
+                          (rank === "본부장" ||
+                            rank === "지점장" ||
+                            rank === " 팀장") &&
+                          d?.allocated_user?.pk === user_info?.pk
+                            ? "bold"
+                            : "normal",
+                      }}
                     >
                       {d?.organization?.name}
                     </TableCell>
@@ -232,6 +294,15 @@ export default function BojangTable({
                       onClick={() =>
                         router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
                       }
+                      sx={{
+                        fontWeight:
+                          (rank === "본부장" ||
+                            rank === "지점장" ||
+                            rank === " 팀장") &&
+                          d?.allocated_user?.pk === user_info?.pk
+                            ? "bold"
+                            : "normal",
+                      }}
                     >
                       {getTitleOfOrg_name(d?.allocated_user?.organization)}
                     </TableCell>
@@ -242,6 +313,15 @@ export default function BojangTable({
                   key={d?.pk + 7}
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                  sx={{
+                    fontWeight:
+                      (rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === " 팀장") &&
+                      d?.allocated_user?.pk === user_info?.pk
+                        ? "bold"
+                        : "normal",
+                  }}
                 >
                   {d?.allocated_user?.name}
                 </TableCell>
@@ -258,6 +338,15 @@ export default function BojangTable({
                         <TableCell
                           key={_key}
                           align="center"
+                          sx={{
+                            fontWeight:
+                              (rank === "본부장" ||
+                                rank === "지점장" ||
+                                rank === " 팀장") &&
+                              d?.allocated_user?.pk === user_info?.pk
+                                ? "bold"
+                                : "normal",
+                          }}
                           onClick={() =>
                             router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
                           }
@@ -292,6 +381,15 @@ export default function BojangTable({
                         <TableCell
                           key={_key}
                           align="center"
+                          sx={{
+                            fontWeight:
+                              (rank === "본부장" ||
+                                rank === "지점장" ||
+                                rank === " 팀장") &&
+                              d?.allocated_user?.pk === user_info?.pk
+                                ? "bold"
+                                : "normal",
+                          }}
                           onClick={() =>
                             router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
                           }
@@ -312,6 +410,15 @@ export default function BojangTable({
                       <TableCell
                         key={_key}
                         align="center"
+                        sx={{
+                          fontWeight:
+                            (rank === "본부장" ||
+                              rank === "지점장" ||
+                              rank === " 팀장") &&
+                            d?.allocated_user?.pk === user_info?.pk
+                              ? "bold"
+                              : "normal",
+                        }}
                         onClick={() =>
                           router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
                         }
@@ -426,12 +533,30 @@ export default function BojangTable({
                 })}
                 <TableCell
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                  sx={{
+                    fontWeight:
+                      (rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === " 팀장") &&
+                      d?.allocated_user?.pk === user_info?.pk
+                        ? "bold"
+                        : "normal",
+                  }}
                   align="center"
                 >
                   {d?.allocated_date}
                 </TableCell>
                 <TableCell
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
+                  sx={{
+                    fontWeight:
+                      (rank === "본부장" ||
+                        rank === "지점장" ||
+                        rank === " 팀장") &&
+                      d?.allocated_user?.pk === user_info?.pk
+                        ? "bold"
+                        : "normal",
+                  }}
                   align="center"
                 >
                   {d?.first_gift_user?.name}
