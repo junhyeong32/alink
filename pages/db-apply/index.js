@@ -86,10 +86,9 @@ export default function DBApply() {
     });
 
     if (
-      (user?.status === "미승인" &&
-        user?.pay_amount < 0 &&
-        user?.deposit_status === "입금 미완료") ||
-      user?.status === "미승인"
+      user?.status === "미승인" &&
+      (user?.pay_amount < 0 || !user?.pay_amount) &&
+      (user?.deposit_status === "입금 미완료" || !user?.deposit_status)
     ) {
       openModal({
         modal: "deposit",
@@ -123,7 +122,10 @@ export default function DBApply() {
             }),
         },
       });
-    } else if (user?.deposit_status === "입금 완료") {
+    } else if (
+      user?.deposit_status === "입금 완료" ||
+      user?.status === "미승인"
+    ) {
       openModal({
         modal: "depositconfirm",
       });
