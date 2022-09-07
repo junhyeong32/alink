@@ -760,7 +760,8 @@ export default function Db() {
               rank !== "팀장" &&
               rank !== "지점장" &&
               rank !== "본부장" &&
-              rank !== "협력사" && (
+              rank !== "협력사" &&
+              rank !== "부협력사" && (
                 <SelectInput
                   w="100%"
                   title="조직명"

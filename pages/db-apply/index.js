@@ -86,9 +86,10 @@ export default function DBApply() {
     });
 
     if (
-      user?.status === "미승인" &&
-      user?.pay_amount < 0 &&
-      user?.deposit_status === "입금 미완료"
+      (user?.status === "미승인" &&
+        user?.pay_amount < 0 &&
+        user?.deposit_status === "입금 미완료") ||
+      user?.status === "미승인"
     ) {
       openModal({
         modal: "deposit",
@@ -122,10 +123,7 @@ export default function DBApply() {
             }),
         },
       });
-    } else if (
-      user?.deposit_status === "입금 완료" &&
-      user?.status === "미승인"
-    ) {
+    } else if (user?.deposit_status === "입금 완료") {
       openModal({
         modal: "depositconfirm",
       });
@@ -306,6 +304,7 @@ export default function DBApply() {
             fs="h5"
             w={160}
             h={30}
+            disabled={moment().date() >= day ? true : false}
             action={async () => {
               const res = await Axios.Post("user/db/count", {
                 token: getAccessToken(),
