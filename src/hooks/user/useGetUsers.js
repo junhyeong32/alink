@@ -19,6 +19,7 @@ export default function useGetUsers({
   excel,
   is_search,
   setExcel,
+  areaMenuItems,
 }) {
   const [users, setUsers] = useState([]);
   const [allocation_total, setTotal] = useState([]);
@@ -78,7 +79,10 @@ export default function useGetUsers({
                 org_code === "전체" || orgCode === "전체"
                   ? undefined
                   : org_code || orgCode,
-              geo: geo === "전체" ? undefined : geo,
+              geo:
+                geo === "전체" || geo === 0
+                  ? undefined
+                  : areaMenuItems[geo] || geo,
               email: email,
               id: id,
               name: name,

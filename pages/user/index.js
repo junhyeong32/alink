@@ -44,7 +44,7 @@ export default memo(function User() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   //menuItems
-  const [areaMenuItems, setAreaMenuItems] = useState({});
+  const [areaMenuItems, setAreaMenuItems] = useState([]);
   const [salesMenuItems, setSalesMenuItems] = useState({});
   const [headOfficeMenuItems, setHeadOfficeMenuItems] = useState({});
 
@@ -59,7 +59,7 @@ export default memo(function User() {
   const [grade, setGrade] = useState("전체");
   const [head_office_org_code, setHeadOfficeOrgCode] = useState("전체");
   const [org_code, setOrgCode] = useState("전체");
-  const [geo, setGeo] = useState("전체");
+  const [geo, setGeo] = useState(0);
   const [email, setEmail] = useState("");
   const [id, setId] = useState("");
   const [name, setName] = useState("");
@@ -71,7 +71,6 @@ export default memo(function User() {
 
   const { org_pending, sales } = useGetOrganization("sales");
   // const { cooperation } = useGetOrganization("cooperation");
-  const { area } = useGetArea();
 
   const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
     useGetUsers({
@@ -89,6 +88,7 @@ export default memo(function User() {
       excel,
       is_search,
       setExcel,
+      areaMenuItems,
     });
 
   //data
@@ -111,15 +111,17 @@ export default memo(function User() {
   };
 
   useEffect(() => {
-    setAreaMenuItems(() => {
-      const obj = {};
-      area?.map((d, key) => {
-        Object.assign(obj, { 전체: "전체" });
-        Object.assign(obj, { [d.parent]: d.parent });
-      });
-      return obj;
-    });
-  }, [area]);
+    const getParentArea = async () => {
+      const res = (
+        await Axios.Get(`db/geomap_parent?token=${getAccessToken()}`)
+      )?.data;
+      if (res?.code === 200) {
+        setAreaMenuItems(["전체", ...res?.data]);
+      }
+    };
+
+    getParentArea();
+  }, []);
 
   useEffect(() => {
     if (org_code === "전체") return;
@@ -169,6 +171,8 @@ export default memo(function User() {
   //   router.
 
   // },[head_office_org_code])
+
+  console.log("areaMenuItems", areaMenuItems);
 
   return (
     <Layout loading={loading}>

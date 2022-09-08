@@ -93,7 +93,7 @@ export default function Sms() {
 
   useEffect(() => {
     getNotification();
-  }, []);
+  }, [page]);
 
   return (
     <Layout>
@@ -245,7 +245,6 @@ export default function Sms() {
           page={page}
           count={totalCount}
           onChange={(subject, newPage) => {
-            getNotification(false, newPage);
             setPage(newPage);
           }}
           color="primary"
