@@ -58,7 +58,7 @@ export default function Index({ getCookies }) {
   const [org_code, setOrgCode] = useState("전체");
   const [branch, setBranch] = useState("전체");
 
-  const [geo_name, setGeoName] = useState("전체");
+  const [geo_name, setGeoName] = useState(0);
   const [date, setDate] = useState(0);
   const [send_date, setSendDate] = useState(new Date().getMonth + 1);
   const [rank] = useState(getCookie("user_info")?.grade);
@@ -146,7 +146,7 @@ export default function Index({ getCookies }) {
               : rank === "부관리자"
               ? user_info?.org_code
               : undefined,
-          geo_name: geo_name === "전체" ? undefined : geo_name,
+          geo_name: geo_name === 0 ? undefined : areaMenuItems[geo_name],
           date: send_date,
         },
       })
@@ -162,7 +162,7 @@ export default function Index({ getCookies }) {
       await Axios.Get(`db/dashboard_cooperation`, {
         params: {
           token: getAccessToken(),
-          geo_name: geo_name === "전체" ? undefined : geo_name,
+          geo_name: geo_name === 0 ? undefined : areaMenuItems[geo_name],
           date: send_date,
         },
       })
@@ -182,15 +182,17 @@ export default function Index({ getCookies }) {
   }, [send_date]);
 
   useEffect(() => {
-    setAreaMenuItems(() => {
-      const obj = {};
-      area?.map((d, key) => {
-        Object.assign(obj, { 전체: "전체" });
-        Object.assign(obj, { [d.parent]: d.parent });
-      });
-      return obj;
-    });
-  }, [area]);
+    const getParentArea = async () => {
+      const res = (
+        await Axios.Get(`db/geomap_parent?token=${getAccessToken()}`)
+      )?.data;
+      if (res?.code === 200) {
+        setAreaMenuItems(["전체", ...res?.data]);
+      }
+    };
+
+    getParentArea();
+  }, []);
 
   useEffect(() => {
     if (org_code === "전체") return;
