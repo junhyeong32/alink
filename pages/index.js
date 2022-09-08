@@ -4,12 +4,7 @@ import Row from "../src/components/Box/Row";
 import { Container, Typography, Select, MenuItem } from "@mui/material";
 import { useEffect, useState, useContext } from "react";
 import ReceptionStatusTable from "../src/components/Table/data-status/ReceptionStatusTable";
-import {
-  select_title,
-  area_input,
-  headquarters_input,
-  branch_input,
-} from "../src/components/Table/data-status/ReceptionStatusList";
+
 import {
   LabelOutLineSelectInput,
   OutLineSelectInput,
@@ -27,7 +22,6 @@ import {
   getOrgByOfficeNameWithUnit,
   getOrgWithUnitName,
 } from "../src/utility/organization/getOrgWithUnit";
-import useGetArea from "../src/hooks/setting/useGetArea";
 import Carousel from "nuka-carousel";
 import CooperationTable from "../src/components/Table/data-status/CooperationTable";
 import { useTransition } from "react";
@@ -44,7 +38,6 @@ export default function Index({ getCookies }) {
   const [dashboard_list, setDashBoardList] = useState([]);
   const [dashboard_coop_list, setDashBoardCoopList] = useState([]);
   const { sales } = useGetOrganization("sales");
-  const { area } = useGetArea();
 
   //state
   const [org_code_by_sales, setOrgCodeBySales] = useState([]);
@@ -52,9 +45,7 @@ export default function Index({ getCookies }) {
   const [loading, startTransition] = useTransition();
   const [cookieAction, setCookieAction] = useState("");
   const [cookie_list, setCookieList] = useState([]);
-  //TODO
-  //이거 기본값 안넣어주면 오류남
-  // 물어보기
+
   const [org_code, setOrgCode] = useState("전체");
   const [branch, setBranch] = useState("전체");
 
@@ -179,7 +170,7 @@ export default function Index({ getCookies }) {
       getDbDashBoard();
       getCooperationDashBoard();
     });
-  }, [send_date]);
+  }, [send_date, reset]);
 
   useEffect(() => {
     const getParentArea = async () => {
@@ -276,7 +267,7 @@ export default function Index({ getCookies }) {
 
     setBranchMenuList(branch);
   }, [head_office_org_code]);
-  console.log(rank !== "협력사" && rank !== "부협력사");
+
   useEffect(() => {
     if (rank !== "협력사" && rank !== "부협력사") return;
 
@@ -345,7 +336,14 @@ export default function Index({ getCookies }) {
                   color="primary.white"
                   text="초기화"
                   h={28}
-                  action={() => setReset(!reset)}
+                  action={() => {
+                    setGeoName(0);
+                    setDate(0);
+                    setOrgCode("전체");
+                    setBranch("전체");
+                    setHeadOfficeOrgCode("전체");
+                    setReset(!reset);
+                  }}
                 />
               </Row>
 

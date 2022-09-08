@@ -197,9 +197,7 @@ export default function Db() {
                   : uploader_organization_code,
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
               geo_name: child_area === "전체" ? undefined : child_area,
-              values: JSON.stringify(
-                [...values].filter((v) => v?.value !== "")
-              ),
+              values: undefined,
               allocated_date_start: start_date
                 ? new Date(start_date).getTime()
                 : undefined,
