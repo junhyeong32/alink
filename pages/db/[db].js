@@ -1134,12 +1134,6 @@ export default function DbDetail() {
         }
 
         <Row justifyContent={"between"} sx={{ gap: "12px", width: "100%" }}>
-          <input
-            type="button"
-            value="인쇄하기"
-            id="print"
-            onClick={() => window.print()}
-          />
           <Button
             variant="contained"
             bgColor="print"
@@ -1148,6 +1142,12 @@ export default function DbDetail() {
             fs="h5"
             w={100}
             h={35}
+            action={() =>
+              window.open(
+                `/db/print?db=${router.query.db}&menu=${router.query.menu}`,
+                "_blank"
+              )
+            }
           />
 
           <Row sx={{ gap: 1 }}>
