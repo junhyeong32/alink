@@ -887,6 +887,11 @@ export default function UserDetail() {
                       }
                     );
                     router.back();
+                  } else {
+                    enqueueSnackbar(res?.message, {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
                   }
                 }}
               />
