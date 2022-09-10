@@ -72,25 +72,95 @@ export default memo(function User() {
   const { org_pending, sales } = useGetOrganization("sales");
   // const { cooperation } = useGetOrganization("cooperation");
 
-  const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
-    useGetUsers({
-      page,
-      count,
-      status,
-      grade,
-      head_office_org_code,
-      org_code,
-      geo,
-      email,
-      id,
-      name,
-      phone,
-      excel,
-      is_search,
-      setExcel,
-      areaMenuItems,
-    });
+  const [users, setUsers] = useState([]);
+  const [allocation_total, setTotal] = useState([]);
+  const [isUsersPending, setIsUsersPending] = useState(true);
+  const [totalCouunt, setTotalCount] = useState();
 
+  const getUsers = async (orgCode, is_init) => {
+    if (Number(excel) === 1) {
+      window.open(
+        "https://alinkapi.afg.kr/api/v1/member?" +
+          Object.entries({
+            token: getAccessToken(),
+            page: page,
+            count: count,
+            status: status === "전체" ? undefined : status,
+            grade: grade === "전체" ? undefined : grade,
+            head_office_org_code:
+              head_office_org_code === "전체"
+                ? undefined
+                : head_office_org_code,
+            org_code: org_code === "전체" ? undefined : org_code,
+            geo: geo === "전체" ? undefined : geo,
+            email: email,
+            id: id,
+            name: name,
+            phone: phone,
+            excel: excel,
+          })
+            ?.map((e) => e.join("="))
+            .join("&"),
+        "_blank"
+      );
+
+      return setExcel("");
+    }
+
+    const res = is_init
+      ? await Axios.Get(`member`, {
+          params: {
+            token: getAccessToken(),
+            page: 1,
+          },
+        })
+      : (
+          await Axios.Get(`member`, {
+            params: {
+              token: getAccessToken(),
+              page: router.query.page || router.query.page,
+              count: router.query.count || router.query.count,
+              status: status === "전체" ? undefined : router.query.status,
+              grade: grade === "전체" ? undefined : grade,
+              head_office_org_code:
+                head_office_org_code === "전체"
+                  ? undefined
+                  : router.query.head_office_org_code,
+              org_code:
+                org_code === "전체" || orgCode === "전체"
+                  ? undefined
+                  : router.query.org_code,
+              geo:
+                geo === "전체" || geo === 0
+                  ? undefined
+                  : areaMenuItems[router.query.geo],
+              email: router.query.email,
+              id: router.query.id,
+              name: router.query.name,
+              phone: router.query.phone,
+            },
+          })
+        )?.data;
+
+    if (res?.code === 200) {
+      setUsers(res?.data.result);
+      setTotal(res?.data.allocation_total);
+      setTotalCount(Math.ceil(res?.data.total_count / 20));
+      setIsUsersPending(false);
+    }
+    setIsSearch(false);
+  };
+
+  useEffect(() => {
+    if (!is_search) return;
+
+    router.push(`user?page=${page}&count=${count}&status=${status}&grade=${grade}&head_office_org_code=${head_office_org_code}&org_code=${org_code}&geo=${geo}&email=${email}&id=${id}&name=${name}&phone=${phone}
+    `);
+  }, [is_search]);
+
+  useEffect(() => {
+    getUsers();
+  }, [page, excel, router.query]);
   //data
 
   // const { openModal, closeModal, modalContent } = useContext(ModalContext);
@@ -98,16 +168,16 @@ export default memo(function User() {
   const handleInit = () => {
     setStatus("전체");
     setGrade("전체");
-    setHeadOfficeOrgCode("");
-    setOrgCode("");
-    setGeo("");
+    setHeadOfficeOrgCode("전체");
+    setOrgCode("전체");
+    setGeo(0);
     setEmail("");
     setId("");
     setName("");
     setPhone("");
     setExcel("");
 
-    getUsers(true);
+    router.push("user");
   };
 
   useEffect(() => {
@@ -254,7 +324,7 @@ export default memo(function User() {
               color="primary.white"
               w={60}
               h={28}
-              action={getUsers}
+              action={() => setIsSearch(true)}
             />
             <Button
               text="초기화"
@@ -346,7 +416,7 @@ export default memo(function User() {
                   color="primary.white"
                   w={60}
                   h={28}
-                  action={() => setIsSearch(!is_search)}
+                  action={() => setIsSearch(true)}
                   sx={{
                     display: {
                       lg: "flex",
