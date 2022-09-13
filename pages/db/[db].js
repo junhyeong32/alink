@@ -831,9 +831,11 @@ export default function DbDetail() {
                 </RowLabel>
               )}
 
-            <RowLabel label="조직" fs="h5">
-              <Typography variant="h6">{organization?.name}</Typography>
-            </RowLabel>
+            {rank !== "부협력사" && (
+              <RowLabel label="조직" fs="h5">
+                <Typography variant="h6">{organization?.name}</Typography>
+              </RowLabel>
+            )}
             {rank !== "협력사" &&
               rank !== "부협력사" &&
               rank !== "본부장" &&

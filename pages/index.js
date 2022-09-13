@@ -374,7 +374,7 @@ export default function Index({ getCookies }) {
                     value={geo_name}
                     setValue={setGeoName}
                   />
-                  {rank !== "부관리자" && (
+                  {rank !== "부관리자" && rank !== "부협력사" && (
                     <LabelOutLineSelectInput
                       title={"조직"}
                       menuItems={orgMenuList}
@@ -382,7 +382,7 @@ export default function Index({ getCookies }) {
                       setValue={setOrgCode}
                     />
                   )}
-                  {(rank === "협력사" || rank === "부협력사") && (
+                  {rank === "협력사" && (
                     <LabelOutLineSelectInput
                       title={"소속"}
                       menuItems={coopMenuList}

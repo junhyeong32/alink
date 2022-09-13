@@ -100,7 +100,9 @@ export default function BojangTable({
               {dbHeaderList?.map((header, key) => {
                 if (
                   (rank === "부협력사" || rank === "협력사") &&
-                  (header === "소속" || header === "담당자")
+                  (header === "소속" ||
+                    header === "담당자" ||
+                    header === "조직")
                 )
                   return;
 
@@ -287,21 +289,24 @@ export default function BojangTable({
                     >
                       {getTitleOfOrg_name(d?.allocated_user?.organization)}
                     </TableCell>
+
+                    <TableCell
+                      key={d?.pk + 7}
+                      align="center"
+                      onClick={() =>
+                        router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)
+                      }
+                      sx={{
+                        fontWeight:
+                          d?.allocated_user?.pk === user_info?.pk
+                            ? "bold"
+                            : "normal",
+                      }}
+                    >
+                      {d?.allocated_user?.name}
+                    </TableCell>
                   </>
                 )}
-                <TableCell
-                  key={d?.pk + 7}
-                  align="center"
-                  onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
-                  sx={{
-                    fontWeight:
-                      d?.allocated_user?.pk === user_info?.pk
-                        ? "bold"
-                        : "normal",
-                  }}
-                >
-                  {d?.allocated_user?.name}
-                </TableCell>
                 {header?.fields?.map((head, _key) => {
                   if (
                     head?.is_list_shown === 1 &&

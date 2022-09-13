@@ -317,12 +317,13 @@ export default function DBApply() {
                 db: changeDb,
               });
 
-              if (res?.code === 200)
+              if (res?.code === 200) {
                 enqueueSnackbar("db가 신청되었습니다.", {
                   variant: "success",
                   autoHideDuration: 2000,
                 });
-              getUser();
+                router.reload();
+              }
             }}
           />
         </Row>
