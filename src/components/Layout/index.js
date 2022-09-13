@@ -224,7 +224,8 @@ export default function Layout({ loading, children, sx }) {
                   if (
                     rank === "본부장" ||
                     rank === "지점장" ||
-                    rank === "팀장"
+                    rank === "팀장" ||
+                    rank === "담당자"
                   ) {
                     return (
                       <MenuBox key={key} text={menu} link={menu_link[key]} />

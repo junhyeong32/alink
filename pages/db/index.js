@@ -190,7 +190,7 @@ export default function Db() {
                   : org_code,
               status: status === "전체" ? undefined : status,
               org_status: org_status === "전체" ? undefined : org_status,
-              allocated_user: allocated_user,
+              allocated_user: allocated_user ? allocated_user : undefined,
               uploader_organization_code:
                 uploader_organization_code === "전체"
                   ? undefined
@@ -198,12 +198,22 @@ export default function Db() {
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
               geo_name: child_area === "전체" ? undefined : child_area,
               values: undefined,
-              allocated_date_start: start_date
-                ? new Date(start_date).getTime()
-                : undefined,
-              allocated_date_end: end_date
-                ? new Date(end_date).getTime()
-                : undefined,
+              created_date_start:
+                (rank === "협력사" || rank === "부협력사") && start_date
+                  ? new Date(start_date).getTime()
+                  : undefined,
+              created_date_end:
+                (rank === "협력사" || rank === "부협력사") && end_date
+                  ? new Date(end_date).getTime()
+                  : undefined,
+              allocated_date_start:
+                rank !== "협력사" && rank !== "부협력사" && start_date
+                  ? new Date(start_date).getTime()
+                  : undefined,
+              allocated_date_end:
+                rank !== "협력사" && rank !== "부협력사" && end_date
+                  ? new Date(end_date).getTime()
+                  : undefined,
             },
           })
     )?.data;
@@ -434,15 +444,13 @@ export default function Db() {
   }, [init]);
 
   useEffect(() => {
-    if (head_coop === "전체") return;
-
     const getCooperation = async () => {
       const res = (
         await Axios.Get("organization", {
           params: {
             token: getAccessToken(),
             type: "cooperation",
-            head_office_org_code: head_coop,
+            head_office_org_code: user_info?.head_office_org_code,
           },
         })
       )?.data;
@@ -457,7 +465,7 @@ export default function Db() {
     };
 
     getCooperation();
-  }, [head_coop]);
+  }, []);
 
   useEffect(() => {
     const searchObj = {};
@@ -525,7 +533,7 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code, open]);
 
-  console.log(uploaderMenuList);
+  console.log(user_info);
 
   return (
     <Layout
@@ -828,7 +836,7 @@ export default function Db() {
                 />
               )}
 
-            {(rank === "협력사" || rank === "부협력사") && (
+            {/* {(rank === "협력사" || rank === "부협력사") && (
               <SelectInput
                 w="100%"
                 title="협력사명"
@@ -836,8 +844,8 @@ export default function Db() {
                 value={head_coop}
                 setValue={setHeadCoop}
               />
-            )}
-            {(rank === "협력사" || rank === "부협력사") && (
+            )} */}
+            {rank === "협력사" && (
               <SelectInput
                 w="100%"
                 title="부협력사명"
@@ -857,15 +865,17 @@ export default function Db() {
               value={org_status}
               setValue={setOrgStatus}
             />
-            {rank !== "부협력사" && rank !== "부관리자" && (
-              <SelectInput
-                w="100%"
-                title="등록처"
-                menuItems={uploaderMenuList}
-                value={uploader_organization_code}
-                setValue={setUploaderOrganizationCode}
-              />
-            )}
+            {rank !== "협력사" &&
+              rank !== "부협력사" &&
+              rank !== "부관리자" && (
+                <SelectInput
+                  w="100%"
+                  title="등록처"
+                  menuItems={uploaderMenuList}
+                  value={uploader_organization_code}
+                  setValue={setUploaderOrganizationCode}
+                />
+              )}
 
             <Row alignItems={"end"} sx={{ width: "100%" }}>
               <SelectInput
@@ -942,7 +952,9 @@ export default function Db() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      분배일
+                      {rank === "협력사" || rank === "부협력사"
+                        ? "등록일"
+                        : "분배일"}
                       <Button
                         text="금일"
                         bgColor={"gray"}

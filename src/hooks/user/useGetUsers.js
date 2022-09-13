@@ -82,7 +82,7 @@ export default function useGetUsers({
               geo:
                 geo === "전체" || geo === 0
                   ? undefined
-                  : areaMenuItems[geo] || geo,
+                  : areaMenuItems?.[geo] || geo,
               email: email,
               id: id,
               name: name,

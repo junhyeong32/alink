@@ -64,6 +64,8 @@ export default function BojangTable({
   const [rank] = useState(getCookie("user_info")?.grade);
   const [user_info] = useState(getCookie("user_info"));
 
+  console.log(data, user_info);
+
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -162,9 +164,6 @@ export default function BojangTable({
                   align="center"
                   sx={{
                     fontWeight:
-                      (rank === "본부장" ||
-                        rank === "지점장" ||
-                        rank === " 팀장") &&
                       d?.allocated_user?.pk === user_info?.pk
                         ? "bold"
                         : "normal",
@@ -183,9 +182,6 @@ export default function BojangTable({
                   sx={{
                     width: 10,
                     fontWeight:
-                      (rank === "본부장" ||
-                        rank === "지점장" ||
-                        rank === " 팀장") &&
                       d?.allocated_user?.pk === user_info?.pk
                         ? "bold"
                         : "normal",
@@ -203,9 +199,6 @@ export default function BojangTable({
                   align="center"
                   sx={{
                     fontWeight:
-                      (rank === "본부장" ||
-                        rank === "지점장" ||
-                        rank === " 팀장") &&
                       d?.allocated_user?.pk === user_info?.pk
                         ? "bold"
                         : "normal",
@@ -219,9 +212,6 @@ export default function BojangTable({
                   align="center"
                   sx={{
                     fontWeight:
-                      (rank === "본부장" ||
-                        rank === "지점장" ||
-                        rank === " 팀장") &&
                       d?.allocated_user?.pk === user_info?.pk
                         ? "bold"
                         : "normal",
@@ -237,16 +227,13 @@ export default function BojangTable({
                   sx={{
                     color: d?.org_status === "AS승인" ? "#FF0000" : "#3532C7",
                     fontWeight:
-                      (rank === "본부장" ||
-                        rank === "지점장" ||
-                        rank === " 팀장") &&
                       d?.allocated_user?.pk === user_info?.pk
                         ? "bold"
                         : "normal",
                   }}
                 >
                   {d?.org_status}
-                </TableCell>
+                </TableCell>{" "}
                 {(rank === "관리자" ||
                   rank === "협력사" ||
                   rank === "부협력사") && (
@@ -256,9 +243,6 @@ export default function BojangTable({
                     onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                     sx={{
                       fontWeight:
-                        (rank === "본부장" ||
-                          rank === "지점장" ||
-                          rank === " 팀장") &&
                         d?.allocated_user?.pk === user_info?.pk
                           ? "bold"
                           : "normal",
@@ -267,7 +251,6 @@ export default function BojangTable({
                     {d?.uploader?.name}
                   </TableCell>
                 )}
-
                 {rank !== "부협력사" && rank !== "협력사" && (
                   <>
                     <TableCell
@@ -278,9 +261,6 @@ export default function BojangTable({
                       }
                       sx={{
                         fontWeight:
-                          (rank === "본부장" ||
-                            rank === "지점장" ||
-                            rank === " 팀장") &&
                           d?.allocated_user?.pk === user_info?.pk
                             ? "bold"
                             : "normal",
@@ -296,9 +276,6 @@ export default function BojangTable({
                       }
                       sx={{
                         fontWeight:
-                          (rank === "본부장" ||
-                            rank === "지점장" ||
-                            rank === " 팀장") &&
                           d?.allocated_user?.pk === user_info?.pk
                             ? "bold"
                             : "normal",
@@ -308,16 +285,12 @@ export default function BojangTable({
                     </TableCell>
                   </>
                 )}
-
                 <TableCell
                   key={d?.pk + 7}
                   align="center"
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                   sx={{
                     fontWeight:
-                      (rank === "본부장" ||
-                        rank === "지점장" ||
-                        rank === " 팀장") &&
                       d?.allocated_user?.pk === user_info?.pk
                         ? "bold"
                         : "normal",
@@ -325,7 +298,6 @@ export default function BojangTable({
                 >
                   {d?.allocated_user?.name}
                 </TableCell>
-
                 {header?.fields?.map((head, _key) => {
                   if (
                     head?.is_list_shown === 1 &&
@@ -340,9 +312,6 @@ export default function BojangTable({
                           align="center"
                           sx={{
                             fontWeight:
-                              (rank === "본부장" ||
-                                rank === "지점장" ||
-                                rank === " 팀장") &&
                               d?.allocated_user?.pk === user_info?.pk
                                 ? "bold"
                                 : "normal",
@@ -383,9 +352,6 @@ export default function BojangTable({
                           align="center"
                           sx={{
                             fontWeight:
-                              (rank === "본부장" ||
-                                rank === "지점장" ||
-                                rank === " 팀장") &&
                               d?.allocated_user?.pk === user_info?.pk
                                 ? "bold"
                                 : "normal",
@@ -412,9 +378,6 @@ export default function BojangTable({
                         align="center"
                         sx={{
                           fontWeight:
-                            (rank === "본부장" ||
-                              rank === "지점장" ||
-                              rank === " 팀장") &&
                             d?.allocated_user?.pk === user_info?.pk
                               ? "bold"
                               : "normal",
@@ -429,7 +392,6 @@ export default function BojangTable({
                     );
                   }
                 })}
-
                 {header?.fields?.map((head, _key) => {
                   if (
                     head?.is_list_shown === 1 &&
@@ -535,9 +497,6 @@ export default function BojangTable({
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                   sx={{
                     fontWeight:
-                      (rank === "본부장" ||
-                        rank === "지점장" ||
-                        rank === " 팀장") &&
                       d?.allocated_user?.pk === user_info?.pk
                         ? "bold"
                         : "normal",
@@ -550,9 +509,6 @@ export default function BojangTable({
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                   sx={{
                     fontWeight:
-                      (rank === "본부장" ||
-                        rank === "지점장" ||
-                        rank === " 팀장") &&
                       d?.allocated_user?.pk === user_info?.pk
                         ? "bold"
                         : "normal",
@@ -565,7 +521,7 @@ export default function BojangTable({
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>{" "}
     </Root>
   );
 }
