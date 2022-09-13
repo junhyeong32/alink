@@ -46,7 +46,6 @@ export default function DBApply() {
   const [changeDb, setChangeDb] = useState([]); //전송 state
   const [pk, setPk] = useState("");
   const [loading, setLoading] = useState(true);
-  const [isChangeArea, setIsChangeArea] = useState(false);
 
   const { menus } = useGetMenus();
   const { area } = useGetArea();
@@ -67,15 +66,12 @@ export default function DBApply() {
           allocation: [
             {
               is_activated: menu?.is_activated,
-              count: isChangeArea
-                ? 0
-                : db?.find((d) => d?.pk === menu.pk)?.allocation?.count,
-              count_for_next_month: isChangeArea
-                ? 0
-                : moment().date() >= day
-                ? 0
-                : db?.find((d) => d?.pk === menu.pk)?.allocation
-                    ?.count_for_next_month,
+              count: db?.find((d) => d?.pk === menu.pk)?.allocation?.count,
+              count_for_next_month:
+                moment().date() >= day
+                  ? 0
+                  : db?.find((d) => d?.pk === menu.pk)?.allocation
+                      ?.count_for_next_month,
             },
           ],
           geomap: (() => {
@@ -138,6 +134,8 @@ export default function DBApply() {
     setLoading(false);
   }, [menus, user]);
 
+  console.log(changeDb);
+
   //TODO
   // 모달창
   // 디비 수량 신청 및 지역 설정
@@ -146,19 +144,7 @@ export default function DBApply() {
     <Layout loading={loading}>
       <Column>
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
-          <Row justifyContent={"between"} sx={{ width: "100%" }}>
-            <Typography variant="h1">DB 신청</Typography>
-            <Button
-              variant={isChangeArea ? "contained" : "outlined"}
-              bgColor="primary"
-              text="담당 지역 변경"
-              color={isChangeArea ? "primary.white" : "primary.black"}
-              fs="h5"
-              w={160}
-              h={30}
-              action={() => setIsChangeArea(!isChangeArea)}
-            />
-          </Row>
+          <Typography variant="h1">DB 신청</Typography>
           {user?.acfp > 300000 && (
             <Column
               justifyContent={"start"}
@@ -196,7 +182,9 @@ export default function DBApply() {
                     onBlur={(e) =>
                       setChangeDb((prev) => {
                         const newData = [...prev];
-                        newData[key].allocation[0].count = e.target.value;
+                        newData[key].allocation[0].count =
+                          Number(newData[key].allocation[0].count) +
+                          Number(e.target.value);
 
                         return newData;
                       })
@@ -206,7 +194,7 @@ export default function DBApply() {
                     개
                   </Typography>
 
-                  {(true || moment().date() >= day) && (
+                  {moment().date() >= day && (
                     <>
                       <LabelUnderLineInput
                         title="익월"
@@ -323,30 +311,18 @@ export default function DBApply() {
             w={160}
             h={30}
             disabled={moment().date() >= day ? true : false}
-            action={() => {
-              openModal({
-                modal: "needconfirm",
-                content: {
-                  text: isChangeArea
-                    ? "담당지역만 변경이 됩니다"
-                    : "담당지역과 DB 개수를 덮어씁니다",
-                  action: async () => {
-                    const res = await Axios.Post("user/db/count", {
-                      token: getAccessToken(),
-                      db: changeDb,
-                    });
-
-                    if (res?.code === 200) {
-                      enqueueSnackbar("db가 신청되었습니다.", {
-                        variant: "success",
-                        autoHideDuration: 2000,
-                      });
-                      closeModal();
-                      getUser();
-                    }
-                  },
-                },
+            action={async () => {
+              const res = await Axios.Post("user/db/count", {
+                token: getAccessToken(),
+                db: changeDb,
               });
+
+              if (res?.code === 200)
+                enqueueSnackbar("db가 신청되었습니다.", {
+                  variant: "success",
+                  autoHideDuration: 2000,
+                });
+              getUser();
             }}
           />
         </Row>
