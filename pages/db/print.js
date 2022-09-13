@@ -242,6 +242,8 @@ export default function Print() {
           setDateAge(valuesAge);
         }
       }
+
+      setLoading(false);
     };
 
     getDbDetail();
@@ -322,7 +324,6 @@ export default function Print() {
         );
 
         setUserMenuList(listObj);
-        setLoading(false);
       }
     };
     getUserList();
@@ -334,6 +335,8 @@ export default function Print() {
       window.print();
     }, 500);
   }, [loading]);
+
+  console.log(loading);
 
   if (loading) return <></>;
 
