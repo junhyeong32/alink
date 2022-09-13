@@ -178,21 +178,16 @@ export default function Db() {
                   : head_office_org_code === "전체"
                   ? undefined
                   : head_office_org_code,
-              org_code:
-                (rank === "협력사" || rank === "부협력사") &&
-                sub_coop === "전체"
-                  ? undefined
-                  : (rank === "협력사" || rank === "부협력사") &&
-                    sub_coop !== "전체"
-                  ? sub_coop
-                  : org_code === "전체"
-                  ? undefined
-                  : org_code,
+              org_code: org_code === "전체" ? undefined : org_code,
               status: status === "전체" ? undefined : status,
               org_status: org_status === "전체" ? undefined : org_status,
               allocated_user: allocated_user ? allocated_user : undefined,
               uploader_organization_code:
-                uploader_organization_code === "전체"
+                rank === "협력사" && sub_coop === "전체"
+                  ? undefined
+                  : rank === "협력사" && sub_coop !== "전체"
+                  ? sub_coop
+                  : uploader_organization_code === "전체"
                   ? undefined
                   : uploader_organization_code,
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
