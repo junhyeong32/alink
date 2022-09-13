@@ -37,8 +37,8 @@ export default function Login() {
     //ALINK0000
     //link000!!
 
-    // ALINK0001
-    // link001!!
+    // ALINK0001 link001!!
+    // 
 
     if (res) {
       setCookie("user_info", res, {

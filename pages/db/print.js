@@ -341,7 +341,7 @@ export default function Print() {
   if (loading) return <></>;
 
   return (
-    <Column justifyContent={"between"} sx={{ gap: 2.8, p: 3 }}>
+    <Row justifyContent={"between"} sx={{ width: "100%", gap: 2.8, p: 3 }}>
       <Row
         justifyContent={"start"}
         flexDirection={{
@@ -757,6 +757,7 @@ export default function Print() {
             </RowLabel>
           )}
         </Column>
+
         <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
           <Typography variant="h1">담당자 정보</Typography>
           <RowLabel label="인수상태" fs="h5">
@@ -877,6 +878,6 @@ export default function Print() {
             )}
         </Column>
       </Row>
-    </Column>
+    </Row>
   );
 }

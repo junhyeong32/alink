@@ -32,7 +32,7 @@ export default function RowLabel({
         variant={fs || "normal"}
         align="left"
         sx={{
-          minWidth: label_w || "45px",
+          minWidth: label_w || "58px",
           width: label_w,
           wordBreak: !textNoWrap && "break-all",
           whiteSpace: textNoWrap ? "nowrap" : "none",

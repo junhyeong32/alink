@@ -77,6 +77,19 @@ export default memo(function User() {
   const [isUsersPending, setIsUsersPending] = useState(true);
   const [totalCouunt, setTotalCount] = useState();
 
+  useEffect(() => {
+    const getParentArea = async () => {
+      const res = (
+        await Axios.Get(`db/geomap_parent?token=${getAccessToken()}`)
+      )?.data;
+      if (res?.code === 200) {
+        setAreaMenuItems(["전체", ...res?.data]);
+      }
+    };
+
+    getParentArea();
+  }, []);
+
   const getUsers = async (orgCode, is_init) => {
     if (Number(excel) === 1) {
       window.open(
@@ -120,18 +133,22 @@ export default memo(function User() {
               token: getAccessToken(),
               page: router.query.page || router.query.page,
               count: router.query.count || router.query.count,
-              status: status === "전체" ? undefined : router.query.status,
-              grade: grade === "전체" ? undefined : grade,
+              status:
+                router.query.status === "전체"
+                  ? undefined
+                  : router.query.status,
+              grade:
+                router.query.grade === "전체" ? undefined : router.query.grade,
               head_office_org_code:
-                head_office_org_code === "전체"
+                router.query.head_office_org_code === "전체"
                   ? undefined
                   : router.query.head_office_org_code,
               org_code:
-                org_code === "전체" || orgCode === "전체"
+                router.query.org_code === "전체"
                   ? undefined
                   : router.query.org_code,
               geo:
-                geo === "전체" || geo === 0
+                router.query.geo === "0"
                   ? undefined
                   : areaMenuItems[router.query.geo],
               email: router.query.email,
@@ -159,11 +176,25 @@ export default memo(function User() {
   }, [is_search]);
 
   useEffect(() => {
-    getUsers();
-  }, [page, excel, router.query]);
-  //data
+    if (!router.isReady) return;
 
-  // const { openModal, closeModal, modalContent } = useContext(ModalContext);
+    setStatus(router.query.status || status);
+    setGrade(router.query.grade || grade);
+    setHeadOfficeOrgCode(
+      router.query.head_office_org_code || head_office_org_code
+    );
+    setOrgCode(router.query.org_code || org_code);
+    setGeo(router.query.geo || 0);
+    setEmail(router.query.email || email);
+    setId(router.query.id || id);
+    setName(router.query.name || name);
+    setPhone(router.query.phone || phone);
+  }, [router.query]);
+
+  useEffect(() => {
+    if (areaMenuItems.length === 0) return;
+    getUsers();
+  }, [page, excel, router.query, areaMenuItems]);
 
   const handleInit = () => {
     setStatus("전체");
@@ -179,19 +210,6 @@ export default memo(function User() {
 
     router.push("user");
   };
-
-  useEffect(() => {
-    const getParentArea = async () => {
-      const res = (
-        await Axios.Get(`db/geomap_parent?token=${getAccessToken()}`)
-      )?.data;
-      if (res?.code === 200) {
-        setAreaMenuItems(["전체", ...res?.data]);
-      }
-    };
-
-    getParentArea();
-  }, []);
 
   useEffect(() => {
     if (org_code === "전체") return;
@@ -242,7 +260,11 @@ export default memo(function User() {
 
   // },[head_office_org_code])
 
-  console.log("areaMenuItems", areaMenuItems);
+  console.log(
+    "areaMenuItems",
+    areaMenuItems[router.query.geo],
+    router.query.geo
+  );
 
   return (
     <Layout loading={loading}>
