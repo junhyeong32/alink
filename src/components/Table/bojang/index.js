@@ -126,7 +126,11 @@ export default function BojangTable({
                     </TableCell>
                   );
               })}
-              <TableCell align="center">분배일시</TableCell>
+              <TableCell align="center">
+                {rank === "협력사" || rank === "부협력사"
+                  ? "등록일시"
+                  : "분배일시"}
+              </TableCell>
               <TableCell align="center">최초 분배자</TableCell>
             </TableRow>
           </TableHead>
@@ -503,7 +507,9 @@ export default function BojangTable({
                   }}
                   align="center"
                 >
-                  {d?.allocated_date}
+                  {rank === "협력사" || rank === "부협력사"
+                    ? d?.created_date
+                    : d?.allocated_date}
                 </TableCell>
                 <TableCell
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
