@@ -20,12 +20,15 @@ import { useTransition } from "react";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 import { OutLineInput } from "../../src/components/Input";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
+import useGetMenus from "../../src/hooks/setting/useGetMenus";
+import { getTitleOfOrg } from "../../src/utility/organization/getTitleOfOrg";
 
 export default function Detail() {
   const router = useRouter();
   const [user, setUser] = useState([]);
   const [isPending, startTransition] = useTransition();
   const { area } = useGetArea();
+  const { menus } = useGetMenus();
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -71,7 +74,7 @@ export default function Detail() {
                   : key === 2
                   ? user?.id
                   : key === 3
-                  ? user?.head_office
+                  ? getTitleOfOrg(user)
                   : key === 4
                   ? user?.email
                   : key === 5
@@ -86,14 +89,17 @@ export default function Detail() {
 
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Typography variant="h1">DB 관리</Typography>
-          {user?.db?.map((d, key) => (
+          {menus?.map((d, key) => (
             <Column key={key}>
               <RowLabel label={d?.title} fs="h4" label_w={83}>
                 <Row alignItems={"center"}>
                   <OutLineInput
                     disabled
                     w={90}
-                    defaultValue={d?.allocation?.count}
+                    defaultValue={
+                      user?.db?.filter((db) => db?.pk === d?.pk)[0]?.allocation
+                        ?.count
+                    }
                   />
                   <Typography variant="h6" pl={1}>
                     개
@@ -101,32 +107,41 @@ export default function Detail() {
                 </Row>
                 <RoundColorBox
                   background={
-                    d?.location?.is_activated === 1 ? "#0D1D41" : "#909090"
+                    user?.db?.filter((db) => db?.pk === d?.pk)[0].location
+                      ?.is_activated === 1
+                      ? "#0D1D41"
+                      : "#909090"
                   }
                 >
                   {d?.location?.is_activated === 1 ? "ON" : "OFF"}
                 </RoundColorBox>
 
                 <Row wrap={"wrap"} sx={{ gap: 1 }}>
-                  {area?.map((map, area_key) => (
-                    <RoundColorBox
-                      key={area_key}
-                      background={
-                        d?.geomap?.find((d) => d?.name === map?.name)
-                          ? "#0D1D41"
-                          : "#E6E6E6"
-                      }
-                      fc={
-                        d?.geomap?.find((d) => d?.name === map?.name)
-                          ? "#FFFFFF"
-                          : "#000000"
-                      }
-                      fs={12}
-                      sx={{ maxWidth: 100, gap: 1 }}
-                    >
-                      {map?.name}
-                    </RoundColorBox>
-                  ))}
+                  {d?.geomap?.map((map, area_key) => {
+                    return (
+                      <RoundColorBox
+                        key={area_key}
+                        background={
+                          user?.db
+                            ?.filter((db) => db?.pk === d?.pk)[0]
+                            .geomap?.find((d) => d?.name === map?.name)
+                            ? "#0D1D41"
+                            : "#E6E6E6"
+                        }
+                        fc={
+                          user?.db
+                            ?.filter((db) => db?.pk === d?.pk)[0]
+                            .geomap?.find((d) => d?.name === map?.name)
+                            ? "#FFFFFF"
+                            : "#000000"
+                        }
+                        fs={12}
+                        sx={{ maxWidth: 100, gap: 1 }}
+                      >
+                        {map?.name}
+                      </RoundColorBox>
+                    );
+                  })}
                 </Row>
               </RowLabel>
             </Column>
