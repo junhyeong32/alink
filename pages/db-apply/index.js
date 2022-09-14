@@ -32,6 +32,7 @@ import { useContext } from "react";
 import { ModalContext } from "../../src/contexts/ModalContext";
 import { numberFormat } from "../../src/utility/math";
 import moment from "moment";
+import { sortGeo } from "../../src/utility/sortGeo";
 
 export default function DBApply() {
   const router = useRouter();
@@ -45,6 +46,7 @@ export default function DBApply() {
   const [changeDb, setChangeDb] = useState([]); //전송 state
   const [pk, setPk] = useState("");
   const [loading, setLoading] = useState(true);
+  const [area, setArea] = useState([]);
 
   const { menus } = useGetMenus();
   const { user, isUserPending, getUser } = useGetUser();
@@ -141,6 +143,8 @@ export default function DBApply() {
     setLoading(false);
   }, [menus, user]);
 
+  console.log(area);
+
   return (
     <Layout loading={loading}>
       <Column>
@@ -234,13 +238,7 @@ export default function DBApply() {
                       setChangeDb((prev) => {
                         const newData = [...prev];
 
-                        console.log(
-                          newData[key].geomap.length,
-                          menu?.geomap?.length
-                        );
-
                         if (newData[key].geomap.length < menu?.geomap?.length) {
-                          console.log("start");
                           newData[key].geomap = [];
 
                           menu?.geomap?.map((map) =>

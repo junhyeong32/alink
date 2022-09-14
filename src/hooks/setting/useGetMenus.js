@@ -3,6 +3,7 @@ import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/router";
 import Axios from "../../utility/api";
 import { getAccessToken } from "../../utility/getCookie";
+import { sortGeo } from "../../utility/sortGeo";
 
 export default function useGetMenus() {
   const router = useRouter();
@@ -17,11 +18,13 @@ export default function useGetMenus() {
         },
       })
     )?.data;
-    
-    if (res?.code === 200)
+
+    if (res?.code === 200) {
+      res?.data.map((d) => sortGeo(d.geomap));
       startTransition(() => {
         setMenus(res?.data);
       });
+    }
   };
 
   useEffect(() => {

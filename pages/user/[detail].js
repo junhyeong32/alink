@@ -36,6 +36,7 @@ import {
   getOrgByParentRank,
 } from "../../src/utility/organization/getOrgWithUnit";
 import useGetArea from "../../src/hooks/setting/useGetArea";
+import { sortGeo } from "../../src/utility/sortGeo";
 
 const rowLabelWidth = {
   width: {
@@ -243,6 +244,7 @@ export default function UserDetail() {
     if (!router.isReady) return;
 
     if (menus.length !== 0 && router.query.detail === "new-id") {
+      menus.map((d) => sortGeo(d.geomap));
       setDb((prev) => {
         const newData = [...prev];
 
