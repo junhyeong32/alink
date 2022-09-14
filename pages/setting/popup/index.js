@@ -93,8 +93,6 @@ export default function Popup() {
     setOrgMenuList(head_org);
   }, [sales]);
 
-  console.log(content);
-
   return (
     <Layout>
       <Column sx={{ gap: 2, maxWidth: 927 }}>

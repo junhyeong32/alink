@@ -255,17 +255,6 @@ export default memo(function User() {
     }
   }, [org_pending, isUsersPending]);
 
-  // useEffect(() => {
-  //   router.
-
-  // },[head_office_org_code])
-
-  console.log(
-    "areaMenuItems",
-    areaMenuItems[router.query.geo],
-    router.query.geo
-  );
-
   return (
     <Layout loading={loading}>
       <Column>

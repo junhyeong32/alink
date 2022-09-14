@@ -221,8 +221,6 @@ export default function NewDb() {
     });
   }, [parent_area]);
 
-  console.log("menu,", values);
-
   return (
     <Layout loading={loading}>
       <Column
@@ -415,7 +413,6 @@ export default function NewDb() {
                   </RowLabel>
                 );
               case "특이사항":
-                
                 return (
                   <RowLabel label="특이사항" fs="h5" key={key}>
                     <OutLineInput

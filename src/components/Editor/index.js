@@ -59,8 +59,6 @@ export default function Editor(props) {
 
       const res = await uploadFile(file);
 
-      console.log(res);
-
       if (res) {
         const range = quillRef.current.getEditorSelection();
         quillRef.current

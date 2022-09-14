@@ -155,7 +155,6 @@ export default function UserDetail() {
   useEffect(() => {
     if (grade === "부협력사") {
       const coop_org = {};
-      console.log(cooperation);
       getOrgHeadOffice(cooperation, coop_org);
       setCooperationMenuList(coop_org);
     }
@@ -244,7 +243,7 @@ export default function UserDetail() {
     if (!router.isReady) return;
 
     if (menus.length !== 0 && router.query.detail === "new-id") {
-      menus.map((d) => sortGeo(d.geomap));
+      
       setDb((prev) => {
         const newData = [...prev];
 

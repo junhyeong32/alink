@@ -40,8 +40,6 @@ const Root = styled("div")`
 `;
 
 export default function SmsTable({ data, page }) {
-  console.log("data", data);
-
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>

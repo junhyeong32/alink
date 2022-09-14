@@ -336,8 +336,6 @@ export default function Print() {
     }, 500);
   }, [loading]);
 
-  console.log(loading);
-
   if (loading) return <></>;
 
   return (
@@ -602,7 +600,6 @@ export default function Print() {
                     </RowLabel>
                   );
                 case "특이사항":
-                  console.log("xmrdl", field);
                   return (
                     <RowLabel label="특이사항" fs="h5" key={key}>
                       <OutLineInput
@@ -633,12 +630,7 @@ export default function Print() {
                         onBlur={(e) =>
                           setValues((prev) => {
                             const newData = [...prev];
-                            console.log(
-                              "hi",
-                              newData.filter(
-                                (data) => data.title === "특이사항"
-                              )
-                            );
+
                             if (
                               newData.filter(
                                 (data) => data.title === "특이사항"

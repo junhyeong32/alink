@@ -255,8 +255,6 @@ export default function Db() {
         setHeadCoopMenuList(coop_org);
         setDeninedMenuList(denined_org);
 
-        console.log("coop_org", coop_org);
-
         setArea(res?.data?.geomap);
 
         setAreaParentMenuList(() => {
@@ -527,8 +525,6 @@ export default function Db() {
 
     getDbDeniedList();
   }, [denied_org_code, open]);
-
-  console.log(user_info);
 
   return (
     <Layout

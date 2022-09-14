@@ -123,8 +123,6 @@ export default function Popup() {
           setActivate(activate);
         }
 
-        console.log(document.querySelector(".ql-editor"));
-
         document.querySelector(".ql-editor").innerHTML = content;
 
         setContent(content);

@@ -123,7 +123,7 @@ export default function DBApply() {
         },
       });
     } else if (
-      user?.deposit_status === "입금 완료" ||
+      (user?.deposit_status === "입금 완료" && user?.status === "미승인") ||
       user?.status === "미승인"
     ) {
       openModal({
@@ -142,8 +142,6 @@ export default function DBApply() {
 
     setLoading(false);
   }, [menus, user]);
-
-  console.log(area);
 
   return (
     <Layout loading={loading}>

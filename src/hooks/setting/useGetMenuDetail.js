@@ -19,7 +19,7 @@ export default function useGetMenuDetail(menu_id) {
           },
         })
       )?.data;
-      console.log(res);
+
       if (res?.code === 200)
         startTransition(() => {
           setMenuDetail(res?.data);

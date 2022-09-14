@@ -64,8 +64,6 @@ export default function BojangTable({
   const [rank] = useState(getCookie("user_info")?.grade);
   const [user_info] = useState(getCookie("user_info"));
 
-  console.log(data, user_info);
-
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>

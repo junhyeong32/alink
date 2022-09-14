@@ -66,8 +66,6 @@ export default function Upload({ index }) {
     reload,
   } = modalContent[index];
 
-  console.log(file);
-
   return (
     <Modal open={modal[index] === "upload"} onClose={closeModal}>
       <Box>

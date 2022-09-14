@@ -342,8 +342,6 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log("hi", status);
-
   return (
     <Layout loading={loading}>
       <Column justifyContent={"between"} sx={{ gap: 2.8 }}>
@@ -609,7 +607,6 @@ export default function DbDetail() {
                       </RowLabel>
                     );
                   case "특이사항":
-                    console.log("xmrdl", field);
                     return (
                       <RowLabel label="특이사항" fs="h5" key={key}>
                         <OutLineInput
@@ -641,12 +638,7 @@ export default function DbDetail() {
                           onBlur={(e) =>
                             setValues((prev) => {
                               const newData = [...prev];
-                              console.log(
-                                "hi",
-                                newData.filter(
-                                  (data) => data.title === "특이사항"
-                                )
-                              );
+
                               if (
                                 newData.filter(
                                   (data) => data.title === "특이사항"
