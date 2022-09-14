@@ -127,12 +127,19 @@ export default function DBApply() {
       openModal({
         modal: "depositconfirm",
       });
+    } else if (moment().date() >= day) {
+      openModal({
+        modal: "needconfirm",
+        content: {
+          text: "다음 달 디비 수량 신청 기간입니다",
+          buttonText: "확인",
+          action: closeModal,
+        },
+      });
     }
 
     setLoading(false);
   }, [menus, user]);
-
-  console.log(changeDb);
 
   return (
     <Layout loading={loading}>
@@ -145,11 +152,6 @@ export default function DBApply() {
               alignItems={"start"}
               sc={{ mb: 2 }}
             >
-              {moment().date() >= day && (
-                <Typography variant="h5" mb={2}>
-                  다음달 디비 수량 신청 기간입니다
-                </Typography>
-              )}
               <Typography variant="h5" sx={{ color: "#3532C7" }}>
                 {new Date().getMonth() + 1}월 DB 지원 대상자입니다.
               </Typography>
