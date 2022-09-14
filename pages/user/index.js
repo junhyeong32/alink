@@ -105,7 +105,7 @@ export default memo(function User() {
                 ? undefined
                 : head_office_org_code,
             org_code: org_code === "전체" ? undefined : org_code,
-            geo: geo === "전체" ? undefined : geo,
+            geo: geo === "0" || geo === 0 ? undefined : geo,
             email: email,
             id: id,
             name: name,
