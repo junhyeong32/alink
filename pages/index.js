@@ -137,7 +137,7 @@ export default function Index({ getCookies }) {
               : rank === "부관리자"
               ? user_info?.org_code
               : undefined,
-          geo_name: geo_name === 0 ? undefined : areaMenuItems[geo_name],
+          geo_name: geo_name === "0" ? undefined : areaMenuItems[geo_name],
           date: send_date,
         },
       })
@@ -153,7 +153,7 @@ export default function Index({ getCookies }) {
       await Axios.Get(`db/dashboard_cooperation`, {
         params: {
           token: getAccessToken(),
-          geo_name: geo_name === 0 ? undefined : areaMenuItems[geo_name],
+          geo_name: geo_name === "0" ? undefined : areaMenuItems[geo_name],
           date: send_date,
         },
       })

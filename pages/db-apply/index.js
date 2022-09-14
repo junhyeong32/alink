@@ -22,7 +22,6 @@ import {
 } from "../../src/components/Input";
 import CustomSwitch from "../../src/components/Switch";
 import useGetUser from "../../src/hooks/user/useGetUser";
-import useGetArea from "../../src/hooks/setting/useGetArea";
 import Axios from "../../src/utility/api";
 import { getAccessToken } from "../../src/utility/getCookie";
 import { useSnackbar } from "notistack";
@@ -48,7 +47,6 @@ export default function DBApply() {
   const [loading, setLoading] = useState(true);
 
   const { menus } = useGetMenus();
-  const { area } = useGetArea();
   const { user, isUserPending, getUser } = useGetUser();
   const { openModal, closeModal } = useContext(ModalContext);
 
@@ -136,10 +134,6 @@ export default function DBApply() {
 
   console.log(changeDb);
 
-  //TODO
-  // 모달창
-  // 디비 수량 신청 및 지역 설정
-
   return (
     <Layout loading={loading}>
       <Column>
@@ -223,12 +217,12 @@ export default function DBApply() {
                   </Typography>
                   <RoundColorBox
                     background={
-                      changeDb[key]?.geomap.length === area.length
+                      changeDb[key]?.geomap.length === menu?.geomap?.length
                         ? "#0D1D41"
                         : "#E6E6E6"
                     }
                     fc={
-                      changeDb[key]?.geomap.length === area.length
+                      changeDb[key]?.geomap.length === menu?.geomap?.length
                         ? "#FFFFFF"
                         : "#000000"
                     }
@@ -238,10 +232,16 @@ export default function DBApply() {
                       setChangeDb((prev) => {
                         const newData = [...prev];
 
-                        if (newData[key].geomap.length < area.length) {
+                        console.log(
+                          newData[key].geomap.length,
+                          menu?.geomap?.length
+                        );
+
+                        if (newData[key].geomap.length < menu?.geomap?.length) {
+                          console.log("start");
                           newData[key].geomap = [];
 
-                          area.map((map) =>
+                          menu?.geomap?.map((map) =>
                             newData[key].geomap?.push({ name: map?.name })
                           );
                         } else {
@@ -255,7 +255,7 @@ export default function DBApply() {
                     전국
                   </RoundColorBox>
 
-                  {area?.map((map, area_key) => (
+                  {menu?.geomap?.map((map, area_key) => (
                     <RoundColorBox
                       key={area_key}
                       background={
