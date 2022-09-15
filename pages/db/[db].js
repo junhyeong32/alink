@@ -829,6 +829,7 @@ export default function DbDetail() {
               </RowLabel>
             )}
             {rank !== "협력사" &&
+              rank !== "부협력사" &&
               rank !== "본부장" &&
               rank !== "지점장" &&
               rank !== "팀장" &&
@@ -841,7 +842,8 @@ export default function DbDetail() {
                       title="소속"
                       disabled={
                         allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자"
+                        rank !== "관리자" &&
+                        rank !== "부관리자"
                       }
                       w={"50%"}
                       menuItems={orgMenuList}
@@ -872,7 +874,8 @@ export default function DbDetail() {
                       title="담당자명"
                       disabled={
                         allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자"
+                        rank !== "관리자" &&
+                        rank !== "부관리자"
                       }
                       w={"50%"}
                       menuItems={userMenuList}
