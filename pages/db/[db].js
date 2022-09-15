@@ -829,7 +829,6 @@ export default function DbDetail() {
               </RowLabel>
             )}
             {rank !== "협력사" &&
-              rank !== "부협력사" &&
               rank !== "본부장" &&
               rank !== "지점장" &&
               rank !== "팀장" &&

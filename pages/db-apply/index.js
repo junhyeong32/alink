@@ -143,6 +143,8 @@ export default function DBApply() {
     setLoading(false);
   }, [menus, user]);
 
+  console.log(user?.db);
+
   return (
     <Layout loading={loading}>
       <Column>
@@ -309,19 +311,54 @@ export default function DBApply() {
             w={160}
             h={30}
             disabled={moment().date() >= day ? true : false}
-            action={async () => {
-              const res = await Axios.Post("user/db/count", {
-                token: getAccessToken(),
-                db: changeDb,
-              });
+            action={() => {
+              openModal({
+                modal: "needconfirm",
+                content: {
+                  contents: (
+                    <Typography>
+                      - 신청수량 :{" "}
+                      {/* {menus?.map((menu, key) => {db?.find((d) => d?.pk === menu.pk).geomap?.map((geo) =>
+              menu?.title +
+              changeDb[key]?.allocation[0]?.count +
+              "개 "
+            )} */}
+                      {console.log(
+                        "hi",
+                        menus?.map((menu, key) => {
+                          return user?.db?.find((db) => db?.pk === menu.pk);
+                        })
+                      )}
+                      {menus
+                        ?.map((menu, key) => {
+                          return user?.db?.find((db) => db?.pk === menu.pk);
+                        })
+                        ?.map((d) => d?.title + d?.allocation?.count + "개 ")}
+                      <br />- 잔여수량 :{" "}
+                      {menus?.map(
+                        (menu, key) =>
+                          menu?.title +
+                          changeDb[key]?.allocation[0]?.count +
+                          "개 "
+                      )}{" "}
+                    </Typography>
+                  ),
+                  action: async () => {
+                    const res = await Axios.Post("user/db/count", {
+                      token: getAccessToken(),
+                      db: changeDb,
+                    });
 
-              if (res?.code === 200) {
-                enqueueSnackbar("db가 신청되었습니다.", {
-                  variant: "success",
-                  autoHideDuration: 2000,
-                });
-                router.reload();
-              }
+                    if (res?.code === 200) {
+                      enqueueSnackbar("db가 신청되었습니다.", {
+                        variant: "success",
+                        autoHideDuration: 2000,
+                      });
+                      router.reload();
+                    }
+                  },
+                },
+              });
             }}
           />
         </Row>
