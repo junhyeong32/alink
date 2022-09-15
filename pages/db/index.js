@@ -192,7 +192,9 @@ export default function Db() {
                   : uploader_organization_code,
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
               geo_name: child_area === "전체" ? undefined : child_area,
-              values: undefined,
+              values: JSON.stringify(
+                [...values].filter((v) => v?.value !== "")
+              ),
               created_date_start:
                 (rank === "협력사" || rank === "부협력사") && start_date
                   ? new Date(start_date).getTime()
@@ -525,6 +527,8 @@ export default function Db() {
 
     getDbDeniedList();
   }, [denied_org_code, open]);
+
+  console.log(values);
 
   return (
     <Layout
