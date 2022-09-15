@@ -1149,6 +1149,7 @@ export default function DbDetail() {
           <Row sx={{ gap: 1 }}>
             {(allocated_user?.pk === user_info?.pk ||
               rank === "관리자" ||
+              rank === "부관리자" ||
               user_info?.org_code === uploader?.organization?.code ||
               uploader?.pk === user_info?.pk) && (
               <Button
@@ -1236,6 +1237,7 @@ export default function DbDetail() {
           </Row>
           {(allocated_user?.pk === user_info?.pk ||
             rank === "관리자" ||
+            rank === "부관리자" ||
             uploader?.pk === user_info?.pk) && (
             <Button
               variant="contained"

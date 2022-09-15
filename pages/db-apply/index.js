@@ -46,7 +46,7 @@ export default function DBApply() {
   const [changeDb, setChangeDb] = useState([]); //전송 state
   const [pk, setPk] = useState("");
   const [loading, setLoading] = useState(true);
-  const [area, setArea] = useState([]);
+  const [db_count, setDbCount] = useState([]);
 
   const { menus } = useGetMenus();
   const { user, isUserPending, getUser } = useGetUser();
@@ -143,7 +143,7 @@ export default function DBApply() {
     setLoading(false);
   }, [menus, user]);
 
-  console.log(user?.db);
+  console.log(changeDb);
 
   return (
     <Layout loading={loading}>
@@ -180,11 +180,10 @@ export default function DBApply() {
                     w={90}
                     defaultValue={0}
                     onBlur={(e) =>
-                      setChangeDb((prev) => {
+                      setDbCount((prev) => {
                         const newData = [...prev];
-                        newData[key].allocation[0].count =
-                          Number(newData[key].allocation[0].count) +
-                          Number(e.target.value);
+
+                        newData[key] = e.target.value;
 
                         return newData;
                       })
@@ -317,33 +316,36 @@ export default function DBApply() {
                 content: {
                   contents: (
                     <Typography>
-                      - 신청수량 :{" "}
-                      {/* {menus?.map((menu, key) => {db?.find((d) => d?.pk === menu.pk).geomap?.map((geo) =>
-              menu?.title +
-              changeDb[key]?.allocation[0]?.count +
-              "개 "
-            )} */}
-                      {console.log(
-                        "hi",
-                        menus?.map((menu, key) => {
-                          return user?.db?.find((db) => db?.pk === menu.pk);
-                        })
-                      )}
+                      - 잔여수량 :{" "}
                       {menus
                         ?.map((menu, key) => {
                           return user?.db?.find((db) => db?.pk === menu.pk);
                         })
-                        ?.map((d) => d?.title + d?.allocation?.count + "개 ")}
-                      <br />- 잔여수량 :{" "}
+                        ?.map(
+                          (d) => d?.title + " " + d?.allocation?.count + "개 "
+                        )}
+                      <br />- 신청수량 :{" "}
                       {menus?.map(
                         (menu, key) =>
                           menu?.title +
-                          changeDb[key]?.allocation[0]?.count +
+                          " " +
+                          (Number(db_count[key]) ? Number(db_count[key]) : 0) +
                           "개 "
                       )}{" "}
                     </Typography>
                   ),
                   action: async () => {
+                    setChangeDb((prev) => {
+                      const newData = [...prev];
+
+                      changeDb?.map(
+                        (db, key) =>
+                          Number(db?.allocation[0]?.count) +
+                          (Number(db_count[key]) ? Number(db_count[key]) : 0)
+                      );
+
+                      return newData;
+                    });
                     const res = await Axios.Post("user/db/count", {
                       token: getAccessToken(),
                       db: changeDb,
