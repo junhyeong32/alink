@@ -131,8 +131,8 @@ export default memo(function User() {
           await Axios.Get(`member`, {
             params: {
               token: getAccessToken(),
-              page: router.query.page || router.query.page,
-              count: router.query.count || router.query.count,
+              page: page,
+              count: count,
               status:
                 router.query.status === "전체"
                   ? undefined
