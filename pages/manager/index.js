@@ -27,6 +27,7 @@ import {
   getOrgWithManyUnit,
 } from "../../src/utility/organization/getOrgWithUnit";
 import { getTitleOfOrg_name } from "../../src/utility/organization/getTitleOfOrg";
+import useGetMenus from "../../src/hooks/setting/useGetMenus";
 
 export default memo(function User() {
   const router = useRouter();
@@ -47,6 +48,7 @@ export default memo(function User() {
   const { sales } = useGetOrganization("sales");
   const { users, allocation_total, getUsers, isUsersPending, totalCouunt } =
     useGetUsers({ page, count, org_code, email, id, name, phone });
+  const { menus } = useGetMenus();
 
   const handleInit = () => {
     // const doucument.
@@ -255,7 +257,11 @@ export default memo(function User() {
           </Row>
         </Column>
 
-        <ManagerTable data={users} allocation_total={allocation_total} />
+        <ManagerTable
+          data={users}
+          allocation_total={allocation_total}
+          menus={menus}
+        />
         <Row
           alignItems="center"
           justifyContent="center"

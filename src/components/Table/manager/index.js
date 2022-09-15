@@ -42,8 +42,9 @@ const Root = styled("div")`
   }
 `;
 
-export default function ManagerTable({ data, allocation_total }) {
+export default function ManagerTable({ data, allocation_total, menus }) {
   const router = useRouter();
+  console.log(menus);
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -59,10 +60,23 @@ export default function ManagerTable({ data, allocation_total }) {
                   {data}
                 </TableCell>
               ))}
-              {allocation_total?.map((location, key) => (
+              {/* {allocation_total?.map((location, key) => (
                 <TableCell key={key} align="center">
                   {location?.db.title}
                   <Column>{location?.count}</Column>
+                </TableCell>
+              ))}
+               */}
+              {menus?.map((menu, key) => (
+                <TableCell key={key} align="center">
+                  {menu.title}
+                  <Column>
+                    {
+                      allocation_total?.filter(
+                        (location) => location?.db?.pk === menu?.pk
+                      )?.[0]?.count
+                    }
+                  </Column>
                 </TableCell>
               ))}
             </TableRow>
@@ -139,21 +153,32 @@ export default function ManagerTable({ data, allocation_total }) {
                   >
                     {user?.phone}
                   </TableCell>
+                  {console.log(
+                    menus?.filter((menu) =>
+                      user?.allocations?.find((a) => a?.db?.pk === menu?.pk)
+                    )
+                  )}
 
-                  {user?.allocations.map((location, _key) => (
-                    <TableCell key={_key} align="center" sx={{ width: 150 }}>
-                      <Row sx={{ gap: 1 }}>
-                        <RoundColorBox
-                          background={
-                            location?.is_activated === 1 ? "#0D1D41" : "#909090"
-                          }
-                        >
-                          {location?.is_activated === 1 ? "ON" : "OFF"}
-                        </RoundColorBox>
-                        {location?.count} 개
-                      </Row>
-                    </TableCell>
-                  ))}
+                  {user?.allocations
+                    ?.filter((user) =>
+                      menus?.find((menu) => user.db?.pk === menu?.pk)
+                    )
+                    ?.map((location, _key) => (
+                      <TableCell key={_key} align="center" sx={{ width: 150 }}>
+                        <Row sx={{ gap: 1 }}>
+                          <RoundColorBox
+                            background={
+                              location?.is_activated === 1
+                                ? "#0D1D41"
+                                : "#909090"
+                            }
+                          >
+                            {location?.is_activated === 1 ? "ON" : "OFF"}
+                          </RoundColorBox>
+                          {location?.count} 개
+                        </Row>
+                      </TableCell>
+                    ))}
                 </TableRow>
               );
             })}
