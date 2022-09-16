@@ -45,6 +45,10 @@ import {
 import moment from "moment";
 import { LoadingButton } from "@mui/lab";
 import { formatPhoneNumber } from "../../src/utility/formatPhone";
+import {
+  getTitleOfOrg,
+  getTitleOfOrg_name,
+} from "../../src/utility/organization/getTitleOfOrg";
 
 const Input = styled("input")({
   display: "none",
@@ -342,7 +346,7 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log(user_code);
+  console.log(allocated_user);
 
   return (
     <Layout loading={loading}>
@@ -860,7 +864,12 @@ export default function DbDetail() {
                   />
                   <Row sx={{ width: "100%", gap: 1 }} alignItems={"center"}>
                     <Typography>
-                      {user_code?.org} {user_code?.name}
+                      {/*  || */}
+                      {user_code?.org
+                        ? user_code?.org + " " + user_code?.name
+                        : getTitleOfOrg(allocated_user) +
+                          " " +
+                          allocated_user?.name}
                     </Typography>
                   </Row>
                 </RowLabel>
@@ -1231,7 +1240,7 @@ export default function DbDetail() {
                 openModal({
                   modal: "needconfirm",
                   content: {
-                    contents: "해당DB를 삭제하시겠습니까?",
+                    text: "해당DB를 삭제하시겠습니까?",
                     buttonText: "삭제",
                     action: async () => {
                       const res = await Axios.Post("db/list/remove", {
