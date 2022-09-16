@@ -10,6 +10,7 @@ import Gift from "./db/gift";
 import Deposit from "./db/Deposit";
 import DepositConfirm from "./share/DepositConfirm";
 import MultipleUpload from "./share/MultipleUpload";
+import User from "./db/User";
 
 import { useContext } from "react";
 
@@ -45,6 +46,8 @@ export default function Modal() {
       return <DepositConfirm key={index} index={index} />;
     } else if (data === "multipleupload") {
       return <MultipleUpload key={index} index={index} />;
+    } else if (data === "chooseuser") {
+      return <User key={index} index={index} />;
     } else {
       return;
     }

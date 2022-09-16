@@ -342,6 +342,8 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
+  console.log(user_code);
+
   return (
     <Layout loading={loading}>
       <Column justifyContent={"between"} sx={{ gap: 2.8 }}>
@@ -834,54 +836,32 @@ export default function DbDetail() {
               rank !== "지점장" &&
               rank !== "팀장" &&
               rank !== "담당자" && (
-                <RowLabel label="소속/성명" fs="h5" alignItems="stasrt">
-                  <Row sx={{ width: "100%", gap: 1 }}>
-                    <LabelOutLineSelectInput
-                      alignItems={"start"}
-                      native
-                      title="소속"
-                      disabled={
-                        allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자" &&
-                        rank !== "부관리자"
-                      }
-                      w={"50%"}
-                      menuItems={orgMenuList}
-                      value={orgHead}
-                      setValue={setOrgHead}
-                    />
-                    {/* <LabelOutLineGroupingSelectInput
-                  alignItems={"start"}
-                  title="팀"
-                  w={"100%"}
-                  disabled={
-                    allocated_user?.pk !== user_info?.pk && rank !== "관리자"
-                  }
-                /> */}
-                    {/* <LabelOutLineSelectInput
-                  alignItems={"start"}
-                  title="팀"
-                  disabled={
-                    allocated_user?.pk !== user_info?.pk && rank !== "관리자"
-                  }
-                  w={"100%"}
-                  menuItems={teamMenuList}
-                  value={team}
-                  setValue={setTeam}
-                /> */}
-                    <LabelOutLineSelectInput
-                      alignItems={"start"}
-                      title="담당자명"
-                      disabled={
-                        allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자" &&
-                        rank !== "부관리자"
-                      }
-                      w={"50%"}
-                      menuItems={userMenuList}
-                      value={user_code}
-                      setValue={setUserCode}
-                    />
+                <RowLabel label="소속/성명" fs="h5" alignItems="center">
+                  <Button
+                    variant="contained"
+                    bgColor="primary"
+                    text="선택"
+                    color="primary.white"
+                    fs="h5"
+                    h={28}
+                    disabled={
+                      allocated_user?.pk !== user_info?.pk &&
+                      rank !== "관리자" &&
+                      rank !== "부관리자"
+                    }
+                    action={() =>
+                      openModal({
+                        modal: "chooseuser",
+                        content: {
+                          action: (value) => setUserCode(value),
+                        },
+                      })
+                    }
+                  />
+                  <Row sx={{ width: "100%", gap: 1 }} alignItems={"center"}>
+                    <Typography>
+                      {user_code?.org} {user_code?.name}
+                    </Typography>
                   </Row>
                 </RowLabel>
               )}
@@ -1195,7 +1175,7 @@ export default function DbDetail() {
                           list_pk: router.query.db,
                           db_pk: router.query.menu,
                           organization_code: org_code,
-                          user_pk: user_code,
+                          user_pk: user_code?.pk,
                           status: status,
                           org_status:
                             org_status === "default" ? undefined : org_status,
