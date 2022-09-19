@@ -84,6 +84,7 @@ export default function Db() {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(20);
   const [totalCount, setTotalCount] = useState();
+  const [tableCount, setTableCount] = useState();
   const [head_office_org_code, setHeadOfficeOrgCode] = useState("전체");
   const [org_code, setOrgCode] = useState("전체");
   const [head_coop, setHeadCoop] = useState("전체");
@@ -111,9 +112,6 @@ export default function Db() {
 
   const [denined_sales, setDeninedSales] = useState([]);
   const [deninedLoading, setDeniedLoading] = useState(false);
-
-  //db 대량 등록 select org_code
-  const [dbUploadOrgCode, setDbUploadOrgCode] = useState("");
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
@@ -218,6 +216,7 @@ export default function Db() {
     if (res?.code === 200) {
       setTotalCount(Math.ceil(res?.data.total_count / 20));
       setDbList(res?.data?.result);
+      setTableCount(res?.data.total_count);
     }
 
     setLoading(false);
@@ -1310,6 +1309,7 @@ export default function Db() {
             page={page}
             checkData={checkData}
             setCheckData={setCheckData}
+            count={tableCount}
           />
         </Column>
         <Row
