@@ -240,8 +240,6 @@ export default function User({ index }) {
                 setPage(newPage);
               }}
               color="primary"
-              // hidePrevButton
-              // hideNextButton
             />
           </Row>
         </Column>

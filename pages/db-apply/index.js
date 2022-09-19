@@ -143,7 +143,31 @@ export default function DBApply() {
     setLoading(false);
   }, [menus, user]);
 
-  console.log(changeDb);
+  useEffect(() => {
+    setChangeDb((prev) => {
+      let newData = [...prev];
+      let count = 0;
+
+      changeDb?.map(
+        (db, key) =>
+          (newData[key] = {
+            ...newData[key],
+            allocation: [
+              {
+                ...newData[key]?.allocation[0],
+                count:
+                  Number(db?.allocation[0]?.count) +
+                  (Number(db_count[key]) ? Number(db_count[key]) : 0),
+              },
+            ],
+          })
+      );
+
+      return newData;
+    });
+  }, [db_count]);
+
+  console.log("hi", changeDb);
 
   return (
     <Layout loading={loading}>
@@ -332,32 +356,35 @@ export default function DBApply() {
                           (Number(db_count[key]) ? Number(db_count[key]) : 0) +
                           "개 "
                       )}{" "}
+                      <br />
+                      잔여수량 총 합계는 아래와 같습니다. <br />[
+                      {menus
+                        ?.map((menu, key) => {
+                          return user?.db?.find((db) => db?.pk === menu.pk);
+                        })
+                        ?.map(
+                          (d, K) =>
+                            d?.title +
+                            " " +
+                            (d?.allocation?.count +
+                              (Number(db_count[K]) ? Number(db_count[K]) : 0)) +
+                            "개 "
+                        )}
+                      ]
                     </Typography>
                   ),
                   action: async () => {
-                    setChangeDb((prev) => {
-                      const newData = [...prev];
-
-                      changeDb?.map(
-                        (db, key) =>
-                          Number(db?.allocation[0]?.count) +
-                          (Number(db_count[key]) ? Number(db_count[key]) : 0)
-                      );
-
-                      return newData;
-                    });
-                    const res = await Axios.Post("user/db/count", {
-                      token: getAccessToken(),
-                      db: changeDb,
-                    });
-
-                    if (res?.code === 200) {
-                      enqueueSnackbar("db가 신청되었습니다.", {
-                        variant: "success",
-                        autoHideDuration: 2000,
-                      });
-                      router.reload();
-                    }
+                    // const res = await Axios.Post("user/db/count", {
+                    //   token: getAccessToken(),
+                    //   db: changeDb,
+                    // });
+                    // if (res?.code === 200) {
+                    //   enqueueSnackbar("db가 신청되었습니다.", {
+                    //     variant: "success",
+                    //     autoHideDuration: 2000,
+                    //   });
+                    //   router.reload();
+                    // }
                   },
                 },
               });
