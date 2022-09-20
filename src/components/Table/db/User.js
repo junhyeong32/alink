@@ -115,23 +115,30 @@ export default function UserTable({ data, action }) {
                       h={21}
                       fs="h6"
                       action={() => {
-                        openModal({
-                          modal: "needconfirm",
-                          content: {
-                            text: `${
-                              getTitleOfOrg(user) + " " + user?.name
-                            }님을 선택하시겠습니까?`,
-                            buttonText: "확인",
-                            action: () => {
-                              action({
-                                pk: user?.pk,
-                                org: getTitleOfOrg(user),
-                                name: user?.name,
-                              });
-                              closeModal();
-                            },
-                          },
+                        action({
+                          pk: user?.pk,
+                          org: getTitleOfOrg(user),
+                          name: user?.name,
                         });
+                        closeModal();
+                        // openModal({
+                        //   modal: "needconfirm",
+                        //   content: {
+                        //     text: `${
+                        //       getTitleOfOrg(user) + " " + user?.name
+                        //     }님을 선택하시겠습니까?`,
+                        //     buttonText: "확인",
+                        //     action: () => {
+                        //       console.log("user2", user);
+                        //       action({
+                        //         pk: user?.pk,
+                        //         org: getTitleOfOrg(user),
+                        //         name: user?.name,
+                        //       });
+                        //       closeModal();
+                        //     },
+                        //   },
+                        // });
                       }}
                     />
                   </TableCell>

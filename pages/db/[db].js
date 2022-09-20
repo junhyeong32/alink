@@ -346,8 +346,6 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
-  console.log(allocated_user);
-
   return (
     <Layout loading={loading}>
       <Column justifyContent={"between"} sx={{ gap: 2.8 }}>

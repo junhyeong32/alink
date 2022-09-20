@@ -527,8 +527,6 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code, open]);
 
-  console.log(values);
-
   return (
     <Layout
       loading={loading}

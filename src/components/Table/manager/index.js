@@ -44,7 +44,7 @@ const Root = styled("div")`
 
 export default function ManagerTable({ data, allocation_total, menus }) {
   const router = useRouter();
-  console.log(menus);
+
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -153,11 +153,6 @@ export default function ManagerTable({ data, allocation_total, menus }) {
                   >
                     {user?.phone}
                   </TableCell>
-                  {console.log(
-                    menus?.filter((menu) =>
-                      user?.allocations?.find((a) => a?.db?.pk === menu?.pk)
-                    )
-                  )}
 
                   {user?.allocations
                     ?.filter((user) =>

@@ -18,7 +18,7 @@ export default function useGetMenuDenined(pk) {
         },
       })
     )?.data;
-    console.log(res);
+
     if (res?.code === 200)
       startTransition(() => {
         setMenuDenined(res?.data);

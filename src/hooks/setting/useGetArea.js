@@ -17,7 +17,7 @@ export default function useGetArea() {
         },
       })
     )?.data;
-    console.log(res);
+
     if (res?.code === 200)
       startTransition(() => {
         setArea(res?.data);

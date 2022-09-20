@@ -167,8 +167,6 @@ export default function DBApply() {
     });
   }, [db_count]);
 
-  console.log("hi", changeDb);
-
   return (
     <Layout loading={loading}>
       <Column>
