@@ -374,17 +374,17 @@ export default function DBApply() {
                     </Typography>
                   ),
                   action: async () => {
-                    // const res = await Axios.Post("user/db/count", {
-                    //   token: getAccessToken(),
-                    //   db: changeDb,
-                    // });
-                    // if (res?.code === 200) {
-                    //   enqueueSnackbar("db가 신청되었습니다.", {
-                    //     variant: "success",
-                    //     autoHideDuration: 2000,
-                    //   });
-                    //   router.reload();
-                    // }
+                    const res = await Axios.Post("user/db/count", {
+                      token: getAccessToken(),
+                      db: changeDb,
+                    });
+                    if (res?.code === 200) {
+                      enqueueSnackbar("db가 신청되었습니다.", {
+                        variant: "success",
+                        autoHideDuration: 2000,
+                      });
+                      router.reload();
+                    }
                   },
                 },
               });
