@@ -34,7 +34,7 @@ export default function Login() {
       })
     )?.data;
     //관리자 계정
-    //ALINK0000
+  //ALINK0000
     //link000!!
 
     // ALINK0001 link001!!

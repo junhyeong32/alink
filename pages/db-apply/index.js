@@ -44,6 +44,7 @@ export default function DBApply() {
   const [birthdate, setBirthdate] = useState("");
   const [db, setDb] = useState([]); //화면에 뿌려주는 state
   const [changeDb, setChangeDb] = useState([]); //전송 state
+  const [noneChangeDb, setNoneChangeDb] = useState([]); //전송 state
   const [pk, setPk] = useState("");
   const [loading, setLoading] = useState(true);
   const [db_count, setDbCount] = useState([]);
@@ -58,6 +59,31 @@ export default function DBApply() {
   useEffect(() => {
     if (menus?.length === 0 || user?.length === 0) return;
     const { db } = user;
+
+    setNoneChangeDb(() => {
+      return user?.db
+        ?.filter(
+          (u) => u?.allocation?.pk === 0 || u?.allocation?.is_activated === 0
+        )
+        ?.map((user_db, key) => {
+          return {
+            db_pk: user_db.pk,
+            allocation: [
+              {
+                is_activated: 0,
+                count: user_db?.allocation?.count,
+                count_for_next_month: user_db?.allocation?.count_for_next_month,
+                pk: 0,
+              },
+            ],
+            geomap: (() => {
+              const geoData = [];
+              user_db?.geomap?.map((geo) => geoData.push({ name: geo?.name }));
+              return geoData;
+            })(),
+          };
+        });
+    });
 
     setChangeDb(() => {
       return menus?.map((menu, key) => {
@@ -166,6 +192,8 @@ export default function DBApply() {
       return newData;
     });
   }, [db_count]);
+
+  console.log("changeDb", noneChangeDb);
 
   return (
     <Layout loading={loading}>
@@ -374,7 +402,7 @@ export default function DBApply() {
                   action: async () => {
                     const res = await Axios.Post("user/db/count", {
                       token: getAccessToken(),
-                      db: changeDb,
+                      db: [...changeDb, ...noneChangeDb],
                     });
                     if (res?.code === 200) {
                       enqueueSnackbar("db가 신청되었습니다.", {

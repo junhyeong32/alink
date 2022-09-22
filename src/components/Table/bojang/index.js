@@ -175,16 +175,6 @@ export default function BojangTable({
                   }}
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
-                  {/* 
-
-                  count - page * (10 * (page - 1)) - key
-                   2 - 613
-                   3- = 593 20
-                  4 - 573  613 -  40
-                  5 - 553  613 -  60
-                  */}
-
-                  {/* {count - page * key} */}
                   {page === 1
                     ? count - page * key
                     : page === 2
