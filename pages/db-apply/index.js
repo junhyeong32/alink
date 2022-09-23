@@ -62,12 +62,10 @@ export default function DBApply() {
 
     setNoneChangeDb(() => {
       return user?.db
-        ?.filter(
-          (u) => u?.allocation?.pk === 0 || u?.allocation?.is_activated === 0
-        )
+        ?.filter((u, key) => !menus[key]?.pk?.includes(u?.pk))
         ?.map((user_db, key) => {
           return {
-            db_pk: user_db.pk,
+            db_pk: user_db?.pk,
             allocation: [
               {
                 is_activated: 0,
@@ -192,8 +190,6 @@ export default function DBApply() {
       return newData;
     });
   }, [db_count]);
-
-  console.log("changeDb", noneChangeDb);
 
   return (
     <Layout loading={loading}>
