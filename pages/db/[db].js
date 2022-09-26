@@ -472,6 +472,7 @@ export default function DbDetail() {
                                 modal: "needconfirm",
                                 content: {
                                   buttonText: "확인",
+                                  action: closeModal,
                                   text: phoneNumber
                                     ? `통화 기록 및 자동 녹취를 위해 할당된 가상 번호 ${phoneNumber} 로 전화를 걸어주세요.`
                                     : "가상번호가 발급되지 않았습니다.",
