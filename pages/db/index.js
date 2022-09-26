@@ -527,6 +527,8 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code, open]);
 
+  console.log(user_info);
+
   return (
     <Layout
       loading={loading}
@@ -1098,6 +1100,7 @@ export default function Db() {
                               title: "DB 대량 등록",
                               is_sample: true,
                               uploadUrl: `db/menu/excelupload/${router.query.menu}`,
+                              data: user_info?.org_code,
                               reload: getDbDetail,
                             },
                             data: deninedMenuList,

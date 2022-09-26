@@ -38,7 +38,14 @@ const Root = styled("div")`
   }
 `;
 
-const headers = ["협력사", "DB 종류", "유입 DB", "분배 DB", "잔여 DB"];
+const headers = [
+  "협력사",
+  "DB 종류",
+  "유입 DB",
+  "분배 DB",
+  "잔여 DB",
+  "정산 DB",
+];
 
 export default function CooperationTable({ data }) {
   return (
@@ -83,6 +90,9 @@ export default function CooperationTable({ data }) {
                       <TableCell align="center">{d?.income}</TableCell>
                       <TableCell align="center">{d?.allocate}</TableCell>
                       <TableCell align="center">{d?.remain}</TableCell>
+                      <TableCell align="center">
+                        {Number(d?.income) - Number(d?.as)}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </>
