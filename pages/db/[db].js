@@ -451,57 +451,65 @@ export default function DbDetail() {
                             });
                           }}
                         />
-                        <Row
-                          sx={{
-                            display: {
-                              lg: "flex",
-                              md: "flex",
-                              sm: "none",
-                              xs: "none",
-                            },
-                          }}
-                        >
-                          <Image
-                            src="/call.png"
-                            width={24}
-                            height={24}
-                            alt="call"
-                            className="cursor"
-                            onClick={() => {
-                              openModal({
-                                modal: "needconfirm",
-                                content: {
-                                  buttonText: "확인",
-                                  action: closeModal,
-                                  text: phoneNumber
-                                    ? `통화 기록 및 자동 녹취를 위해 할당된 가상 번호 ${phoneNumber} 로 전화를 걸어주세요.`
-                                    : "가상번호가 발급되지 않았습니다.",
-                                },
-                              });
-                            }}
-                          />
-                        </Row>
-                        <Row
-                          sx={{
-                            display: {
-                              lg: "none",
-                              md: "none",
-                              sm: "flex",
-                              xs: "flex",
-                            },
-                          }}
-                        >
-                          <a href={`tel:${phoneNumber}`}>
-                            <Image
-                              src="/call.png"
-                              width={24}
-                              height={24}
-                              alt="call"
-                              className="cursor"
-                              onClick={() => {}}
-                            />
-                          </a>
-                        </Row>
+                        {rank !== "관리자" &&
+                          rank !== "부관리자" &&
+                          rank !== "협력사" &&
+                          rank !== "부협력사" && (
+                            <>
+                              <Row
+                                sx={{
+                                  display: {
+                                    lg: "flex",
+                                    md: "flex",
+                                    sm: "none",
+                                    xs: "none",
+                                  },
+                                }}
+                              >
+                                <Image
+                                  src="/call.png"
+                                  width={24}
+                                  height={24}
+                                  alt="call"
+                                  className="cursor"
+                                  onClick={() => {
+                                    openModal({
+                                      modal: "needconfirm",
+                                      content: {
+                                        buttonText: "확인",
+                                        action: closeModal,
+                                        text: phoneNumber
+                                          ? `통화 기록 및 자동 녹취를 위해 할당된 가상 번호 ${phoneNumber} 로 전화를 걸어주세요.`
+                                          : "가상번호가 발급되지 않았습니다.",
+                                      },
+                                    });
+                                  }}
+                                />
+                              </Row>
+                              <Row
+                                sx={{
+                                  display: {
+                                    lg: "none",
+                                    md: "none",
+                                    sm: "flex",
+                                    xs: "flex",
+                                  },
+                                }}
+                              >
+                                <a href={`tel:${phoneNumber}`}>
+                                  <Image
+                                    src="/call.png"
+                                    width={18}
+                                    height={18}
+                                    layout="fixed"
+                                    alt="call"
+                                    className="cursor"
+                                    onClick={() => {}}
+                                  />
+                                </a>
+                              </Row>
+                            </>
+                          )}
                       </RowLabel>
                     );
                   case "나이":
