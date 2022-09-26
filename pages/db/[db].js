@@ -28,13 +28,11 @@ import DisableBox from "../../src/components/Box/DisableBox";
 import { ModalContext } from "../../src/contexts/ModalContext";
 import Axios from "../../src/utility/api";
 import { getAccessToken, getCookie } from "../../src/utility/getCookie";
-import useGetOrganization from "../../src/hooks/share/useGetOrganization";
-import useGetArea from "../../src/hooks/setting/useGetArea";
 import RadioInput from "../../src/components/Radio";
 import { useSnackbar } from "notistack";
 import uploadFile from "../../src/utility/uploadFile";
 import { argument_status } from "../../src/data/share/MenuByTextList";
-
+import Image from "next/image";
 import { styled } from "@mui/material/styles";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import {
@@ -90,6 +88,7 @@ export default function DbDetail() {
   const [sales, setSales] = useState([]);
   const [team, setTeam] = useState("");
   const [fileLoading, setFileLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const [orgHead, setOrgHead] = useState(""); //메뉴 리스트만 바꾸는용
 
@@ -346,6 +345,26 @@ export default function DbDetail() {
     getUserList();
   }, [org_code, orgHead]);
 
+  useEffect(() => {
+    if (!router.isReady) return;
+    const getPhoneNumber = async () => {
+      const res = (
+        await Axios.Post("db/list/vn", {
+          token: getAccessToken(),
+          db_list_pk: router.query.db,
+        })
+      )?.data;
+
+      if (res?.vn_number) {
+        setPhoneNumber(res?.vn_number);
+      }
+    };
+
+    getPhoneNumber();
+  }, [router.isReady]);
+
+  console.log(phoneNumber);
+
   return (
     <Layout loading={loading}>
       <Column justifyContent={"between"} sx={{ gap: 2.8 }}>
@@ -432,6 +451,55 @@ export default function DbDetail() {
                             });
                           }}
                         />
+                        <Row
+                          sx={{
+                            display: {
+                              lg: "flex",
+                              md: "flex",
+                              sm: "none",
+                              xs: "none",
+                            },
+                          }}
+                        >
+                          <Image
+                            src="/call.png"
+                            width={24}
+                            height={24}
+                            alt="call"
+                            className="cursor"
+                            onClick={() => {
+                              openModal({
+                                modal: "needconfirm",
+                                content: {
+                                  text: phoneNumber
+                                    ? phoneNumber
+                                    : "가상번호가 발급되지 않았습니다.",
+                                },
+                              });
+                            }}
+                          />
+                        </Row>
+                        <Row
+                          sx={{
+                            display: {
+                              lg: "none",
+                              md: "none",
+                              sm: "flex",
+                              xs: "flex",
+                            },
+                          }}
+                        >
+                          <a href={`tel:${phoneNumber}`}>
+                            <Image
+                              src="/call.png"
+                              width={24}
+                              height={24}
+                              alt="call"
+                              className="cursor"
+                              onClick={() => {}}
+                            />
+                          </a>
+                        </Row>
                       </RowLabel>
                     );
                   case "나이":
