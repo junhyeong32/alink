@@ -52,6 +52,7 @@ export default function NeedConfirm({ index }) {
     buttonText = "승인",
     actionButtonColor,
     closeAction,
+    cancel = true,
   } = modalContent[index];
 
   return (
@@ -80,18 +81,20 @@ export default function NeedConfirm({ index }) {
                   action();
                 }}
               />
-              <Button
-                text="취소"
-                w={97}
-                h={30}
-                bgColor={"gray"}
-                color={"primary.white"}
-                fs={"h4"}
-                action={() => {
-                  closeAction && closeAction();
-                  closeModal(index);
-                }}
-              />
+              {cancel && (
+                <Button
+                  text="취소"
+                  w={97}
+                  h={30}
+                  bgColor={"gray"}
+                  color={"primary.white"}
+                  fs={"h4"}
+                  action={() => {
+                    closeAction && closeAction();
+                    closeModal(index);
+                  }}
+                />
+              )}
             </Row>
           </Column>
         </Column>

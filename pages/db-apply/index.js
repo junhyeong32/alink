@@ -47,7 +47,9 @@ export default function DBApply() {
   const [noneChangeDb, setNoneChangeDb] = useState([]); //전송 state
   const [pk, setPk] = useState("");
   const [loading, setLoading] = useState(true);
+  const [changeLoading, setChangeLoading] = useState(true);
   const [db_count, setDbCount] = useState([]);
+  const [next_db_count, setNextDbCount] = useState([]);
 
   const { menus } = useGetMenus();
   const { user, isUserPending, getUser } = useGetUser();
@@ -93,9 +95,9 @@ export default function DBApply() {
               count: db?.find((d) => d?.pk === menu.pk)?.allocation?.count,
               count_for_next_month:
                 moment().date() >= day
-                  ? 0
-                  : db?.find((d) => d?.pk === menu.pk)?.allocation
-                      ?.count_for_next_month,
+                  ? db?.find((d) => d?.pk === menu.pk)?.allocation
+                      ?.count_for_next_month
+                  : 0,
             },
           ],
           geomap: (() => {
@@ -157,6 +159,7 @@ export default function DBApply() {
       openModal({
         modal: "needconfirm",
         content: {
+          cancel: false,
           text: "다음 달 디비 수량 신청 기간입니다",
           buttonText: "확인",
           action: closeModal,
@@ -168,28 +171,25 @@ export default function DBApply() {
   }, [menus, user]);
 
   useEffect(() => {
-    setChangeDb((prev) => {
-      let newData = [...prev];
-      let count = 0;
+    if (changeLoading) return;
+    const dbApply = async () => {
+      const res = await Axios.Post("user/db/count", {
+        token: getAccessToken(),
+        db: [...changeDb, ...noneChangeDb],
+      });
+      if (res?.code === 200) {
+        enqueueSnackbar("db가 신청되었습니다.", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        router.reload();
+      }
+    };
 
-      changeDb?.map(
-        (db, key) =>
-          (newData[key] = {
-            ...newData[key],
-            allocation: [
-              {
-                ...newData[key]?.allocation[0],
-                count:
-                  Number(db?.allocation[0]?.count) +
-                  (Number(db_count[key]) ? Number(db_count[key]) : 0),
-              },
-            ],
-          })
-      );
+    dbApply();
+  }, [changeDb]);
 
-      return newData;
-    });
-  }, [db_count]);
+  console.log(changeDb);
 
   return (
     <Layout loading={loading}>
@@ -247,10 +247,10 @@ export default function DBApply() {
                         w={90}
                         defaultValue={0}
                         onBlur={(e) =>
-                          setChangeDb((prev) => {
+                          setNextDbCount((prev) => {
                             const newData = [...prev];
-                            newData[key].allocation[0].count_for_next_month =
-                              e.target.value;
+
+                            newData[key] = e.target.value;
 
                             return newData;
                           })
@@ -361,8 +361,8 @@ export default function DBApply() {
                 modal: "needconfirm",
                 content: {
                   contents: (
-                    <Typography>
-                      - 잔여수량 :{" "}
+                    <Typography component={"div"}>
+                      <Typography variant="h5">당월</Typography>- 잔여수량 :{" "}
                       {menus
                         ?.map((menu, key) => {
                           return user?.db?.find((db) => db?.pk === menu.pk);
@@ -379,6 +379,7 @@ export default function DBApply() {
                           "개 "
                       )}{" "}
                       <br />
+                      <br />
                       잔여수량 총 합계는 아래와 같습니다. <br />[
                       {menus
                         ?.map((menu, key) => {
@@ -393,20 +394,86 @@ export default function DBApply() {
                             "개 "
                         )}
                       ]
+                      <br />
+                      <br />
+                      {moment().date() >= day && (
+                        <>
+                          <Typography variant="h5">익월</Typography>- 잔여수량 :{" "}
+                          {menus
+                            ?.map((menu, key) => {
+                              return user?.db?.find((db) => db?.pk === menu.pk);
+                            })
+                            ?.map(
+                              (d) =>
+                                d?.title +
+                                " " +
+                                d?.allocation?.count_for_next_month +
+                                "개 "
+                            )}
+                          <br />- 신청수량 :{" "}
+                          {menus?.map(
+                            (menu, key) =>
+                              menu?.title +
+                              " " +
+                              (Number(next_db_count[key])
+                                ? Number(next_db_count[key])
+                                : 0) +
+                              "개 "
+                          )}{" "}
+                          <br />
+                          <br />
+                          잔여수량 총 합계는 아래와 같습니다. <br />[
+                          {menus
+                            ?.map((menu, key) => {
+                              return user?.db?.find((db) => db?.pk === menu.pk);
+                            })
+                            ?.map(
+                              (d, K) =>
+                                d?.title +
+                                " " +
+                                (d?.allocation?.count_for_next_month +
+                                  (Number(next_db_count[K])
+                                    ? Number(next_db_count[K])
+                                    : 0)) +
+                                "개 "
+                            )}
+                          ]
+                        </>
+                      )}
                     </Typography>
                   ),
-                  action: async () => {
-                    const res = await Axios.Post("user/db/count", {
-                      token: getAccessToken(),
-                      db: [...changeDb, ...noneChangeDb],
+                  action: () => {
+                    setChangeDb((prev) => {
+                      let newData = [...prev];
+
+                      changeDb?.map(
+                        (db, key) =>
+                          (newData[key] = {
+                            ...newData[key],
+                            allocation: [
+                              {
+                                ...newData[key]?.allocation[0],
+                                count:
+                                  Number(db?.allocation[0]?.count) +
+                                  (Number(db_count[key])
+                                    ? Number(db_count[key])
+                                    : 0),
+                                count_for_next_month:
+                                  Number(
+                                    db?.allocation[0]?.count_for_next_month
+                                  ) +
+                                  (Number(next_db_count[key])
+                                    ? Number(next_db_count[key])
+                                    : 0),
+                              },
+                            ],
+                          })
+                      );
+
+                      return newData;
                     });
-                    if (res?.code === 200) {
-                      enqueueSnackbar("db가 신청되었습니다.", {
-                        variant: "success",
-                        autoHideDuration: 2000,
-                      });
-                      router.reload();
-                    }
+
+                    setChangeLoading(false);
                   },
                 },
               });
