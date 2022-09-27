@@ -355,7 +355,7 @@ export default function DBApply() {
             fs="h5"
             w={160}
             h={30}
-            disabled={moment().date() >= day ? true : false}
+            // disabled={moment().date() >= day ? true : false}
             action={() => {
               openModal({
                 modal: "needconfirm",
