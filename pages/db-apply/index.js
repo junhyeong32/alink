@@ -23,7 +23,7 @@ import {
 import CustomSwitch from "../../src/components/Switch";
 import useGetUser from "../../src/hooks/user/useGetUser";
 import Axios from "../../src/utility/api";
-import { getAccessToken } from "../../src/utility/getCookie";
+import { getAccessToken, setCookie } from "../../src/utility/getCookie";
 import { useSnackbar } from "notistack";
 import { getCookie } from "../../src/utility/getCookie";
 import useGetMenus from "../../src/hooks/setting/useGetMenus";
@@ -39,6 +39,7 @@ export default function DBApply() {
   const { enqueueSnackbar } = useSnackbar();
   const [org_name, setOrgName] = useState("");
   const [user_info] = useState(getCookie("user_info"));
+  const [dbInformation] = useState(getCookie("dbInformation"));
   const [id, setId] = useState("");
   const [status, setStatus] = useState("");
   const [birthdate, setBirthdate] = useState("");
@@ -156,15 +157,30 @@ export default function DBApply() {
         modal: "depositconfirm",
       });
     } else if (moment().date() >= day) {
-      openModal({
-        modal: "needconfirm",
-        content: {
-          cancel: false,
-          text: "다음 달 디비 수량 신청 기간입니다",
-          buttonText: "확인",
-          action: closeModal,
-        },
-      });
+      if (!dbInformation)
+        openModal({
+          modal: "guide",
+          content: {
+            guideText: "익월DB 신청안내",
+            cancel: false,
+            contents: (
+              <Typography variant="h5">
+                익월DB 신청칸이 생성되었습니다.
+                <br />
+                다음 달 DB신청 수량을 입력하세요.
+              </Typography>
+            ),
+            buttonText: "확인",
+            action: (todayNoSee) => {
+              if (todayNoSee)
+                setCookie("dbInformation", true, {
+                  path: "/",
+                  maxAge: 436000,
+                });
+              closeModal();
+            },
+          },
+        });
     }
 
     setLoading(false);
@@ -195,7 +211,64 @@ export default function DBApply() {
     <Layout loading={loading}>
       <Column>
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
-          <Typography variant="h1">DB 신청</Typography>
+          <Row alignItems={"center"} justifyContent={"between"} sx={{ mb: 2 }}>
+            <Typography variant="h1">DB 신청</Typography>
+            <Button
+              variant="contained"
+              bgColor="primary"
+              text="익월 DB 신청현황"
+              color="primary.white"
+              fs="h5"
+              w={160}
+              h={30}
+              action={() => {
+                openModal({
+                  modal: "guide",
+                  content: {
+                    close: false,
+                    cancel: false,
+                    action: closeModal,
+                    buttonText: "확인",
+                    guideText:
+                      user_info?.name +
+                      " " +
+                      (new Date().getMonth() + 1) +
+                      "월 DB신청현황",
+                    contents: (
+                      <Typography variant="h4">
+                        {moment().date() >= day && (
+                          <>
+                            {menus
+                              ?.map((menu, key) => {
+                                return user?.db?.find(
+                                  (db) => db?.pk === menu.pk
+                                );
+                              })
+                              ?.map(
+                                (d) =>
+                                  d?.title +
+                                  " " +
+                                  d?.allocation?.count_for_next_month +
+                                  "개 "
+                              )}
+                            <br />
+                            <br />
+                            <Typography variant="small" align="cetner">
+                              신청하신 수량에 대하여 다음 달 1일에 자동
+                              반영됩니다. <br /> 신청취소 및 수량 수정을
+                              원하시는 경우 00일(해당 달 말일)
+                              <br /> 23시59분 까지 DB신청하기 메뉴에서 DB수량을
+                              조정바랍니다.
+                            </Typography>
+                          </>
+                        )}
+                      </Typography>
+                    ),
+                  },
+                });
+              }}
+            />
+          </Row>
           {user?.acfp > 300000 && (
             <Column
               justifyContent={"start"}
