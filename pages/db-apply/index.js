@@ -205,69 +205,69 @@ export default function DBApply() {
     dbApply();
   }, [changeDb]);
 
-  console.log(changeDb);
-
   return (
     <Layout loading={loading}>
       <Column>
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Row alignItems={"center"} justifyContent={"between"} sx={{ mb: 2 }}>
             <Typography variant="h1">DB 신청</Typography>
-            <Button
-              variant="contained"
-              bgColor="primary"
-              text="익월 DB 신청현황"
-              color="primary.white"
-              fs="h5"
-              w={160}
-              h={30}
-              action={() => {
-                openModal({
-                  modal: "guide",
-                  content: {
-                    close: false,
-                    cancel: false,
-                    action: closeModal,
-                    buttonText: "확인",
-                    guideText:
-                      user_info?.name +
-                      " " +
-                      (new Date().getMonth() + 1) +
-                      "월 DB신청현황",
-                    contents: (
-                      <Typography variant="h4">
-                        {moment().date() >= day && (
-                          <>
-                            {menus
-                              ?.map((menu, key) => {
-                                return user?.db?.find(
-                                  (db) => db?.pk === menu.pk
-                                );
-                              })
-                              ?.map(
-                                (d) =>
-                                  d?.title +
-                                  " " +
-                                  d?.allocation?.count_for_next_month +
-                                  "개 "
-                              )}
-                            <br />
-                            <br />
-                            <Typography variant="small" align="cetner">
-                              신청하신 수량에 대하여 다음 달 1일에 자동
-                              반영됩니다. <br /> 신청취소 및 수량 수정을
-                              원하시는 경우 00일(해당 달 말일)
-                              <br /> 23시59분 까지 DB신청하기 메뉴에서 DB수량을
-                              조정바랍니다.
-                            </Typography>
-                          </>
-                        )}
-                      </Typography>
-                    ),
-                  },
-                });
-              }}
-            />
+            {moment().date() >= day && (
+              <Button
+                variant="contained"
+                bgColor="primary"
+                text="익월 DB 신청현황"
+                color="primary.white"
+                fs="h5"
+                w={160}
+                h={30}
+                action={() => {
+                  openModal({
+                    modal: "guide",
+                    content: {
+                      close: false,
+                      cancel: false,
+                      action: closeModal,
+                      buttonText: "확인",
+                      guideText:
+                        user_info?.name +
+                        " " +
+                        (new Date().getMonth() + 1) +
+                        "월 DB신청현황",
+                      contents: (
+                        <Typography variant="h4">
+                          {
+                            <>
+                              {menus
+                                ?.map((menu, key) => {
+                                  return user?.db?.find(
+                                    (db) => db?.pk === menu.pk
+                                  );
+                                })
+                                ?.map(
+                                  (d) =>
+                                    d?.title +
+                                    " " +
+                                    d?.allocation?.count_for_next_month +
+                                    "개 "
+                                )}
+                              <br />
+                              <br />
+                              <Typography variant="small" align="cetner">
+                                신청하신 수량에 대하여 다음 달 1일에 자동
+                                반영됩니다. <br /> 신청취소 및 수량 수정을
+                                원하시는 경우 00일(해당 달 말일)
+                                <br /> 23시59분 까지 DB신청하기 메뉴에서
+                                DB수량을 조정바랍니다.
+                              </Typography>
+                            </>
+                          }
+                        </Typography>
+                      ),
+                    },
+                  });
+                }}
+              />
+            )}
           </Row>
           {user?.acfp > 300000 && (
             <Column

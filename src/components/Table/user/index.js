@@ -229,6 +229,7 @@ export default function UserTable({ data, allocation_total, getUsers }) {
                                     </Column>
                                   ),
                                   action: async () => {
+                                    console.log(location);
                                     if (!location?.pk) return;
 
                                     const res = await api.Post(
