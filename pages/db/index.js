@@ -68,6 +68,7 @@ export default function Db() {
   const [area, setArea] = useState([]);
 
   //change state
+  const [is_search, setIsSearch] = useState(false);
 
   const [date, setDate] = useState([
     {
@@ -130,28 +131,8 @@ export default function Db() {
   const { organization, addOrganizationData, org_info, addOrganizationInfo } =
     useContext(OrganizationContext);
 
-  const handleClose = (e) => {
-    if (el.current && !el.current.contains(e.target)) {
-      document.querySelector(".rdrCalendarWrapper").style.display = "none";
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("click", handleClose);
-    return () => {
-      window.removeEventListener("click", handleClose);
-    };
-  }, [el]);
-
-  useEffect(() => {
-    if (date[0].startDate && !date[0].endDate) return;
-    if (date[0].startDate)
-      setStartDate(moment(date[0].startDate).format("YYYY-MM-DD"));
-    if (date[0].endDate && String(date[0].endDate) !== "Invalid date")
-      setEndDate(moment(date[0].endDate).format("YYYY-MM-DD"));
-  }, [date]);
-
   const getDbDetail = async (is_init, _page) => {
+    console.log(_page);
     const res = (
       is_init
         ? await Axios.Get(`db/list`, {
@@ -163,7 +144,7 @@ export default function Db() {
         : await Axios.Get(`db/list`, {
             params: {
               token: getAccessToken(),
-              page: _page ? _page : page,
+              page: _page ? _page : router.query.page,
               count: count,
               db_pk: router.query.menu,
               head_office_org_code:
@@ -173,7 +154,8 @@ export default function Db() {
                   : (rank === "협력사" || rank === "부협력사") &&
                     head_coop !== "전체"
                   ? head_coop
-                  : head_office_org_code === "전체"
+                  : head_office_org_code === "전체" ||
+                    head_office_org_code === "미소속"
                   ? undefined
                   : head_office_org_code,
               org_code: org_code === "전체" ? undefined : org_code,
@@ -188,6 +170,7 @@ export default function Db() {
                   : uploader_organization_code === "전체"
                   ? undefined
                   : uploader_organization_code,
+              without_afg: head_office_org_code === "미소속" ? true : undefined,
               geo_parent_name: parent_area === "전체" ? undefined : parent_area,
               geo_name: child_area === "전체" ? undefined : child_area,
               values: JSON.stringify(
@@ -222,10 +205,33 @@ export default function Db() {
     setLoading(false);
   };
 
+  const handleClose = (e) => {
+    if (el.current && !el.current.contains(e.target)) {
+      document.querySelector(".rdrCalendarWrapper").style.display = "none";
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleClose);
+    return () => {
+      window.removeEventListener("click", handleClose);
+    };
+  }, [el]);
+
+  useEffect(() => {
+    if (date[0].startDate && !date[0].endDate) return;
+    if (date[0].startDate)
+      setStartDate(moment(date[0].startDate).format("YYYY-MM-DD"));
+    if (date[0].endDate && String(date[0].endDate) !== "Invalid date")
+      setEndDate(moment(date[0].endDate).format("YYYY-MM-DD"));
+  }, [date]);
+
   useEffect(() => {
     if (!router.isReady) return;
     setOpen(false);
 
+    //필터 초기화
+    [...document.querySelectorAll("#dynamic_input")].map((d) => (d.value = ""));
     const getDbMenu = async () => {
       const res = (
         await Axios.Get(
@@ -267,11 +273,6 @@ export default function Db() {
         });
       }
     };
-
-    //필터 초기화
-    [...document.querySelectorAll("#dynamic_input")].map((d) => (d.value = ""));
-
-    getDbDetail(true);
     getDbMenu();
   }, [router.isReady, router.query.menu]);
 
@@ -527,7 +528,38 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code, open]);
 
-  console.log(user_info);
+  useEffect(() => {
+    getDbDetail();
+  }, [router.query]);
+
+  useEffect(() => {
+    if (!is_search) return;
+
+    router.push(`db?menu=${
+      router.query.menu
+    }&page=${page}&count=${count}&head_office_org_code=${head_office_org_code}&org_code=${org_code}&status=${status}&without_afg=${
+      head_office_org_code === "미소속" ? true : undefined
+    }&org_status=${org_status}&allocated_user=${allocated_user}&uploader_organization_code=${uploader_organization_code}&geo_parent_name=${parent_area}&geo_name=${child_area}&values=${values}&created_date_start=${
+      (rank === "협력사" || rank === "부협력사") && start_date
+        ? new Date(start_date).getTime()
+        : undefined
+    }&created_date_end=${
+      (rank === "협력사" || rank === "부협력사") && end_date
+        ? new Date(end_date).getTime()
+        : undefined
+    }&allocated_date_start=${
+      rank !== "협력사" && rank !== "부협력사" && start_date
+        ? new Date(start_date).getTime()
+        : undefined
+    }&allocated_date_end=${
+      rank !== "협력사" && rank !== "부협력사" && end_date
+        ? new Date(end_date).getTime()
+        : undefined
+    }&
+      `);
+  }, [page, is_search]);
+
+  console.log(is_search);
 
   return (
     <Layout
@@ -781,7 +813,7 @@ export default function Db() {
               w={60}
               h={28}
               sx={{ zIndex: open ? -1 : 0 }}
-              action={() => getDbDetail()}
+              action={() => setIsSearch(true)}
             />
             <Button
               variant="contained"
@@ -1320,10 +1352,10 @@ export default function Db() {
         >
           <Pagination
             component="div"
-            page={page}
+            page={Number(router.query.page) || page}
             count={totalCount}
             onChange={(subject, newPage) => {
-              getDbDetail(false, newPage);
+              setIsSearch(true);
               setPage(newPage);
             }}
             color="primary"
