@@ -49,6 +49,7 @@ export default function Authority() {
   const [loading, setLoading] = useState(false);
   const [orgOpen, setOrgOpen] = useState(false);
   const [retiree, setRetiree] = useState("");
+  const [approval, setApproval] = useState("전체");
 
   const [orgMenuList, setOrgMenuList] = useState();
 
@@ -102,7 +103,12 @@ export default function Authority() {
               id: id,
               name: name,
               org_code: organization,
-              status: retiree ? retiree : undefined,
+              status:
+                approval !== "전체"
+                  ? approval
+                  : approval === "전체" && retiree
+                  ? retiree
+                  : undefined,
               deposit_status:
                 deposit_status === "전체" ? undefined : deposit_status,
               pay_amount:
@@ -308,8 +314,8 @@ export default function Authority() {
                 승인: "승인",
                 미승인: "미승인",
               }}
-              value={deposit_status}
-              setValue={setDepositStatus}
+              value={approval}
+              setValue={setApproval}
             />
           </Row>
 
