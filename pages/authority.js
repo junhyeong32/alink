@@ -56,7 +56,6 @@ export default function Authority() {
 
   useEffect(() => {
     if (org_code === "전체") return;
-    setLoading(true);
 
     const getOrganization = async (_type, _head_office) => {
       const res = (
@@ -73,7 +72,6 @@ export default function Authority() {
     };
 
     getOrganization();
-    setTimeout(() => setLoading(false), 1000);
   }, [org_code]);
 
   useEffect(() => {
@@ -86,6 +84,7 @@ export default function Authority() {
   }, [sales]);
 
   const getUsers = async (is_init) => {
+    setLoading(true);
     const res = is_init
       ? (
           await Axios.Get(`member`, {
@@ -120,6 +119,7 @@ export default function Authority() {
       setUsers(res?.data.result);
       setTotalCount(Math.ceil(res?.data.total_count / 20));
       setIsUsersPending(false);
+      setLoading(false);
     }
   };
 
@@ -182,23 +182,10 @@ export default function Authority() {
               setValue={setOrgCode}
             />
           </Column>
-          {loading ? (
-            <Row
-              justifyContent="center"
-              alignItems="center"
-              sx={{
-                width: "100%",
-                height: "100px",
-              }}
-            >
-              <CircularProgress size="40px" thickness={5} color="primary" />
-            </Row>
-          ) : (
-            <OrganizationList
-              group_list={org_code === "전체" ? sales : org_sales}
-              open
-            />
-          )}
+          <OrganizationList
+            group_list={org_code === "전체" ? sales : org_sales}
+            open
+          />
         </Column>
         <Column sx={{ width: "100%", pl: 2 }}>
           <Row justifyContent={"end"} sx={{ width: "100%", mb: 2, gap: 1 }}>
@@ -450,11 +437,24 @@ export default function Authority() {
               />
             </Row>
           </Row>
-          <AuthorityTable
-            data={users}
-            checkList={checkList}
-            setCheckList={setCheckList}
-          />
+          {loading ? (
+            <Row
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                width: "100%",
+                height: "500px",
+              }}
+            >
+              <CircularProgress size="40px" thickness={5} color="primary" />
+            </Row>
+          ) : (
+            <AuthorityTable
+              data={users}
+              checkList={checkList}
+              setCheckList={setCheckList}
+            />
+          )}
           <Row
             alignItems="center"
             justifyContent="center"
