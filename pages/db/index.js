@@ -145,7 +145,7 @@ export default function Db() {
             params: {
               token: getAccessToken(),
               page: _page ? _page : router.query.page,
-              count: count,
+              count: router.query.count,
               db_pk: router.query.menu,
               head_office_org_code:
                 (rank === "협력사" || rank === "부협력사") &&
@@ -157,11 +157,22 @@ export default function Db() {
                   : head_office_org_code === "전체" ||
                     head_office_org_code === "미소속"
                   ? undefined
-                  : head_office_org_code,
-              org_code: org_code === "전체" ? undefined : org_code,
-              status: status === "전체" ? undefined : status,
-              org_status: org_status === "전체" ? undefined : org_status,
-              allocated_user: allocated_user ? allocated_user : undefined,
+                  : router.queryhead_office_org_code,
+              org_code:
+                router.query.org_code === "전체"
+                  ? undefined
+                  : router.queryorg_code,
+              status:
+                router.query.status === "전체"
+                  ? undefined
+                  : router.query.status,
+              org_status:
+                router.query.org_status === "전체"
+                  ? undefined
+                  : router.query.org_status,
+              allocated_user: router.query.allocated_user
+                ? router.query.allocated_user
+                : undefined,
               uploader_organization_code:
                 rank === "협력사" && sub_coop === "전체"
                   ? undefined
@@ -169,28 +180,37 @@ export default function Db() {
                   ? sub_coop
                   : uploader_organization_code === "전체"
                   ? undefined
-                  : uploader_organization_code,
-              without_afg: head_office_org_code === "미소속" ? true : undefined,
-              geo_parent_name: parent_area === "전체" ? undefined : parent_area,
-              geo_name: child_area === "전체" ? undefined : child_area,
-              values: JSON.stringify(
-                [...values].filter((v) => v?.value !== "")
-              ),
+                  : router.query.uploader_organization_code,
+              without_afg:
+                router.query.head_office_org_code === "미소속"
+                  ? true
+                  : undefined,
+              geo_parent_name:
+                router.query.geo_parent_name === "전체"
+                  ? undefined
+                  : router.query.geo_parent_name,
+              geo_name:
+                router.query.geo_name === "전체"
+                  ? undefined
+                  : router.query.geo_name,
+              values: router.query.values,
               created_date_start:
                 (rank === "협력사" || rank === "부협력사") && start_date
-                  ? new Date(start_date).getTime()
+                  ? new Date(Number(router.query.created_date_start)).getTime()
                   : undefined,
               created_date_end:
                 (rank === "협력사" || rank === "부협력사") && end_date
-                  ? new Date(end_date).getTime()
+                  ? new Date(Number(router.query.created_date_end)).getTime()
                   : undefined,
               allocated_date_start:
                 rank !== "협력사" && rank !== "부협력사" && start_date
-                  ? new Date(start_date).getTime()
+                  ? new Date(
+                      Number(router.query.allocated_date_start)
+                    ).getTime()
                   : undefined,
               allocated_date_end:
                 rank !== "협력사" && rank !== "부협력사" && end_date
-                  ? new Date(end_date).getTime()
+                  ? new Date(Number(router.query.allocated_date_end)).getTime()
                   : undefined,
             },
           })
@@ -201,7 +221,7 @@ export default function Db() {
       setDbList(res?.data?.result);
       setTableCount(res?.data.total_count);
     }
-
+    setIsSearch(false);
     setLoading(false);
   };
 
@@ -231,7 +251,30 @@ export default function Db() {
     setOpen(false);
 
     //필터 초기화
+
+    router.push(`db?menu=${router.query.menu}`);
+
+    setOrgCode("전체");
+    setHeadOfficeOrgCode("전체");
+    setSubCoop("전체");
+    setOrgStatus("전체");
+    setHeadCoop("전체");
+    setUploaderOrganizationCode("전체");
+    setAllocatedUser("");
+    setParentArea("전체");
+    setChildArea("전체");
+    setStartDate("");
+    setEndDate("");
+    setDate([
+      {
+        ...date.key,
+        startDate: new Date(),
+        endDate: null,
+      },
+    ]);
+
     [...document.querySelectorAll("#dynamic_input")].map((d) => (d.value = ""));
+
     const getDbMenu = async () => {
       const res = (
         await Axios.Get(
@@ -416,6 +459,8 @@ export default function Db() {
       ([d, k]) => (k.value = "")
     );
 
+    router.push(`db?menu=${router.query.menu}`);
+
     setOrgCode("전체");
     setHeadOfficeOrgCode("전체");
     setSubCoop("전체");
@@ -539,7 +584,9 @@ export default function Db() {
       router.query.menu
     }&page=${page}&count=${count}&head_office_org_code=${head_office_org_code}&org_code=${org_code}&status=${status}&without_afg=${
       head_office_org_code === "미소속" ? true : undefined
-    }&org_status=${org_status}&allocated_user=${allocated_user}&uploader_organization_code=${uploader_organization_code}&geo_parent_name=${parent_area}&geo_name=${child_area}&values=${values}&created_date_start=${
+    }&org_status=${org_status}&allocated_user=${allocated_user}&uploader_organization_code=${uploader_organization_code}&geo_parent_name=${parent_area}&geo_name=${child_area}&values=${JSON.stringify(
+      [...values].filter((v) => v?.value !== "")
+    )}&created_date_start=${
       (rank === "협력사" || rank === "부협력사") && start_date
         ? new Date(start_date).getTime()
         : undefined
@@ -559,7 +606,7 @@ export default function Db() {
       `);
   }, [page, is_search]);
 
-  console.log(is_search);
+  console.log("values", values);
 
   return (
     <Layout

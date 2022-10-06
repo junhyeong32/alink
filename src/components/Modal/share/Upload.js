@@ -201,7 +201,9 @@ export default function Upload({ index }) {
 
                 formData.append("token", getAccessToken());
                 formData.append("file", file);
-                data && formData.append("organization_code", data);
+                data !== "전체" &&
+                  data &&
+                  formData.append("organization_code", data);
                 const config = {
                   headers: {
                     "content-type": "multipart/form-data",
