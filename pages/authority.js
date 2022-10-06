@@ -6,7 +6,13 @@ import Row from "../src/components/Box/Row";
 import Button from "../src/components/Button";
 import AuthorityTable from "../src/components/Table/authority";
 import useGetUsers from "../src/hooks/user/useGetUsers";
-import { Pagination, Typography, CircularProgress } from "@mui/material";
+import {
+  Pagination,
+  Typography,
+  CircularProgress,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import Axios from "../src/utility/api";
 import { getAccessToken } from "../src/utility/getCookie";
 import { useSnackbar } from "notistack";
@@ -42,6 +48,7 @@ export default function Authority() {
   const [search_list, setSearchList] = useState(1);
   const [loading, setLoading] = useState(false);
   const [orgOpen, setOrgOpen] = useState(false);
+  const [retiree, setRetiree] = useState("");
 
   const [orgMenuList, setOrgMenuList] = useState();
 
@@ -96,6 +103,7 @@ export default function Authority() {
               id: id,
               name: name,
               org_code: organization,
+              status: retiree ? retiree : undefined,
               deposit_status:
                 deposit_status === "전체" ? undefined : deposit_status,
               pay_amount:
@@ -117,7 +125,7 @@ export default function Authority() {
 
   useEffect(() => {
     getUsers();
-  }, [page, organization]);
+  }, [page, organization, retiree]);
 
   return (
     <Layout loading={isUsersPending}>
@@ -317,114 +325,130 @@ export default function Authority() {
               setValue={setDepositStatus}
             />
           </Row>
+
           <Row
-            justifyContent={"end"}
-            sx={{ width: "100%", gap: 1, mb: 1, mt: 2 }}
+            alignItems={"center"}
+            justifyContent={"between"}
+            sx={{ width: "100%", mb: 1, mt: 2 }}
           >
-            <Button
-              text="입금 완료"
-              variant={"contained"}
-              color={"primary.white"}
-              bgColor={"primary"}
-              fs={"h6"}
-              action={async () => {
-                if (checkList.length === 0)
-                  return enqueueSnackbar("사원이 선택되지 않았습니다", {
-                    variant: "error",
-                    autoHideDuration: 2000,
+            <Row alignItems={"center"} sx={{ gap: 0.2 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onClick={(e) =>
+                      e.target.checked ? setRetiree("퇴사자") : setRetiree("")
+                    }
+                  />
+                }
+                label={<Typography variant="h6">퇴사자만 보기</Typography>}
+              />
+            </Row>
+            <Row sx={{ gap: 1 }}>
+              <Button
+                text="입금 완료"
+                variant={"contained"}
+                color={"primary.white"}
+                bgColor={"primary"}
+                fs={"h6"}
+                action={async () => {
+                  if (checkList.length === 0)
+                    return enqueueSnackbar("사원이 선택되지 않았습니다", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
+                  const res = await Axios.Post("member/deposit_status", {
+                    token: getAccessToken(),
+                    user_pks: checkList.join(","),
+                    deposit_status: "입금 완료",
                   });
-                const res = await Axios.Post("member/deposit_status", {
-                  token: getAccessToken(),
-                  user_pks: checkList.join(","),
-                  deposit_status: "입금 완료",
-                });
-                if (res?.code === 200)
-                  enqueueSnackbar("입금 완료처리 되었습니다.", {
-                    variant: "success",
-                    autoHideDuration: 2000,
+                  if (res?.code === 200)
+                    enqueueSnackbar("입금 완료처리 되었습니다.", {
+                      variant: "success",
+                      autoHideDuration: 2000,
+                    });
+                  setCheckList([]);
+                  getUsers();
+                }}
+              />
+              <Button
+                text="입금 미완료"
+                variant="contained"
+                color={"primary.white"}
+                bgColor={"orange"}
+                fs={"h6"}
+                action={async () => {
+                  if (checkList.length === 0)
+                    return enqueueSnackbar("사원이 선택되지 않았습니다", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
+                  const res = await Axios.Post("member/deposit_status", {
+                    token: getAccessToken(),
+                    user_pks: checkList.join(","),
+                    deposit_status: "입금 미완료",
                   });
-                setCheckList([]);
-                getUsers();
-              }}
-            />
-            <Button
-              text="입금 미완료"
-              variant="contained"
-              color={"primary.white"}
-              bgColor={"orange"}
-              fs={"h6"}
-              action={async () => {
-                if (checkList.length === 0)
-                  return enqueueSnackbar("사원이 선택되지 않았습니다", {
-                    variant: "error",
-                    autoHideDuration: 2000,
+                  if (res?.code === 200)
+                    enqueueSnackbar("입금 미완료처리 되었습니다.", {
+                      variant: "success",
+                      autoHideDuration: 2000,
+                    });
+                  setCheckList([]);
+                  getUsers();
+                }}
+              />
+              <Button
+                text="승인"
+                variant="contained"
+                color={"primary.white"}
+                bgColor={"primary"}
+                fs={"h6"}
+                action={async () => {
+                  if (checkList.length === 0)
+                    return enqueueSnackbar("사원이 선택되지 않았습니다", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
+                  const res = await Axios.Post("member/status", {
+                    token: getAccessToken(),
+                    user_pks: checkList.join(","),
+                    status: "승인",
                   });
-                const res = await Axios.Post("member/deposit_status", {
-                  token: getAccessToken(),
-                  user_pks: checkList.join(","),
-                  deposit_status: "입금 미완료",
-                });
-                if (res?.code === 200)
-                  enqueueSnackbar("입금 미완료처리 되었습니다.", {
-                    variant: "success",
-                    autoHideDuration: 2000,
+                  if (res?.code === 200)
+                    enqueueSnackbar("승인 처리 되었습니다.", {
+                      variant: "success",
+                      autoHideDuration: 2000,
+                    });
+                  setCheckList([]);
+                  getUsers();
+                }}
+              />
+              <Button
+                text="미승인"
+                variant="contained"
+                color={"primary.white"}
+                bgColor={"orange"}
+                fs={"h6"}
+                action={async () => {
+                  if (checkList.length === 0)
+                    return enqueueSnackbar("사원이 선택되지 않았습니다", {
+                      variant: "error",
+                      autoHideDuration: 2000,
+                    });
+                  const res = await Axios.Post("member/status", {
+                    token: getAccessToken(),
+                    user_pks: checkList.join(","),
+                    status: "미승인",
                   });
-                setCheckList([]);
-                getUsers();
-              }}
-            />
-            <Button
-              text="승인"
-              variant="contained"
-              color={"primary.white"}
-              bgColor={"primary"}
-              fs={"h6"}
-              action={async () => {
-                if (checkList.length === 0)
-                  return enqueueSnackbar("사원이 선택되지 않았습니다", {
-                    variant: "error",
-                    autoHideDuration: 2000,
-                  });
-                const res = await Axios.Post("member/status", {
-                  token: getAccessToken(),
-                  user_pks: checkList.join(","),
-                  status: "승인",
-                });
-                if (res?.code === 200)
-                  enqueueSnackbar("승인 처리 되었습니다.", {
-                    variant: "success",
-                    autoHideDuration: 2000,
-                  });
-                setCheckList([]);
-                getUsers();
-              }}
-            />
-            <Button
-              text="미승인"
-              variant="contained"
-              color={"primary.white"}
-              bgColor={"orange"}
-              fs={"h6"}
-              action={async () => {
-                if (checkList.length === 0)
-                  return enqueueSnackbar("사원이 선택되지 않았습니다", {
-                    variant: "error",
-                    autoHideDuration: 2000,
-                  });
-                const res = await Axios.Post("member/status", {
-                  token: getAccessToken(),
-                  user_pks: checkList.join(","),
-                  status: "미승인",
-                });
-                if (res?.code === 200)
-                  enqueueSnackbar("미승인 처리 되었습니다.", {
-                    variant: "success",
-                    autoHideDuration: 2000,
-                  });
-                setCheckList([]);
-                getUsers();
-              }}
-            />
+                  if (res?.code === 200)
+                    enqueueSnackbar("미승인 처리 되었습니다.", {
+                      variant: "success",
+                      autoHideDuration: 2000,
+                    });
+                  setCheckList([]);
+                  getUsers();
+                }}
+              />
+            </Row>
           </Row>
           <AuthorityTable
             data={users}
