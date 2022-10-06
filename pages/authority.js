@@ -299,6 +299,24 @@ export default function Authority() {
               setValue={setDepositStatus}
             />
           </Row>
+          <Row sx={{ mt: 2 }}>
+            <UnderLineSelectInput
+              title={"승인내역"}
+              w={{
+                lg: "25%",
+                md: "25%",
+                sm: "100%",
+                xs: "100%",
+              }}
+              menuItems={{
+                전체: "전체",
+                승인: "승인",
+                미승인: "미승인",
+              }}
+              value={deposit_status}
+              setValue={setDepositStatus}
+            />
+          </Row>
           <Row
             justifyContent={"end"}
             sx={{ width: "100%", gap: 1, mb: 1, mt: 2 }}
