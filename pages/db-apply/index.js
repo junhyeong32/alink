@@ -211,7 +211,8 @@ export default function DBApply() {
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Row alignItems={"center"} justifyContent={"between"} sx={{ mb: 2 }}>
             <Typography variant="h1">DB 신청</Typography>
-            {moment().date() >= day && (
+            {/* /moment().date() >= day &&  */}
+            {
               <Button
                 variant="contained"
                 bgColor="primary"
@@ -231,6 +232,8 @@ export default function DBApply() {
                       guideText:
                         user_info?.name +
                         " " +
+                        user_info?.grade +
+                        " " +
                         (new Date().getMonth() + 1) +
                         "월 DB신청현황",
                       contents: (
@@ -244,9 +247,9 @@ export default function DBApply() {
                                   );
                                 })
                                 ?.map(
-                                  (d) =>
-                                    d?.title +
-                                    " " +
+                                  (d, key) =>
+                                    d?.title.split("리스트")[0] +
+                                    " : " +
                                     d?.allocation?.count_for_next_month +
                                     "개 "
                                 )}
@@ -267,7 +270,7 @@ export default function DBApply() {
                   });
                 }}
               />
-            )}
+            }
           </Row>
           {user?.acfp > 300000 && (
             <Column

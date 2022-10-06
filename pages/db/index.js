@@ -235,7 +235,7 @@ export default function Db() {
 
       if (res?.code === 200) {
         setMenuDetail(res?.data);
-        const head_org = { 전체: "전체" };
+        const head_org = { 전체: "전체", 미소속: "미소속" };
         const coop_org = { 전체: "전체" };
         const denined_org = {};
 
