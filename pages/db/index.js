@@ -580,6 +580,8 @@ export default function Db() {
   useEffect(() => {
     if (!is_search) return;
 
+    window.localStorage.setItem("path", router.asPath);
+
     router.push(`db?menu=${
       router.query.menu
     }&page=${page}&count=${count}&head_office_org_code=${head_office_org_code}&org_code=${org_code}&status=${status}&without_afg=${
@@ -602,11 +604,19 @@ export default function Db() {
       rank !== "협력사" && rank !== "부협력사" && end_date
         ? new Date(end_date).getTime()
         : undefined
-    }&
+    }
       `);
   }, [page, is_search]);
 
-  console.log("values", values);
+  // useEffect(() => {
+  //   console.log(window.localStorage);
+  //   console.log("hello", router.asPath, window.localStorage.path);
+  //   if (!router.isReady) return;
+
+  //   if (router.asPath === window.localStorage.path) return;
+
+  //   setTimeout(() => router.push(window.localStorage.path), 1000);
+  // }, [router.isReady]);
 
   return (
     <Layout
@@ -1179,7 +1189,7 @@ export default function Db() {
                               title: "DB 대량 등록",
                               is_sample: true,
                               uploadUrl: `db/menu/excelupload/${router.query.menu}`,
-                              data: user_info?.org_code,
+                              // data: user_info?.org_code,
                               reload: getDbDetail,
                             },
                             data: deninedMenuList,

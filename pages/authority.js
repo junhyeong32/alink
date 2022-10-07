@@ -104,11 +104,11 @@ export default function Authority() {
               name: name,
               org_code: organization,
               status:
-                approval !== "전체"
+                approval === "전체" || retiree
+                  ? undefined
+                  : approval !== "전체"
                   ? approval
-                  : approval === "전체" && retiree
-                  ? retiree
-                  : undefined,
+                  : approval === "전체" && retiree && retiree,
               deposit_status:
                 deposit_status === "전체" ? undefined : deposit_status,
               pay_amount:
@@ -225,8 +225,10 @@ export default function Authority() {
               action={() => {
                 setPayAmount("전체");
                 setDepositStatus("전체");
-                document.querySelector("id").value = "";
-                document.querySelector("name").value = "";
+                setRetiree("전체");
+                setApproval("전체");
+                // document.querySelector("id").value = "";
+                // document.querySelector("name").value = "";
               }}
             />
           </Row>

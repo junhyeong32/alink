@@ -12,6 +12,5 @@ export const formatPhoneNumber = (input) => {
   } else {
     result = undefined;
   }
-  console.log(`${input} -> ${result}`);
   return result;
 };
