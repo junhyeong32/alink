@@ -157,11 +157,11 @@ export default function Db() {
                   : head_office_org_code === "전체" ||
                     head_office_org_code === "미소속"
                   ? undefined
-                  : router.queryhead_office_org_code,
+                  : router.query.head_office_org_code,
               org_code:
                 router.query.org_code === "전체"
                   ? undefined
-                  : router.queryorg_code,
+                  : router.query.org_code,
               status:
                 router.query.status === "전체"
                   ? undefined
@@ -1189,7 +1189,7 @@ export default function Db() {
                               title: "DB 대량 등록",
                               is_sample: true,
                               uploadUrl: `db/menu/excelupload/${router.query.menu}`,
-                              // data: user_info?.org_code,
+                              // data: user_info?.org_code
                               reload: getDbDetail,
                             },
                             data: deninedMenuList,
