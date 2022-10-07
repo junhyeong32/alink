@@ -66,6 +66,8 @@ export default function Upload({ index }) {
     reload,
   } = modalContent[index];
 
+  console.log(file);
+
   return (
     <Modal open={modal[index] === "upload"} onClose={closeModal}>
       <Box>
@@ -201,9 +203,7 @@ export default function Upload({ index }) {
 
                 formData.append("token", getAccessToken());
                 formData.append("file", file);
-                data !== "전체" &&
-                  data &&
-                  formData.append("organization_code", data);
+                data && formData.append("organization_code", data);
                 const config = {
                   headers: {
                     "content-type": "multipart/form-data",
