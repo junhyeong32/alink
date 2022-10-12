@@ -211,8 +211,8 @@ export default function DBApply() {
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Row alignItems={"center"} justifyContent={"between"} sx={{ mb: 2 }}>
             <Typography variant="h1">DB 신청</Typography>
-            {/* /moment().date() >= day &&  */}
-            {
+
+            {moment().date() >= day && (
               <Button
                 variant="contained"
                 bgColor="primary"
@@ -270,7 +270,7 @@ export default function DBApply() {
                   });
                 }}
               />
-            }
+            )}
           </Row>
           {user?.acfp > 300000 && (
             <Column
