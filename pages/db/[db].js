@@ -346,6 +346,7 @@ export default function DbDetail() {
   }, [org_code, orgHead]);
 
   useEffect(() => {
+    console.log(window.localStorage);
     if (!router.isReady) return;
     const getPhoneNumber = async () => {
       const res = (
@@ -362,8 +363,6 @@ export default function DbDetail() {
 
     getPhoneNumber();
   }, [router.isReady]);
-
-  console.log(phoneNumber);
 
   return (
     <Layout loading={loading}>
@@ -1275,7 +1274,12 @@ export default function DbDetail() {
                             variant: "success",
                             autoHideDuration: 2000,
                           });
-                          router.back();
+
+                          window.localStorage.query
+                            ? router.push(
+                                `db?menu=${router.query.menu}&${window.localStorage.query}`
+                              )
+                            : router.back();
                         } else {
                           enqueueSnackbar(res?.message, {
                             variant: "error",
@@ -1297,7 +1301,14 @@ export default function DbDetail() {
               fs="h5"
               w={100}
               h={35}
-              action={() => router.back()}
+              action={() => {
+                console.log(window.localStorage.query);
+                window.localStorage.query
+                  ? router.push(
+                      `/db?menu=${router.query.menu}&${window.localStorage.query}`
+                    )
+                  : router.back();
+              }}
             />
           </Row>
           {(allocated_user?.pk === user_info?.pk ||

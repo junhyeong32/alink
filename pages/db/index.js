@@ -68,6 +68,7 @@ export default function Db() {
   const [area, setArea] = useState([]);
 
   //change state
+  const [is_search, setIsSearch] = useState(false);
 
   const [date, setDate] = useState([
     {
@@ -130,6 +131,100 @@ export default function Db() {
   const { organization, addOrganizationData, org_info, addOrganizationInfo } =
     useContext(OrganizationContext);
 
+  const getDbDetail = async (is_init, _page) => {
+    console.log(_page);
+    const res = (
+      is_init
+        ? await Axios.Get(`db/list`, {
+            params: {
+              token: getAccessToken(),
+              db_pk: router.query.menu,
+            },
+          })
+        : await Axios.Get(`db/list`, {
+            params: {
+              token: getAccessToken(),
+              page: _page ? _page : router.query.page,
+              count: router.query.count,
+              db_pk: router.query.menu,
+              head_office_org_code:
+                (rank === "협력사" || rank === "부협력사") &&
+                head_coop === "전체"
+                  ? undefined
+                  : (rank === "협력사" || rank === "부협력사") &&
+                    head_coop !== "전체"
+                  ? head_coop
+                  : head_office_org_code === "전체" ||
+                    head_office_org_code === "미소속"
+                  ? undefined
+                  : router.query.head_office_org_code,
+              org_code:
+                router.query.org_code === "전체"
+                  ? undefined
+                  : router.query.org_code,
+              status:
+                router.query.status === "전체"
+                  ? undefined
+                  : router.query.status,
+              org_status:
+                router.query.org_status === "전체"
+                  ? undefined
+                  : router.query.org_status,
+              allocated_user: router.query.allocated_user
+                ? router.query.allocated_user
+                : undefined,
+              uploader_organization_code:
+                rank === "협력사" && sub_coop === "전체"
+                  ? undefined
+                  : rank === "협력사" && sub_coop !== "전체"
+                  ? sub_coop
+                  : uploader_organization_code === "전체"
+                  ? undefined
+                  : router.query.uploader_organization_code,
+              without_afg:
+                router.query.head_office_org_code === "미소속"
+                  ? true
+                  : undefined,
+              geo_parent_name:
+                router.query.geo_parent_name === "전체"
+                  ? undefined
+                  : router.query.geo_parent_name,
+              geo_name:
+                router.query.geo_name === "전체"
+                  ? undefined
+                  : router.query.geo_name,
+              values: router.query.values,
+              created_date_start:
+                (rank === "협력사" || rank === "부협력사") && start_date
+                  ? new Date(Number(router.query.created_date_start)).getTime()
+                  : undefined,
+              created_date_end:
+                (rank === "협력사" || rank === "부협력사") && end_date
+                  ? new Date(Number(router.query.created_date_end)).getTime()
+                  : undefined,
+              allocated_date_start:
+                rank !== "협력사" && rank !== "부협력사" && start_date
+                  ? new Date(
+                      Number(router.query.allocated_date_start)
+                    ).getTime()
+                  : undefined,
+              allocated_date_end:
+                rank !== "협력사" && rank !== "부협력사" && end_date
+                  ? new Date(Number(router.query.allocated_date_end)).getTime()
+                  : undefined,
+            },
+          })
+    )?.data;
+
+    if (res?.code === 200) {
+      setTotalCount(Math.ceil(res?.data.total_count / 20));
+      setDbList(res?.data?.result);
+      setTableCount(res?.data.total_count);
+    }
+    setIsSearch(false);
+    setLoading(false);
+  };
+
   const handleClose = (e) => {
     if (el.current && !el.current.contains(e.target)) {
       document.querySelector(".rdrCalendarWrapper").style.display = "none";
@@ -151,80 +246,34 @@ export default function Db() {
       setEndDate(moment(date[0].endDate).format("YYYY-MM-DD"));
   }, [date]);
 
-  const getDbDetail = async (is_init, _page) => {
-    const res = (
-      is_init
-        ? await Axios.Get(`db/list`, {
-            params: {
-              token: getAccessToken(),
-              db_pk: router.query.menu,
-            },
-          })
-        : await Axios.Get(`db/list`, {
-            params: {
-              token: getAccessToken(),
-              page: _page ? _page : page,
-              count: count,
-              db_pk: router.query.menu,
-              head_office_org_code:
-                (rank === "협력사" || rank === "부협력사") &&
-                head_coop === "전체"
-                  ? undefined
-                  : (rank === "협력사" || rank === "부협력사") &&
-                    head_coop !== "전체"
-                  ? head_coop
-                  : head_office_org_code === "전체"
-                  ? undefined
-                  : head_office_org_code,
-              org_code: org_code === "전체" ? undefined : org_code,
-              status: status === "전체" ? undefined : status,
-              org_status: org_status === "전체" ? undefined : org_status,
-              allocated_user: allocated_user ? allocated_user : undefined,
-              uploader_organization_code:
-                rank === "협력사" && sub_coop === "전체"
-                  ? undefined
-                  : rank === "협력사" && sub_coop !== "전체"
-                  ? sub_coop
-                  : uploader_organization_code === "전체"
-                  ? undefined
-                  : uploader_organization_code,
-              geo_parent_name: parent_area === "전체" ? undefined : parent_area,
-              geo_name: child_area === "전체" ? undefined : child_area,
-              values: JSON.stringify(
-                [...values].filter((v) => v?.value !== "")
-              ),
-              created_date_start:
-                (rank === "협력사" || rank === "부협력사") && start_date
-                  ? new Date(start_date).getTime()
-                  : undefined,
-              created_date_end:
-                (rank === "협력사" || rank === "부협력사") && end_date
-                  ? new Date(end_date).getTime()
-                  : undefined,
-              allocated_date_start:
-                rank !== "협력사" && rank !== "부협력사" && start_date
-                  ? new Date(start_date).getTime()
-                  : undefined,
-              allocated_date_end:
-                rank !== "협력사" && rank !== "부협력사" && end_date
-                  ? new Date(end_date).getTime()
-                  : undefined,
-            },
-          })
-    )?.data;
-
-    if (res?.code === 200) {
-      setTotalCount(Math.ceil(res?.data.total_count / 20));
-      setDbList(res?.data?.result);
-      setTableCount(res?.data.total_count);
-    }
-
-    setLoading(false);
-  };
-
   useEffect(() => {
     if (!router.isReady) return;
     setOpen(false);
+
+    //필터 초기화
+
+    router.push(`db?menu=${router.query.menu}`);
+
+    setOrgCode("전체");
+    setHeadOfficeOrgCode("전체");
+    setSubCoop("전체");
+    setOrgStatus("전체");
+    setHeadCoop("전체");
+    setUploaderOrganizationCode("전체");
+    setAllocatedUser("");
+    setParentArea("전체");
+    setChildArea("전체");
+    setStartDate("");
+    setEndDate("");
+    setDate([
+      {
+        ...date.key,
+        startDate: new Date(),
+        endDate: null,
+      },
+    ]);
+
+    [...document.querySelectorAll("#dynamic_input")].map((d) => (d.value = ""));
 
     const getDbMenu = async () => {
       const res = (
@@ -235,7 +284,7 @@ export default function Db() {
 
       if (res?.code === 200) {
         setMenuDetail(res?.data);
-        const head_org = { 전체: "전체" };
+        const head_org = { 전체: "전체", 미소속: "미소속" };
         const coop_org = { 전체: "전체" };
         const denined_org = {};
 
@@ -267,11 +316,6 @@ export default function Db() {
         });
       }
     };
-
-    //필터 초기화
-    [...document.querySelectorAll("#dynamic_input")].map((d) => (d.value = ""));
-
-    getDbDetail(true);
     getDbMenu();
   }, [router.isReady, router.query.menu]);
 
@@ -415,6 +459,8 @@ export default function Db() {
       ([d, k]) => (k.value = "")
     );
 
+    router.push(`db?menu=${router.query.menu}`);
+
     setOrgCode("전체");
     setHeadOfficeOrgCode("전체");
     setSubCoop("전체");
@@ -527,7 +573,50 @@ export default function Db() {
     getDbDeniedList();
   }, [denied_org_code, open]);
 
-  console.log(user_info);
+  useEffect(() => {
+    getDbDetail();
+  }, [router.query]);
+
+  useEffect(() => {
+    if (!is_search) return;
+
+    window.localStorage.setItem("path", router.asPath);
+
+    router.push(`db?menu=${
+      router.query.menu
+    }&page=${page}&count=${count}&head_office_org_code=${head_office_org_code}&org_code=${org_code}&status=${status}&without_afg=${
+      head_office_org_code === "미소속" ? true : undefined
+    }&org_status=${org_status}&allocated_user=${allocated_user}&uploader_organization_code=${uploader_organization_code}&geo_parent_name=${parent_area}&geo_name=${child_area}&values=${JSON.stringify(
+      [...values].filter((v) => v?.value !== "")
+    )}&created_date_start=${
+      (rank === "협력사" || rank === "부협력사") && start_date
+        ? new Date(start_date).getTime()
+        : undefined
+    }&created_date_end=${
+      (rank === "협력사" || rank === "부협력사") && end_date
+        ? new Date(end_date).getTime()
+        : undefined
+    }&allocated_date_start=${
+      rank !== "협력사" && rank !== "부협력사" && start_date
+        ? new Date(start_date).getTime()
+        : undefined
+    }&allocated_date_end=${
+      rank !== "협력사" && rank !== "부협력사" && end_date
+        ? new Date(end_date).getTime()
+        : undefined
+    }
+      `);
+  }, [page, is_search]);
+
+  // useEffect(() => {
+  //   console.log(window.localStorage);
+  //   console.log("hello", router.asPath, window.localStorage.path);
+  //   if (!router.isReady) return;
+
+  //   if (router.asPath === window.localStorage.path) return;
+
+  //   setTimeout(() => router.push(window.localStorage.path), 1000);
+  // }, [router.isReady]);
 
   return (
     <Layout
@@ -781,7 +870,7 @@ export default function Db() {
               w={60}
               h={28}
               sx={{ zIndex: open ? -1 : 0 }}
-              action={() => getDbDetail()}
+              action={() => setIsSearch(true)}
             />
             <Button
               variant="contained"
@@ -1100,7 +1189,7 @@ export default function Db() {
                               title: "DB 대량 등록",
                               is_sample: true,
                               uploadUrl: `db/menu/excelupload/${router.query.menu}`,
-                              data: user_info?.org_code,
+                              // data: user_info?.org_code
                               reload: getDbDetail,
                             },
                             data: deninedMenuList,
@@ -1320,10 +1409,10 @@ export default function Db() {
         >
           <Pagination
             component="div"
-            page={page}
+            page={Number(router.query.page) || page}
             count={totalCount}
             onChange={(subject, newPage) => {
-              getDbDetail(false, newPage);
+              setIsSearch(true);
               setPage(newPage);
             }}
             color="primary"
