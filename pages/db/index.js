@@ -132,7 +132,6 @@ export default function Db() {
     useContext(OrganizationContext);
 
   const getDbDetail = async (is_init, _page) => {
-    console.log(_page);
     const res = (
       is_init
         ? await Axios.Get(`db/list`, {
@@ -249,6 +248,7 @@ export default function Db() {
   useEffect(() => {
     if (!router.isReady) return;
     setOpen(false);
+    setCheckData([]);
 
     //필터 초기화
 
