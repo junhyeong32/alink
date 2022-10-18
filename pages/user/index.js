@@ -171,7 +171,9 @@ export default memo(function User() {
   useEffect(() => {
     if (!is_search) return;
 
-    router.push(`user?page=${page}&count=${count}&status=${status}&grade=${grade}&head_office_org_code=${head_office_org_code}&org_code=${org_code}&geo=${geo}&email=${email}&id=${id}&name=${name}&phone=${phone}
+    setPage(1);
+
+    router.push(`user?page=${1}&count=${count}&status=${status}&grade=${grade}&head_office_org_code=${head_office_org_code}&org_code=${org_code}&geo=${geo}&email=${email}&id=${id}&name=${name}&phone=${phone}
     `);
   }, [is_search]);
 
