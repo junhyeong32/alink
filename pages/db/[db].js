@@ -244,7 +244,7 @@ export default function DbDetail() {
           );
         } else if (valuesAge?.length === 2) {
           setAge(valuesAge);
-        } else if (valuesAge.length > 0) {
+        } else if (valuesAge?.length > 0) {
           setDateAge(valuesAge);
         }
       }
@@ -939,12 +939,13 @@ export default function DbDetail() {
                   />
                   <Row sx={{ width: "100%", gap: 1 }} alignItems={"center"}>
                     <Typography>
-                      {/*  || */}
                       {user_code?.org
                         ? user_code?.org + " " + user_code?.name
-                        : getTitleOfOrg(allocated_user) +
+                        : getTitleOfOrg(allocated_user)
+                        ? getTitleOfOrg(allocated_user) +
                           " " +
-                          allocated_user?.name}
+                          allocated_user?.name
+                        : ""}
                     </Typography>
                   </Row>
                 </RowLabel>
