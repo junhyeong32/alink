@@ -1089,7 +1089,7 @@ export default function DbDetail() {
                             </Typography>
                             <audio
                               controls
-                              src={v?.value}
+                              src={v?.value?.split("|")?.[1] || v?.value}
                               style={{ width: "100%" }}
                             >
                               Your browser does not support the
