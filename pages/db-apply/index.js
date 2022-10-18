@@ -65,7 +65,7 @@ export default function DBApply() {
 
     setNoneChangeDb(() => {
       return user?.db
-        ?.filter((u, key) => !menus[key]?.pk?.includes(u?.pk))
+        ?.filter((u, key) => !menus?.some((menu) => menu?.pk === u?.pk))
         ?.map((user_db, key) => {
           return {
             db_pk: user_db?.pk,
@@ -84,6 +84,7 @@ export default function DBApply() {
             })(),
           };
         });
+      // return _user;
     });
 
     setChangeDb(() => {
