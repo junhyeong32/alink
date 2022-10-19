@@ -52,6 +52,8 @@ export default function Authority() {
   const [approval, setApproval] = useState("전체");
   const [month, setMonth] = useState("전체");
 
+  const [isNextMonth, setIsNextMonth] = useState(false);
+
   const [orgMenuList, setOrgMenuList] = useState();
 
   const { organization, addOrganizationData } = useContext(OrganizationContext);
@@ -105,15 +107,45 @@ export default function Authority() {
               name: name,
               org_code: organization,
               status:
-                approval === "전체" || retiree
+                month === "익월"
+                  ? undefined
+                  : approval === "전체" || retiree
                   ? undefined
                   : approval !== "전체"
                   ? approval
                   : approval === "전체" && retiree && retiree,
               deposit_status:
-                deposit_status === "전체" ? undefined : deposit_status,
+                month === "익월"
+                  ? undefined
+                  : deposit_status === "전체"
+                  ? undefined
+                  : deposit_status,
               pay_amount:
-                pay_amount === "전체"
+                month === "익월"
+                  ? undefined
+                  : pay_amount === "전체"
+                  ? undefined
+                  : pay_amount === "+1"
+                  ? 1
+                  : pay_amount,
+              next_status:
+                month === "당월"
+                  ? undefined
+                  : approval === "전체" || retiree
+                  ? undefined
+                  : approval !== "전체"
+                  ? approval
+                  : approval === "전체" && retiree && retiree,
+              next_deposit_status:
+                month === "당월"
+                  ? undefined
+                  : deposit_status === "전체"
+                  ? undefined
+                  : deposit_status,
+              next_pay_amount:
+                month === "당월"
+                  ? undefined
+                  : pay_amount === "전체"
                   ? undefined
                   : pay_amount === "+1"
                   ? 1
@@ -124,6 +156,7 @@ export default function Authority() {
         )?.data;
 
     if (res?.code === 200) {
+      month === "익월" ? setIsNextMonth(true) : setIsNextMonth(false);
       setUsers(res?.data.result);
       setTotalCount(Math.ceil(res?.data.total_count / 20));
       setIsUsersPending(false);
@@ -386,6 +419,7 @@ export default function Authority() {
                     token: getAccessToken(),
                     user_pks: checkList.join(","),
                     deposit_status: "입금 완료",
+                    is_next: month === "익월" ? true : undefined,
                   });
                   if (res?.code === 200)
                     enqueueSnackbar("입금 완료처리 되었습니다.", {
@@ -412,6 +446,7 @@ export default function Authority() {
                     token: getAccessToken(),
                     user_pks: checkList.join(","),
                     deposit_status: "입금 미완료",
+                    is_next: month === "익월" ? true : undefined,
                   });
                   if (res?.code === 200)
                     enqueueSnackbar("입금 미완료처리 되었습니다.", {
@@ -438,6 +473,7 @@ export default function Authority() {
                     token: getAccessToken(),
                     user_pks: checkList.join(","),
                     status: "승인",
+                    is_next: month === "익월" ? true : undefined,
                   });
                   if (res?.code === 200)
                     enqueueSnackbar("승인 처리 되었습니다.", {
@@ -464,6 +500,7 @@ export default function Authority() {
                     token: getAccessToken(),
                     user_pks: checkList.join(","),
                     status: "미승인",
+                    is_next: month === "익월" ? true : undefined,
                   });
                   if (res?.code === 200)
                     enqueueSnackbar("미승인 처리 되었습니다.", {
@@ -492,6 +529,7 @@ export default function Authority() {
               data={users}
               checkList={checkList}
               setCheckList={setCheckList}
+              isNextMonth={isNextMonth}
             />
           )}
           <Row

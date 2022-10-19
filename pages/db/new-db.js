@@ -221,6 +221,8 @@ export default function NewDb() {
     });
   }, [parent_area]);
 
+  console.log(user_info);
+
   return (
     <Layout loading={loading}>
       <Column
@@ -707,7 +709,10 @@ export default function NewDb() {
                           {
                             field_pk: getRecordField?.pk,
                             title: "녹취 파일",
-                            value: _uploadFile,
+                            value:
+                              user_info?.grade === "협력사"
+                                ? `cooperation|${_uploadFile}`
+                                : `user|${_uploadFile}`,
                             created_date: new Date(+new Date() + 3240 * 10000)
                               .toISOString()
                               .replace("T", " ")

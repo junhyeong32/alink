@@ -42,7 +42,12 @@ const Root = styled("div")`
   }
 `;
 
-export default function AuthorityTable({ data, checkList, setCheckList }) {
+export default function AuthorityTable({
+  data,
+  checkList,
+  setCheckList,
+  isNextMonth,
+}) {
   const [rank] = useState(getCookie("user_info")?.grade);
 
   return (
@@ -116,9 +121,14 @@ export default function AuthorityTable({ data, checkList, setCheckList }) {
                 <TableCell align="center">{list?.rank}</TableCell>
                 <TableCell align="center">{getTitleOfOrg(list)}</TableCell>
                 <TableCell align="center">
-                  {rank === "관리자" && Number(list?.pay_amount) > 0
+                  {rank === "관리자" &&
+                  Number(
+                    isNextMonth ? list?.next_pay_amount : list?.pay_amount
+                  ) > 0
                     ? "+"
-                    : numberFormat(list?.pay_amount)}
+                    : numberFormat(
+                        isNextMonth ? list?.next_pay_amount : list?.pay_amount
+                      )}
                 </TableCell>
                 <TableCell
                   sx={{
@@ -129,9 +139,13 @@ export default function AuthorityTable({ data, checkList, setCheckList }) {
                   }}
                   align="center"
                 >
-                  {list?.deposit_status}
+                  {isNextMonth
+                    ? list?.next_deposit_status
+                    : list?.deposit_status}
                 </TableCell>
-                <TableCell align="center">{list?.status}</TableCell>
+                <TableCell align="center">
+                  {isNextMonth ? list?.next_status : list?.status}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
