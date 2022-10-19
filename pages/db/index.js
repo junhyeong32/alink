@@ -93,6 +93,7 @@ export default function Db() {
   const [status, setStatus] = useState("전체");
   const [org_status, setOrgStatus] = useState("전체");
   const [allocated_user, setAllocatedUser] = useState("");
+  const [showMyDb, setShowMyDb] = useState(true);
   const [uploader_organization_code, setUploaderOrganizationCode] =
     useState("전체");
   const [parent_area, setParentArea] = useState("전체");
@@ -161,6 +162,7 @@ export default function Db() {
                 router.query.org_code === "전체"
                   ? undefined
                   : router.query.org_code,
+              // for_me: showMyDb ? showMyDb : undefined,
               status:
                 router.query.status === "전체"
                   ? undefined
@@ -606,7 +608,7 @@ export default function Db() {
         : undefined
     }
       `);
-  }, [page, is_search]);
+  }, [page, is_search, showMyDb]);
 
   // useEffect(() => {
   //   console.log(window.localStorage);
@@ -617,6 +619,8 @@ export default function Db() {
 
   //   setTimeout(() => router.push(window.localStorage.path), 1000);
   // }, [router.isReady]);
+
+  console.log(showMyDb);
 
   return (
     <Layout
@@ -860,7 +864,7 @@ export default function Db() {
                 )
             )}
           </TopLabelContents>
-          <Row justifyContent={"end"} sx={{ gap: 1 }}>
+          <Row alignItems={"center"} justifyContent={"end"} sx={{ gap: 1 }}>
             <Button
               variant="contained"
               bgColor="primary"
@@ -1127,7 +1131,7 @@ export default function Db() {
             justifyContent={"between"}
             sx={{ mb: "10px", gap: 1 }}
           >
-            <Row wrap={"wrap"} sx={{ gap: "5px" }}>
+            <Row alignItems={"center"} wrap={"wrap"} sx={{ gap: "5px" }}>
               {rank === "관리자" && (
                 <Button
                   variant={"outlined"}
@@ -1349,47 +1353,64 @@ export default function Db() {
                 />
               )}
             </Row>
-            <ExcelButton
-              sx={{ zIndex: open ? -1 : 0 }}
-              action={async () => {
-                window.open(
-                  "https://alinkapi.afg.kr/api/v1/db/list?" +
-                    Object.entries({
-                      token: getAccessToken(),
-                      page: page,
-                      count: count,
-                      db_pk: router.query.menu,
-                      head_office_org_code:
-                        head_office_org_code === "전체"
-                          ? undefined
-                          : head_office_org_code,
-                      org_code: org_code === "전체" ? undefined : org_code,
-                      status: status === "전체" ? undefined : status,
-                      org_status:
-                        org_status === "전체" ? undefined : org_status,
-                      allocated_user: allocated_user,
-                      uploader_organization_code:
-                        uploader_organization_code === "전체"
-                          ? undefined
-                          : uploader_organization_code,
-                      geo_parent_name:
-                        parent_area === "전체" ? undefined : parent_area,
-                      geo_name: child_area === "전체" ? undefined : child_area,
-                      values: JSON.stringify(
-                        [...values].filter((v) => v?.value !== "")
-                      ),
-                      created_date_start:
-                        new Date(start_date).getTime() || undefined,
-                      created_date_end:
-                        new Date(end_date).getTime() || undefined,
-                      excel: 1,
-                    })
-                      ?.map((e) => e.join("="))
-                      .join("&"),
-                  "_blank"
-                );
-              }}
-            />
+            <Row alignItems={"center"} sx={{ gap: 1 }}>
+              {/* <FormControlLabel
+                sx={{ mr: 0 }}
+                control={
+                  <Checkbox
+                    sx={{ width: 30 }}
+                    checked={showMyDb}
+                    onClick={() => {
+                      setShowMyDb(!showMyDb);
+                      setIsSearch(true);
+                    }}
+                  />
+                }
+                label={<Typography variant="h5">내 DB 조회 </Typography>}
+              /> */}
+              <ExcelButton
+                sx={{ zIndex: open ? -1 : 0 }}
+                action={async () => {
+                  window.open(
+                    "https://alinkapi.afg.kr/api/v1/db/list?" +
+                      Object.entries({
+                        token: getAccessToken(),
+                        page: page,
+                        count: count,
+                        db_pk: router.query.menu,
+                        head_office_org_code:
+                          head_office_org_code === "전체"
+                            ? undefined
+                            : head_office_org_code,
+                        org_code: org_code === "전체" ? undefined : org_code,
+                        status: status === "전체" ? undefined : status,
+                        org_status:
+                          org_status === "전체" ? undefined : org_status,
+                        allocated_user: allocated_user,
+                        uploader_organization_code:
+                          uploader_organization_code === "전체"
+                            ? undefined
+                            : uploader_organization_code,
+                        geo_parent_name:
+                          parent_area === "전체" ? undefined : parent_area,
+                        geo_name:
+                          child_area === "전체" ? undefined : child_area,
+                        values: JSON.stringify(
+                          [...values].filter((v) => v?.value !== "")
+                        ),
+                        created_date_start:
+                          new Date(start_date).getTime() || undefined,
+                        created_date_end:
+                          new Date(end_date).getTime() || undefined,
+                        excel: 1,
+                      })
+                        ?.map((e) => e.join("="))
+                        .join("&"),
+                    "_blank"
+                  );
+                }}
+              />
+            </Row>
           </Row>
           <BojangTable
             openModal={openModal}
