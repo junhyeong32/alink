@@ -12,6 +12,7 @@ import DepositConfirm from "./share/DepositConfirm";
 import MultipleUpload from "./share/MultipleUpload";
 import User from "./db/User";
 import Guide from "./db/Guide";
+import DbApply from "./db/DbApply";
 
 import { useContext } from "react";
 
@@ -51,6 +52,8 @@ export default function Modal() {
       return <User key={index} index={index} />;
     } else if (data === "guide") {
       return <Guide key={index} index={index} />;
+    } else if (data === "dbapply") {
+      return <DbApply key={index} index={index} />;
     } else {
       return;
     }

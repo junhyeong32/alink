@@ -50,6 +50,7 @@ export default function Authority() {
   const [orgOpen, setOrgOpen] = useState(false);
   const [retiree, setRetiree] = useState("");
   const [approval, setApproval] = useState("전체");
+  const [month, setMonth] = useState("전체");
 
   const [orgMenuList, setOrgMenuList] = useState();
 
@@ -117,6 +118,7 @@ export default function Authority() {
                   : pay_amount === "+1"
                   ? 1
                   : pay_amount,
+              is_next: month === "익월" ? "익월" : undefined,
             },
           })
         )?.data;
@@ -235,7 +237,7 @@ export default function Authority() {
           <Row
             alignItems={"end"}
             sx={{
-              widht: "100%",
+              width: "100%",
               gap: 2,
               flexWrap: {
                 lg: "nowrap",
@@ -302,7 +304,20 @@ export default function Authority() {
               setValue={setDepositStatus}
             />
           </Row>
-          <Row sx={{ mt: 2 }}>
+          <Row
+            alignItems={"end"}
+            sx={{
+              width: "97%",
+              gap: 2,
+              mt: 2,
+              flexWrap: {
+                lg: "nowrap",
+                md: "nowrap",
+                sm: "wrap",
+                xs: "wrap",
+              },
+            }}
+          >
             <UnderLineSelectInput
               title={"승인내역"}
               w={{
@@ -318,6 +333,22 @@ export default function Authority() {
               }}
               value={approval}
               setValue={setApproval}
+            />
+            <UnderLineSelectInput
+              title={"기준월"}
+              w={{
+                lg: "25%",
+                md: "25%",
+                sm: "100%",
+                xs: "100%",
+              }}
+              menuItems={{
+                전체: "전체",
+                당월: "당월",
+                익월: "익월",
+              }}
+              value={month}
+              setValue={setMonth}
             />
           </Row>
 

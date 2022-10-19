@@ -58,8 +58,6 @@ export default function Guide({ index }) {
     cancel = true,
   } = modalContent[index];
 
-  console.log(check);
-
   return (
     <Modal
       open={modal[index] === "guide" ? true : false}

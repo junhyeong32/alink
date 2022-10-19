@@ -162,7 +162,7 @@ export default function Db() {
                 router.query.org_code === "전체"
                   ? undefined
                   : router.query.org_code,
-              // for_me: showMyDb ? showMyDb : undefined,
+              for_me: showMyDb ? showMyDb : undefined,
               status:
                 router.query.status === "전체"
                   ? undefined
@@ -1354,7 +1354,7 @@ export default function Db() {
               )}
             </Row>
             <Row alignItems={"center"} sx={{ gap: 1 }}>
-              {/* <FormControlLabel
+              <FormControlLabel
                 sx={{ mr: 0 }}
                 control={
                   <Checkbox
@@ -1367,7 +1367,7 @@ export default function Db() {
                   />
                 }
                 label={<Typography variant="h5">내 DB 조회 </Typography>}
-              /> */}
+              />
               <ExcelButton
                 sx={{ zIndex: open ? -1 : 0 }}
                 action={async () => {

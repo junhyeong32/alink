@@ -212,22 +212,27 @@ export default function DBApply() {
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Row alignItems={"center"} justifyContent={"between"} sx={{ mb: 2 }}>
             <Typography variant="h1">DB 신청</Typography>
-
-            {moment().date() >= day && (
+            {/* moment().date() >= day &&  */}
+            {
               <Button
                 variant="contained"
                 bgColor="primary"
-                text="익월 DB 신청현황"
+                text="익월 DB 신청하기"
                 color="primary.white"
                 fs="h5"
                 w={160}
                 h={30}
                 action={() => {
                   openModal({
-                    modal: "guide",
+                    modal: "dbapply",
+                    data: {
+                      menus: menus,
+                      changeDb: changeDb,
+                      noneChangeDb: noneChangeDb,
+                      setChangeDb: setChangeDb,
+                      user: user,
+                    },
                     content: {
-                      close: false,
-                      cancel: false,
                       action: closeModal,
                       buttonText: "확인",
                       guideText:
@@ -237,41 +242,11 @@ export default function DBApply() {
                         " " +
                         (new Date().getMonth() + 1) +
                         "월 DB신청현황",
-                      contents: (
-                        <Typography variant="h4">
-                          {
-                            <>
-                              {menus
-                                ?.map((menu, key) => {
-                                  return user?.db?.find(
-                                    (db) => db?.pk === menu.pk
-                                  );
-                                })
-                                ?.map(
-                                  (d, key) =>
-                                    d?.title.split("리스트")[0] +
-                                    " : " +
-                                    d?.allocation?.count_for_next_month +
-                                    "개 "
-                                )}
-                              <br />
-                              <br />
-                              <Typography variant="small" align="cetner">
-                                신청하신 수량에 대하여 다음 달 1일에 자동
-                                반영됩니다. <br /> 신청취소 및 수량 수정을
-                                원하시는 경우 00일(해당 달 말일)
-                                <br /> 23시59분 까지 DB신청하기 메뉴에서
-                                DB수량을 조정바랍니다.
-                              </Typography>
-                            </>
-                          }
-                        </Typography>
-                      ),
                     },
                   });
                 }}
               />
-            )}
+            }
           </Row>
           {user?.acfp > 300000 && (
             <Column
@@ -445,12 +420,16 @@ export default function DBApply() {
                           return user?.db?.find((db) => db?.pk === menu.pk);
                         })
                         ?.map(
-                          (d) => d?.title + " " + d?.allocation?.count + "개 "
+                          (d) =>
+                            d?.title.split("리스트")[0] +
+                            " " +
+                            d?.allocation?.count +
+                            "개 "
                         )}
                       <br />- 신청수량 :{" "}
                       {menus?.map(
                         (menu, key) =>
-                          menu?.title +
+                          menu?.title.split("리스트")[0] +
                           " " +
                           (Number(db_count[key]) ? Number(db_count[key]) : 0) +
                           "개 "
@@ -464,59 +443,13 @@ export default function DBApply() {
                         })
                         ?.map(
                           (d, K) =>
-                            d?.title +
+                            d?.title.split("리스트")[0] +
                             " " +
                             (d?.allocation?.count +
                               (Number(db_count[K]) ? Number(db_count[K]) : 0)) +
                             "개 "
                         )}
                       ]
-                      <br />
-                      <br />
-                      {moment().date() >= day && (
-                        <>
-                          <Typography variant="h5">익월</Typography>- 잔여수량 :{" "}
-                          {menus
-                            ?.map((menu, key) => {
-                              return user?.db?.find((db) => db?.pk === menu.pk);
-                            })
-                            ?.map(
-                              (d) =>
-                                d?.title +
-                                " " +
-                                d?.allocation?.count_for_next_month +
-                                "개 "
-                            )}
-                          <br />- 신청수량 :{" "}
-                          {menus?.map(
-                            (menu, key) =>
-                              menu?.title +
-                              " " +
-                              (Number(next_db_count[key])
-                                ? Number(next_db_count[key])
-                                : 0) +
-                              "개 "
-                          )}{" "}
-                          <br />
-                          <br />
-                          잔여수량 총 합계는 아래와 같습니다. <br />[
-                          {menus
-                            ?.map((menu, key) => {
-                              return user?.db?.find((db) => db?.pk === menu.pk);
-                            })
-                            ?.map(
-                              (d, K) =>
-                                d?.title +
-                                " " +
-                                (d?.allocation?.count_for_next_month +
-                                  (Number(next_db_count[K])
-                                    ? Number(next_db_count[K])
-                                    : 0)) +
-                                "개 "
-                            )}
-                          ]
-                        </>
-                      )}
                     </Typography>
                   ),
                   action: () => {
@@ -536,12 +469,7 @@ export default function DBApply() {
                                     ? Number(db_count[key])
                                     : 0),
                                 count_for_next_month:
-                                  Number(
-                                    db?.allocation[0]?.count_for_next_month
-                                  ) +
-                                  (Number(next_db_count[key])
-                                    ? Number(next_db_count[key])
-                                    : 0),
+                                  db?.allocation[0]?.count_for_next_month,
                               },
                             ],
                           })
