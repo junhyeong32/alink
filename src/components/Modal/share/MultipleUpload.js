@@ -175,7 +175,15 @@ export default function MultipleUpload({ index }) {
                       const formData = new FormData();
                       formData.append("token", getAccessToken());
                       formData.append("file", f);
-                      formData.append("prefix", user_info?.grade);
+                      formData.append(
+                        "prefix",
+                        user_info?.grade === "협력사"
+                          ? `cooperation`
+                          : user_info?.grade === "관리자" ||
+                            user_info?.grade === "부관리자"
+                          ? `manager`
+                          : `user`
+                      );
                       const config = {
                         headers: {
                           "content-type": "multipart/form-data",
