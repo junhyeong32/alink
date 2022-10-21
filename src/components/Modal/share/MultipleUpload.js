@@ -32,6 +32,7 @@ import { styled } from "@mui/material/styles";
 import Axios from "../../../utility/api";
 import { getAccessToken } from "../../../utility/getCookie";
 import { useRouter } from "next/router";
+import { getCookie } from "../../../utility/getCookie";
 
 const style = {
   width: { lg: "715px", md: "715px", sm: "715px", xs: "90%" },
@@ -58,6 +59,7 @@ export default function MultipleUpload({ index }) {
   const [cookies, setCookie, removeCookie] = useCookies();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const [user_info] = useState(getCookie("user_info"));
   const [file, setFile] = useState([]);
   const [loading, setLoading] = useState(false);
   const { modal, closeModal, modalContent } = useContext(ModalContext);
@@ -170,6 +172,7 @@ export default function MultipleUpload({ index }) {
                     setLoading(true);
 
                     for (let f of d) {
+                      console.log(f);
                       const formData = new FormData();
                       formData.append("token", getAccessToken());
                       formData.append("file", f);

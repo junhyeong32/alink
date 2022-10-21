@@ -212,7 +212,7 @@ export default function DBApply() {
         <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
           <Row alignItems={"center"} justifyContent={"between"} sx={{ mb: 2 }}>
             <Typography variant="h1">DB 신청</Typography>
-            {/* moment().date() >= day &&  */}
+
             {
               <Button
                 variant="contained"
@@ -223,27 +223,45 @@ export default function DBApply() {
                 w={160}
                 h={30}
                 action={() => {
-                  openModal({
-                    modal: "dbapply",
-                    data: {
-                      menus: menus,
-                      changeDb: changeDb,
-                      noneChangeDb: noneChangeDb,
-                      setChangeDb: setChangeDb,
-                      user: user,
-                    },
-                    content: {
-                      action: closeModal,
-                      buttonText: "확인",
-                      guideText:
-                        user_info?.name +
-                        " " +
-                        user_info?.grade +
-                        " " +
-                        (new Date().getMonth() + 1) +
-                        "월 DB신청현황",
-                    },
-                  });
+                  moment().date() >= day
+                    ? openModal({
+                        modal: "dbapply",
+                        data: {
+                          menus: menus,
+                          changeDb: changeDb,
+                          noneChangeDb: noneChangeDb,
+                          setChangeDb: setChangeDb,
+                          user: user,
+                        },
+                        content: {
+                          action: closeModal,
+                          buttonText: "확인",
+                          guideText:
+                            user_info?.name +
+                            " " +
+                            user_info?.grade +
+                            " " +
+                            (new Date().getMonth() + 1) +
+                            "월 DB신청현황",
+                        },
+                      })
+                    : openModal({
+                        modal: "guide",
+                        content: {
+                          guideText: "익월DB 신청하기",
+                          cancel: false,
+                          close: false,
+                          contents: (
+                            <Typography variant="h5">
+                              익월DB 신청기간이 아닙니다.
+                            </Typography>
+                          ),
+                          buttonText: "확인",
+                          action: () => {
+                            closeModal();
+                          },
+                        },
+                      });
                 }}
               />
             }
@@ -420,16 +438,12 @@ export default function DBApply() {
                           return user?.db?.find((db) => db?.pk === menu.pk);
                         })
                         ?.map(
-                          (d) =>
-                            d?.title.split("리스트")[0] +
-                            " " +
-                            d?.allocation?.count +
-                            "개 "
+                          (d) => d?.title + " " + d?.allocation?.count + "개 "
                         )}
                       <br />- 신청수량 :{" "}
                       {menus?.map(
                         (menu, key) =>
-                          menu?.title.split("리스트")[0] +
+                          menu?.title +
                           " " +
                           (Number(db_count[key]) ? Number(db_count[key]) : 0) +
                           "개 "

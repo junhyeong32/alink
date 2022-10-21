@@ -42,7 +42,7 @@ const style = {
   bgcolor: "background.paper",
   borderRadius: "5px",
   boxShadow: 24,
-  padding: 2,
+  padding: 5,
 };
 
 export default function DbApply({ index }) {
@@ -225,6 +225,7 @@ export default function DbApply({ index }) {
               fs="h5"
               w={160}
               h={30}
+              sx={{ mt: 7 }}
               action={() => {
                 openModal({
                   modal: "guide",
@@ -288,7 +289,9 @@ export default function DbApply({ index }) {
                                   d?.title.split("리스트")[0] +
                                   " " +
                                   (next_db_count[key]
-                                    ? next_db_count[key]
+                                    ? Number(
+                                        d?.allocation?.count_for_next_month
+                                      ) + Number(next_db_count[key])
                                     : "0") +
                                   "개 "
                               )}

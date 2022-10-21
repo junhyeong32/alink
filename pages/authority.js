@@ -50,7 +50,7 @@ export default function Authority() {
   const [orgOpen, setOrgOpen] = useState(false);
   const [retiree, setRetiree] = useState("");
   const [approval, setApproval] = useState("전체");
-  const [month, setMonth] = useState("전체");
+  const [month, setMonth] = useState("당월");
 
   const [isNextMonth, setIsNextMonth] = useState(false);
 
@@ -376,7 +376,6 @@ export default function Authority() {
                 xs: "100%",
               }}
               menuItems={{
-                전체: "전체",
                 당월: "당월",
                 익월: "익월",
               }}

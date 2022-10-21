@@ -712,6 +712,9 @@ export default function NewDb() {
                             value:
                               user_info?.grade === "협력사"
                                 ? `cooperation|${_uploadFile}`
+                                : user_info?.grade === "관리자" ||
+                                  user_info?.grade === "부관리자"
+                                ? `manager|${_uploadFile}`
                                 : `user|${_uploadFile}`,
                             created_date: new Date(+new Date() + 3240 * 10000)
                               .toISOString()
@@ -764,9 +767,19 @@ export default function NewDb() {
                 }}
               >
                 <Typography variant="h6" ml={3} mb={1}>
-                  {v?.created_date}{" "}
+                  {(v?.value?.split("|")?.[0] === "cooperation"
+                    ? "생산자"
+                    : v?.value?.split("|")?.[0] === "manager"
+                    ? "생산자"
+                    : "담당자") +
+                    " " +
+                    v?.created_date}{" "}
                 </Typography>
-                <audio controls src={v?.value} style={{ width: "100%" }}>
+                <audio
+                  controls
+                  src={v?.value?.split("|")?.[1] || v?.value}
+                  style={{ width: "100%" }}
+                >
                   Your browser does not support the
                   <code>audio</code> element.
                 </audio>

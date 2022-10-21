@@ -85,11 +85,17 @@ export default function ReadFile({ index }) {
                     }}
                   >
                     <Typography variant="h6" ml={3} mb={1}>
-                      {d?.created_date}
+                      {(d?.value?.split("|")?.[0] === "cooperation"
+                        ? "생산자"
+                        : d?.value?.split("|")?.[0] === "manager"
+                        ? "생산자"
+                        : "담당자") +
+                        " " +
+                        d?.created_date}
                     </Typography>
                     <audio
                       controls
-                      src={d?.value}
+                      src={d?.value?.split("|")?.[1] || d?.value}
                       key={key}
                       style={{ width: "100%" }}
                     >
