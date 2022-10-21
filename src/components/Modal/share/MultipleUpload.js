@@ -178,11 +178,11 @@ export default function MultipleUpload({ index }) {
                       formData.append(
                         "prefix",
                         user_info?.grade === "협력사"
-                          ? `cooperation`
+                          ? `cooperation|`
                           : user_info?.grade === "관리자" ||
                             user_info?.grade === "부관리자"
-                          ? `manager`
-                          : `user`
+                          ? `manager|`
+                          : `user|`
                       );
                       const config = {
                         headers: {
