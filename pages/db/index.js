@@ -165,6 +165,8 @@ export default function Db() {
               for_me:
                 user_info?.grade !== "관리자" &&
                 user_info?.grade !== "부관리자" &&
+                user_info?.grade !== "협력사" &&
+                user_info?.grade !== "부협력사" &&
                 showMyDb
                   ? showMyDb
                   : undefined,
@@ -261,6 +263,7 @@ export default function Db() {
 
     router.push(`db?menu=${router.query.menu}`);
 
+    setPage(1);
     setOrgCode("전체");
     setHeadOfficeOrgCode("전체");
     setSubCoop("전체");
@@ -272,6 +275,7 @@ export default function Db() {
     setChildArea("전체");
     setStartDate("");
     setEndDate("");
+
     setDate([
       {
         ...date.key,
@@ -620,6 +624,8 @@ export default function Db() {
     if (!router.query.page) return;
     window.localStorage.setItem("path", router.asPath);
   }, [router.query]);
+
+  console.log(router.query.page, page);
 
   return (
     <Layout
@@ -1367,7 +1373,9 @@ export default function Db() {
             </Row>
             <Row alignItems={"center"} sx={{ gap: 1 }}>
               {user_info?.grade !== "관리자" &&
-                user_info?.grade !== "부관리자" && (
+                user_info?.grade !== "부관리자" &&
+                user_info?.grade !== "협력사" &&
+                user_info?.grade !== "부협력사" && (
                   <FormControlLabel
                     sx={{ mr: 0 }}
                     control={

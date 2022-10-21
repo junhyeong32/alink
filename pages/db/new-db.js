@@ -221,8 +221,6 @@ export default function NewDb() {
     });
   }, [parent_area]);
 
-  console.log(user_info);
-
   return (
     <Layout loading={loading}>
       <Column

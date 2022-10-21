@@ -172,10 +172,10 @@ export default function MultipleUpload({ index }) {
                     setLoading(true);
 
                     for (let f of d) {
-                      console.log(f);
                       const formData = new FormData();
                       formData.append("token", getAccessToken());
                       formData.append("file", f);
+                      formData.append("prefix", user_info?.grade);
                       const config = {
                         headers: {
                           "content-type": "multipart/form-data",
