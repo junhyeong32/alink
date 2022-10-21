@@ -162,7 +162,12 @@ export default function Db() {
                 router.query.org_code === "전체"
                   ? undefined
                   : router.query.org_code,
-              for_me: showMyDb ? showMyDb : undefined,
+              for_me:
+                user_info?.grade !== "관리자" &&
+                user_info?.grade !== "부관리자" &&
+                showMyDb
+                  ? showMyDb
+                  : undefined,
               status:
                 router.query.status === "전체"
                   ? undefined
@@ -582,7 +587,8 @@ export default function Db() {
   useEffect(() => {
     if (!is_search) return;
 
-    window.localStorage.setItem("path", router.asPath);
+    // console.log("start");
+    // window.localStorage.removeItem("query");
 
     router.push(`db?menu=${
       router.query.menu
@@ -610,17 +616,10 @@ export default function Db() {
       `);
   }, [page, is_search, showMyDb]);
 
-  // useEffect(() => {
-  //   console.log(window.localStorage);
-  //   console.log("hello", router.asPath, window.localStorage.path);
-  //   if (!router.isReady) return;
-
-  //   if (router.asPath === window.localStorage.path) return;
-
-  //   setTimeout(() => router.push(window.localStorage.path), 1000);
-  // }, [router.isReady]);
-
-  console.log(showMyDb);
+  useEffect(() => {
+    if (!router.query.page) return;
+    window.localStorage.setItem("path", router.asPath);
+  }, [router.query]);
 
   return (
     <Layout
@@ -865,6 +864,19 @@ export default function Db() {
             )}
           </TopLabelContents>
           <Row alignItems={"center"} justifyContent={"end"} sx={{ gap: 1 }}>
+            <Button
+              bgColor="secondary"
+              text="필터 돌리기"
+              color="primary.white"
+              fs="h6"
+              // w={110}
+              h={28}
+              action={() => {
+                if (router.asPath === window.localStorage.path) return;
+                setPage(router.query.page);
+                router.push(window.localStorage.path);
+              }}
+            />
             <Button
               variant="contained"
               bgColor="primary"
@@ -1354,20 +1366,24 @@ export default function Db() {
               )}
             </Row>
             <Row alignItems={"center"} sx={{ gap: 1 }}>
-              <FormControlLabel
-                sx={{ mr: 0 }}
-                control={
-                  <Checkbox
-                    sx={{ width: 30 }}
-                    checked={showMyDb}
-                    onClick={() => {
-                      setShowMyDb(!showMyDb);
-                      setIsSearch(true);
-                    }}
+              {user_info?.grade !== "관리자" &&
+                user_info?.grade !== "부관리자" && (
+                  <FormControlLabel
+                    sx={{ mr: 0 }}
+                    control={
+                      <Checkbox
+                        sx={{ width: 30 }}
+                        checked={showMyDb}
+                        onClick={() => {
+                          setShowMyDb(!showMyDb);
+                          setIsSearch(true);
+                        }}
+                      />
+                    }
+                    label={<Typography variant="h5">내 DB 조회 </Typography>}
                   />
-                }
-                label={<Typography variant="h5">내 DB 조회 </Typography>}
-              />
+                )}
+
               <ExcelButton
                 sx={{ zIndex: open ? -1 : 0 }}
                 action={async () => {
