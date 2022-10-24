@@ -378,7 +378,9 @@ export default function DbDetail() {
           sx={{ columnGap: "100px", rowGap: 3 }}
         >
           <Column sx={{ width: "100%", maxWidth: 463, gap: 2.8 }}>
-            <Typography variant="h1">고객 정보</Typography>
+            <Typography variant="h1">
+              {router.query.menu === "146" ? "쿠폰 정보" : "고객 정보"}
+            </Typography>
             {menu_detail?.fields?.map((field, key) => {
               if (field?.is_detail_shown === 1) {
                 switch (field?.property?.name) {

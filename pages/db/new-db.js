@@ -234,7 +234,9 @@ export default function NewDb() {
           gap: 2,
         }}
       >
-        <Typography variant="h1">고객 정보</Typography>
+        <Typography variant="h1">
+          {router.query.menu === "146" ? "쿠폰 정보" : "고객 정보"}
+        </Typography>
         {rank !== "협력사" && rank !== "부협력사" && (
           <RowLabel label="조직" fs="h6">
             <OutLineSelectInput
