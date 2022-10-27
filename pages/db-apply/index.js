@@ -308,29 +308,6 @@ export default function DBApply() {
                   <Typography variant="h6" pl={1}>
                     개
                   </Typography>
-
-                  {moment().date() >= day && (
-                    <>
-                      <LabelUnderLineInput
-                        title="익월"
-                        disabled={status === "퇴사자"}
-                        w={90}
-                        defaultValue={0}
-                        onBlur={(e) =>
-                          setNextDbCount((prev) => {
-                            const newData = [...prev];
-
-                            newData[key] = e.target.value;
-
-                            return newData;
-                          })
-                        }
-                      />
-                      <Typography variant="h6" pl={1}>
-                        개
-                      </Typography>
-                    </>
-                  )}
                 </Row>
                 <Row wrap={"wrap"} sx={{ gap: 1 }}>
                   <Typography variant="h4" mr={3}>
