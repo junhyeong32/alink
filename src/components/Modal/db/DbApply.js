@@ -58,7 +58,13 @@ export default function DbApply({ index }) {
 
   const weekdayOf27 = moment(moment().format("yyyy-MM-27")).weekday();
   const day = 27 - (weekdayOf27 === 6 || weekdayOf27 === 0 ? 1 : 0);
+  const lastDay = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth() + 1,
+    0
+  ).getDate();
 
+  console.log(lastDay);
   const { modal, data, openModal, closeModal, modalContent } =
     useContext(ModalContext);
 
@@ -300,8 +306,8 @@ export default function DbApply({ index }) {
                             <Typography variant="small" align="cetner">
                               신청하신 수량에 대하여 다음 달 1일에 자동
                               반영됩니다. <br /> 신청취소 및 수량 수정을
-                              원하시는 경우 00일(해당 달 말일)
-                              <br /> 23시59분 까지 DB신청하기 메뉴에서 DB수량을
+                              원하시는 경우 {lastDay}일 23시59분
+                              <br /> 까지 DB신청하기 메뉴에서 DB수량을
                               조정바랍니다.
                             </Typography>
                           </>

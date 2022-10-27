@@ -906,9 +906,9 @@
   "version" "3.1.0"
 
 "caniuse-lite@^1.0.30001332":
-  "integrity" "sha512-ddP1Tgm7z2iIxu6QTtbZUv6HJxSaV/PZeSrWFZtbY4JZ69tOeNhBCl3HyRQgeNZKE5AOn1kpV7fhljigy0Ty3w=="
-  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001335.tgz"
-  "version" "1.0.30001335"
+  "integrity" "sha512-/pzFv0OmNG6W0ym80P3NtapU0QEiDS3VuYAZMGoLLqiC7f6FJFe1MjpQDREGApeenD9wloeytmVDj+JLXPC6qw=="
+  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001425.tgz"
+  "version" "1.0.30001425"
 
 "chalk@^2.0.0":
   "integrity" "sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ=="
@@ -2165,10 +2165,10 @@
     "clsx" "^1.1.0"
     "hoist-non-react-statics" "^3.3.0"
 
-"nuka-carousel@^5.2.0":
-  "integrity" "sha512-mBMS7eXxsb54L87jPTSMst5Ow53u6Ocf28SDY36+THH7RuZ7aJxo8CQAuO8Bov8MkSTGALV+8P7TcaOqnkPYLA=="
-  "resolved" "https://registry.npmjs.org/nuka-carousel/-/nuka-carousel-5.2.0.tgz"
-  "version" "5.2.0"
+"nuka-carousel@^5.4.0":
+  "integrity" "sha512-y0GRUl94y5CmwjFcPIssY2FV2UEUmiJ4Zui15lgpqzfNPKXbr/10xqPpFAb1Gs3e8jqi5WE3V3CVCb3Rvtd9CQ=="
+  "resolved" "https://registry.npmjs.org/nuka-carousel/-/nuka-carousel-5.4.0.tgz"
+  "version" "5.4.0"
 
 "object-assign@^4.1.0", "object-assign@^4.1.1":
   "integrity" "sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM="
