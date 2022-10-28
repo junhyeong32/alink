@@ -88,12 +88,18 @@ export default function DbDetail() {
   const [area, setArea] = useState([]);
   const [sales, setSales] = useState([]);
   const [team, setTeam] = useState("");
-  const [fileLoading, setFileLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [isGift, setIsGift] = useState("");
 
   const [orgHead, setOrgHead] = useState(""); //메뉴 리스트만 바꾸는용
 
+  // file uplad state
   const [transcript_file, setTranscriptFile] = useState("");
+  const [fileLoading, setFileLoading] = useState(false);
+
+  const [asImageFile, setAsImageFile] = useState("");
+  const [asImageFileLoading, setAsImageFileLoading] = useState("");
+
   const [memo, setMemo] = useState("");
 
   //menuItmes
@@ -749,6 +755,8 @@ export default function DbDetail() {
                     return;
                   case "녹취 파일":
                     return;
+                  case "AS이미지":
+                    return;
 
                   default:
                     return (
@@ -934,8 +942,15 @@ export default function DbDetail() {
                     action={() =>
                       openModal({
                         modal: "chooseuser",
+                        data: {
+                          geo: parent_area,
+                          isGift: isGift,
+                        },
                         content: {
-                          action: (value) => setUserCode(value),
+                          action: {
+                            setUserCode: (value) => setUserCode(value),
+                            setIsGift: (value) => setIsGift(value),
+                          },
                         },
                       })
                     }
@@ -955,8 +970,295 @@ export default function DbDetail() {
               )}
           </Column>
         </Row>
+        {menu_detail?.fields?.filter(
+          (field) =>
+            (field?.is_detail_shown === 1 &&
+              field?.property?.name === "AS이미지") ||
+            (field?.is_detail_shown === 1 &&
+              field?.property?.name === "AS이미지") ||
+            (field?.is_detail_shown === 1 &&
+              field?.property?.name === "AS이미지")
+        ).length !== 0 && (
+          <Typography variant="h4" color="primary.red">
+            녹취파일 및 메모는 등록 후 삭제가 불가하며, 업로드 하지 않을 시
+            저장이 되지 않습니다.
+          </Typography>
+        )}
 
         {/* AS 이미지 파일 */}
+
+        {(allocated_user?.pk === user_info?.pk ||
+          rank === "관리자" ||
+          user_info?.org_code === uploader?.organization?.code ||
+          uploader?.pk === user_info?.pk) &&
+          menu_detail?.fields
+            ?.filter(
+              (field) =>
+                field?.is_detail_shown === 1 &&
+                field?.property?.name === "AS이미지"
+            )
+            ?.map((filter_data) => (
+              <>
+                <Column sx={{ gap: 1 }}>
+                  <Row alignItems={"center"} sx={{ gap: 2 }}>
+                    <Typography variant="h1">AS이미지</Typography>
+                    <Row
+                      alignItems={"center"}
+                      justifyContent={"start"}
+                      sx={{ gap: 1 }}
+                    >
+                      <label htmlFor="contained-button-file">
+                        <Input
+                          accept="image/*"
+                          id="contained-button-file"
+                          type="file"
+                          onChange={(e) => setAsImageFile(e.target.files[0])}
+                        />
+
+                        <Button
+                          text="파일찾기"
+                          fs="h5"
+                          bgColor={"gray"}
+                          color={"primary.white"}
+                          h={28}
+                          component={"span"}
+                        />
+                      </label>
+
+                      <UnderLineInput
+                        disabled
+                        value={asImageFile?.name || ""}
+                      />
+                      <LoadingButton
+                        variant="contained"
+                        loading={asImageFileLoading}
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 700,
+                          height: 28,
+                          mt: 0.1,
+                        }}
+                        onClick={async () => {
+                          if (!asImageFile)
+                            return enqueueSnackbar("파일을 선택해주세요", {
+                              variant: "error",
+                              autoHideDuration: 2000,
+                            });
+                          setAsImageFile(true);
+                          const _uploadFile = await uploadFile(asImageFile);
+
+                          if (_uploadFile) {
+                            const getAsField = menu_detail?.fields?.find(
+                              (data) => data?.property.name === "AS이미지"
+                            );
+
+                            setValues((prev) => {
+                              const newData = [...prev];
+
+                              const newObj = Object.assign(
+                                {},
+                                {
+                                  field_pk: getAsField?.pk,
+                                  title: "AS이미지",
+                                  value: _uploadFile,
+                                  created_date: new Date(
+                                    +new Date() + 3240 * 10000
+                                  )
+                                    .toISOString()
+                                    .replace("T", " ")
+                                    .replace(/\..*/, ""),
+                                }
+                              );
+                              newData.push(newObj);
+
+                              return newData;
+                            });
+
+                            setFileLoading(false);
+                            if (!asImageFileLoading) {
+                              setAsImageFile("");
+                              document.querySelector(
+                                "#contained-button-file"
+                              ).value = "";
+
+                              enqueueSnackbar(
+                                "AS이지가 정상적으로 등록 되었습니다.",
+                                {
+                                  variant: "success",
+                                  autoHideDuration: 2000,
+                                }
+                              );
+                            }
+                          }
+                        }}
+                      >
+                        업로드
+                      </LoadingButton>
+                    </Row>
+                  </Row>
+
+                  {values?.filter(
+                    (v, _key) =>
+                      v?.title === "AS이미지" &&
+                      v?.value &&
+                      v?.value.includes("https")
+                  )?.length > 0 &&
+                  values?.filter(
+                    (v, _key) =>
+                      v?.title === "AS이미지" &&
+                      v?.value &&
+                      v?.value.includes("https")
+                  )?.length < 5 ? (
+                    <GridBox
+                      itemCount={[4, 4, 4, 4]}
+                      alignItems={"end"}
+                      sx={{
+                        width: {
+                          lg: "50%",
+                          md: "100%",
+                          sm: "100%",
+                          xs: "100%",
+                        },
+                        gap: 1,
+                        mt: 1,
+                        maxWidth: 1024,
+                        border: "1px solid black",
+                        // borderRadius: "5px",
+                      }}
+                    >
+                      {values?.map(
+                        (v, _key) =>
+                          v?.title === "AS이미지" &&
+                          v?.value &&
+                          v?.value.includes("https") && (
+                            <Column
+                              alignItems={"center"}
+                              sx={{
+                                width: "100%",
+                                p: 1,
+                              }}
+                            >
+                              <Image
+                                src={v?.value || "/"}
+                                width={"100%"}
+                                height={140}
+                                alt=""
+                              />
+                              <Typography variant="h6" mb={1} align="center">
+                                {values.filter(
+                                  (v) => v?.title === "고객명"
+                                )?.[0]?.value + "고객님"}{" "}
+                                <br />
+                                {v?.created_date}
+                              </Typography>
+                              <Button
+                                variant="contained"
+                                bgColor="primary"
+                                text="다운로드"
+                                color="primary.white"
+                                fs="h6"
+                                w={80}
+                                h={20}
+                                action={() => {}}
+                              />
+                            </Column>
+                          )
+                      )}
+                    </GridBox>
+                  ) : (
+                    values?.filter(
+                      (v, _key) =>
+                        v?.title === "AS이미지" &&
+                        v?.value &&
+                        v?.value.includes("https")
+                    )?.length > 4 && (
+                      <Carousel
+                        // animation={action ? "fade" : "zoom"}
+                        cellAlign="center"
+                        wrapAround
+                        defaultControlsConfig={{
+                          pagingDotsStyle: {
+                            display: "none",
+                          },
+                        }}
+                        // slideIndex={slide_index}
+                        // afterSlide={(slideIndex) => {
+                        //   console.log("슬라이드", slide_index, slideIndex);
+                        //   setSlideIndex(slideIndex);
+                        //   // if (slide_index !== slideIndex) {
+                        //   //   setSlideIndex(slide_index);
+                        //   // }
+                        // }}
+                        // beforeSlide={(slideIndex) => {
+                        //   setSlideIndex(slideIndex);
+                        //   // if (slide_index !== slideIndex) {
+                        //   //   setSlideIndex(slide_index);
+                        //   // }
+                        // }}
+                        renderCenterLeftControls={({
+                          previousSlide,
+                          goToSlide,
+                        }) => (
+                          <Button
+                            className="prev_button"
+                            sx={{
+                              top: "50%",
+                              left: "-610px",
+                            }}
+                            // onClick={(e) => {
+                            //   goToSlide(slide_index - 1);
+                            //   setSlideIndex(slide_index - 1);
+
+                            //   if (slide_index === 0) {
+                            //     setAction("prev");
+                            //     goToSlide(2);
+                            //     setSlideIndex(2);
+                            //   }
+                            // }}
+                          >
+                            <Image
+                              src="/prev_button.png"
+                              width={21}
+                              height={32}
+                            />
+                          </Button>
+                        )}
+                        renderCenterRightControls={({
+                          nextSlide,
+                          goToSlide,
+                        }) => (
+                          <Button
+                            className="next_button"
+                            sx={{
+                              top: "50%",
+                              right: "-105px",
+                            }}
+                            // onClick={() => {
+                            //   goToSlide(slide_index + 1);
+                            //   setSlideIndex(slide_index + 1);
+
+                            //   if (slide_index === 2) {
+                            //     setAction("next");
+                            //     goToSlide(0);
+                            //     setSlideIndex(0);
+                            //   }
+                            // }}
+                          >
+                            <Image
+                              src="/next_button.png"
+                              width={21}
+                              height={32}
+                            />
+                          </Button>
+                        )}
+                      ></Carousel>
+                    )
+                  )}
+                </Column>
+              </>
+            ))}
+
+        {/* 녹취파일 */}
 
         {(allocated_user?.pk === user_info?.pk ||
           rank === "관리자" ||
@@ -970,11 +1272,6 @@ export default function DbDetail() {
             )
             ?.map((filter_data) => (
               <>
-                <Typography variant="h4" color="primary.red">
-                  녹취파일 및 메모는 등록 후 삭제가 불가하며, 업로드 하지 않을
-                  시 저장이 되지 않습니다.
-                </Typography>
-
                 <Column sx={{ gap: 1 }}>
                   <Row alignItems={"center"} sx={{ gap: 2 }}>
                     <Typography variant="h1">녹취파일</Typography>
@@ -1284,6 +1581,7 @@ export default function DbDetail() {
                             org_status === "default" ? undefined : org_status,
                           geo_parent: parent_area,
                           geo_name: child_area,
+                          is_gift: isGift,
                           values: [...newValue],
                         });
 

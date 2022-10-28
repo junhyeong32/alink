@@ -17,6 +17,8 @@ import {
   Divider,
   CircularProgress,
   Pagination,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import Column from "../../Box/Column";
 import RowLabel from "../../Box/RowLabel";
@@ -73,6 +75,7 @@ export default function User({ index }) {
   const [orgMenuList, setOrgMenuList] = useState({});
   const [orgTeamMenuItems, setOrgTeamMenuItems] = useState({});
   const [loading, setLoading] = useState(false);
+  const [is_all, setIsAll] = useState("");
 
   const [orgMenuItems, setOrgMenuItems] = useState({});
 
@@ -82,6 +85,10 @@ export default function User({ index }) {
     useContext(ModalContext);
 
   const { action } = modalContent[index];
+  const { setIsGift, setUserCode } = action;
+  const { geo, isGift } = data[index];
+
+  console.log(data[index], setIsGift, isGift);
 
   useEffect(() => {
     const getSalesByHeadOffice = async () => {
@@ -121,6 +128,9 @@ export default function User({ index }) {
             params: {
               token: getAccessToken(),
               page: newPageCount ? newPageCount : page,
+              geo: geo,
+              db_pk: router.query.menu,
+              is_all: is_all,
               org_code: team === "전체" ? undefined : team,
               name: name,
             },
@@ -143,7 +153,9 @@ export default function User({ index }) {
 
   useEffect(() => {
     getUserList();
-  }, [page]);
+  }, [page, is_all]);
+
+  console.log(router.query.db);
 
   return (
     <Modal
@@ -187,7 +199,20 @@ export default function User({ index }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <Row sx={{ gap: 1 }}>
+              <Row alignItems={"center"} sx={{ gap: 1 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={is_all === 1}
+                      onClick={() => setIsAll(is_all ? "" : 1)}
+                    />
+                  }
+                  label={
+                    <Typography ml="-5px" variant="h6">
+                      선물분배
+                    </Typography>
+                  }
+                />
                 <Button
                   text="검색"
                   variant="contained"

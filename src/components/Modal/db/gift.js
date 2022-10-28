@@ -13,8 +13,8 @@ import {
   Modal,
   Box,
   Typography,
-  Grid,
-  Divider,
+  FormControlLabel,
+  Checkbox,
   Pagination,
 } from "@mui/material";
 import Column from "../../Box/Column";

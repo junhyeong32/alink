@@ -440,6 +440,10 @@ export default function NewDb() {
                 return;
               case "녹취 파일":
                 return;
+              case "메모":
+                return;
+              case "AS이미지":
+                return;
 
               default:
                 return (
@@ -489,164 +493,7 @@ export default function NewDb() {
             setValue={setChildArea}
           />
         </RowLabel>
-        {/* <RowLabel label="고객명" fs="h6">
-          <OutLineInput
-            onBlur={(e) =>
-              setValues((prev) => {
-                const newData = [...prev];
-                const dataObj = newData.filter(
-                  (data) => data.name === "고객명"
-                );
-                dataObj[0].value = e.target.value;
 
-                return newData;
-              })
-            }
-          />
-        </RowLabel>
-       
-        <RowLabel label="연락처" fs="h6">
-          <OutLineInput
-            onBlur={(e) =>
-              setValues((prev) => {
-                const newData = [...prev];
-                const dataObj = newData.filter(
-                  (data) => data.name === "연락처"
-                );
-                dataObj[0].value = e.target.value;
-
-                return newData;
-              })
-            }
-          />
-        </RowLabel>
-        <RowLabel label="나이" fs="h6">
-          <div ref={el} style={{ width: "50%" }}>
-            <DatePicker
-              date={dateAge}
-              setDate={setDateAge}
-              value={date}
-              setValue={setDate}
-              w={"100%"}
-              changeLog={dateAgeChangeLog}
-              setChangeLog={setDateAgeChangeLog}
-            />
-          </div>
-          <OutLineInput
-            id="age"
-            w={"50%"}
-            onBlur={(e) => setAge(e.target.value)}
-          />
-        </RowLabel>
-        <RowLabel label="성별" fs="h6">
-          <FormControlLabel
-            label="남자"
-            control={
-              <RadioInput
-                checked={
-                  values?.filter((v) => v.name === "성별")[0]?.value === "남자"
-                }
-                onClick={() =>
-                  setValues((prev) => {
-                    const newData = [...prev];
-                    const dataObj = newData.filter(
-                      (data) => data.name === "성별"
-                    );
-                    dataObj[0].value = "남자";
-
-                    return newData;
-                  })
-                }
-              />
-            }
-          />
-          <FormControlLabel
-            label="여자"
-            control={
-              <RadioInput
-                checked={
-                  values?.filter((v) => v.name === "성별")[0]?.value === "여자"
-                }
-                onClick={() =>
-                  setValues((prev) => {
-                    const newData = [...prev];
-                    const dataObj = newData.filter(
-                      (data) => data.name === "성별"
-                    );
-                    dataObj[0].value = "여자";
-
-                    return newData;
-                  })
-                }
-              />
-            }
-          />
-        </RowLabel>
-        <RowLabel label="결혼여부" fs="h6">
-          <FormControlLabel
-            label="미혼"
-            control={
-              <RadioInput
-                checked={
-                  values?.filter((v) => v.name === "결혼여부")[0]?.value ===
-                  "미혼"
-                }
-                onClick={() =>
-                  setValues((prev) => {
-                    const newData = [...prev];
-                    const dataObj = newData.filter(
-                      (data) => data.name === "결혼여부"
-                    );
-                    dataObj[0].value = "미혼";
-
-                    return newData;
-                  })
-                }
-              />
-            }
-          />
-          <FormControlLabel
-            label="기혼"
-            control={
-              <RadioInput
-                checked={
-                  values?.filter((v) => v.name === "결혼여부")[0]?.value ===
-                  "기혼"
-                }
-                onClick={() =>
-                  setValues((prev) => {
-                    const newData = [...prev];
-                    const dataObj = newData.filter(
-                      (data) => data.name === "결혼여부"
-                    );
-                    dataObj[0].value = "기혼";
-
-                    return newData;
-                  })
-                }
-              />
-            }
-          />
-        </RowLabel>
-        <RowLabel label="특이사항" fs="h6">
-          <OutLineInput
-            text="text"
-            w={"100%"}
-            multiline
-            rows={3}
-            onBlur={(e) =>
-              setValues((prev) => {
-                const newData = [...prev];
-                const dataObj = newData.filter(
-                  (data) => data.name === "특이사항"
-                );
-                dataObj[0].value = e.target.value;
-
-                return newData;
-              })
-            }
-          />
-        </RowLabel> */}
         {menu_detail?.fields?.find(
           (field, key) =>
             field?.is_detail_shown === 1 &&

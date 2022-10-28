@@ -34,6 +34,7 @@ export default function GridBox({
   itemCount,
   ...props
 }) {
+  console.log(typeof itemCount, typeof itemCount === "array" && itemCount[3]);
   return (
     <Grid
       sx={{
@@ -41,10 +42,22 @@ export default function GridBox({
         justifyContent: _justifyContent[justifyContent],
         alignItems: _alignItems[alignItems],
         gridTemplateColumns: {
-          lg: _itemCount[itemCount],
-          md: _itemCount[itemCount - 1],
-          sm: _itemCount[itemCount - 2],
-          xs: _itemCount[itemCount - 3],
+          lg:
+            typeof itemCount === "object" && itemCount[0]
+              ? _itemCount[itemCount[0] - 1]
+              : _itemCount[3],
+          md:
+            typeof itemCount === "object" && itemCount[1]
+              ? _itemCount[itemCount[1] - 1]
+              : _itemCount[2],
+          sm:
+            typeof itemCount === "object" && itemCount[2]
+              ? _itemCount[itemCount[2] - 1]
+              : _itemCount[1],
+          xs:
+            typeof itemCount === "object" && itemCount[3]
+              ? _itemCount[itemCount[3] - 1]
+              : _itemCount[0],
         },
         ...sx,
       }}

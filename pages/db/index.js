@@ -1118,6 +1118,33 @@ export default function Db() {
                         }
                       />
                       <Button
+                        text="이번달"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        sx={{ zIndex: open ? -1 : 0 }}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(
+                                new Date(
+                                  new Date().getFullYear(),
+                                  new Date().getMonth(),
+                                  1
+                                )
+                              ),
+                              endDate: new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth() + 1,
+                                0
+                              ),
+                            },
+                          ])
+                        }
+                      />
+                      <Button
                         text="지난달"
                         bgColor={"gray"}
                         fs={"h6"}
