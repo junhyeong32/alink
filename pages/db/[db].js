@@ -1096,61 +1096,49 @@ export default function DbDetail() {
                       </LoadingButton>
                     </Row>
                   </Row>
-
-                  {values?.filter(
-                    (v, _key) =>
-                      v?.title === "AS이미지" &&
-                      v?.value &&
-                      v?.value.includes("https")
-                  )?.length > 0 &&
-                  values?.filter(
-                    (v, _key) =>
-                      v?.title === "AS이미지" &&
-                      v?.value &&
-                      v?.value.includes("https")
-                  )?.length < 5 ? (
-                    <GridBox
-                      itemCount={[4, 4, 4, 4]}
-                      alignItems={"end"}
-                      sx={{
-                        width: {
-                          lg: "50%",
-                          md: "100%",
-                          sm: "100%",
-                          xs: "100%",
-                        },
-                        gap: 1,
-                        mt: 1,
-                        maxWidth: 1024,
-                        border: "1px solid black",
-                        // borderRadius: "5px",
-                      }}
-                    >
-                      {values?.map(
-                        (v, _key) =>
-                          v?.title === "AS이미지" &&
-                          v?.value &&
-                          v?.value.includes("https") && (
-                            <Column
-                              alignItems={"center"}
-                              sx={{
-                                width: "100%",
-                                p: 1,
-                              }}
-                            >
-                              <Image
-                                src={v?.value || "/"}
-                                width={"100%"}
-                                height={140}
-                                alt=""
-                              />
-                              <Typography variant="h6" mb={1} align="center">
-                                {values.filter(
-                                  (v) => v?.title === "고객명"
-                                )?.[0]?.value + "고객님"}{" "}
-                                <br />
-                                {v?.created_date}
-                              </Typography>
+                  <Row
+                    justifyContent={"start"}
+                    wrap={"wrap"}
+                    className="pointer"
+                    sx={{
+                      width: "fit-content",
+                      columnGap: 6,
+                      rowGap: 1,
+                      mt: 1,
+                      border: "1px solid black",
+                    }}
+                    onClick={() =>
+                      openModal({
+                        modal: "imageslider",
+                        data: values,
+                      })
+                    }
+                  >
+                    {values?.map(
+                      (v, _key) =>
+                        v?.title === "AS이미지" &&
+                        v?.value &&
+                        v?.value.includes("https") && (
+                          <Column
+                            alignItems={"center"}
+                            sx={{
+                              // width: "100%",
+                              p: 1,
+                            }}
+                          >
+                            <Image
+                              src={v?.value || "/"}
+                              width={"100%"}
+                              height={140}
+                              alt=""
+                            />
+                            <Typography variant="h6" mb={1} align="center">
+                              {values.filter((v) => v?.title === "고객명")?.[0]
+                                ?.value + "고객님"}{" "}
+                              <br />
+                              {v?.created_date}
+                            </Typography>
+                            <a href={v?.value} target="_blank" rel="noreferrer">
                               <Button
                                 variant="contained"
                                 bgColor="primary"
@@ -1159,101 +1147,13 @@ export default function DbDetail() {
                                 fs="h6"
                                 w={80}
                                 h={20}
-                                action={() => {}}
+                                // action={() => {}}
                               />
-                            </Column>
-                          )
-                      )}
-                    </GridBox>
-                  ) : (
-                    values?.filter(
-                      (v, _key) =>
-                        v?.title === "AS이미지" &&
-                        v?.value &&
-                        v?.value.includes("https")
-                    )?.length > 4 && (
-                      <Carousel
-                        // animation={action ? "fade" : "zoom"}
-                        cellAlign="center"
-                        wrapAround
-                        defaultControlsConfig={{
-                          pagingDotsStyle: {
-                            display: "none",
-                          },
-                        }}
-                        // slideIndex={slide_index}
-                        // afterSlide={(slideIndex) => {
-                        //   console.log("슬라이드", slide_index, slideIndex);
-                        //   setSlideIndex(slideIndex);
-                        //   // if (slide_index !== slideIndex) {
-                        //   //   setSlideIndex(slide_index);
-                        //   // }
-                        // }}
-                        // beforeSlide={(slideIndex) => {
-                        //   setSlideIndex(slideIndex);
-                        //   // if (slide_index !== slideIndex) {
-                        //   //   setSlideIndex(slide_index);
-                        //   // }
-                        // }}
-                        renderCenterLeftControls={({
-                          previousSlide,
-                          goToSlide,
-                        }) => (
-                          <Button
-                            className="prev_button"
-                            sx={{
-                              top: "50%",
-                              left: "-610px",
-                            }}
-                            // onClick={(e) => {
-                            //   goToSlide(slide_index - 1);
-                            //   setSlideIndex(slide_index - 1);
-
-                            //   if (slide_index === 0) {
-                            //     setAction("prev");
-                            //     goToSlide(2);
-                            //     setSlideIndex(2);
-                            //   }
-                            // }}
-                          >
-                            <Image
-                              src="/prev_button.png"
-                              width={21}
-                              height={32}
-                            />
-                          </Button>
-                        )}
-                        renderCenterRightControls={({
-                          nextSlide,
-                          goToSlide,
-                        }) => (
-                          <Button
-                            className="next_button"
-                            sx={{
-                              top: "50%",
-                              right: "-105px",
-                            }}
-                            // onClick={() => {
-                            //   goToSlide(slide_index + 1);
-                            //   setSlideIndex(slide_index + 1);
-
-                            //   if (slide_index === 2) {
-                            //     setAction("next");
-                            //     goToSlide(0);
-                            //     setSlideIndex(0);
-                            //   }
-                            // }}
-                          >
-                            <Image
-                              src="/next_button.png"
-                              width={21}
-                              height={32}
-                            />
-                          </Button>
-                        )}
-                      ></Carousel>
-                    )
-                  )}
+                            </a>
+                          </Column>
+                        )
+                    )}
+                  </Row>
                 </Column>
               </>
             ))}

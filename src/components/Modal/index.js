@@ -17,6 +17,7 @@ import DbApply from "./db/DbApply";
 import { useContext } from "react";
 
 import { ModalContext } from "../../contexts/ModalContext";
+import Imageslider from "./db/ImageSllider";
 
 export default function Modal() {
   const { modal } = useContext(ModalContext);
@@ -54,6 +55,8 @@ export default function Modal() {
       return <Guide key={index} index={index} />;
     } else if (data === "dbapply") {
       return <DbApply key={index} index={index} />;
+    } else if (data === "imageslider") {
+      return <Imageslider key={index} index={index} />;
     } else {
       return;
     }

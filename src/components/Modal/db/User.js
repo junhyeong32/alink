@@ -152,10 +152,12 @@ export default function User({ index }) {
   }, [sales]);
 
   useEffect(() => {
+    setIsGift(is_all);
+  }, [is_all]);
+
+  useEffect(() => {
     getUserList();
   }, [page, is_all]);
-
-  console.log(router.query.db);
 
   return (
     <Modal
@@ -249,7 +251,7 @@ export default function User({ index }) {
                 <CircularProgress size="40px" thickness={5} color="primary" />
               </Column>
             ) : (
-              <UserTable data={user_list} action={action} />
+              <UserTable data={user_list} action={setUserCode} />
             )}
           </Column>
           <Row

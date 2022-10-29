@@ -106,7 +106,7 @@ export default function UserTable({ data, action }) {
                   </TableCell>
                   <TableCell align="center">{getTitleOfOrg(user)}</TableCell>
                   <TableCell align="center">{user?.name}</TableCell>
-                  <TableCell align="center">
+                  <TableCell align="cenㅐter">
                     <Button
                       variant={"outlined"}
                       color="primary"

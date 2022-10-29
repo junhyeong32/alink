@@ -44,20 +44,20 @@ export default function GridBox({
         gridTemplateColumns: {
           lg:
             typeof itemCount === "object" && itemCount[0]
-              ? _itemCount[itemCount[0] - 1]
-              : _itemCount[3],
+              ? _itemCount[itemCount[0]]
+              : _itemCount[4],
           md:
             typeof itemCount === "object" && itemCount[1]
-              ? _itemCount[itemCount[1] - 1]
-              : _itemCount[2],
+              ? _itemCount[itemCount[1]]
+              : _itemCount[3],
           sm:
             typeof itemCount === "object" && itemCount[2]
-              ? _itemCount[itemCount[2] - 1]
-              : _itemCount[1],
+              ? _itemCount[itemCount[2]]
+              : _itemCount[2],
           xs:
             typeof itemCount === "object" && itemCount[3]
-              ? _itemCount[itemCount[3] - 1]
-              : _itemCount[0],
+              ? _itemCount[itemCount[3]]
+              : _itemCount[1],
         },
         ...sx,
       }}
