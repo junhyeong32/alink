@@ -14,6 +14,7 @@ import Axios from "../../src/utility/api";
 import { getAccessToken } from "../../src/utility/getCookie";
 import moment from "moment";
 import { Pagination } from "@mui/material";
+import { getWeek, getReplaceMonth } from "../../src/utility/date";
 
 export default function Sms() {
   const router = useRouter();
@@ -191,10 +192,36 @@ export default function Sms() {
                         setDate([
                           {
                             ...date.key,
+                            startDate: getWeek().weekStartDate,
+                            endDate: getWeek().weekEndDate,
+                          },
+                        ])
+                      }
+                    />
+                    <Button
+                      text="이번달"
+                      bgColor={"gray"}
+                      fs={"h6"}
+                      color={"primary.white"}
+                      h={14}
+                      action={() =>
+                        setDate([
+                          {
+                            ...date.key,
                             startDate: new Date(
-                              new Date().setDate(new Date().getDate() - 7)
+                              new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth(),
+                                1
+                              )
                             ),
-                            endDate: new Date(),
+                            endDate: new Date(
+                              new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth() + 1,
+                                1
+                              )
+                            ),
                           },
                         ])
                       }
@@ -210,9 +237,15 @@ export default function Sms() {
                           {
                             ...date.key,
                             startDate: new Date(
-                              new Date().setMonth(new Date().getMonth() - 1)
+                              new Date().getFullYear(),
+                              getReplaceMonth().getMonth(),
+                              1
                             ),
-                            endDate: new Date(),
+                            endDate: new Date(
+                              new Date().getFullYear(),
+                              getReplaceMonth().getMonth() + 1,
+                              1
+                            ),
                           },
                         ])
                       }

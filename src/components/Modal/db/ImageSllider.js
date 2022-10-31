@@ -62,13 +62,20 @@ export default function Imageslider({ index }) {
   const { modal, data, openModal, closeModal, modalContent } =
     useContext(ModalContext);
 
+  console.log(modal);
+
   return (
     <Modal
       open={modal[index] === "imageslider" ? true : false}
       onClose={closeModal}
+      //   onKeyDown={(ev) => {
+      //     if (ev.key === "Escape") {
+      //       closeModal(index);
+      //     }
+      //   }}
     >
       <Box>
-        <Column alignItems={"center"} justifyContent={"between"} sx={style}>
+        <Column alignItems={"center"} justifyContent={"start"} sx={style}>
           <Row justifyContent={"end"} sx={{ width: "100%", mb: 1 }}>
             <Image
               src="/black_x.png"
@@ -157,7 +164,7 @@ export default function Imageslider({ index }) {
                     <Image
                       src={v?.value || "/"}
                       width={321}
-                      height={517}
+                      height={612}
                       alt=""
                     />
                   </Column>
@@ -202,7 +209,6 @@ export default function Imageslider({ index }) {
                       }}
                     />
                   )}
-                  {console.log("hello", key, slideIndex)}
 
                   <Image
                     src={v?.value || "/"}

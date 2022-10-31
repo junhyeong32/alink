@@ -50,7 +50,7 @@ import {
   getOrgWithUnit,
 } from "../../src/utility/organization/getOrgWithUnit";
 import { getTitleOfOrg_name } from "../../src/utility/organization/getTitleOfOrg";
-import { getReplaceMonth } from "../../src/utility/date";
+import { getReplaceMonth, getWeek } from "../../src/utility/date";
 
 const moment = extendMoment(originalMoment);
 
@@ -626,8 +626,6 @@ export default function Db() {
     window.localStorage.setItem("path", router.asPath);
   }, [router.query]);
 
-  console.log(router.query.page, page);
-
   return (
     <Layout
       loading={loading}
@@ -1110,10 +1108,8 @@ export default function Db() {
                           setDate([
                             {
                               ...date.key,
-                              startDate: new Date(
-                                new Date().setDate(new Date().getDate() - 7)
-                              ),
-                              endDate: new Date(),
+                              startDate: getWeek().weekStartDate,
+                              endDate: getWeek().weekEndDate,
                             },
                           ])
                         }
@@ -1137,9 +1133,11 @@ export default function Db() {
                                 )
                               ),
                               endDate: new Date(
-                                new Date().getFullYear(),
-                                new Date().getMonth() + 1,
-                                0
+                                new Date(
+                                  new Date().getFullYear(),
+                                  new Date().getMonth() + 1,
+                                  1
+                                )
                               ),
                             },
                           ])
@@ -1161,7 +1159,11 @@ export default function Db() {
                                 getReplaceMonth().getMonth(),
                                 1
                               ),
-                              endDate: getReplaceMonth(),
+                              endDate: new Date(
+                                new Date().getFullYear(),
+                                getReplaceMonth().getMonth() + 1,
+                                1
+                              ),
                             },
                           ])
                         }
