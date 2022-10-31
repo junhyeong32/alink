@@ -120,6 +120,9 @@ export default function User({ index }) {
           await Axios.Get("member", {
             params: {
               token: getAccessToken(),
+              geo: geo,
+              db_pk: router.query.menu,
+              page: 1,
             },
           })
         )?.data
@@ -237,7 +240,9 @@ export default function User({ index }) {
                     getUserList(true);
                     setBranch("전체");
                     setTeam("전체");
+                    setTeam("전체");
                     setName("");
+                    setIsAll("");
                   }}
                 />
               </Row>
