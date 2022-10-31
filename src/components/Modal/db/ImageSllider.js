@@ -62,17 +62,45 @@ export default function Imageslider({ index }) {
   const { modal, data, openModal, closeModal, modalContent } =
     useContext(ModalContext);
 
-  console.log(modal);
+  console.log(slideIndex);
 
   return (
     <Modal
       open={modal[index] === "imageslider" ? true : false}
       onClose={closeModal}
-      //   onKeyDown={(ev) => {
-      //     if (ev.key === "Escape") {
-      //       closeModal(index);
-      //     }
-      //   }}
+      onKeyDown={(ev) => {
+        console.log(ev.key);
+        if (ev.key === "ArrowLeft") {
+          if (slideIndex === 0) {
+            return setSlideIndex(
+              data[index]?.filter(
+                (v, _key) =>
+                  v?.title === "AS이미지" &&
+                  v?.value &&
+                  v?.value.includes("https")
+              )?.length - 1
+            );
+          }
+          setSlideIndex(slideIndex - 1);
+        } else if (ev.key === "ArrowRight") {
+          if (
+            data[index]?.filter(
+              (v, _key) =>
+                v?.title === "AS이미지" &&
+                v?.value &&
+                v?.value.includes("https")
+            )?.length -
+              1 ===
+            slideIndex
+          ) {
+            return setSlideIndex(0);
+          }
+          setSlideIndex(slideIndex + 1);
+        }
+        // if (ev.key === "Escape") {
+        //   closeModal(index);
+        // }
+      }}
     >
       <Box>
         <Column alignItems={"center"} justifyContent={"start"} sx={style}>
