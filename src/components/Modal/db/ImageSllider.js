@@ -62,14 +62,6 @@ export default function Imageslider({ index }) {
   const { modal, data, openModal, closeModal, modalContent } =
     useContext(ModalContext);
 
-  console.log(
-    data[index]?.filter(
-      (v, _key) =>
-        v?.title === "AS이미지" && v?.value && v?.value.includes("https")
-    )?.length,
-    slideIndex
-  );
-
   return (
     <Modal
       open={modal[index] === "imageslider" ? true : false}
@@ -161,7 +153,7 @@ export default function Imageslider({ index }) {
                 v?.title === "AS이미지" &&
                 v?.value &&
                 v?.value.includes("https") && (
-                  <Column sx={{ border: "1px solid black" }} key={key}>
+                  <Column sx={{ border: "1px solid black" }} key={_key}>
                     <Image
                       src={v?.value || "/"}
                       width={321}

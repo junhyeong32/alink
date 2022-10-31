@@ -50,6 +50,7 @@ import {
   getOrgWithUnit,
 } from "../../src/utility/organization/getOrgWithUnit";
 import { getTitleOfOrg_name } from "../../src/utility/organization/getTitleOfOrg";
+import { getReplaceMonth } from "../../src/utility/date";
 
 const moment = extendMoment(originalMoment);
 
@@ -1156,9 +1157,11 @@ export default function Db() {
                             {
                               ...date.key,
                               startDate: new Date(
-                                new Date().setMonth(new Date().getMonth() - 1)
+                                new Date().getFullYear(),
+                                getReplaceMonth().getMonth(),
+                                1
                               ),
-                              endDate: new Date(),
+                              endDate: getReplaceMonth(),
                             },
                           ])
                         }

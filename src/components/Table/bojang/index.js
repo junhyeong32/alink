@@ -308,6 +308,7 @@ export default function BojangTable({
                     head?.is_list_shown === 1 &&
                     head?.property.name !== "녹취 파일" &&
                     head?.property.name !== "메모" &&
+                    head?.property.name !== "AS이미지" &&
                     head?.property.name !== "결과지 파일"
                   ) {
                     if (head?.property.name === "나이") {
@@ -425,6 +426,37 @@ export default function BojangTable({
                                       v?.title === "녹취 파일" &&
                                       v?.value.includes("https")
                                   ),
+                                },
+                              })
+                            }
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </TableCell>
+                    );
+                  } else if (
+                    head?.is_list_shown === 1 &&
+                    head?.property?.name === "AS이미지"
+                  ) {
+                    return (
+                      <TableCell align="center" key={_key}>
+                        {data[key]?.values.filter(
+                          (v) => v?.title === "AS이미지" && v?.value !== ""
+                        ).length !== 0 ? (
+                          <Image
+                            src={"/asimage.svg"}
+                            width={20}
+                            height={20}
+                            alt="result"
+                            onClick={() =>
+                              openModal({
+                                modal: "imageslider",
+                                data: data[key]?.values.filter(
+                                  (v) => v?.title === "AS이미지"
+                                ),
+                                content: {
+                                  title: "결과지 파일",
                                 },
                               })
                             }

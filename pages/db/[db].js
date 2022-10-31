@@ -1007,10 +1007,10 @@ export default function DbDetail() {
                       justifyContent={"start"}
                       sx={{ gap: 1 }}
                     >
-                      <label htmlFor="contained-button-file">
+                      <label htmlFor="image-button-file">
                         <Input
                           accept="image/*"
-                          id="contained-button-file"
+                          id="image-button-file"
                           type="file"
                           onChange={(e) => setAsImageFile(e.target.files[0])}
                         />
@@ -1099,13 +1099,13 @@ export default function DbDetail() {
                   <Row
                     justifyContent={"start"}
                     wrap={"wrap"}
-                    className="pointer"
                     sx={{
                       width: "fit-content",
                       columnGap: 6,
                       rowGap: 1,
                       mt: 1,
                       border: "1px solid black",
+                      cursor: "pointer",
                     }}
                     onClick={() =>
                       openModal({
