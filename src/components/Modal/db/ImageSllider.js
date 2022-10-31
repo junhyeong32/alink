@@ -201,7 +201,6 @@ export default function Imageslider({ index }) {
           </Carousel>
 
           <Grid
-            // wrap="wrap"
             itemCount={[4, 4, 4, 2]}
             sx={{
               width: "100%",
@@ -219,11 +218,13 @@ export default function Imageslider({ index }) {
               )
               ?.map((v, key) => (
                 <Column
+                  onClick={() => setSlideIndex(key)}
                   key={key}
                   alignItems={"center"}
                   sx={{
                     position: "relative",
                     p: 1,
+                    cursor: "pointer",
                   }}
                 >
                   {key === slideIndex && (
