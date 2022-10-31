@@ -161,6 +161,9 @@ body
   }
 }
 
-.slider-container {
+/* .slider-container {
+  width: 321px;
+} */
+div.MuiBox-root.css-0 > div > div.slider-container {
   width: 321px;
 }
