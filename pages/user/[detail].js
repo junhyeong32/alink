@@ -243,7 +243,6 @@ export default function UserDetail() {
     if (!router.isReady) return;
 
     if (menus.length !== 0 && router.query.detail === "new-id") {
-      
       setDb((prev) => {
         const newData = [...prev];
 
@@ -800,11 +799,11 @@ export default function UserDetail() {
                 h={35}
                 fs="h5"
                 action={async () => {
-                  if (!status || !grade || !name)
-                    return enqueueSnackbar("항목들을 입력해주세요", {
-                      variant: "error",
-                      autoHideDuration: 2000,
-                    });
+                  // if (!status || !grade || !name)
+                  //   return enqueueSnackbar("항목들을 입력해주세요", {
+                  //     variant: "error",
+                  //     autoHideDuration: 2000,
+                  //   });
                   if (router.query.detail === "new-id" && !idCheck)
                     return enqueueSnackbar("아이디를 확인해주세요", {
                       variant: "error",
