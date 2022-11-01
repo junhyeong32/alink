@@ -1104,7 +1104,13 @@ export default function DbDetail() {
                       columnGap: 6,
                       rowGap: 1,
                       mt: 1,
-                      border: "1px solid black",
+                      border:
+                        values?.filter(
+                          (v, _key) =>
+                            v?.title === "AS이미지" &&
+                            v?.value &&
+                            v?.value.includes("https")
+                        )?.length !== 0 && "1px solid black",
                       cursor: "pointer",
                     }}
                     onClick={() =>

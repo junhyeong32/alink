@@ -149,6 +149,16 @@ export default function Detail() {
         </Column>
 
         <Row justifyContent={"center"}>
+        <Button
+            text="정보수정"
+            variant={"contained"}
+            bgColor="gray"
+            color="primary.white"
+            fs={"h6"}
+            w={65}
+            h={25}
+            action={() => router.back()}
+          />
           <Button
             text="목록보기"
             variant={"contained"}
