@@ -13,6 +13,7 @@ import MultipleUpload from "./share/MultipleUpload";
 import User from "./db/User";
 import Guide from "./db/Guide";
 import DbApply from "./db/DbApply";
+import AsReason from "./db/AsReason";
 
 import { useContext } from "react";
 
@@ -57,6 +58,8 @@ export default function Modal() {
       return <DbApply key={index} index={index} />;
     } else if (data === "imageslider") {
       return <Imageslider key={index} index={index} />;
+    } else if (data === "asreason") {
+      return <AsReason key={index} index={index} />;
     } else {
       return;
     }

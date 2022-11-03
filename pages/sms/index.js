@@ -266,6 +266,11 @@ export default function Sms() {
             }}
             value={user_name}
             setValue={setuserName}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                getNotification(false);
+              }
+            }}
           />
 
           {/* <Typography variant="h6">보유 포인트 : </Typography> */}

@@ -290,7 +290,12 @@ export default function Authority() {
                 xs: "100%",
               }}
               placeholder="사원명으로 검색"
-              onBlur={(e) => setName(e.target.value)}
+              setValue={setName}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  getUsers();
+                }
+              }}
             />
             <LabelUnderLineInput
               id="id"
@@ -302,7 +307,12 @@ export default function Authority() {
                 xs: "100%",
               }}
               placeholder="아이디로 검색"
-              onBlur={(e) => setId(e.target.value)}
+              setValue={setId}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  getUsers();
+                }
+              }}
             />
             <UnderLineSelectInput
               title={"전월 급여액"}

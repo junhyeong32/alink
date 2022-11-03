@@ -369,6 +369,11 @@ export default memo(function User() {
                 w="100%"
                 value={email}
                 setValue={setEmail}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    setIsSearch(true);
+                  }
+                }}
               />
             </Column>
             <Column
@@ -391,6 +396,11 @@ export default memo(function User() {
                 w="100%"
                 value={id}
                 setValue={setId}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    setIsSearch(true);
+                  }
+                }}
               />
             </Column>
             <Column
@@ -412,6 +422,11 @@ export default memo(function User() {
                 w="100%"
                 value={name}
                 setValue={setName}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    setIsSearch(true);
+                  }
+                }}
               />
             </Column>
             <Column
@@ -464,6 +479,11 @@ export default memo(function User() {
                 sx={{ mt: { lg: 4 } }}
                 value={phone}
                 setValue={setPhone}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    setIsSearch(true);
+                  }
+                }}
               />
             </Column>
           </Row>

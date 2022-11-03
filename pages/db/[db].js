@@ -101,6 +101,7 @@ export default function DbDetail() {
   const [asImageFileLoading, setAsImageFileLoading] = useState("");
 
   const [memo, setMemo] = useState("");
+  const [reasonModalCount, setReasonModalCount] = useState(0);
 
   //menuItmes
   const [headOfficeMenuList, setHeadOfficeMenuList] = useState({});
@@ -353,7 +354,6 @@ export default function DbDetail() {
   }, [org_code, orgHead]);
 
   useEffect(() => {
-    console.log(window.localStorage);
     if (!router.isReady) return;
     const getPhoneNumber = async () => {
       const res = (
@@ -370,6 +370,67 @@ export default function DbDetail() {
 
     getPhoneNumber();
   }, [router.isReady]);
+
+  useEffect(() => {
+    if (status === "가입불가(AS신청)" && reasonModalCount === 1) {
+      openModal({
+        modal: "asreason",
+        content: {
+          action: (_memo, _transcript) => {
+            console.log(memo, _transcript);
+            const getMemoField = menu_detail?.fields?.find(
+              (data) => data?.property.name === "메모"
+            );
+
+            const getRecordField = menu_detail?.fields?.find(
+              (data) => data?.property.name === "녹취 파일"
+            );
+
+            setValues((prev) => {
+              const newData = [...prev];
+
+              const newMemo = Object.assign(
+                {},
+                _memo && {
+                  field_pk: getMemoField?.pk,
+                  title: "메모",
+                  value: _memo,
+                  created_date: new Date(+new Date() + 3240 * 10000)
+                    .toISOString()
+                    .replace("T", " ")
+                    .replace(/\..*/, ""),
+                }
+              );
+
+              const newTranscipt = Object.assign(
+                {},
+                _transcript && {
+                  field_pk: getRecordField?.pk,
+                  title: "녹취 파일",
+                  value:
+                    user_info?.grade === "협력사"
+                      ? `cooperation|${_transcript}`
+                      : user_info?.grade === "관리자" ||
+                        user_info?.grade === "부관리자"
+                      ? `manager|${_transcript}`
+                      : `user|${_transcript}`,
+                  created_date: new Date(+new Date() + 3240 * 10000)
+                    .toISOString()
+                    .replace("T", " ")
+                    .replace(/\..*/, ""),
+                }
+              );
+
+              newData.push(_memo && newMemo, _transcript && newTranscipt);
+
+              return newData;
+            });
+            setReasonModalCount(0);
+          },
+        },
+      });
+    }
+  }, [status]);
 
   return (
     <Layout loading={loading}>
@@ -872,7 +933,11 @@ export default function DbDetail() {
                                 rank !== "관리자"
                               }
                               checked={status === list}
-                              onClick={() => setStatus(list)}
+                              onClick={() => {
+                                list === "가입불가(AS신청)" &&
+                                  setReasonModalCount(1);
+                                setStatus(list);
+                              }}
                             />
                           }
                           label={
@@ -1525,7 +1590,6 @@ export default function DbDetail() {
               w={100}
               h={35}
               action={() => {
-                console.log(window.localStorage.query);
                 window.localStorage.query
                   ? router.push(
                       `/db?menu=${router.query.menu}&${window.localStorage.query}`

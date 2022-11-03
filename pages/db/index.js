@@ -1005,6 +1005,11 @@ export default function Db() {
                 placeholder={"담당자명으로 검색하실 수 있습니다."}
                 value={allocated_user}
                 onChange={(e) => setAllocatedUser(e.target.value)}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    setIsSearch(true);
+                  }
+                }}
               />
             )}
             {menu_detail?.fields
@@ -1034,6 +1039,27 @@ export default function Db() {
 
                         return newData;
                       });
+                    }}
+                    onKeyPress={(ev) => {
+                      if (ev.key === "Enter") {
+                        setValues((prev) => {
+                          const newData = [...prev];
+                          const fieldObj = newData.filter(
+                            (field) => field.field_pk === filter?.pk
+                          );
+
+                          if (filter?.property?.name === "연락처") {
+                            fieldObj[0].value = ev.target.value
+                              ?.split("-")
+                              ?.join("");
+                          } else {
+                            fieldObj[0].value = ev.target.value;
+                          }
+
+                          return newData;
+                        });
+                        setIsSearch(true);
+                      }
                     }}
                   />
                 );

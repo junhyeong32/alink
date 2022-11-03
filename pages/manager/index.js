@@ -214,6 +214,11 @@ export default memo(function User() {
                 sm: "45%",
                 xs: "100%",
               }}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  getUsers();
+                }
+              }}
             />
             <LabelUnderLineInput
               title="아이디"
@@ -225,6 +230,11 @@ export default memo(function User() {
                 md: "45%",
                 sm: "45%",
                 xs: "100%",
+              }}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  getUsers();
+                }
               }}
             />
             <LabelUnderLineInput
@@ -238,6 +248,11 @@ export default memo(function User() {
                 sm: "45%",
                 xs: "100%",
               }}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  getUsers();
+                }
+              }}
             />
             <LabelUnderLineInput
               title="연락처"
@@ -249,6 +264,11 @@ export default memo(function User() {
                 md: "45%",
                 sm: "45%",
                 xs: "100%",
+              }}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  getUsers();
+                }
               }}
             />
           </Box>

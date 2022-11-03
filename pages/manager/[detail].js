@@ -15,20 +15,25 @@ import RowLabel from "../../src/components/Box/RowLabel";
 import { userListLabel, field } from "../../src/data/manager/detail";
 import Button from "../../src/components/Button";
 import Axios from "../../src/utility/api";
-import { getAccessToken } from "../../src/utility/getCookie";
+import { getAccessToken, getCookie } from "../../src/utility/getCookie";
 import { useTransition } from "react";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 import { OutLineInput } from "../../src/components/Input";
 import RoundColorBox from "../../src/components/Box/RoundColorBox";
 import useGetMenus from "../../src/hooks/setting/useGetMenus";
 import { getTitleOfOrg } from "../../src/utility/organization/getTitleOfOrg";
-
+import { useSnackbar } from "notistack";
 export default function Detail() {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+  const { menus } = useGetMenus();
+  const [user_info] = useState(getCookie("user_info"));
+
   const [user, setUser] = useState([]);
   const [isPending, startTransition] = useTransition();
-  const { area } = useGetArea();
-  const { menus } = useGetMenus();
+
+  const [phone, setPhone] = useState("");
+  const [changeDb, setChangeDb] = useState([]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -45,11 +50,36 @@ export default function Detail() {
       if (res?.code === 200) {
         startTransition(() => {
           setUser(res?.data);
+          setPhone(res?.data?.phone);
+          setChangeDb((prev) => {
+            const newData = [...prev];
+            res?.data?.db?.map((d) =>
+              newData.push({
+                db_pk: d.pk,
+                allocation: [
+                  {
+                    is_activated: d.allocation.is_activated,
+                    count: d.allocation.count,
+                    count_for_next_month: d.allocation.count_for_next_month,
+                  },
+                ],
+                geomap: (() => {
+                  const geoData = [];
+                  d.geomap?.map((geo) => geoData.push({ name: geo?.name }));
+                  return geoData;
+                })(),
+              })
+            );
+
+            return newData;
+          });
         });
       }
     };
     getDetail();
   }, [router.isReady]);
+
+  console.log(changeDb);
 
   return (
     <Layout loading={isPending}>
@@ -66,6 +96,9 @@ export default function Detail() {
                 width: { lg: 481, md: 481, sm: 481, xs: "100%" },
               }}
             >
+              {user_info?.pk === user?.pk && key === 6 && (
+                <OutLineInput defaultValue={phone} setValue={setPhone} />
+              )}
               <Typography variant="h4">
                 {key === 0
                   ? user?.status
@@ -79,9 +112,9 @@ export default function Detail() {
                   ? user?.email
                   : key === 5
                   ? user?.birthdate
-                  : key === 6
+                  : key === 6 && user_info?.pk !== user?.pk
                   ? user?.phone
-                  : user?.created_date}
+                  : key === 7 && user?.created_date}
               </Typography>
             </RowLabel>
           ))}
@@ -122,21 +155,41 @@ export default function Detail() {
                       <RoundColorBox
                         key={area_key}
                         background={
-                          user?.db
-                            ?.filter((db) => db?.pk === d?.pk)[0]
-                            .geomap?.find((d) => d?.name === map?.name)
+                          changeDb[key]?.geomap?.find(
+                            (d) => d?.name === map?.name
+                          )
                             ? "#0D1D41"
                             : "#E6E6E6"
                         }
                         fc={
-                          user?.db
-                            ?.filter((db) => db?.pk === d?.pk)[0]
-                            .geomap?.find((d) => d?.name === map?.name)
+                          changeDb[key]?.geomap?.find(
+                            (d) => d?.name === map?.name
+                          )
                             ? "#FFFFFF"
                             : "#000000"
                         }
                         fs={12}
-                        sx={{ maxWidth: 100, gap: 1 }}
+                        sx={{ maxWidth: 100, gap: 1, cursor: "pointer" }}
+                        onClick={() => {
+                          if (user_info?.pk !== user?.pk) return;
+
+                          setChangeDb((prev) => {
+                            const newData = [...prev];
+                            const newDataGeo = newData[key].geomap;
+
+                            const foundIndex = newDataGeo?.findIndex(
+                              (d) => d?.name === map?.name
+                            );
+
+                            if (foundIndex === -1) {
+                              newDataGeo.push({ name: map?.name });
+                            } else {
+                              newDataGeo.splice(foundIndex, 1);
+                            }
+
+                            return newData;
+                          });
+                        }}
                       >
                         {map?.name}
                       </RoundColorBox>
@@ -148,25 +201,55 @@ export default function Detail() {
           ))}
         </Column>
 
-        <Row justifyContent={"center"}>
-        <Button
-            text="정보수정"
-            variant={"contained"}
-            bgColor="gray"
-            color="primary.white"
-            fs={"h6"}
-            w={65}
-            h={25}
-            action={() => router.back()}
-          />
+        <Row justifyContent={"center"} sx={{ gap: 1 }}>
+          {user?.pk === user_info?.pk && (
+            <Button
+              text="정보수정"
+              variant={"contained"}
+              bgColor="primary"
+              color="primary.white"
+              fs={"h5"}
+              w={158}
+              h={35}
+              action={async () => {
+                const res = await Axios.Post("member", {
+                  token: getAccessToken(),
+                  member_pk: user?.pk || undefined,
+                  id: user?.id,
+                  status: user?.status,
+                  grade: user?.grade,
+                  name: user?.name,
+                  phone: phone,
+                  email: user?.email,
+                  birthdate: user?.birthdate,
+                  db: changeDb,
+                  head_office_org_code: user?.head_office_org_code,
+                  parent_org_code: user?.parent_org_code,
+                  org_code: user?.org_code,
+                });
+                if (res?.code === 200) {
+                  enqueueSnackbar("수정이 완료되었습니다", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+                  router.back();
+                } else {
+                  enqueueSnackbar(res?.message, {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
+                }
+              }}
+            />
+          )}
           <Button
             text="목록보기"
             variant={"contained"}
             bgColor="gray"
             color="primary.white"
-            fs={"h6"}
-            w={65}
-            h={25}
+            fs={"h5"}
+            w={158}
+            h={35}
             action={() => router.back()}
           />
         </Row>
