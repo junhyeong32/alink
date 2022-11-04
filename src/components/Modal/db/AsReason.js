@@ -76,7 +76,7 @@ export default function AsReason({ index }) {
             <FormControlLabel
               control={
                 <Checkbox
-                  //   checked={is_all === 1}
+                  checked={reason === "암, 뇌 심장 관련 치료력"}
                   onClick={() => setReason("암, 뇌 심장 관련 치료력")}
                 />
               }
@@ -89,7 +89,7 @@ export default function AsReason({ index }) {
             <FormControlLabel
               control={
                 <Checkbox
-                  //   checked={is_all === 1}
+                  checked={reason === "신청자 본인 설계사"}
                   onClick={() => setReason("신청자 본인 설계사")}
                 />
               }
@@ -102,7 +102,7 @@ export default function AsReason({ index }) {
             <FormControlLabel
               control={
                 <Checkbox
-                  //   checked={is_all === 1}
+                  checked={reason === "3"}
                   onClick={() => setReason("3")}
                 />
               }
@@ -127,7 +127,7 @@ export default function AsReason({ index }) {
             <Row
               alignItems={"center"}
               justifyContent={"start"}
-              sx={{ gap: 1, mb: 2 }}
+              sx={{ gap: 1, mb: 2, mt: 1 }}
             >
               <label htmlFor="contained-button-file2">
                 <Input
@@ -174,7 +174,7 @@ export default function AsReason({ index }) {
                     setFileLoading(false);
                     if (!fileLoading) {
                       setTranscriptFile("");
-                      document.querySelector("#contained-button-file").value =
+                      document.querySelector("#contained-button-file2").value =
                         "";
 
                       enqueueSnackbar("파일이 정상적으로 등록 되었습니다.", {
@@ -205,6 +205,11 @@ export default function AsReason({ index }) {
               w={160}
               h={30}
               action={() => {
+                if (transcript_file && !upload_file)
+                  return enqueueSnackbar("업로드 되지 않은 파일이 존재합니다", {
+                    variant: "error",
+                    autoHideDuration: 2000,
+                  });
                 action(reason === "3" ? _reason : reason, upload_file);
                 closeModal();
               }}
