@@ -8,6 +8,7 @@ import {
   TableRow,
   Checkbox,
   CircularProgress,
+  FormControlLabel,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
 import { useState } from "react";
@@ -15,6 +16,7 @@ import { sms_header } from "./smsHeaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
 import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
+
 const Root = styled("div")`
   table {
     box-shadow: none;
@@ -50,6 +52,9 @@ export default function SmsTable({ data, page }) {
         >
           <TableHead>
             <TableRow key="head">
+              {/*  <TableCell align="center">
+                <Checkbox />
+              </TableCell> */}
               {sms_header?.map((data, key) => (
                 <TableCell key={key} align="center">
                   {data}
@@ -69,6 +74,9 @@ export default function SmsTable({ data, page }) {
                   },
                 }}
               >
+                {/* <TableCell align="center">
+                  <Checkbox />
+                </TableCell> */}
                 <TableCell align="center">
                   {page === 1
                     ? key + 1
@@ -80,6 +88,18 @@ export default function SmsTable({ data, page }) {
                 <TableCell align="center">{sms?.name}</TableCell>
                 <TableCell align="center">{sms?.message}</TableCell>
                 <TableCell align="center">{sms?.created_date}</TableCell>
+                {/* <TableCell align="center">
+                  <Button
+                    text="재발송"
+                    bgColor={"primary"}
+                    variant={"contained"}
+                    color="primary.white"
+                    w={50}
+                    h={24}
+                    fs="h6"
+                    action={() => getNotification(false)}
+                  />
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

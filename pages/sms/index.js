@@ -125,155 +125,166 @@ export default function Sms() {
           />
         </Row>
         <Row
-          justifyContent={"start"}
+          justifyContent={"between"}
           alignItems={"end"}
           wrap={"wrap"}
           sx={{ gap: 2 }}
         >
-          <div ref={el} id="dateInput">
-            <DateInput
-              value={date}
-              setValue={setDate}
-              textValue={date}
-              startValue={start_date}
-              endValue={end_date}
-              w="100%"
-              title={
-                <>
-                  <Row
-                    alignItems={"center"}
-                    wrap={"wrap"}
-                    sx={{ gap: 1, whiteSpace: "nowrap" }}
-                  >
-                    발송일
-                    <Button
-                      text="금일"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: new Date(),
-                            endDate: new Date().setDate(
-                              new Date().getDate() + 1
-                            ),
-                          },
-                        ])
-                      }
-                    />
-                    <Button
-                      text="어제"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: new Date(
-                              new Date().setDate(new Date().getDate() - 1)
-                            ),
-                            endDate: new Date(),
-                          },
-                        ])
-                      }
-                    />
-                    <Button
-                      text="이번주"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: getWeek().weekStartDate,
-                            endDate: getWeek().weekEndDate,
-                          },
-                        ])
-                      }
-                    />
-                    <Button
-                      text="이번달"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: new Date(
-                              new Date(
+          <Row sx={{ width: "90%", gap: 2 }} alignItems={"end"}>
+            <div ref={el} id="dateInput">
+              <DateInput
+                value={date}
+                setValue={setDate}
+                textValue={date}
+                startValue={start_date}
+                endValue={end_date}
+                w="100%"
+                title={
+                  <>
+                    <Row
+                      alignItems={"center"}
+                      wrap={"wrap"}
+                      sx={{ gap: 1, whiteSpace: "nowrap" }}
+                    >
+                      발송일
+                      <Button
+                        text="금일"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(),
+                              endDate: new Date().setDate(
+                                new Date().getDate() + 1
+                              ),
+                            },
+                          ])
+                        }
+                      />
+                      <Button
+                        text="어제"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(
+                                new Date().setDate(new Date().getDate() - 1)
+                              ),
+                              endDate: new Date(),
+                            },
+                          ])
+                        }
+                      />
+                      <Button
+                        text="이번주"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: getWeek().weekStartDate,
+                              endDate: getWeek().weekEndDate,
+                            },
+                          ])
+                        }
+                      />
+                      <Button
+                        text="이번달"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(
+                                new Date(
+                                  new Date().getFullYear(),
+                                  new Date().getMonth(),
+                                  1
+                                )
+                              ),
+                              endDate: new Date(
+                                new Date(
+                                  new Date().getFullYear(),
+                                  new Date().getMonth() + 1,
+                                  1
+                                )
+                              ),
+                            },
+                          ])
+                        }
+                      />
+                      <Button
+                        text="지난달"
+                        bgColor={"gray"}
+                        fs={"h6"}
+                        color={"primary.white"}
+                        h={14}
+                        action={() =>
+                          setDate([
+                            {
+                              ...date.key,
+                              startDate: new Date(
                                 new Date().getFullYear(),
-                                new Date().getMonth(),
+                                getReplaceMonth().getMonth(),
                                 1
-                              )
-                            ),
-                            endDate: new Date(
-                              new Date(
+                              ),
+                              endDate: new Date(
                                 new Date().getFullYear(),
-                                new Date().getMonth() + 1,
+                                getReplaceMonth().getMonth() + 1,
                                 1
-                              )
-                            ),
-                          },
-                        ])
-                      }
-                    />
-                    <Button
-                      text="지난달"
-                      bgColor={"gray"}
-                      fs={"h6"}
-                      color={"primary.white"}
-                      h={14}
-                      action={() =>
-                        setDate([
-                          {
-                            ...date.key,
-                            startDate: new Date(
-                              new Date().getFullYear(),
-                              getReplaceMonth().getMonth(),
-                              1
-                            ),
-                            endDate: new Date(
-                              new Date().getFullYear(),
-                              getReplaceMonth().getMonth() + 1,
-                              1
-                            ),
-                          },
-                        ])
-                      }
-                    />
-                  </Row>
-                </>
-              }
+                              ),
+                            },
+                          ])
+                        }
+                      />
+                    </Row>
+                  </>
+                }
+              />
+            </div>
+            <LabelUnderLineInput
+              title="담당자"
+              placeholder={"담당자로 검색하실 수 있습니다"}
+              w={{
+                lg: "25%",
+                md: "25%",
+                sm: "100%",
+                xs: "100%",
+              }}
+              value={user_name}
+              setValue={setuserName}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  getNotification(false);
+                }
+              }}
             />
-          </div>
-          <LabelUnderLineInput
-            title="담당자"
-            placeholder={"담당자로 검색하실 수 있습니다"}
-            w={{
-              lg: "25%",
-              md: "25%",
-              sm: "100%",
-              xs: "100%",
-            }}
-            value={user_name}
-            setValue={setuserName}
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
-                getNotification(false);
-              }
-            }}
-          />
+          </Row>
 
-          {/* <Typography variant="h6">보유 포인트 : </Typography> */}
+          {/* <Button
+            text="재발송"
+            bgColor={"primary"}
+            variant={"contained"}
+            color="primary.white"
+            w={60}
+            h={28}
+            fs="h6"
+            action={() => getNotification(false)}
+          /> */}
         </Row>
         <SmsTable data={notification_list} page={page} />
       </Column>

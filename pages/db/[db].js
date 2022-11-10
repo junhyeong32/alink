@@ -391,7 +391,7 @@ export default function DbDetail() {
 
               const newMemo = Object.assign(
                 {},
-                _memo && {
+                {
                   field_pk: getMemoField?.pk,
                   title: "메모",
                   value: _memo,
@@ -404,7 +404,7 @@ export default function DbDetail() {
 
               const newTranscipt = Object.assign(
                 {},
-                _transcript && {
+                {
                   field_pk: getRecordField?.pk,
                   title: "녹취 파일",
                   value:
@@ -421,7 +421,13 @@ export default function DbDetail() {
                 }
               );
 
-              newData.push(_memo && newMemo, _transcript && newTranscipt);
+              if (_memo && _transcript) {
+                newData.push(newMemo, newTranscipt);
+              } else if (_memo) {
+                newData.push(newMemo);
+              } else if (_transcript) {
+                newData.push(newTranscipt);
+              }
 
               return newData;
             });
@@ -431,6 +437,8 @@ export default function DbDetail() {
       });
     }
   }, [status]);
+
+  console.log(values);
 
   return (
     <Layout loading={loading}>

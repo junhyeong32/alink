@@ -120,7 +120,7 @@ export default function User({ index }) {
           await Axios.Get("member", {
             params: {
               token: getAccessToken(),
-              geo: geo,
+              geo: geo !== "전체" ? geo : undefined,
               db_pk: router.query.menu,
               page: 1,
             },
@@ -131,7 +131,7 @@ export default function User({ index }) {
             params: {
               token: getAccessToken(),
               page: newPageCount ? newPageCount : page,
-              geo: geo,
+              geo: geo !== "전체" ? geo : undefined,
               db_pk: router.query.menu,
               is_all: is_all,
               org_code: team === "전체" ? undefined : team,

@@ -67,6 +67,7 @@ export default function Db() {
   const { sales } = useGetOrganization("sales");
   const [rank] = useState(getCookie("user_info")?.grade);
   const [area, setArea] = useState([]);
+  const [isGift, setIsGift] = useState("");
 
   //change state
   const [is_search, setIsSearch] = useState(false);
@@ -364,7 +365,7 @@ export default function Db() {
       )?.data;
 
       if (res?.code === 200) {
-        getOrgWithManyUnit(res?.data, "region", "team", org);
+        getOrgWithManyUnit(res?.data, "region", "team", org, "branch");
 
         setOrgMenuList(org);
       }
@@ -474,6 +475,7 @@ export default function Db() {
     router.push(`db?menu=${router.query.menu}`);
 
     setOrgCode("전체");
+    setCount(20);
     setHeadOfficeOrgCode("전체");
     setSubCoop("전체");
     setOrgStatus("전체");
@@ -619,7 +621,7 @@ export default function Db() {
         : undefined
     }
       `);
-  }, [page, is_search, showMyDb]);
+  }, [page, is_search, showMyDb, count]);
 
   useEffect(() => {
     if (!router.query.page) return;
@@ -939,6 +941,18 @@ export default function Db() {
                   setValue={setOrgCode}
                 />
               )}
+            {/* {rank !== "협력사" &&
+              rank !== "부협력사" &&
+              rank !== "팀장" &&
+              rank !== "담당자" && (
+                <SelectInput
+                  w="100%"
+                  title="지점"
+                  menuItems={orgMenuList}
+                  value={org_code}
+                  setValue={setOrgCode}
+                />
+              )} */}
 
             {/* {(rank === "협력사" || rank === "부협력사") && (
               <SelectInput
@@ -1291,77 +1305,105 @@ export default function Db() {
               )}
 
               {(rank === "관리자" || rank === "부관리자") && (
-                <Button
-                  text="DB 자동분배"
-                  color="primary.white"
-                  fs="h6"
-                  w={90}
-                  h={28}
-                  action={() => {
-                    rank === "부관리자"
-                      ? openModal({
-                          modal: "needconfirm",
-                          content: {
-                            contents: `자동분배를 진행하시겠습니까?`,
-                            action: async () => {
-                              const res = await Axios.Post(
-                                "db/menu/distribute",
-                                {
-                                  token: getAccessToken(),
-                                  db_pk: router.query.menu,
-                                  org_code: user_info?.head_office_org_code,
-                                }
-                              );
-
-                              if (res?.code === 200) {
-                                closeModal();
-                                enqueueSnackbar(
-                                  "DB 자동분배가 완료되었습니다.",
+                <>
+                  <Button
+                    bgColor="secondary"
+                    text="수동분배"
+                    color="primary.white"
+                    fs="h6"
+                    w={90}
+                    h={28}
+                    action={() =>
+                      openModal({
+                        modal: "guide",
+                        data: {
+                          geo: parent_area,
+                          isGift: isGift,
+                        },
+                        content: {
+                          guideText: "DB 수동분배",
+                          close: false,
+                          buttonText: "확인",
+                          action: {
+                            setUserCode: (value) => setUserCode(value),
+                            setIsGift: (value) => setIsGift(value),
+                          },
+                        },
+                      })
+                    }
+                  />
+                  <Button
+                    text="DB 자동분배"
+                    color="primary.white"
+                    fs="h6"
+                    w={90}
+                    h={28}
+                    action={() => {
+                      rank === "부관리자"
+                        ? openModal({
+                            modal: "needconfirm",
+                            content: {
+                              contents: `자동분배를 진행하시겠습니까?`,
+                              action: async () => {
+                                const res = await Axios.Post(
+                                  "db/menu/distribute",
                                   {
-                                    variant: "success",
-                                    autoHideDuration: 2000,
+                                    token: getAccessToken(),
+                                    db_pk: router.query.menu,
+                                    org_code: user_info?.head_office_org_code,
                                   }
                                 );
-                                getDbDetail();
-                              }
-                            },
-                          },
-                        })
-                      : openModal({
-                          modal: "change",
-                          content: {
-                            type: "changedb",
-                            title: "DB 조직 선택",
-                            contents: "DB를 선택하시겠습니까?",
-                            buttonName: "선택",
-                            buttonAction: async (select) => {
-                              const res = await Axios.Post(
-                                "db/menu/distribute",
-                                {
-                                  token: getAccessToken(),
-                                  db_pk: router.query.menu,
-                                  org_code: select,
-                                }
-                              );
 
-                              if (res?.code === 200) {
-                                enqueueSnackbar(
-                                  "DB 자동분배가 완료되었습니다.",
+                                if (res?.code === 200) {
+                                  closeModal();
+                                  enqueueSnackbar(
+                                    "DB 자동분배가 완료되었습니다.",
+                                    {
+                                      variant: "success",
+                                      autoHideDuration: 2000,
+                                    }
+                                  );
+                                  getDbDetail();
+                                }
+                              },
+                            },
+                          })
+                        : openModal({
+                            modal: "change",
+                            content: {
+                              type: "changedb",
+                              title: "DB 조직 선택",
+                              contents: "DB를 선택하시겠습니까?",
+                              buttonName: "선택",
+                              buttonAction: async (select) => {
+                                const res = await Axios.Post(
+                                  "db/menu/distribute",
                                   {
-                                    variant: "success",
-                                    autoHideDuration: 2000,
+                                    token: getAccessToken(),
+                                    db_pk: router.query.menu,
+                                    org_code: select,
                                   }
                                 );
-                                closeModal();
-                                getDbDetail();
-                              }
+
+                                if (res?.code === 200) {
+                                  enqueueSnackbar(
+                                    "DB 자동분배가 완료되었습니다.",
+                                    {
+                                      variant: "success",
+                                      autoHideDuration: 2000,
+                                    }
+                                  );
+                                  closeModal();
+                                  getDbDetail();
+                                }
+                              },
+                              reload: getDbDetail,
                             },
-                            reload: getDbDetail,
-                          },
-                          data: deninedMenuList,
-                        });
-                  }}
-                />
+                            data: deninedMenuList,
+                          });
+                    }}
+                  />
+                </>
               )}
 
               {(rank === "관리자" ||
@@ -1491,6 +1533,21 @@ export default function Db() {
                     "_blank"
                   );
                 }}
+              />
+              <SelectInput
+                menuItems={{
+                  20: "20개",
+                  30: "30개",
+                  40: "40개",
+                  100: "100개",
+                  200: "200개",
+                }}
+                value={count}
+                onChange={(e) => {
+                  setCount(e.target.value);
+                  setIsSearch(true);
+                }}
+                w={100}
               />
             </Row>
           </Row>
