@@ -1495,6 +1495,58 @@ export default function Db() {
               <ExcelButton
                 sx={{ zIndex: open ? -1 : 0 }}
                 action={async () => {
+                  console.log(
+                    Object.entries({
+                      token: getAccessToken(),
+                      page: page,
+                      count: count,
+                      db_pk: router.query.menu,
+                      head_office_org_code:
+                        head_office_org_code === "전체"
+                          ? undefined
+                          : head_office_org_code,
+                      org_code: org_code === "전체" ? undefined : org_code,
+                      status: status === "전체" ? undefined : status,
+                      org_status:
+                        org_status === "전체" ? undefined : org_status,
+                      allocated_user: allocated_user,
+                      uploader_organization_code:
+                        uploader_organization_code === "전체"
+                          ? undefined
+                          : uploader_organization_code,
+                      geo_parent_name:
+                        parent_area === "전체" ? undefined : parent_area,
+                      geo_name: child_area === "전체" ? undefined : child_area,
+                      values: JSON.stringify(
+                        [...values].filter((v) => v?.value !== "")
+                      ),
+                      created_date_start:
+                        (rank === "협력사" || rank === "부협력사") && start_date
+                          ? new Date(
+                              Number(router.query.created_date_start)
+                            ).getTime()
+                          : undefined,
+                      created_date_end:
+                        (rank === "협력사" || rank === "부협력사") && end_date
+                          ? new Date(
+                              Number(router.query.created_date_end)
+                            ).getTime()
+                          : undefined,
+                      allocated_date_start:
+                        rank !== "협력사" && rank !== "부협력사" && start_date
+                          ? new Date(
+                              Number(router.query.allocated_date_start)
+                            ).getTime()
+                          : undefined,
+                      allocated_date_end:
+                        rank !== "협력사" && rank !== "부협력사" && end_date
+                          ? new Date(
+                              Number(router.query.allocated_date_end)
+                            ).getTime()
+                          : undefined,
+                      excel: 1,
+                    })
+                  );
                   window.open(
                     "https://alinkapi.afg.kr/api/v1/db/list?" +
                       Object.entries({
@@ -1523,9 +1575,30 @@ export default function Db() {
                           [...values].filter((v) => v?.value !== "")
                         ),
                         created_date_start:
-                          new Date(start_date).getTime() || undefined,
+                          (rank === "협력사" || rank === "부협력사") &&
+                          start_date
+                            ? new Date(
+                                Number(router.query.created_date_start)
+                              ).getTime()
+                            : undefined,
                         created_date_end:
-                          new Date(end_date).getTime() || undefined,
+                          (rank === "협력사" || rank === "부협력사") && end_date
+                            ? new Date(
+                                Number(router.query.created_date_end)
+                              ).getTime()
+                            : undefined,
+                        allocated_date_start:
+                          rank !== "협력사" && rank !== "부협력사" && start_date
+                            ? new Date(
+                                Number(router.query.allocated_date_start)
+                              ).getTime()
+                            : undefined,
+                        allocated_date_end:
+                          rank !== "협력사" && rank !== "부협력사" && end_date
+                            ? new Date(
+                                Number(router.query.allocated_date_end)
+                              ).getTime()
+                            : undefined,
                         excel: 1,
                       })
                         ?.map((e) => e.join("="))
