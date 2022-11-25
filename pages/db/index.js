@@ -1261,6 +1261,7 @@ export default function Db() {
             </div>
           </GridBox>
         </Column>
+
         <Column sx={{ mt: "15px" }}>
           <Row
             alignItems={"center"}
@@ -1283,6 +1284,23 @@ export default function Db() {
                         variant: "error",
                         autoHideDuration: 2000,
                       });
+
+                    const filterPk = checkData?.map((data) =>
+                      db_list?.filter((db) => {
+                        if (data === db?.pk) {
+                          return db?.organization?.name;
+                        }
+                      })
+                    );
+
+                    if (filterPk[0].length !== 0)
+                      return enqueueSnackbar(
+                        "분배가 완료된 DB가 존재하여 조직변경이 불가합니다",
+                        {
+                          variant: "error",
+                          autoHideDuration: 2000,
+                        }
+                      );
 
                     openModal({
                       modal: "change",

@@ -78,11 +78,11 @@ export default function Password() {
             });
           }
 
-          const res = (
-            await Axios.Post("user/reset-password", {
-              user_id: id,
-            })
-          )?.data;
+          const res = await Axios.Post("user/reset-password", {
+            user_id: id,
+          });
+
+          console.log(res);
 
           if (res?.code === 200) {
             enqueueSnackbar("초기화 되었습니다", {
@@ -92,7 +92,7 @@ export default function Password() {
 
             router.push("/");
           } else {
-            enqueueSnackbar("회원정보가 일치하지 않습니다.", {
+            enqueueSnackbar(res?.message, {
               variant: "error",
               autoHideDuration: 2000,
             });
