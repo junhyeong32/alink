@@ -370,7 +370,7 @@ export default function Db() {
       )?.data;
 
       if (res?.code === 200) {
-        getOrgWithManyUnit(res?.data, "region", "team", org, "branch");
+        getOrgWithManyUnit(res?.data, "region", "branch", org, "team");
 
         setOrgMenuList(org);
       }

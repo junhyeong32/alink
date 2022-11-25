@@ -30,7 +30,7 @@ export function getOrgWithUnitName(orgs, unit, result) {
 //조건 : unit 2개 이상
 export function getOrgWithManyUnit(orgs, unit1, unit2, result, unit3) {
   for (let org of orgs) {
-    getOrgWithManyUnit(org.children, unit1, unit2, result);
+    getOrgWithManyUnit(org.children, unit1, unit2, result, unit3);
 
     if (org.unit === unit1 || org.unit === unit2 || org.unit === unit3) {
       Object.assign(result, {
