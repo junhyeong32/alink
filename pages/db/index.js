@@ -564,7 +564,9 @@ export default function Db() {
     };
 
     getCooperation();
-    !asInformation && getCooperationDashBoard();
+    !asInformation &&
+      user_info?.grade === "협력사" &&
+      getCooperationDashBoard();
   }, []);
 
   useEffect(() => {
