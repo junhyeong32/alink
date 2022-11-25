@@ -285,9 +285,9 @@ export default function Db() {
 
     setDate([
       {
-        ...date.key,
         startDate: new Date(),
         endDate: null,
+        key: "selection",
       },
     ]);
 
@@ -493,9 +493,9 @@ export default function Db() {
     setEndDate("");
     setDate([
       {
-        ...date.key,
         startDate: new Date(),
         endDate: null,
+        key: "selection",
       },
     ]);
 
@@ -673,6 +673,8 @@ export default function Db() {
     if (!router.query.page) return;
     window.localStorage.setItem("path", router.asPath);
   }, [router.query]);
+
+  console.log(date);
 
   return (
     <Layout
