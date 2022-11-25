@@ -377,7 +377,6 @@ export default function DbDetail() {
         modal: "asreason",
         content: {
           action: (_memo, _transcript) => {
-            console.log(memo, _transcript);
             const getMemoField = menu_detail?.fields?.find(
               (data) => data?.property.name === "메모"
             );
@@ -437,8 +436,6 @@ export default function DbDetail() {
       });
     }
   }, [status]);
-
-  console.log(values);
 
   return (
     <Layout loading={loading}>
