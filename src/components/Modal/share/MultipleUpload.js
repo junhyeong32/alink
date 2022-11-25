@@ -33,6 +33,7 @@ import Axios from "../../../utility/api";
 import { getAccessToken } from "../../../utility/getCookie";
 import { useRouter } from "next/router";
 import { getCookie } from "../../../utility/getCookie";
+import { FileDrop } from "react-file-drop";
 
 const style = {
   width: { lg: "715px", md: "715px", sm: "715px", xs: "90%" },
@@ -77,152 +78,164 @@ export default function MultipleUpload({ index }) {
 
   const [count, setCount] = useState(0);
   const d = file.flat([1]);
-
-  //   console.log("file", file);
+  console.log(file);
 
   return (
     <Modal open={modal[index] === "multipleupload"} onClose={closeModal}>
       <Box>
         <Column alignItems={"start"} justifyContent={"between"} sx={style}>
-          <Column sx={{ width: "100%" }}>
-            <Row
-              alignItems={"center"}
-              justifyContent={"between"}
-              sx={{
-                width: "100%",
-                borderBottom: "1px solid black",
-                pb: 1,
-                gap: 2,
-              }}
-            >
-              <Typography variant="h2">{title}</Typography>
-              <label htmlFor="contained-button-file">
-                <Input
-                  accept={"audio/*"}
-                  multiple
-                  id="contained-button-file"
-                  type="file"
-                  onChange={(e) => setFile([...file, [...e.target.files]])}
-                  // onChange={(e) => console.log(e.target.files)}
-                />
-                <Button
-                  variant="contained"
-                  component="span"
-                  text="파일선택"
-                  fs="h6"
-                />
-              </label>
-            </Row>
-            <Row
-              wrap={"wrap"}
-              justifyContent={"start"}
-              sx={{ mt: 2, gap: 1, overflowY: "scroll", gap: 1 }}
-            >
-              {file.map((d, k) =>
-                d?.map((f, key) => {
-                  return (
-                    <Row alignItems={"center"} key={key} sx={{ gap: 2 }}>
-                      <Typography variant="h6">- {f?.name}</Typography>
-                      <Image
-                        src="/black_x.png"
-                        width={10}
-                        height={10}
-                        alt="x"
-                        layout="fixed"
-                        className="cursor"
-                        onClick={() =>
-                          setFile((prev) => {
-                            const newData = [...prev];
+          <FileDrop onDrop={(files, event) => setFile([...file, [...files]])}>
+            <Column sx={{ width: "100%" }}>
+              <Row
+                alignItems={"center"}
+                justifyContent={"between"}
+                sx={{
+                  width: "100%",
+                  borderBottom: "1px solid black",
+                  pb: 1,
+                  gap: 2,
+                }}
+              >
+                <Typography variant="h2">{title}</Typography>
+                <label htmlFor="contained-button-file">
+                  <Input
+                    accept={"audio/*"}
+                    multiple
+                    id="contained-button-file"
+                    type="file"
+                    onChange={(e) => setFile([...file, [...e.target.files]])}
+                  />
+                  <Button
+                    variant="contained"
+                    component="span"
+                    text="파일선택"
+                    fs="h6"
+                  />
+                </label>
+              </Row>
+              <Row
+                wrap={"wrap"}
+                justifyContent={"start"}
+                sx={{ mt: 2, gap: 1, overflowY: "scroll", gap: 1 }}
+              >
+                {file.map((d, k) =>
+                  d?.map((f, key) => {
+                    return (
+                      <Row alignItems={"center"} key={key} sx={{ gap: 2 }}>
+                        <Typography variant="h6">- {f?.name}</Typography>
+                        <Image
+                          src="/black_x.png"
+                          width={10}
+                          height={10}
+                          alt="x"
+                          layout="fixed"
+                          className="cursor"
+                          onClick={() =>
+                            setFile((prev) => {
+                              const newData = [...prev];
 
-                            newData[k].splice(key, 1);
-                            return newData;
-                          })
+                              newData[k].splice(key, 1);
+                              return newData;
+                            })
+                          }
+                        />
+                      </Row>
+                    );
+                  })
+                )}
+              </Row>
+            </Column>
+
+            <Row
+              justifyContent={"center"}
+              sx={{ width: "100%", mt: 2.7, gap: 5 }}
+            >
+              {loading ? (
+                <LinearProgress
+                  sx={{ width: "100%" }}
+                  value={((count / d.length) * 100).toFixed(0)}
+                  variant="determinate"
+                />
+              ) : (
+                <>
+                  <LoadingButton
+                    variant="contained"
+                    color="primary"
+                    loading={loading}
+                    sx={{ width: 166, height: 35 }}
+                    onClick={async () => {
+                      if (file.length === 0)
+                        return enqueueSnackbar("파일을 업로드 해주세요.", {
+                          variant: "error",
+                          autoHideDuration: 2000,
+                        });
+                      setLoading(true);
+
+                      for (let f of d) {
+                        if (f.type.split("/")[0] !== "audio") {
+                          setLoading(false);
+                          return enqueueSnackbar(
+                            "형식이 맞지 않는 파일이 존재합니다",
+                            {
+                              variant: "error",
+                              autoHideDuration: 2000,
+                            }
+                          );
                         }
-                      />
-                    </Row>
-                  );
-                })
-              )}
-            </Row>
-          </Column>
 
-          <Row
-            justifyContent={"center"}
-            sx={{ width: "100%", mt: 2.7, gap: 5 }}
-          >
-            {loading ? (
-              <LinearProgress
-                sx={{ width: "100%" }}
-                value={((count / d.length) * 100).toFixed(0)}
-                variant="determinate"
-              />
-            ) : (
-              <>
-                <LoadingButton
-                  variant="contained"
-                  color="primary"
-                  loading={loading}
-                  sx={{ width: 166, height: 35 }}
-                  onClick={async () => {
-                    if (file.length === 0)
-                      return enqueueSnackbar("파일을 업로드 해주세요.", {
-                        variant: "error",
+                        const formData = new FormData();
+                        formData.append("token", getAccessToken());
+                        formData.append("file", f);
+                        formData.append(
+                          "prefix",
+                          user_info?.grade === "협력사"
+                            ? `cooperation|`
+                            : user_info?.grade === "관리자" ||
+                              user_info?.grade === "부관리자"
+                            ? `manager|`
+                            : `user|`
+                        );
+                        const config = {
+                          headers: {
+                            "content-type": "multipart/form-data",
+                          },
+                        };
+
+                        const res = (
+                          await Axios.Post("upload", formData, config)
+                        )?.code;
+                        if (res?.code === 200) setCount(count + 1);
+                      }
+
+                      setLoading(false);
+                      enqueueSnackbar("파일이 업로드 되었습니다.", {
+                        variant: "success",
                         autoHideDuration: 2000,
                       });
-                    setLoading(true);
 
-                    for (let f of d) {
-                      const formData = new FormData();
-                      formData.append("token", getAccessToken());
-                      formData.append("file", f);
-                      formData.append(
-                        "prefix",
-                        user_info?.grade === "협력사"
-                          ? `cooperation|`
-                          : user_info?.grade === "관리자" ||
-                            user_info?.grade === "부관리자"
-                          ? `manager|`
-                          : `user|`
-                      );
-                      const config = {
-                        headers: {
-                          "content-type": "multipart/form-data",
-                        },
-                      };
+                      // reload && reload();
 
-                      const res = (await Axios.Post("upload", formData, config))
-                        ?.code;
-                      if (res?.code === 200) setCount(count + 1);
-                    }
-
-                    setLoading(false);
-                    enqueueSnackbar("파일이 업로드 되었습니다.", {
-                      variant: "success",
-                      autoHideDuration: 2000,
-                    });
-
-                    // reload && reload();
-
-                    if (((count / d.length) * 100).toFixed(0) === 100)
-                      closeModal(index);
-                  }}
-                >
-                  {!loading && (
-                    <Typography variant="h4">파일 업로드</Typography>
-                  )}
-                </LoadingButton>
-                <Button
-                  text="취소"
-                  variant="contained"
-                  bgColor="gray"
-                  fs="h4"
-                  w={166}
-                  h={35}
-                  action={closeModal}
-                ></Button>
-              </>
-            )}
-          </Row>
+                      if (((count / d.length) * 100).toFixed(0) === 100)
+                        closeModal(index);
+                    }}
+                  >
+                    {!loading && (
+                      <Typography variant="h4">파일 업로드</Typography>
+                    )}
+                  </LoadingButton>
+                  <Button
+                    text="취소"
+                    variant="contained"
+                    bgColor="gray"
+                    fs="h4"
+                    w={166}
+                    h={35}
+                    action={closeModal}
+                  ></Button>
+                </>
+              )}
+            </Row>
+          </FileDrop>
         </Column>
       </Box>
     </Modal>

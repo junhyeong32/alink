@@ -10,6 +10,7 @@ import {
   Box,
   Input,
   FormControlLabel,
+  Pagination,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -37,6 +38,7 @@ import {
 } from "../../src/utility/organization/getOrgWithUnit";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 import { sortGeo } from "../../src/utility/sortGeo";
+import DbApplyStatusTable from "../../src/components/Table/db-apply-status";
 
 const rowLabelWidth = {
   width: {
@@ -63,6 +65,7 @@ export default function UserDetail() {
   const { menus } = useGetMenus();
 
   const [org_code_by_sales, setOrgCodeBySales] = useState([]);
+  const [db_histroy, setDbHistory] = useState([]);
 
   //login info
   const [rank] = useState(getCookie("user_info")?.grade);
@@ -83,6 +86,9 @@ export default function UserDetail() {
   const [head_office_name, setHeadOfficeName] = useState("");
   const [head_office_code, setHeadOfficeCode] = useState("");
   const [pk, setPk] = useState("");
+
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState();
 
   const [header_org, setHeaderOrg] = useState("");
   const [branch_name, setBranchName] = useState("");
@@ -270,6 +276,29 @@ export default function UserDetail() {
       });
     }
   }, [router.isReady, menus]);
+
+  useEffect(() => {
+    if (!pk) return;
+
+    const getDbHistory = async () => {
+      const res = (
+        await Axios.Get("member/db/history", {
+          params: {
+            token: getAccessToken(),
+            page: page,
+            user_pk: pk,
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        setDbHistory(res?.data?.result);
+        setTotalCount(Math.ceil(res?.data.total_count / 20));
+      }
+    };
+
+    getDbHistory();
+  }, [page, pk]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -776,6 +805,26 @@ export default function UserDetail() {
               ))}
             </Column>
           )}
+
+        <Column sx={{ pr: "40px", gap: "20px", mt: 3 }}>
+          <Typography variant="h1">변경내역</Typography>
+
+          <DbApplyStatusTable data={db_histroy} page={page} />
+          <Row justifyContent={"center"} sx={{ width: "100%", mt: 5 }}>
+            <Pagination
+              component="div"
+              page={page}
+              count={totalCount}
+              onChange={(subject, newPage) => {
+                setPage(newPage);
+              }}
+              color="primary"
+              // hidePrevButton
+              // hideNextButton
+            />
+          </Row>
+        </Column>
+
         <Row justifyContent={"center"} sx={{ gap: "15px", mt: 5 }}>
           {rank === "부관리자" ? (
             <Button

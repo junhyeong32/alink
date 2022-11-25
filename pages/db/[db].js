@@ -1008,9 +1008,11 @@ export default function DbDetail() {
                     fs="h5"
                     h={28}
                     disabled={
-                      allocated_user?.pk !== user_info?.pk &&
-                      rank !== "관리자" &&
-                      rank !== "부관리자"
+                      (allocated_user?.pk !== user_info?.pk &&
+                        rank !== "관리자" &&
+                        rank !== "부관리자") ||
+                      getTitleOfOrg(allocated_user) ||
+                      allocated_user?.name
                     }
                     action={() =>
                       openModal({
@@ -1455,13 +1457,7 @@ export default function DbDetail() {
                   />
                 </Row>
                 <OutLineInput
-                  // disabled={
-                  //   allocated_user?.pk === user_info?.pk ||
-                  //   rank === "관리자" ||
-                  //   user_info?.org_code === uploader?.organization?.code ||
-                  //   uploader?.pk === user_info?.pk
-                  // }
-                  placeholder="메모 입력 후 반드시 [메모추가] 버튼을 클릭해주세요."
+                  placeholder="메모를 입력해주세요."
                   rows={4}
                   multiline
                   value={memo}
@@ -1539,7 +1535,7 @@ export default function DbDetail() {
                             autoHideDuration: 2000,
                           });
 
-                        const newValue = values?.map((v) =>
+                        let newValues = values?.map((v) =>
                           Object.assign(
                             {},
                             {
@@ -1549,6 +1545,10 @@ export default function DbDetail() {
                             }
                           )
                         );
+                        const getRecordField = menu_detail?.fields?.find(
+                          (data) => data?.property.name === "메모"
+                        );
+
                         const res = await Axios.Post("db/list", {
                           token: getAccessToken(),
                           list_pk: router.query.db,
@@ -1561,7 +1561,13 @@ export default function DbDetail() {
                           geo_parent: parent_area,
                           geo_name: child_area,
                           is_gift: isGift,
-                          values: [...newValue],
+                          values: [
+                            ...newValues,
+                            memo && {
+                              field_pk: getRecordField?.pk,
+                              value: memo,
+                            },
+                          ],
                         });
 
                         if (res?.code === 200) {

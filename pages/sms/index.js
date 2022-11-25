@@ -15,9 +15,12 @@ import { getAccessToken } from "../../src/utility/getCookie";
 import moment from "moment";
 import { Pagination } from "@mui/material";
 import { getWeek, getReplaceMonth } from "../../src/utility/date";
+import { useSnackbar } from "notistack";
+import ExcelButton from "../../src/components/Button/Excel";
 
 export default function Sms() {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const el = useRef(null);
 
@@ -40,6 +43,7 @@ export default function Sms() {
   const [created_date_end, setCreatedDateEnd] = useState("");
   const [notification_list, setNotificationList] = useState([]);
   const [totalCount, setTotalCount] = useState();
+  const [pks, setPks] = useState([]);
 
   const handleClose = (e) => {
     if (el.current && !el.current.contains(e.target)) {
@@ -96,6 +100,8 @@ export default function Sms() {
     getNotification();
   }, [page]);
 
+  console.log(pks);
+
   return (
     <Layout>
       <Column sx={{ gap: "25px" }}>
@@ -130,8 +136,31 @@ export default function Sms() {
           wrap={"wrap"}
           sx={{ gap: 2 }}
         >
-          <Row sx={{ width: "90%", gap: 2 }} alignItems={"end"}>
-            <div ref={el} id="dateInput">
+          <Row
+            sx={{
+              width: {
+                lg: "80%",
+                md: "80%",
+                sm: "80%",
+                xs: "100%",
+              },
+              gap: 2,
+            }}
+            alignItems={"end"}
+            wrap={"wrap"}
+          >
+            <Row
+              ref={el}
+              id="dateInput"
+              sx={{
+                width: {
+                  lg: "35%",
+                  md: "35%",
+                  sm: "45% !important",
+                  xs: "100% !important",
+                },
+              }}
+            >
               <DateInput
                 value={date}
                 setValue={setDate}
@@ -255,14 +284,14 @@ export default function Sms() {
                   </>
                 }
               />
-            </div>
+            </Row>
             <LabelUnderLineInput
               title="담당자"
               placeholder={"담당자로 검색하실 수 있습니다"}
               w={{
-                lg: "25%",
-                md: "25%",
-                sm: "100%",
+                lg: "35%",
+                md: "35%",
+                sm: "45%",
                 xs: "100%",
               }}
               value={user_name}
@@ -274,19 +303,62 @@ export default function Sms() {
               }}
             />
           </Row>
+          <Row sx={{ gap: 1 }}>
+            <ExcelButton
+              action={async () => {
+                window.open(
+                  "https://alinkapi.afg.kr/api/v1/notification?" +
+                    Object.entries({
+                      token: getAccessToken(),
+                      page: page,
+                      count: count,
+                      user_name: user_name,
+                      created_date_start: start_date
+                        ? new Date(start_date).getTime()
+                        : undefined,
+                      created_date_end: end_date
+                        ? new Date(end_date).getTime()
+                        : undefined,
+                      excel: 1,
+                    })
+                      ?.map((e) => e.join("="))
+                      .join("&"),
+                  "_blank"
+                );
+              }}
+            />
+            <Button
+              text="재발송"
+              bgColor={"primary"}
+              variant={"contained"}
+              color="primary.white"
+              w={60}
+              h={28}
+              fs="h6"
+              action={async () => {
+                const res = await Axios.Post(`notification/resend`, {
+                  token: getAccessToken(),
+                  notification_pks: pks.join(","),
+                });
 
-          {/* <Button
-            text="재발송"
-            bgColor={"primary"}
-            variant={"contained"}
-            color="primary.white"
-            w={60}
-            h={28}
-            fs="h6"
-            action={() => getNotification(false)}
-          /> */}
+                if (res?.code === 200) {
+                  enqueueSnackbar("재발송 되었습니디", {
+                    variant: "success",
+                    autoHideDuration: 2000,
+                  });
+
+                  setPks([]);
+                }
+              }}
+            />
+          </Row>
         </Row>
-        <SmsTable data={notification_list} page={page} />
+        <SmsTable
+          data={notification_list}
+          page={page}
+          pks={pks}
+          setPks={setPks}
+        />
       </Column>
       <Row justifyContent={"center"} sx={{ width: "100%", mt: 5 }}>
         <Pagination

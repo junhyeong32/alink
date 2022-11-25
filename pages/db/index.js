@@ -33,7 +33,11 @@ import originalMoment from "moment";
 import { extendMoment } from "moment-range";
 import { useEffect } from "react";
 import Axios from "../../src/utility/api";
-import { getAccessToken, getCookie } from "../../src/utility/getCookie";
+import {
+  getAccessToken,
+  getCookie,
+  setCookie,
+} from "../../src/utility/getCookie";
 import GridBox from "../../src/components/Box/Grid";
 import useGetArea from "../../src/hooks/setting/useGetArea";
 import useGetOrganization from "../../src/hooks/share/useGetOrganization";
@@ -60,6 +64,7 @@ export default function Db() {
 
   const el = useRef(null);
   const [user_info] = useState(getCookie("user_info"));
+  const [asInformation] = useState(getCookie("asInformation"));
 
   //data
   const [menu_detail, setMenuDetail] = useState([]);
@@ -518,7 +523,48 @@ export default function Db() {
       }
     };
 
+    const getCooperationDashBoard = async () => {
+      const res = (
+        await Axios.Get(`db/dashboard_cooperation`, {
+          params: {
+            token: getAccessToken(),
+            date:
+              String(new Date().getFullYear()) +
+              String(new Date().getMonth() + 1),
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        const titleByMenu = res?.data
+          ?.filter((dashboard) => dashboard.name === user_info?.name)
+          ?.filter((menu) =>
+            menu?.dbs?.filter((db) => db?.title === menu_detail.title)
+          );
+
+        const db = titleByMenu?.[0]?.dbs?.[0];
+
+        openModal({
+          modal: "guide",
+          content: {
+            guideText: `${db?.title} 미처리 AS건`,
+            text: `미처리 AS건이 ${Number(db?.allocate)} 건 입니다`,
+            buttonText: "확인",
+            action: (todayNoSee) => {
+              if (todayNoSee)
+                setCookie("asInformation", true, {
+                  path: "/",
+                  maxAge: 436000,
+                });
+              closeModal();
+            },
+          },
+        });
+      }
+    };
+
     getCooperation();
+    !asInformation && getCooperationDashBoard();
   }, []);
 
   useEffect(() => {
@@ -1495,58 +1541,6 @@ export default function Db() {
               <ExcelButton
                 sx={{ zIndex: open ? -1 : 0 }}
                 action={async () => {
-                  console.log(
-                    Object.entries({
-                      token: getAccessToken(),
-                      page: page,
-                      count: count,
-                      db_pk: router.query.menu,
-                      head_office_org_code:
-                        head_office_org_code === "전체"
-                          ? undefined
-                          : head_office_org_code,
-                      org_code: org_code === "전체" ? undefined : org_code,
-                      status: status === "전체" ? undefined : status,
-                      org_status:
-                        org_status === "전체" ? undefined : org_status,
-                      allocated_user: allocated_user,
-                      uploader_organization_code:
-                        uploader_organization_code === "전체"
-                          ? undefined
-                          : uploader_organization_code,
-                      geo_parent_name:
-                        parent_area === "전체" ? undefined : parent_area,
-                      geo_name: child_area === "전체" ? undefined : child_area,
-                      values: JSON.stringify(
-                        [...values].filter((v) => v?.value !== "")
-                      ),
-                      created_date_start:
-                        (rank === "협력사" || rank === "부협력사") && start_date
-                          ? new Date(
-                              Number(router.query.created_date_start)
-                            ).getTime()
-                          : undefined,
-                      created_date_end:
-                        (rank === "협력사" || rank === "부협력사") && end_date
-                          ? new Date(
-                              Number(router.query.created_date_end)
-                            ).getTime()
-                          : undefined,
-                      allocated_date_start:
-                        rank !== "협력사" && rank !== "부협력사" && start_date
-                          ? new Date(
-                              Number(router.query.allocated_date_start)
-                            ).getTime()
-                          : undefined,
-                      allocated_date_end:
-                        rank !== "협력사" && rank !== "부협력사" && end_date
-                          ? new Date(
-                              Number(router.query.allocated_date_end)
-                            ).getTime()
-                          : undefined,
-                      excel: 1,
-                    })
-                  );
                   window.open(
                     "https://alinkapi.afg.kr/api/v1/db/list?" +
                       Object.entries({

@@ -16,6 +16,8 @@ import { sms_header } from "./smsHeaderList";
 import Button from "../../Button";
 import Row from "../../Box/Row";
 import { getTitleOfOrg } from "../../../utility/organization/getTitleOfOrg";
+import { getAccessToken } from "../../../utility/getCookie";
+import Axios from "../../../utility/api";
 
 const Root = styled("div")`
   table {
@@ -41,7 +43,7 @@ const Root = styled("div")`
   }
 `;
 
-export default function SmsTable({ data, page }) {
+export default function SmsTable({ data, page, pks, setPks }) {
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -52,9 +54,20 @@ export default function SmsTable({ data, page }) {
         >
           <TableHead>
             <TableRow key="head">
-              {/*  <TableCell align="center">
-                <Checkbox />
-              </TableCell> */}
+              <TableCell align="center">
+                <Checkbox
+                  checked={pks.length > 19}
+                  onClick={() =>
+                    setPks(() => {
+                      const result = [];
+                      if (data?.length > pks.length) {
+                        data?.map((d) => result.push(d?.pk));
+                      }
+                      return result;
+                    })
+                  }
+                />
+              </TableCell>
               {sms_header?.map((data, key) => (
                 <TableCell key={key} align="center">
                   {data}
@@ -74,9 +87,26 @@ export default function SmsTable({ data, page }) {
                   },
                 }}
               >
-                {/* <TableCell align="center">
-                  <Checkbox />
-                </TableCell> */}
+                <TableCell align="center">
+                  <Checkbox
+                    checked={pks.indexOf(sms?.pk) !== -1 ? true : false}
+                    onClick={() =>
+                      setPks((prev) => {
+                        const newPks = [...prev];
+
+                        const foundIndex = newPks.indexOf(sms.pk);
+
+                        if (foundIndex === -1) {
+                          newPks.push(sms?.pk);
+                        } else {
+                          newPks.splice(foundIndex, 1);
+                        }
+
+                        return newPks;
+                      })
+                    }
+                  />
+                </TableCell>
                 <TableCell align="center">
                   {page === 1
                     ? key + 1
@@ -88,7 +118,7 @@ export default function SmsTable({ data, page }) {
                 <TableCell align="center">{sms?.name}</TableCell>
                 <TableCell align="center">{sms?.message}</TableCell>
                 <TableCell align="center">{sms?.created_date}</TableCell>
-                {/* <TableCell align="center">
+                <TableCell align="center">
                   <Button
                     text="재발송"
                     bgColor={"primary"}
@@ -97,9 +127,23 @@ export default function SmsTable({ data, page }) {
                     w={50}
                     h={24}
                     fs="h6"
-                    action={() => getNotification(false)}
+                    action={async () => {
+                      const res = await Axios.Post(`notification/resend`, {
+                        token: getAccessToken(),
+                        notification_pks: sms?.pk,
+                      });
+
+                      if (res?.code === 200) {
+                        enqueueSnackbar("재발송 되었습니디", {
+                          variant: "success",
+                          autoHideDuration: 2000,
+                        });
+
+                        setPks([]);
+                      }
+                    }}
                   />
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -476,7 +476,7 @@ export default memo(function User() {
                 title="연락처"
                 placeholder={"연락처로 검색하실 수 있습니다."}
                 w="100%"
-                sx={{ mt: { lg: 4 } }}
+                sx={{ mt: { lg: 3 } }}
                 value={phone}
                 setValue={setPhone}
                 onKeyPress={(ev) => {

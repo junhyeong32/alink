@@ -137,7 +137,7 @@ export default function Index({ getCookies }) {
               : rank === "부관리자"
               ? user_info?.org_code
               : undefined,
-          geo_name: geo_name === "0" ? undefined : areaMenuItems[geo_name],
+          geo_name: geo_name === 0 ? undefined : areaMenuItems[geo_name],
           date: send_date,
         },
       })
@@ -148,13 +148,13 @@ export default function Index({ getCookies }) {
     }
   };
 
-  const getCooperationDashBoard = async () => {
+  const getCooperationDashBoard = async (all) => {
     const res = (
       await Axios.Get(`db/dashboard_cooperation`, {
         params: {
           token: getAccessToken(),
-          geo_name: geo_name === "0" ? undefined : areaMenuItems[geo_name],
-          date: send_date,
+          geo_name: geo_name === 0 ? undefined : areaMenuItems[geo_name],
+          date: all ? undefined : send_date,
         },
       })
     )?.data;
@@ -301,6 +301,8 @@ export default function Index({ getCookies }) {
     d.setMonth(d.getMonth() - date);
     setSendDate(d.toISOString().substring(0, 8).replace(/-/g, ""));
   }, [date]);
+
+  console.log(geo_name);
 
   if (!getCookies) return <></>;
 
@@ -564,26 +566,50 @@ export default function Index({ getCookies }) {
               <Row alignItems={"center"} justifyContent={"between"}>
                 <Typography sx={{ fontSize: "30px" }}>협력사 DB</Typography>
 
-                <OutLineSelectInput
-                  // menuItems={dateMenuItems}
-                  menuItems={Array(12)
-                    .fill(0)
-                    .map((_, n) => {
-                      let d = new Date();
-                      d.setMonth(new Date().getMonth() - n);
-                      return `${d
-                        .toISOString()
-                        .substring(0, 8)
-                        .replace(/-/g, "")
-                        .slice(0, 4)}년 ${d
-                        .toISOString()
-                        .substring(0, 8)
-                        .replace(/-/g, "")
-                        .slice(4)}월`;
-                    })}
-                  value={date}
-                  setValue={setDate}
-                />
+                <Row sx={{ gap: 1 }}>
+                  <OutLineSelectInput
+                    // menuItems={dateMenuItems}
+                    menuItems={Array(12)
+                      .fill(0)
+                      .map((_, n) => {
+                        let d = new Date();
+                        d.setMonth(new Date().getMonth() - n);
+                        return `${d
+                          .toISOString()
+                          .substring(0, 8)
+                          .replace(/-/g, "")
+                          .slice(0, 4)}년 ${d
+                          .toISOString()
+                          .substring(0, 8)
+                          .replace(/-/g, "")
+                          .slice(4)}월`;
+                      })}
+                    value={date}
+                    setValue={setDate}
+                  />
+                  <Button
+                    variant="contained"
+                    bgColor={"primary"}
+                    fs="h6"
+                    color="primary.white"
+                    text="전체"
+                    h={28}
+                    action={() => getCooperationDashBoard(true)}
+                  />
+
+                  <Button
+                    variant="contained"
+                    bgColor={"gray"}
+                    fs="h6"
+                    color="primary.white"
+                    text="초기화"
+                    h={28}
+                    action={() => {
+                      setDate(0);
+                      getCooperationDashBoard();
+                    }}
+                  />
+                </Row>
               </Row>
 
               <CooperationTable data={dashboard_coop_list} />
