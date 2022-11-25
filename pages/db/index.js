@@ -642,9 +642,6 @@ export default function Db() {
   useEffect(() => {
     if (!is_search) return;
 
-    // console.log("start");
-    // window.localStorage.removeItem("query");
-
     router.push(`db?menu=${
       router.query.menu
     }&page=${page}&count=${count}&head_office_org_code=${head_office_org_code}&org_code=${org_code}&status=${status}&without_afg=${
@@ -675,8 +672,6 @@ export default function Db() {
     if (!router.query.page) return;
     window.localStorage.setItem("path", router.asPath);
   }, [router.query]);
-
-  console.log(date);
 
   return (
     <Layout

@@ -1561,13 +1561,15 @@ export default function DbDetail() {
                           geo_parent: parent_area,
                           geo_name: child_area,
                           is_gift: isGift,
-                          values: [
-                            ...newValues,
-                            memo && {
-                              field_pk: getRecordField?.pk,
-                              value: memo,
-                            },
-                          ],
+                          values: memo
+                            ? [
+                                ...newValues,
+                                {
+                                  field_pk: getRecordField?.pk,
+                                  value: memo,
+                                },
+                              ]
+                            : [...newValues],
                         });
 
                         if (res?.code === 200) {
