@@ -1004,13 +1004,13 @@ export default function DbDetail() {
                     color="primary.white"
                     fs="h5"
                     h={28}
-                    disabled={
-                      (allocated_user?.pk !== user_info?.pk &&
-                        rank !== "관리자" &&
-                        rank !== "부관리자") ||
-                      getTitleOfOrg(allocated_user) ||
-                      allocated_user?.name
-                    }
+                    // disabled={
+                    //   (allocated_user?.pk !== user_info?.pk &&
+                    //     rank !== "관리자" &&
+                    //     rank !== "부관리자") ||
+                    //   getTitleOfOrg(allocated_user) ||
+                    //   allocated_user?.name
+                    // }
                     action={() =>
                       openModal({
                         modal: "chooseuser",

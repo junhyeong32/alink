@@ -1370,7 +1370,7 @@ export default function Db() {
 
               {(rank === "관리자" || rank === "부관리자") && (
                 <>
-                  <Button
+                  {/* <Button
                     bgColor="secondary"
                     text="수동분배"
                     color="primary.white"
@@ -1395,7 +1395,7 @@ export default function Db() {
                         },
                       })
                     }
-                  />
+                  /> */}
                   <Button
                     text="DB 자동분배"
                     color="primary.white"
