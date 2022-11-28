@@ -119,6 +119,8 @@ export default function Db() {
   const [checkData, setCheckData] = useState([]);
   const [search_list, setSearchList] = useState(1);
 
+  const [asResult, setAsResult] = useState(0);
+
   const [denined_sales, setDeninedSales] = useState([]);
   const [deninedLoading, setDeniedLoading] = useState(false);
 
@@ -525,7 +527,7 @@ export default function Db() {
 
     const getCooperationDashBoard = async () => {
       const res = (
-        await Axios.Get(`db/dashboard_cooperation`, {
+        await Axios.Get(`db/dashboard`, {
           params: {
             token: getAccessToken(),
             date:
@@ -536,31 +538,19 @@ export default function Db() {
       )?.data;
 
       if (res?.code === 200) {
-        const titleByMenu = res?.data
-          ?.filter((dashboard) => dashboard.name === user_info?.name)
-          ?.filter((menu) =>
-            menu?.dbs?.filter((db) => db?.title === menu_detail.title)
-          );
+        let result = 0;
+        const filterDb = res?.data?.filter(
+          (dashboard) => dashboard.title === menu_detail.title
+        )?.[0];
 
-        const db = titleByMenu?.[0]?.dbs?.[0];
+        filterDb?.status?.map((db) =>
+          db?.status === "가입불가(AS신청)"
+            ? (result += Number(db?.total))
+            : (db?.status === "AS승인" || db?.status === "AS반려") &&
+              (result -= Number(db?.total))
+        );
 
-        openModal({
-          modal: "guide",
-          content: {
-            guideText: `${db?.title} 미처리 AS건`,
-            cancel: false,
-            text: `미처리 AS건이 ${Number(db?.as)} 건 입니다`,
-            buttonText: "확인",
-            action: (todayNoSee) => {
-              if (todayNoSee)
-                setCookie("asInformation", true, {
-                  path: "/",
-                  maxAge: 436000,
-                });
-              closeModal();
-            },
-          },
-        });
+        setAsResult(result);
       }
     };
 
@@ -673,6 +663,29 @@ export default function Db() {
     if (!router.query.page) return;
     window.localStorage.setItem("path", router.asPath);
   }, [router.query]);
+
+  useEffect(() => {
+    if (menu_detail.length === 0) return;
+    !asInformation &&
+      user_info?.grade === "협력사" &&
+      openModal({
+        modal: "guide",
+        content: {
+          guideText: `${menu_detail?.title} 미처리 AS건`,
+          cancel: false,
+          text: `미처리 AS건이 ${asResult} 건 입니다`,
+          buttonText: "확인",
+          action: (todayNoSee) => {
+            if (todayNoSee)
+              setCookie("asInformation", true, {
+                path: "/",
+                maxAge: 436000,
+              });
+            closeModal();
+          },
+        },
+      });
+  }, [menu_detail]);
 
   return (
     <Layout
@@ -1288,12 +1301,14 @@ export default function Db() {
                     const filterPk = checkData?.map((data) =>
                       db_list?.filter((db) => {
                         if (data === db?.pk) {
-                          return db?.organization?.name;
+                          return (
+                            db?.organization?.name && db?.allocated_user?.pk
+                          );
                         }
                       })
                     );
 
-                    if (filterPk[0].length !== 0)
+                    if (filterPk.flat().length !== 0)
                       return enqueueSnackbar(
                         "분배가 완료된 DB가 존재하여 조직변경이 불가합니다",
                         {
