@@ -549,7 +549,7 @@ export default function Db() {
           content: {
             guideText: `${db?.title} 미처리 AS건`,
             cancel: false,
-            text: `미처리 AS건이 ${Number(db?.allocate)} 건 입니다`,
+            text: `미처리 AS건이 ${Number(db?.as)} 건 입니다`,
             buttonText: "확인",
             action: (todayNoSee) => {
               if (todayNoSee)
