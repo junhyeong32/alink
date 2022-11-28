@@ -525,39 +525,7 @@ export default function Db() {
       }
     };
 
-    const getCooperationDashBoard = async () => {
-      const res = (
-        await Axios.Get(`db/dashboard`, {
-          params: {
-            token: getAccessToken(),
-            date:
-              String(new Date().getFullYear()) +
-              String(new Date().getMonth() + 1),
-          },
-        })
-      )?.data;
-
-      if (res?.code === 200) {
-        let result = 0;
-        const filterDb = res?.data?.filter(
-          (dashboard) => dashboard.title === menu_detail.title
-        )?.[0];
-
-        filterDb?.status?.map((db) =>
-          db?.status === "가입불가(AS신청)"
-            ? (result += Number(db?.total))
-            : (db?.status === "AS승인" || db?.status === "AS반려") &&
-              (result -= Number(db?.total))
-        );
-
-        setAsResult(result);
-      }
-    };
-
     getCooperation();
-    !asInformation &&
-      user_info?.grade === "협력사" &&
-      getCooperationDashBoard();
   }, []);
 
   useEffect(() => {
@@ -666,26 +634,62 @@ export default function Db() {
 
   useEffect(() => {
     if (menu_detail.length === 0) return;
+    let result = 0;
+
+    const getCooperationDashBoard = async () => {
+      const res = (
+        await Axios.Get(`db/dashboard`, {
+          params: {
+            token: getAccessToken(),
+            date:
+              String(new Date().getFullYear()) +
+              String(new Date().getMonth() + 1),
+          },
+        })
+      )?.data;
+
+      if (res?.code === 200) {
+        let result = 0;
+        const filterDb = res?.data?.filter(
+          (dashboard) => dashboard.title === menu_detail.title
+        )?.[0];
+
+        filterDb?.status?.map((db) =>
+          db?.status === "가입불가(AS신청)"
+            ? (result += Number(db?.total))
+            : (db?.status === "AS승인" || db?.status === "AS반려") &&
+              (result -= Number(db?.total))
+        );
+
+        console.log("result", result, filterDb, menu_detail);
+
+        !asInformation &&
+          user_info?.grade === "협력사" &&
+          openModal({
+            modal: "guide",
+            content: {
+              guideText: `${menu_detail?.title} 미처리 AS건`,
+              cancel: false,
+              text: `미처리 AS건이 ${result} 건 입니다`,
+              buttonText: "확인",
+              action: (todayNoSee) => {
+                if (todayNoSee)
+                  setCookie("asInformation", true, {
+                    path: "/",
+                    maxAge: 436000,
+                  });
+                closeModal();
+              },
+            },
+          });
+      }
+    };
+
     !asInformation &&
       user_info?.grade === "협력사" &&
-      openModal({
-        modal: "guide",
-        content: {
-          guideText: `${menu_detail?.title} 미처리 AS건`,
-          cancel: false,
-          text: `미처리 AS건이 ${asResult} 건 입니다`,
-          buttonText: "확인",
-          action: (todayNoSee) => {
-            if (todayNoSee)
-              setCookie("asInformation", true, {
-                path: "/",
-                maxAge: 436000,
-              });
-            closeModal();
-          },
-        },
-      });
+      getCooperationDashBoard();
   }, [menu_detail]);
+  console.log("asResult", asResult);
 
   return (
     <Layout
