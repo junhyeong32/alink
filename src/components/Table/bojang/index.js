@@ -62,6 +62,8 @@ export default function BojangTable({
   const [rank] = useState(getCookie("user_info")?.grade);
   const [user_info] = useState(getCookie("user_info"));
 
+  console.log(count, page);
+
   return (
     <Root sx={{ width: "100%" }}>
       <TableContainer>
@@ -172,11 +174,14 @@ export default function BojangTable({
                   }}
                   onClick={() => router.push(`/db/${d?.pk}?menu=${d?.db_pk}`)}
                 >
-                  {page === 1
-                    ? count - page * key
-                    : page === 2
+                  {(page || router.query.page) === 1
+                    ? count - (page || router.query.page) * key
+                    : (page || router.query.page) === 2
                     ? count - 20 - key
-                    : count - (page * 10 + (page - 2) * 10) - key}
+                    : count -
+                      ((page || router.query.page) * 10 +
+                        ((page || router.query.page) - 2) * 10) -
+                      key}
                 </TableCell>
                 <TableCell
                   key={d?.pk + 999}
