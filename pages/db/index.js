@@ -141,7 +141,7 @@ export default function Db() {
   const { organization, addOrganizationData, org_info, addOrganizationInfo } =
     useContext(OrganizationContext);
 
-  const getDbDetail = async (is_init, _page) => {
+  const getDbDetail = async (is_init, _page, user_pk) => {
     const res = (
       is_init
         ? await Axios.Get(`db/list`, {
@@ -689,13 +689,9 @@ export default function Db() {
       user_info?.grade === "협력사" &&
       getCooperationDashBoard();
   }, [menu_detail]);
-  console.log("asResult", asResult);
 
   return (
-    <Layout
-      loading={loading}
-      sx={{ background: open ? "rgba(0, 0, 0, 0.5)" : "none" }}
-    >
+    <Layout sx={{ background: open ? "rgba(0, 0, 0, 0.5)" : "none" }}>
       <Column>
         {rank === "관리자" && (
           <Button
@@ -945,6 +941,35 @@ export default function Db() {
                 if (router.asPath === window.localStorage.path) return;
                 setPage(router.query.page);
                 router.push(window.localStorage.path);
+              }}
+            />
+            <Button
+              variant="contained"
+              bgColor={"red"}
+              fs="h6"
+              color="primary.white"
+              text="미분배 건 조회"
+              h={28}
+              action={async () => {
+                setLoading(true);
+                const res = (
+                  await Axios.Get(`db/list`, {
+                    params: {
+                      token: getAccessToken(),
+                      db_pk: router.query.menu,
+                      is_not_allocated_yet: 1,
+                    },
+                  })
+                )?.data;
+
+                console.log(res?.data);
+                if (res?.code === 200) {
+                  setTotalCount(Math.ceil(res?.data.total_count / 20));
+                  setDbList(res?.data?.result);
+                  setTableCount(res?.data.total_count);
+                }
+                setIsSearch(false);
+                setLoading(false);
               }}
             />
             <Button
@@ -1655,35 +1680,50 @@ export default function Db() {
               />
             </Row>
           </Row>
-          <BojangTable
-            openModal={openModal}
-            closeModal={closeModal}
-            header={menu_detail}
-            data={db_list}
-            page={page}
-            checkData={checkData}
-            setCheckData={setCheckData}
-            count={tableCount}
-          />
+          {loading ? (
+            <Row
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                height: "100%",
+                mt: 10,
+              }}
+            >
+              <CircularProgress size="60px" thickness={5} color="primary" />
+            </Row>
+          ) : (
+            <>
+              <BojangTable
+                openModal={openModal}
+                closeModal={closeModal}
+                header={menu_detail}
+                data={db_list}
+                page={page}
+                checkData={checkData}
+                setCheckData={setCheckData}
+                count={tableCount}
+              />
+              <Row
+                alignItems="center"
+                justifyContent="center"
+                sx={{ width: "100%", mt: 5, mb: 2 }}
+              >
+                <Pagination
+                  component="div"
+                  page={Number(router.query.page) || page}
+                  count={totalCount}
+                  onChange={(subject, newPage) => {
+                    setIsSearch(true);
+                    setPage(newPage);
+                  }}
+                  color="primary"
+                  // hidePrevButton
+                  // hideNextButton
+                />
+              </Row>
+            </>
+          )}
         </Column>
-        <Row
-          alignItems="center"
-          justifyContent="center"
-          sx={{ width: "100%", mt: 5, mb: 2 }}
-        >
-          <Pagination
-            component="div"
-            page={Number(router.query.page) || page}
-            count={totalCount}
-            onChange={(subject, newPage) => {
-              setIsSearch(true);
-              setPage(newPage);
-            }}
-            color="primary"
-            // hidePrevButton
-            // hideNextButton
-          />
-        </Row>
       </Column>
     </Layout>
   );

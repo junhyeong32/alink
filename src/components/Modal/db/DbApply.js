@@ -239,7 +239,6 @@ export default function DbApply({ index }) {
                   content: {
                     close: false,
                     action: () => {
-                      console.log("stasrt");
                       setResultDb((prev) => {
                         let newData = [...changeDb];
 

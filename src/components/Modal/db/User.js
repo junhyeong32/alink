@@ -219,6 +219,19 @@ export default function User({ index }) {
                   }
                 />
                 <Button
+                  text="미지정"
+                  variant="contained"
+                  bgColor={"red"}
+                  color="primary.white"
+                  fs="h6"
+                  w={60}
+                  h={20}
+                  action={() => {
+                    setUserCode({ pk: 0 });
+                    closeModal();
+                  }}
+                />
+                <Button
                   text="검색"
                   variant="contained"
                   bgColor={"primary"}

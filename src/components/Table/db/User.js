@@ -106,7 +106,7 @@ export default function UserTable({ data, action }) {
                   </TableCell>
                   <TableCell align="center">{getTitleOfOrg(user)}</TableCell>
                   <TableCell align="center">{user?.name}</TableCell>
-                  <TableCell align="cenㅐter">
+                  <TableCell align="center">
                     <Button
                       variant={"outlined"}
                       color="primary"
@@ -121,24 +121,6 @@ export default function UserTable({ data, action }) {
                           name: user?.name,
                         });
                         closeModal();
-                        // openModal({
-                        //   modal: "needconfirm",
-                        //   content: {
-                        //     text: `${
-                        //       getTitleOfOrg(user) + " " + user?.name
-                        //     }님을 선택하시겠습니까?`,
-                        //     buttonText: "확인",
-                        //     action: () => {
-                        //       console.log("user2", user);
-                        //       action({
-                        //         pk: user?.pk,
-                        //         org: getTitleOfOrg(user),
-                        //         name: user?.name,
-                        //       });
-                        //       closeModal();
-                        //     },
-                        //   },
-                        // });
                       }}
                     />
                   </TableCell>

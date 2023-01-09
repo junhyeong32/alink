@@ -100,6 +100,13 @@ export default function DBApply() {
                   ? db?.find((d) => d?.pk === menu.pk)?.allocation
                       ?.count_for_next_month
                   : 0,
+              is_activated_for_next_month:
+                moment().date() <= day
+                  ? undefined
+                  : db?.find((d) => d?.pk === menu.pk)?.allocation
+                      ?.is_activated === 1
+                  ? "on"
+                  : "off",
             },
           ],
           geomap: (() => {

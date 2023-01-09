@@ -1029,7 +1029,9 @@ export default function DbDetail() {
                   />
                   <Row sx={{ width: "100%", gap: 1 }} alignItems={"center"}>
                     <Typography>
-                      {user_code?.org
+                      {user_code?.pk === 0
+                        ? ""
+                        : user_code?.org
                         ? user_code?.org + " " + user_code?.name
                         : getTitleOfOrg(allocated_user)
                         ? getTitleOfOrg(allocated_user) +
@@ -1518,6 +1520,7 @@ export default function DbDetail() {
                     content: {
                       contents: "수정을 진행하시겠습니까? ",
                       action: async () => {
+                        console.log(user_code);
                         if (transcript_file) {
                           enqueueSnackbar("업로드 하지 않은 파일이있습니다", {
                             variant: "error",
